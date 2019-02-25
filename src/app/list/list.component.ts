@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { ListDataSource } from './list-datasource';
+import {EhTagConnectorService} from '../../service/eh-tag-connector.service';
 
 @Component({
   selector: 'app-list',
@@ -14,6 +15,12 @@ export class ListComponent implements OnInit {
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['Raw', 'Name', 'Describe', 'handle'];
+
+  constructor(
+    private ehTagConnector: EhTagConnectorService,
+  ) {
+    ehTagConnector.test();
+  }
 
   ngOnInit() {
     this.dataSource = new ListDataSource(this.paginator, this.sort);

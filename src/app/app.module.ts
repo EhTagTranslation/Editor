@@ -23,6 +23,7 @@ import {
 import { ListComponent } from './list/list.component';
 import { FormComponent } from './form/form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
+    HttpClientModule,
+    HttpClientJsonpModule,
     MatToolbarModule,
     MatButtonModule,
     MatFormFieldModule,
