@@ -4,6 +4,12 @@ import {fromEvent, Observable, Subject, from } from 'rxjs';
 import {Breakpoints} from '@angular/cdk/layout';
 import {filter, map, merge} from 'rxjs/operators';
 import {switchTap} from '@angular/router/src/operators/switch_tap';
+import {ETItem, ETNamespace, ETRooot} from '../interface';
+import {forEach} from '@angular/router/src/utils/collection';
+
+interface Interface {
+
+}
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +23,10 @@ export class EhTagConnectorService {
   namespace;
   loading: boolean;
 
-  data: any;
+  tags: ETItem[] = [];
 
 
-  async test() {
+  async getTags(): Promise<ETItem[]> {
 
     const info: any = await this.http.get('https://api.github.com/repos/ehtagtranslation/Database/releases/latest').toPromise();
 
@@ -52,10 +58,20 @@ export class EhTagConnectorService {
     document.getElementsByTagName('head')[0].appendChild(script);
 
     try {
-      const data = await promise;
-      this.data = data;
+      const data: ETRooot = (await promise) as any;
+      this.tags = [];
+      data.data.forEach(namespace => {
+        for (const raw in namespace.data) {
+          this.tags.push({
+            ...namespace.data[raw],
+            raw,
+            namespace: namespace.namespace,
+          });
+        }
+      });
+      return this.tags;
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
 
 

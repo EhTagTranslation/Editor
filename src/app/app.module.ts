@@ -22,8 +22,9 @@ import {
 } from '@angular/material';
 import { ListComponent } from './list/list.component';
 import { FormComponent } from './form/form.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
+import {MarkPipe} from './shared/pipe/mark.pipe';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
     IndexComponent,
     ListComponent,
     FormComponent,
+    MarkPipe
   ],
   imports: [
     BrowserModule,
@@ -54,7 +56,8 @@ import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
     MatSortModule,
     MatSelectModule,
     MatRadioModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

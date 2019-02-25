@@ -1,54 +1,82 @@
-<mat-menu #handleMenu="matMenu">
-  <ng-template matMenuContent let-key="key">
-    <button routerLink="/form/test/test" mat-menu-item>
-      <mat-icon>edit</mat-icon>
-      <span>编辑</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>delete</mat-icon>
-      <span>删除</span>
-    </button>
-  </ng-template>
-</mat-menu>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>列表</span>
+      <span class="fill-remaining-space"></span>
+      <div style="padding-top: 8px">
+        <mat-form-field  appearance="legacy" floatLabel="never">
+          <mat-label>搜索</mat-label>
+          <input [(ngModel)]="search" (ngModelChange)="searchChange($event)" matInput placeholder="Placeholder">
+          <button matSuffix mat-icon-button><mat-icon matSuffix>search</mat-icon></button>
+        </mat-form-field>
+      </div>
+    </mat-toolbar>
+    <div class="page-box">
+      <mat-menu #handleMenu="matMenu">
+        <ng-template matMenuContent let-key="key">
+          <button routerLink="/form/test/test" mat-menu-item>
+            <mat-icon>edit</mat-icon>
+            <span>编辑</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>删除</span>
+          </button>
+        </ng-template>
+      </mat-menu>
+      <div *ngIf="loading">Loading...</div>
+      <div class="mat-elevation-z8">
+        <table mat-table class="full-width-table" [dataSource]="dataSource" matSort aria-label="Elements">
+          <!-- Id Column -->
+          <ng-container matColumnDef="raw">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>原始</th>
+            <td mat-cell *matCellDef="let row"><span [innerHTML]="row.raw | mark: search"></span></td>
+          </ng-container>
 
-<div class="mat-elevation-z8">
-  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort aria-label="Elements">
-    <!-- Id Column -->
-    <ng-container matColumnDef="Raw">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>原始</th>
-      <td mat-cell *matCellDef="let row">{{row.Raw}}</td>
-    </ng-container>
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>名称</th>
+            <td mat-cell *matCellDef="let row"><span [innerHTML]="row.name | mark: search"></span></td>
+          </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="Name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>名称</th>
-      <td mat-cell *matCellDef="let row">{{row.Name}}</td>
-    </ng-container>
+          <ng-container matColumnDef="intro">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>描述</th>
+            <td mat-cell *matCellDef="let row"><span [innerHTML]="row.intro | mark: search"></span></td>
+          </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="Describe">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>描述</th>
-      <td mat-cell *matCellDef="let row">{{row.Describe}}</td>
-    </ng-container>
+          <ng-container matColumnDef="namespace">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>命名空间</th>
+            <td mat-cell *matCellDef="let row"><span [innerHTML]="row.namespace | mark: search"></span></td>
+          </ng-container>
 
-    <ng-container matColumnDef="handle">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>操作</th>
-      <td mat-cell *matCellDef="let row">
-        <button mat-icon-button	 [matMenuTriggerFor]="handleMenu" [matMenuTriggerData]="{key: row.Raw}" >
-          <mat-icon>more_vert</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+          <ng-container matColumnDef="links">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>连接</th>
+            <td mat-cell *matCellDef="let row">{{row.links}}</td>
+          </ng-container>
 
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
 
-  <mat-paginator #paginator
-      [length]="dataSource.data.length"
-      [pageIndex]="0"
-      [pageSize]="50"
-      [pageSizeOptions]="[25, 50, 100, 250]">
-  </mat-paginator>
-</div>
+          <ng-container matColumnDef="handle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>操作</th>
+            <td mat-cell *matCellDef="let row">
+              <button mat-icon-button	 [matMenuTriggerFor]="handleMenu" [matMenuTriggerData]="{key: row.Raw}" >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator #paginator
+                       [length]="tags.length"
+                       [pageIndex]="0"
+                       [pageSize]="50"
+                       [pageSizeOptions]="[25, 50, 100, 250]">
+        </mat-paginator>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
