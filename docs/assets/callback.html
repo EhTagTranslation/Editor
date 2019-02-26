@@ -5,10 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=`">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Finished</title>
+    <title>Fetching token</title>
     <script>
-        window.opener.postMessage({ code: location.search.match(/[\?&]code=(\w+)($|&)/)[1] }, location.origin);
-        window.close();
+        var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
+        fetch(`https://ehtageditor.azurewebsites.net/authenticate/${code}`)
+            .then(response => response.json())
+            .then(json => {
+                window.opener.postMessage({ token: json.token, error: null }, location.origin);
+                window.close();
+            })
+            .catch(error => {
+                window.opener.postMessage({ token: null, error: error }, location.origin);
+                window.close();
+            })
     </script>
 </head>
 
