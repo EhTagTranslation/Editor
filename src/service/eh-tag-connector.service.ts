@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpRequest, JsonpClientBackend, JsonpInterceptor} from '@angular/common/http';
-import {fromEvent, Observable, Subject, from } from 'rxjs';
-import {Breakpoints} from '@angular/cdk/layout';
-import {filter, map, merge} from 'rxjs/operators';
-import {switchTap} from '@angular/router/src/operators/switch_tap';
-import {ETItem, ETNamespace, ETRooot} from '../interface';
-import {forEach} from '@angular/router/src/utils/collection';
+import { HttpClient, HttpRequest, JsonpClientBackend, JsonpInterceptor } from '@angular/common/http';
+import { fromEvent, Observable, Subject, from } from 'rxjs';
+import { Breakpoints } from '@angular/cdk/layout';
+import { filter, map, merge } from 'rxjs/operators';
+import { switchTap } from '@angular/router/src/operators/switch_tap';
+import { ETItem, ETNamespace, ETRooot } from '../interfaces/interface';
+import { forEach } from '@angular/router/src/utils/collection';
 
-interface Interface {
-
-}
 
 @Injectable({
   providedIn: 'root'
 })
-export class EhTagConnectorService {
+export class EhTagConnectorService
+{
 
   hashChange: Observable<any>;
 
@@ -26,7 +24,8 @@ export class EhTagConnectorService {
   tags: ETItem[] = [];
 
 
-  async getTags(): Promise<ETItem[]> {
+  async getTags(): Promise<ETItem[]>
+  {
 
     const info: any = await this.http.get('https://api.github.com/repos/ehtagtranslation/Database/releases/latest').toPromise();
 
@@ -35,19 +34,23 @@ export class EhTagConnectorService {
     const asset: any = info.assets.find(i => i.name === 'db.raw.js');
 
 
-    const promise = new Promise(((resolve, reject) => {
+    const promise = new Promise(((resolve, reject) =>
+    {
 
-      const close = () => {
+      const close = () =>
+      {
         clearTimeout(timeoutGuard);
         (window as any).load_ehtagtranslation_database = null;
       };
 
-      const timeoutGuard = setTimeout(() => {
-        reject( new Error('Get EhTag Timeout'));
+      const timeoutGuard = setTimeout(() =>
+      {
+        reject(new Error('Get EhTag Timeout'));
         close();
       }, 10 * 1000);
 
-      (window as any).load_ehtagtranslation_database = (data: any) => {
+      (window as any).load_ehtagtranslation_database = (data: any) =>
+      {
         resolve(data);
         close();
       };
@@ -57,11 +60,14 @@ export class EhTagConnectorService {
     script.setAttribute('src', asset.browser_download_url + '?timetime=' + new Date().getTime());
     document.getElementsByTagName('head')[0].appendChild(script);
 
-    try {
+    try
+    {
       const data: ETRooot = (await promise) as any;
       this.tags = [];
-      data.data.forEach(namespace => {
-        for (const raw in namespace.data) {
+      data.data.forEach(namespace =>
+      {
+        for (const raw in namespace.data)
+        {
           this.tags.push({
             ...namespace.data[raw],
             raw,
@@ -70,7 +76,8 @@ export class EhTagConnectorService {
         }
       });
       return this.tags;
-    } catch (e) {
+    } catch (e)
+    {
       console.error(e);
     }
 
@@ -80,7 +87,8 @@ export class EhTagConnectorService {
   // https://ehtagconnector.azurewebsites.net/api/database
   constructor(
     private http: HttpClient,
-  ) {
+  )
+  {
     this.hash = window.localStorage.getItem('EhTagHash');
 
 
