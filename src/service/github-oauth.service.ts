@@ -11,50 +11,38 @@ const localStorageKey = 'github_oauth_token';
 @Injectable({
   providedIn: 'root'
 })
-export class GithubOauthService
-{
+export class GithubOauthService {
   constructor(
     private httpClient: HttpClient,
-  )
-  {
+  ) {
     this.setToken(this.token);
   }
 
-  get token()
-  {
+  get token() {
     return localStorage.getItem(localStorageKey);
   }
 
-  private setToken(value?: string)
-  {
-    if (!value || !value.match(/^\w+$/))
-    {
+  private setToken(value?: string) {
+    if (!value || !value.match(/^\w+$/)) {
       localStorage.removeItem(localStorageKey);
-    } else
-    {
+    } else {
       localStorage.setItem(localStorageKey, value);
     }
   }
 
-  getRepoInfo()
-  {
+  getRepoInfo() {
     return this.httpClient.get<ETRepoInfo>('http://ehtagconnector.azurewebsites.net/api/database').toPromise();
   }
 
-  async getCurrentUser()
-  {
+  async getCurrentUser() {
     const token = this.token;
-    if (!token)
-    {
+    if (!token) {
       throw new Error('Need log in.');
     }
-    try
-    {
+    try {
       return await this.httpClient.get<GithubUser>(`https://api.github.com/user?access_token=${token}`).toPromise();
-    } catch (ex)
-    {
-      if (ex.status === 401 && this.token === token)
-      {
+    } catch (ex) {
+      if (ex.status === 401 && this.token === token) {
         // token is invalid.
         this.setToken();
       }
@@ -65,39 +53,30 @@ export class GithubOauthService
   /**
    * @returns `true` for succeed login, `false` if has been logged in.
    */
-  logInIfNeeded()
-  {
-    if (this.token)
-    {
+  logInIfNeeded() {
+    if (this.token) {
       return Promise.resolve(false);
     }
-    return new Promise<boolean>((resolve, reject) =>
-    {
+    return new Promise<boolean>((resolve, reject) => {
       const callback = location.origin + location.pathname + 'assets/callback.html';
       const authWindow = window.open(
         `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
         windowName,
         'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
-      const onMessage = async (ev: MessageEvent) =>
-      {
-        if (ev.source !== authWindow)
-        {
+      const onMessage = async (ev: MessageEvent) => {
+        if (ev.source !== authWindow) {
           return;
         }
         const code = ev.data.code as string;
-        if (!code)
-        {
+        if (!code) {
           return;
         }
-        try
-        {
+        try {
           interface AuthCallback { token: string; }
           const r = await this.httpClient.get<AuthCallback>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`).toPromise();
           this.setToken(r.token);
           resolve(true);
-        }
-        catch (ex)
-        {
+        } catch (ex) {
           reject(ex);
         }
         window.removeEventListener('message', onMessage);
@@ -106,8 +85,7 @@ export class GithubOauthService
     });
   }
 
-  logOut()
-  {
+  logOut() {
     this.setToken();
   }
 

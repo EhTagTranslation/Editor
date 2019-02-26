@@ -9,8 +9,7 @@ import { GithubOauthService } from 'src/service/github-oauth.service';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
-export class IndexComponent
-{
+export class IndexComponent {
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -28,8 +27,7 @@ export class IndexComponent
     { key: 'reclass', name: '重分类' },
   ];
 
-  constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService)
-  {
+  constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService) {
     this.githubOauth.logInIfNeeded();
     this.githubOauth.getRepoInfo().then(e => console.log(e));
   }
