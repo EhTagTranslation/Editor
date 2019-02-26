@@ -3,11 +3,12 @@ import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
+import { EhTagConnectorService } from './eh-tag-connector.service';
 
 @Injectable()
 export class EhHttpInterceptor implements HttpInterceptor {
 
-  constructor(private githubOauth: GithubOauthService) { }
+  constructor(private githubOauth: GithubOauthService, private ehTagConnector: EhTagConnectorService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
@@ -30,7 +31,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
       }
 
       if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
-        mod.setHeaders['If-Match'] = ''; // TODO:
+        mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
       }
 
       authReq = req.clone(mod);

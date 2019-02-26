@@ -1,4 +1,4 @@
-export interface ETRooot extends ETRepoInfo {
+export interface ETRoot extends ETRepoInfo {
   data: ETNamespace[];
 }
 
