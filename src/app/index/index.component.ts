@@ -31,7 +31,7 @@ export class IndexComponent
   constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService)
   {
     this.githubOauth.logInIfNeeded();
-    this.githubOauth.getRepoInfo().subscribe(e => console.log(e));
+    this.githubOauth.getCurrentUser().then(e => console.log(e));
   }
 
 }

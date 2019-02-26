@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tokenKey } from '@angular/core/src/view';
+import { Observable, of, from } from 'rxjs';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
@@ -48,7 +49,7 @@ export interface Signature
   when: Date;
 }
 
-export interface Head
+export interface Commit
 {
   author: Signature;
   committer: Signature;
@@ -65,7 +66,7 @@ export interface Row
 export interface RepoInfo
 {
   repo: string;
-  head: Head;
+  head: Commit;
   version: number;
   data: Row[];
 }
@@ -86,17 +87,37 @@ export class GithubOauthService
 
   set token(value: string)
   {
-    localStorage.setItem(localStorageKey, value)
+    localStorage.setItem(localStorageKey, value || '');
   }
 
   getRepoInfo()
   {
-    return this.httpClient.get<RepoInfo>('http://ehtagconnector.azurewebsites.net/api/database');
+    return this.httpClient.get<RepoInfo>('http://ehtagconnector.azurewebsites.net/api/database').toPromise();
   }
 
-  getCurrentUser()
+  async getCurrentUser()
   {
-    return this.httpClient.get<GithubUser>(`https://api.github.com/user?access_token=${this.token}`)
+    const token = this.token;
+    if (!token)
+    {
+      throw new Error('Need log in.');
+    }
+    try
+    {
+      return await this.httpClient.get<GithubUser>(`https://api.github.com/user?access_token=${token}`).toPromise();
+    }
+    catch (ex)
+    {
+      if (ex.status === 401)
+      {
+        if (this.token === token)
+        {
+          // token is invalid.
+          this.token = null;
+        }
+      }
+      throw ex;
+    }
   }
 
   logInIfNeeded()
@@ -105,10 +126,19 @@ export class GithubOauthService
     {
       return Promise.resolve();
     }
-    return new Promise((resolve, reject) =>
+    return new Promise<void>((resolve, reject) =>
     {
-      const onMessage = async (ev: MessageEvent) =>
+      const callback = location.origin + location.pathname + 'assets/callback.html';
+      const authWindow = window.open(
+        `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
+        windowName,
+        'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
+      window.addEventListener('message', async ev =>
       {
+        if (ev.source !== authWindow)
+        {
+          return;
+        }
         const code = ev.data.code as string;
         if (!code)
         {
@@ -116,18 +146,16 @@ export class GithubOauthService
         }
         try
         {
-          this.httpClient.get<{ token: string }>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`)
-            .subscribe(v => this.token = v.token);
+          interface AuthCallback { token: string; }
+          const r = await this.httpClient.get<AuthCallback>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`).toPromise();
+          this.token = r.token;
           resolve();
         }
         catch (ex)
         {
           reject(ex);
         }
-      };
-      const callback = location.origin + location.pathname + 'assets/callback.html';
-      window.open(`https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`, windowName);
-      window.addEventListener('message', onMessage);
+      });
     });
   }
 
