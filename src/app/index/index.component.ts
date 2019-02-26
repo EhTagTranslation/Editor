@@ -28,6 +28,10 @@ export class IndexComponent
     { key: 'reclass', name: '重分类' },
   ];
 
-  constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService) { this.githubOauth.startAuth(); }
+  constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService)
+  {
+    this.githubOauth.logInIfNeeded();
+    this.githubOauth.getRepoInfo().subscribe(e => console.log(e));
+  }
 
 }
