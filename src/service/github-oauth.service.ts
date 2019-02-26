@@ -59,27 +59,22 @@ export class GithubOauthService {
     if (this.token) {
       return Promise.resolve(false);
     }
+    const callback = location.origin + location.pathname + 'assets/callback.html';
+    const authWindow = window.open(
+      `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
+      windowName,
+      'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
     return new Promise<boolean>((resolve, reject) => {
-      const callback = location.origin + location.pathname + 'assets/callback.html';
-      const authWindow = window.open(
-        `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
-        windowName,
-        'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
       const onMessage = async (ev: MessageEvent) => {
         if (ev.source !== authWindow) {
           return;
         }
-        const code = ev.data.code as string;
-        if (!code) {
-          return;
-        }
-        try {
-          interface AuthCallback { token: string; }
-          const r = await this.httpClient.get<AuthCallback>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`).toPromise();
-          this.setToken(r.token);
+        const data = ev.data as { token: string; error: any; };
+        if (data.error) {
+          reject(data.error);
+        } else {
+          this.setToken(data.token);
           resolve(true);
-        } catch (ex) {
-          reject(ex);
         }
         window.removeEventListener('message', onMessage);
       };

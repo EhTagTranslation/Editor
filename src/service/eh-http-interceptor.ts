@@ -49,6 +49,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     return next.handle(authReq).pipe(
       tap(v => {
         if (v.type === HttpEventType.Response && req.url.startsWith(this.endpoints.ehTagConnector)) {
+          // `W/` might be added by some CDN
           const etag = (v.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
           if (etag) {
             console.log('etag', etag);
