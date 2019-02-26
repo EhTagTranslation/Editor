@@ -15,7 +15,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     const token = this.githubOauth.token;
 
     if (req.url.startsWith('https://api.github.com/') && token) {
-      // use `access_token` for more rete limits
+      // use `access_token` for more rate limits
       authReq = req.clone({
         setParams: { access_token: token }
       });
