@@ -40,7 +40,7 @@ export class GithubOauthService {
       throw new Error('Need log in.');
     }
     try {
-      return await this.httpClient.get<GithubUser>(`https://api.github.com/user?access_token=${token}`).toPromise();
+      return await this.httpClient.get<GithubUser>(`https://api.github.com/user`).toPromise();
     } catch (ex) {
       if (ex.status === 401 && this.token === token) {
         // token is invalid.
