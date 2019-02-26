@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github-user';
 import { ETRepoInfo } from 'src/interfaces/interface';
+import { ApiEndpointService } from './api-endpoint.service';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
@@ -14,6 +15,7 @@ const localStorageKey = 'github_oauth_token';
 export class GithubOauthService {
   constructor(
     private httpClient: HttpClient,
+    private endpoints: ApiEndpointService,
   ) {
     // make sure `token` is valid
     this.setToken(this.token);
@@ -40,7 +42,7 @@ export class GithubOauthService {
       throw new Error('Need log in.');
     }
     try {
-      return await this.httpClient.get<GithubUser>(`https://api.github.com/user`).toPromise();
+      return await this.httpClient.get<GithubUser>(this.endpoints.github + 'user').toPromise();
     } catch (ex) {
       if (ex.status === 401 && this.token === token) {
         // token is invalid.

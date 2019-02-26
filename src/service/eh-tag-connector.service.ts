@@ -4,8 +4,9 @@ import { fromEvent, Observable, Subject, from } from 'rxjs';
 import { Breakpoints } from '@angular/cdk/layout';
 import { filter, map, merge } from 'rxjs/operators';
 import { switchTap } from '@angular/router/src/operators/switch_tap';
-import { ETItem, ETNamespace, ETRoot } from '../interfaces/interface';
+import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
 import { forEach } from '@angular/router/src/utils/collection';
+import { ApiEndpointService } from './api-endpoint.service';
 
 
 @Injectable({
@@ -22,9 +23,38 @@ export class EhTagConnectorService {
 
   tags: ETItem[] = [];
 
+  private getEndpoint(item: NonNullable<ETKey>) {
+    return `${this.endpoints.ehTagConnector}/${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
+  }
+
+  async addTag(item: NonNullable<ETItem>): Promise<ETItem> {
+    const endpoint = this.getEndpoint(item);
+    const payload: ETTag = {
+      intro: item.intro,
+      name: item.name,
+      links: item.links,
+    };
+    return await this.http.post<ETItem>(endpoint, payload).toPromise();
+  }
+
+  async modifyTag(item: NonNullable<ETItem>): Promise<ETItem> {
+    const endpoint = this.getEndpoint(item);
+    const payload: ETTag = {
+      intro: item.intro,
+      name: item.name,
+      links: item.links,
+    };
+    return await this.http.put<ETItem>(endpoint, payload).toPromise();
+  }
+
+  async deleteTag(item: NonNullable<ETKey>): Promise<void> {
+    const endpoint = this.getEndpoint(item);
+    return await this.http.delete<void>(endpoint).toPromise();
+  }
+
   async getTags(): Promise<ETItem[]> {
 
-    const info: any = await this.http.get('https://api.github.com/repos/ehtagtranslation/Database/releases/latest').toPromise();
+    const info: any = await this.http.get(this.endpoints.github + 'repos/ehtagtranslation/Database/releases/latest').toPromise();
 
     console.log('info', info);
 
@@ -50,7 +80,7 @@ export class EhTagConnectorService {
     });
 
     const script = document.createElement('script');
-    script.setAttribute('src', asset.browser_download_url + '?timetime=' + new Date().getTime());
+    script.setAttribute('src', asset.browser_download_url);
     document.getElementsByTagName('head')[0].appendChild(script);
 
     try {
@@ -78,6 +108,7 @@ export class EhTagConnectorService {
   // https://ehtagconnector.azurewebsites.net/api/database
   constructor(
     private http: HttpClient,
+    private endpoints: ApiEndpointService,
   ) {
     this.hash = window.localStorage.getItem('EhTagHash');
 

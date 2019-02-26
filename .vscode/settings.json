@@ -1,4 +1,8 @@
 {
     "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-    "typescript.format.placeOpenBraceOnNewLineForFunctions": false
+    "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+    "[typescript]": {
+        "editor.tabSize": 2,
+        "files.encoding": "utf8"
+    }
 }

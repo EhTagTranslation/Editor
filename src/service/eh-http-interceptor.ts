@@ -4,24 +4,32 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS
 import { Observable } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
 import { EhTagConnectorService } from './eh-tag-connector.service';
+import { ApiEndpointService } from './api-endpoint.service';
 
 @Injectable()
 export class EhHttpInterceptor implements HttpInterceptor {
 
-  constructor(private githubOauth: GithubOauthService, private ehTagConnector: EhTagConnectorService) { }
+  constructor(
+    private githubOauth: GithubOauthService,
+    private ehTagConnector: EhTagConnectorService,
+    private endpoints: ApiEndpointService,
+  ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
     const token = this.githubOauth.token;
 
-    if (req.url.startsWith('https://api.github.com/') && token) {
-      // use `access_token` for more rate limits
+    if (req.url.startsWith(this.endpoints.github) && token) {
+      /**
+       * use `access_token` for more rate limits
+       * @see https://developer.github.com/v3/#rate-limiting
+       */
       authReq = req.clone({
         setParams: { access_token: token }
       });
     }
 
-    if (req.url.startsWith('https://ehtagconnector.azurewebsites.net/api')) {
+    if (req.url.startsWith(this.endpoints.ehTagConnector)) {
       const mod: Parameters<typeof req.clone>[0] = {
         setHeaders: {}
       };

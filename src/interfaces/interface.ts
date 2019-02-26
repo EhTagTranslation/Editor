@@ -51,13 +51,12 @@ export interface ETNamespace extends ETNamespaceInfo {
 export interface ETTag {
   intro: string;
   links: string;
-  name: string;
+  name: NonNullable<string>;
 }
 
-export interface ETItem {
-  raw: string;
-  intro: string;
-  links: string;
-  name: string;
+export interface ETKey {
+  raw: NonNullable<string>;
   namespace: ETNamespaceName;
 }
+
+export interface ETItem extends ETTag, ETKey { }
