@@ -24,7 +24,7 @@ export class EhTagConnectorService {
   tags: ETItem[] = [];
 
   private getEndpoint(item: NonNullable<ETKey>) {
-    return `${this.endpoints.ehTagConnector}/${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
+    return `${this.endpoints.ehTagConnector}${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
   }
 
   async getTag(item: NonNullable<ETKey>): Promise<ETItem> {
@@ -67,7 +67,6 @@ export class EhTagConnectorService {
 
 
     const promise = new Promise<ETRoot>((resolve, reject) => {
-
       const close = () => {
         clearTimeout(timeoutGuard);
         (window as any).load_ehtagtranslation_database = null;
@@ -78,7 +77,7 @@ export class EhTagConnectorService {
         close();
       }, 30 * 1000);
 
-      (window as any).load_ehtagtranslation_database = (data: any) => {
+      (window as any).load_ehtagtranslation_database = (data: ETRoot) => {
         resolve(data);
         close();
       };

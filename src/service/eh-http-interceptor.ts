@@ -34,12 +34,13 @@ export class EhHttpInterceptor implements HttpInterceptor {
         setHeaders: {}
       };
 
-      if (token) {
-        mod.setHeaders['X-Token'] = token;
-      }
-
-      if (['POST', 'PUT', 'DELETE'].includes(req.method) && this.ehTagConnector.hash) {
-        mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
+      if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+        if (token) {
+          mod.setHeaders['X-Token'] = token;
+        }
+        if (this.ehTagConnector.hash) {
+          mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
+        }
       }
 
       authReq = req.clone(mod);

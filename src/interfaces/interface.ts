@@ -1,23 +1,16 @@
-export interface ETRoot extends ETRepoInfo {
-  data: ETNamespace[];
-}
+type Sha1Value = string;
 
-export interface Signature {
+interface Signature {
   name: string;
   email: string;
   when: Date;
 }
 
-export interface Commit {
+interface Commit {
   author: Signature;
   committer: Signature;
-  sha: string;
+  sha: Sha1Value;
   message: string;
-}
-
-export interface Row {
-  namespace: string;
-  count: number;
 }
 
 export interface ETRepoInfo {
@@ -25,6 +18,10 @@ export interface ETRepoInfo {
   head: Commit;
   version: number;
   data: ETNamespaceInfo[];
+}
+
+export interface ETRoot extends ETRepoInfo {
+  data: ETNamespace[];
 }
 
 export type ETNamespaceName = 'row'
