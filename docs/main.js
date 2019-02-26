@@ -385,13 +385,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_cdk_layout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/cdk/layout */ "./node_modules/@angular/cdk/esm5/layout.es5.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var src_service_github_oauth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/service/github-oauth.service */ "./src/service/github-oauth.service.ts");
+
 
 
 
 
 var IndexComponent = /** @class */ (function () {
-    function IndexComponent(breakpointObserver) {
+    function IndexComponent(breakpointObserver, githubOauth) {
         this.breakpointObserver = breakpointObserver;
+        this.githubOauth = githubOauth;
         this.isHandset$ = this.breakpointObserver.observe(_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_2__["Breakpoints"].Handset)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (result) { return result.matches; }));
         this.namespace = [
@@ -404,6 +407,8 @@ var IndexComponent = /** @class */ (function () {
             { key: 'parody', name: '原著' },
             { key: 'reclass', name: '重分类' },
         ];
+        this.githubOauth.logInIfNeeded();
+        this.githubOauth.getCurrentUser().then(function (e) { return console.log(e); });
     }
     IndexComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -411,7 +416,7 @@ var IndexComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./index.component.html */ "./src/app/index/index.component.html"),
             styles: [__webpack_require__(/*! ./index.component.css */ "./src/app/index/index.component.css")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_2__["BreakpointObserver"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_cdk_layout__WEBPACK_IMPORTED_MODULE_2__["BreakpointObserver"], src_service_github_oauth_service__WEBPACK_IMPORTED_MODULE_4__["GithubOauthService"]])
     ], IndexComponent);
     return IndexComponent;
 }());
@@ -749,6 +754,146 @@ var EhTagConnectorService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/service/github-oauth.service.ts":
+/*!*********************************************!*\
+  !*** ./src/service/github-oauth.service.ts ***!
+  \*********************************************/
+/*! exports provided: GithubOauthService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GithubOauthService", function() { return GithubOauthService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+
+
+
+var clientId = '2f2070671bda676ddb5a';
+var windowName = 'githubOauth';
+var localStorageKey = 'github_oauth_token';
+var GithubOauthService = /** @class */ (function () {
+    function GithubOauthService(httpClient) {
+        this.httpClient = httpClient;
+        // make sure `token` is valid
+        this.setToken(this.token);
+    }
+    Object.defineProperty(GithubOauthService.prototype, "token", {
+        get: function () {
+            return localStorage.getItem(localStorageKey);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    GithubOauthService.prototype.setToken = function (value) {
+        if (!value || !value.match(/^\w+$/)) {
+            localStorage.removeItem(localStorageKey);
+        }
+        else {
+            localStorage.setItem(localStorageKey, value);
+        }
+    };
+    /**
+     * @see https://developer.github.com/v3/users/#get-the-authenticated-user
+     */
+    GithubOauthService.prototype.getCurrentUser = function () {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var token, ex_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = this.token;
+                        if (!token) {
+                            throw new Error('Need log in.');
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.httpClient.get("https://api.github.com/user?access_token=" + token).toPromise()];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        ex_1 = _a.sent();
+                        if (ex_1.status === 401 && this.token === token) {
+                            // token is invalid.
+                            this.setToken();
+                        }
+                        throw ex_1;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * @returns `true` for succeed login, `false` if has been logged in.
+     */
+    GithubOauthService.prototype.logInIfNeeded = function () {
+        var _this = this;
+        if (this.token) {
+            return Promise.resolve(false);
+        }
+        return new Promise(function (resolve, reject) {
+            var callback = location.origin + location.pathname + 'assets/callback.html';
+            var authWindow = window.open("https://github.com/login/oauth/authorize?client_id=" + clientId + "&scope=&redirect_uri=" + callback, windowName, 'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
+            var onMessage = function (ev) { return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this, void 0, void 0, function () {
+                var code, r, ex_2;
+                return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (ev.source !== authWindow) {
+                                return [2 /*return*/];
+                            }
+                            code = ev.data.code;
+                            if (!code) {
+                                return [2 /*return*/];
+                            }
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, this.httpClient.get("https://ehtageditor.azurewebsites.net/authenticate/" + code).toPromise()];
+                        case 2:
+                            r = _a.sent();
+                            this.setToken(r.token);
+                            resolve(true);
+                            return [3 /*break*/, 4];
+                        case 3:
+                            ex_2 = _a.sent();
+                            reject(ex_2);
+                            return [3 /*break*/, 4];
+                        case 4:
+                            window.removeEventListener('message', onMessage);
+                            return [2 /*return*/];
+                    }
+                });
+            }); };
+            window.addEventListener('message', onMessage);
+        });
+    };
+    GithubOauthService.prototype.logOut = function () {
+        this.setToken();
+    };
+    Object.defineProperty(GithubOauthService.prototype, "reviewUrl", {
+        /**
+         * Directing users to review their access
+         * @see https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#directing-users-to-review-their-access
+         */
+        get: function () { return "https://github.com/settings/connections/applications/" + clientId; },
+        enumerable: true,
+        configurable: true
+    });
+    GithubOauthService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+            providedIn: 'root'
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
+    ], GithubOauthService);
+    return GithubOauthService;
+}());
+
+
+
+/***/ }),
+
 /***/ 0:
 /*!***************************!*\
   !*** multi ./src/main.ts ***!
@@ -756,7 +901,7 @@ var EhTagConnectorService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\xin\Desktop\project\editor\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! C:\Users\lzy\Documents\Source\Editor\src\main.ts */"./src/main.ts");
 
 
 /***/ })

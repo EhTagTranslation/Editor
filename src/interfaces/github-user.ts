@@ -1,3 +1,7 @@
+
+/**
+ * @see https://developer.github.com/v3/users/
+ */
 export interface GithubUser {
   login: string;
   id: number;

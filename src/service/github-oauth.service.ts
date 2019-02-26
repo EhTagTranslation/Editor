@@ -15,6 +15,7 @@ export class GithubOauthService {
   constructor(
     private httpClient: HttpClient,
   ) {
+    // make sure `token` is valid
     this.setToken(this.token);
   }
 
@@ -30,10 +31,9 @@ export class GithubOauthService {
     }
   }
 
-  getRepoInfo() {
-    return this.httpClient.get<ETRepoInfo>('http://ehtagconnector.azurewebsites.net/api/database').toPromise();
-  }
-
+  /**
+   * @see https://developer.github.com/v3/users/#get-the-authenticated-user
+   */
   async getCurrentUser() {
     const token = this.token;
     if (!token) {

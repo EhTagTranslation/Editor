@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=`">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Finished</title>
+    <script>
+        window.opener.postMessage({ code: location.search.match(/[\?&]code=(\w+)($|&)/)[1] }, location.origin);
+        window.close();
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
