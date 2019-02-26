@@ -28,10 +28,10 @@ export interface ETRepoInfo {
 }
 
 export type ETNamespaceName = 'row'
-  | 'reclas'
-  | 'languag'
-  | 'parod'
-  | 'characte'
+  | 'reclass'
+  | 'language'
+  | 'parody'
+  | 'character'
   | 'group'
   | 'artist'
   | 'male'

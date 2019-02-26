@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
 import { EhTagConnectorService } from './eh-tag-connector.service';
@@ -38,7 +38,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
         mod.setHeaders['X-Token'] = token;
       }
 
-      if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+      if (['POST', 'PUT', 'DELETE'].includes(req.method) && this.ehTagConnector.hash) {
         mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
       }
 
@@ -48,6 +48,13 @@ export class EhHttpInterceptor implements HttpInterceptor {
     console.log('req', authReq);
     return next.handle(authReq).pipe(
       tap(v => {
+        if (v.type === HttpEventType.Response && req.url.startsWith(this.endpoints.ehTagConnector)) {
+          const etag = (v.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
+          if (etag) {
+            console.log('etag', etag);
+            this.ehTagConnector.hash = etag;
+          }
+        }
         console.log('tap', v);
       })
     );

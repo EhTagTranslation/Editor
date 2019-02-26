@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GithubOauthService } from 'src/service/github-oauth.service';
+import { EhTagConnectorService } from 'src/service/eh-tag-connector.service';
 
 @Component({
   selector: 'app-index',
@@ -27,9 +28,22 @@ export class IndexComponent {
     { key: 'reclass', name: '重分类' },
   ];
 
-  constructor(private breakpointObserver: BreakpointObserver, private githubOauth: GithubOauthService) {
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private githubOauth: GithubOauthService,
+    private ehTagConnector: EhTagConnectorService,
+  ) {
     this.githubOauth.logInIfNeeded();
     this.githubOauth.getCurrentUser().then(e => console.log(e));
+    this.ehTagConnector.getTag({
+      namespace: 'parody',
+      raw: '	.hack',
+    }).finally(() =>
+      this.ehTagConnector.deleteTag({
+        namespace: 'parody',
+        raw: '	.ha1sdafck',
+      })
+    );
   }
 
 }

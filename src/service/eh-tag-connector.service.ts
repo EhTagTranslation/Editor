@@ -27,6 +27,11 @@ export class EhTagConnectorService {
     return `${this.endpoints.ehTagConnector}/${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
   }
 
+  async getTag(item: NonNullable<ETKey>): Promise<ETItem> {
+    const endpoint = this.getEndpoint(item);
+    return await this.http.get<ETItem>(endpoint).toPromise();
+  }
+
   async addTag(item: NonNullable<ETItem>): Promise<ETItem> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
