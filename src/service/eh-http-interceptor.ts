@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ClassProvider } from '@angular/core';
 import { catchError, mergeMap, tap } from 'rxjs/operators';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType, HttpErrorResponse, HttpResponseBase } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
 import { EhTagConnectorService } from './eh-tag-connector.service';
@@ -46,21 +46,34 @@ export class EhHttpInterceptor implements HttpInterceptor {
       authReq = req.clone(mod);
     }
 
+    const handleEag = (response: HttpResponseBase) => {
+      if (req.url.startsWith(this.endpoints.ehTagConnector)) {
+        // `W/` might be added by some CDN
+        const etag = (response.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
+        if (etag) {
+          console.log('etag', etag);
+          this.ehTagConnector.hash = etag;
+        }
+      }
+    };
+
     console.log('req', authReq);
     return next.handle(authReq).pipe(
-      tap(v => {
-        if (v.type === HttpEventType.Response && req.url.startsWith(this.endpoints.ehTagConnector)) {
-          // `W/` might be added by some CDN
-          const etag = (v.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
-          if (etag) {
-            console.log('etag', etag);
-            this.ehTagConnector.hash = etag;
-          }
+      tap(response => {
+        console.log('tap', response);
+        if (response.type === HttpEventType.Response) {
+          handleEag(response);
         }
-        console.log('tap', v);
+      }),
+      catchError(err => {
+        console.log('catchError', err);
+        if (err.name === HttpErrorResponse.name) {
+          handleEag(err);
+        }
+        throw err;
       })
     );
   }
 }
 
-export const ehHttpInterceptorProvider = { provide: HTTP_INTERCEPTORS, useClass: EhHttpInterceptor, multi: true };
+export const ehHttpInterceptorProvider: ClassProvider = { provide: HTTP_INTERCEPTORS, useClass: EhHttpInterceptor, multi: true };
