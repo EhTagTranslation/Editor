@@ -48,7 +48,7 @@ export class GithubOauthService {
         // token is invalid.
         this.setToken();
       }
-      throw ex;
+      throw new Error('Invalid token');
     }
   }
 
