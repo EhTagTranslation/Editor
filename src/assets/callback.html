@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=`">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fetching token</title>
+    <script>
+        var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
+        fetch(`https://ehtageditor.azurewebsites.net/authenticate/${code}`)
+            .then(response => response.json())
+            .then(json => {
+                window.opener.postMessage(json, location.origin);
+                window.close();
+            })
+            .catch(error => {
+                window.opener.postMessage({ token: null, error: error }, location.origin);
+                window.close();
+            });
+    </script>
+</head>
+
+<body>
+    Fetching token, please do not close this window.
+</body>
+
+</html>

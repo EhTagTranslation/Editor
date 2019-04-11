@@ -22,9 +22,10 @@ import {
 } from '@angular/material';
 import { ListComponent } from './list/list.component';
 import { FormComponent } from './form/form.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientJsonpModule, HttpClientModule} from '@angular/common/http';
-import {MarkPipe} from './shared/pipe/mark.pipe';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
+import { MarkPipe } from './shared/pipe/mark.pipe';
+import { ehHttpInterceptorProvider } from 'src/service/eh-http-interceptor';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import {MarkPipe} from './shared/pipe/mark.pipe';
     ReactiveFormsModule,
     FormsModule,
   ],
-  providers: [],
+  providers: [ehHttpInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

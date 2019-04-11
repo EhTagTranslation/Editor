@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import {EhTagConnectorService} from '../../service/eh-tag-connector.service';
-import {ETItem} from '../../interface';
-import {merge, Observable, of as observableOf, Subject} from 'rxjs';
-import {map} from 'rxjs/operators';
+import { EhTagConnectorService } from '../../service/eh-tag-connector.service';
+import { ETItem } from '../../interfaces/interface';
+import { merge, Observable, of as observableOf, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +15,7 @@ export class ListComponent implements OnInit {
 
   constructor(
     private ehTagConnector: EhTagConnectorService,
-  ) {}
+  ) { }
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

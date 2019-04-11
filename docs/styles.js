@@ -18,7 +18,7 @@ module.exports = [[module.i, ".mat-badge-content{font-weight:600;font-size:12px;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = [[module.i, "/* You can add global styles to this file, and also import other style files */\nhtml, body {\n  height: 100%; }\nbody {\n  margin: 0;\n  font-family: Roboto, \"Helvetica Neue\", sans-serif; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9DOlxcVXNlcnNcXHhpblxcRGVza3RvcFxccHJvamVjdFxcZWRpdG9yL3NyY1xcc3R5bGVzLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsOEVBQUE7QUFFQTtFQUFhLFlBQVksRUFBQTtBQUN6QjtFQUFPLFNBQVM7RUFBRSxpREFBaUQsRUFBQSIsImZpbGUiOiJzcmMvc3R5bGVzLnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKiBZb3UgY2FuIGFkZCBnbG9iYWwgc3R5bGVzIHRvIHRoaXMgZmlsZSwgYW5kIGFsc28gaW1wb3J0IG90aGVyIHN0eWxlIGZpbGVzICovXG5cbmh0bWwsIGJvZHkgeyBoZWlnaHQ6IDEwMCU7IH1cbmJvZHkgeyBtYXJnaW46IDA7IGZvbnQtZmFtaWx5OiBSb2JvdG8sIFwiSGVsdmV0aWNhIE5ldWVcIiwgc2Fucy1zZXJpZjsgfVxuIl19 */", '', '']]
+module.exports = [[module.i, "/* You can add global styles to this file, and also import other style files */\nhtml, body {\n  height: 100%; }\nbody {\n  margin: 0;\n  font-family: Roboto, \"Helvetica Neue\", sans-serif; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9DOlxcVXNlcnNcXGx6eVxcRG9jdW1lbnRzXFxTb3VyY2VcXEVoVGFnVHJhbnNsYXRpb25cXEVkaXRvci9zcmNcXHN0eWxlcy5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLDhFQUFBO0FBRUE7RUFBYSxZQUFZLEVBQUE7QUFDekI7RUFBTyxTQUFTO0VBQUUsaURBQWlELEVBQUEiLCJmaWxlIjoic3JjL3N0eWxlcy5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyogWW91IGNhbiBhZGQgZ2xvYmFsIHN0eWxlcyB0byB0aGlzIGZpbGUsIGFuZCBhbHNvIGltcG9ydCBvdGhlciBzdHlsZSBmaWxlcyAqL1xyXG5cclxuaHRtbCwgYm9keSB7IGhlaWdodDogMTAwJTsgfVxyXG5ib2R5IHsgbWFyZ2luOiAwOyBmb250LWZhbWlseTogUm9ib3RvLCBcIkhlbHZldGljYSBOZXVlXCIsIHNhbnMtc2VyaWY7IH1cclxuIl19 */", '', '']]
 
 /***/ }),
 
@@ -598,8 +598,8 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\xin\Desktop\project\editor\node_modules\@angular\material\prebuilt-themes\indigo-pink.css */"./node_modules/@angular/material/prebuilt-themes/indigo-pink.css");
-module.exports = __webpack_require__(/*! C:\Users\xin\Desktop\project\editor\src\styles.scss */"./src/styles.scss");
+__webpack_require__(/*! C:\Users\lzy\Documents\Source\EhTagTranslation\Editor\node_modules\@angular\material\prebuilt-themes\indigo-pink.css */"./node_modules/@angular/material/prebuilt-themes/indigo-pink.css");
+module.exports = __webpack_require__(/*! C:\Users\lzy\Documents\Source\EhTagTranslation\Editor\src\styles.scss */"./src/styles.scss");
 
 
 /***/ })
