@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, JsonpClientBackend, JsonpInterceptor } from '@angular/common/http';
 import { fromEvent, Observable, Subject, from } from 'rxjs';
-import { Breakpoints } from '@angular/cdk/layout';
 import { filter, map, merge } from 'rxjs/operators';
 import { switchTap } from '@angular/router/src/operators/switch_tap';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
