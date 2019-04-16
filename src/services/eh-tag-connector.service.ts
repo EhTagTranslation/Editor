@@ -2,7 +2,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
 import { filter, map, merge, tap } from 'rxjs/operators';
-import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
+import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem } from '../interfaces/interface';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease } from 'src/interfaces/github';
 
@@ -27,7 +27,7 @@ export class EhTagConnectorService {
     this.onHashChange(oldVal, value);
   }
   loading: boolean;
-  private tags: ETItem[];
+  private tags: ReadonlyArray<RenderedETItem>;
 
   private onHashChange(oldValue: string, newValue: string) {
     console.log(`hash: ${oldValue} -> ${newValue}`);
@@ -74,15 +74,10 @@ export class EhTagConnectorService {
     return await this.http.head<void>(this.endpoints.ehTagConnector()).toPromise();
   }
 
-  async getTags(): Promise<ETItem[]> {
-    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
-    const release = await this.http.get<GithubRelease>(endpoint).toPromise();
-    this.hash = release.target_commitish;
-    if (this.tags) {
-      return this.tags;
+  private async jsonpLoad(url: string) {
+    if (globalThis.load_ehtagtranslation_database) {
+      throw new Error('Fetching other data.');
     }
-    const assetUrl = release.assets.find(i => i.name === 'db.raw.js').browser_download_url;
-
     const promise = new Promise<ETRoot>((resolve, reject) => {
       let timeoutGuard: ReturnType<typeof setTimeout>;
 
@@ -103,21 +98,46 @@ export class EhTagConnectorService {
     });
 
     const script = document.createElement('script');
-    script.setAttribute('src', assetUrl);
+    script.setAttribute('src', url);
     document.getElementsByTagName('head')[0].appendChild(script);
 
+    return promise;
+  }
+
+  async getTags(): Promise<ReadonlyArray<RenderedETItem>> {
+    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+    const release = await this.http.get<GithubRelease>(endpoint).toPromise();
+    this.hash = release.target_commitish;
+    if (this.tags) {
+      return this.tags;
+    }
     try {
-      const data = await promise;
-      this.hash = data.head.sha;
-      const tags: ETItem[] = [];
-      data.data.forEach(namespace => {
-        for (const raw in namespace.data) {
-          if (namespace.data.hasOwnProperty(raw)) {
-            const element = namespace.data[raw];
+      const assetUrlRaw = release.assets.find(i => i.name === 'db.raw.js').browser_download_url;
+      const assetUrlHtml = release.assets.find(i => i.name === 'db.html.js').browser_download_url;
+      const assetUrlText = release.assets.find(i => i.name === 'db.text.js').browser_download_url;
+      const dataRaw = await this.jsonpLoad(assetUrlRaw);
+      const dataHtml = await this.jsonpLoad(assetUrlHtml);
+      const dataText = await this.jsonpLoad(assetUrlText);
+      this.hash = dataRaw.head.sha;
+      const tags: RenderedETItem[] = [];
+      dataRaw.data.forEach(namespaceRaw => {
+        const namespaceHtml = dataHtml.data.find(ns => ns.namespace === namespaceRaw.namespace);
+        const namespaceText = dataText.data.find(ns => ns.namespace === namespaceRaw.namespace);
+        for (const raw in namespaceRaw.data) {
+          if (namespaceRaw.data.hasOwnProperty(raw)) {
+            const elementRaw = namespaceRaw.data[raw];
+            const elementHtml = namespaceHtml.data[raw];
+            const elementText = namespaceText.data[raw];
             tags.push({
-              ...element,
+              ...elementRaw,
+              renderedIntro: elementHtml.intro,
+              renderedLinks: elementHtml.links,
+              renderedName: elementHtml.name,
+              textIntro: elementText.intro,
+              textLinks: elementText.links,
+              textName: elementText.name,
               raw,
-              namespace: namespace.namespace,
+              namespace: namespaceRaw.namespace,
             });
           }
         }

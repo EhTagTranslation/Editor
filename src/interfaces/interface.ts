@@ -51,9 +51,20 @@ export interface ETTag {
   name: NonNullable<string>;
 }
 
+export interface RenderedETTag {
+  renderedIntro: string;
+  renderedLinks: string;
+  renderedName: NonNullable<string>;
+  textIntro: string;
+  textLinks: string;
+  textName: NonNullable<string>;
+}
+
 export interface ETKey {
   raw: NonNullable<string>;
   namespace: ETNamespaceName;
 }
 
 export interface ETItem extends ETTag, ETKey { }
+
+export interface RenderedETItem extends ETTag, RenderedETTag, ETKey { }

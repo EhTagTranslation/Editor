@@ -18,9 +18,9 @@ export class EhHttpInterceptor implements HttpInterceptor {
   ) { }
 
   private static debugLog(category: string, data: any) {
-    if (isDevMode()) {
-      console.log(category, data);
-    }
+    // if (isDevMode()) {
+    //   console.log(category, data);
+    // }
   }
 
   private handleEag(response: HttpResponseBase) {

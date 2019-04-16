@@ -1,10 +1,25 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { EhTagConnectorService } from '../../services/eh-tag-connector.service';
-import { ETItem } from '../../interfaces/interface';
+import { ETItem, ETTag, RenderedETItem } from '../../interfaces/interface';
 import { merge, Observable, of as observableOf, Subject, zip, of, combineLatest } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+
+
+function compare(a: any, b: any, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+}
+
+const sortKeyMap: {
+  [x in keyof ETItem]: string;
+} = {
+  namespace: 'namespace',
+  raw: 'raw',
+  name: 'textName',
+  intro: 'textIntro',
+  links: 'textLinks',
+};
 
 @Component({
   selector: 'app-list',
@@ -26,10 +41,10 @@ export class ListComponent implements OnInit {
   loading = false;
   displayedColumns: Observable<ReadonlyArray<string>>;
   searchSubject: Subject<string> = new Subject();
-  tags: Subject<ReadonlyArray<ETItem>> = new Subject();
-  filteredTags: Observable<ReadonlyArray<ETItem>>;
-  orderedTags: Observable<ReadonlyArray<ETItem>>;
-  pagedTags: Observable<ReadonlyArray<ETItem>>;
+  tags: Subject<ReadonlyArray<RenderedETItem>> = new Subject();
+  filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
+  orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
+  pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
   nsFilter: Observable<string>;
 
   clearNsFilter() {
@@ -45,8 +60,8 @@ export class ListComponent implements OnInit {
   async ngOnInit() {
     this.nsFilter = this.route.paramMap.pipe(map(data => data.get('ns')));
     this.displayedColumns = this.nsFilter.pipe(map(ns => (ns
-      ? ['raw', 'name', 'intro', 'handle']
-      : ['namespace', 'raw', 'name', 'intro', 'handle'])));
+      ? ['raw', 'name', 'intro', 'links', 'handle']
+      : ['namespace', 'raw', 'name', 'intro', 'links', 'handle'])));
 
     this.filteredTags = combineLatest(
       this.tags,
@@ -76,35 +91,32 @@ export class ListComponent implements OnInit {
       .finally(() => this.loading = false);
   }
 
-  private getPagedData(data: ReadonlyArray<ETItem>) {
+  private getPagedData(data: ReadonlyArray<RenderedETItem>) {
     const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
     return data.slice(startIndex, startIndex + this.paginator.pageSize);
   }
 
-  private getSortedData(data: ReadonlyArray<ETItem>) {
+  private getSortedData(data: ReadonlyArray<RenderedETItem>) {
     if (!this.sort.active || this.sort.direction === '') {
       return data;
     }
 
     return Array.from(data).sort((a, b) => {
       const isAsc = this.sort.direction === 'asc';
-      return compare(a[this.sort.active], b[this.sort.active], isAsc);
+      return compare(a[sortKeyMap[this.sort.active]], b[sortKeyMap[this.sort.active]], isAsc);
     });
   }
 
-  private getSearchData(data: ReadonlyArray<ETItem>, ns: string, search: string) {
+  private getSearchData(data: ReadonlyArray<RenderedETItem>, ns: string, search: string) {
     if (ns) {
       data = data.filter(v => v.namespace === ns);
     }
     data = data.filter(v => (
-      v.name.indexOf(search) !== -1 ||
-      v.intro.indexOf(search) !== -1 ||
+      v.textIntro.indexOf(search) !== -1 ||
+      v.textName.indexOf(search) !== -1 ||
       v.raw.indexOf(search) !== -1
     ));
     return data;
   }
 
-}
-function compare(a, b, isAsc) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
