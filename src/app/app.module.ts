@@ -7,18 +7,33 @@ import { ehHttpInterceptorProvider } from 'src/services/eh-http-interceptor';
 import { UserComponent } from './user/user.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatMenuModule,
+  MatTableModule,
+  MatIconModule,
+  MatPaginatorModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSortModule,
+  MatProgressSpinnerModule,
+  MatTooltipModule
+} from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { AboutComponent } from './about/about.component';
+import { FormsModule } from '@angular/forms';
+import { MarkPipe } from './shared/pipe/mark.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
     UserComponent,
     ListComponent,
     EditorComponent,
-    AboutComponent
+    AboutComponent,
+    MarkPipe,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +42,16 @@ import { AboutComponent } from './about/about.component';
     BrowserAnimationsModule,
     MatButtonModule,
     MatToolbarModule,
+    MatMenuModule,
+    MatTableModule,
+    MatIconModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    FormsModule,
   ],
   providers: [ehHttpInterceptorProvider],
   bootstrap: [AppComponent]

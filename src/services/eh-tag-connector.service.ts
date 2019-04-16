@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
-import { fromEvent, Observable, Subject, from } from 'rxjs';
+import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
 import { filter, map, merge, tap } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
 import { ApiEndpointService } from './api-endpoint.service';
@@ -11,11 +11,24 @@ declare const globalThis: any;
   providedIn: 'root'
 })
 export class EhTagConnectorService {
-
-  hashChange: Observable<any>;
-  hash: string;
+  hashChange: EventEmitter<string> = new EventEmitter();
+  private hashStr: string;
+  get hash() {
+    return this.hashStr;
+  }
+  set hash(value) {
+    if (this.hashStr === value) {
+      return;
+    }
+    this.hashStr = value;
+    this.onHashChange();
+  }
   loading: boolean;
-  tags: ETItem[] = [];
+  private tags: ETItem[] = [];
+  private onHashChange() {
+    this.hashChange.emit(this.hashStr);
+    this.tags = [];
+  }
 
   private getEndpoint(item: NonNullable<ETKey>) {
     return `${this.endpoints.ehTagConnector}${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
@@ -136,6 +149,4 @@ export class EhTagConnectorService {
     // this.hashChange.next();
 
   }
-
-
 }

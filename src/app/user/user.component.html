@@ -1,7 +1,21 @@
-<button mat-button (click)="user ? logOut() : logIn()" [title]="user ? '注销' : '登录'">
-  <span *ngIf="!user">登录</span>
-  <ng-container *ngIf="user">
-    <img [src]="user?.avatar_url" />
-    <span>{{user?.name}}</span>
-  </ng-container>
+<button mat-button *ngIf="user" [matMenuTriggerFor]="userMenu">
+  <img [src]="user?.avatar_url" />
+  <span>{{user?.name}}</span>
 </button>
+<ng-template #elseBlock>
+  <button mat-button (click)="logIn()">登录</button>
+</ng-template>
+
+
+<mat-menu #userMenu="matMenu" xPosition="before">
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="reviewSettings()">
+      <mat-icon>settings</mat-icon>
+      <span>管理链接</span>
+    </button>
+    <button mat-menu-item (click)="logOut()">
+      <mat-icon>power_settings_new</mat-icon>
+      <span>退出登录</span>
+    </button>
+  </ng-template>
+</mat-menu>

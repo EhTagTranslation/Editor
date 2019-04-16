@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github-user';
 import { ETRepoInfo } from 'src/interfaces/interface';
 import { ApiEndpointService } from './api-endpoint.service';
+import { Location } from '@angular/common';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
 const localStorageKey = 'github_oauth_token';
-
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,7 @@ const localStorageKey = 'github_oauth_token';
 export class GithubOauthService {
   constructor(
     private httpClient: HttpClient,
+    private location: Location,
     private endpoints: ApiEndpointService,
   ) {
     // make sure `token` is valid
@@ -59,7 +60,7 @@ export class GithubOauthService {
     if (this.token) {
       return Promise.resolve(false);
     }
-    const callback = location.origin + location.pathname + 'assets/callback.html';
+    const callback = location.origin + this.location.prepareExternalUrl('/assets/callback.html');;
     const authWindow = window.open(
       `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
       windowName,

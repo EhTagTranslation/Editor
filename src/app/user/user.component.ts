@@ -29,4 +29,8 @@ export class UserComponent implements OnInit {
     this.github.logOut();
     this.user = null;
   }
+
+  reviewSettings() {
+    window.open(this.github.reviewUrl, '_blank');
+  }
 }
