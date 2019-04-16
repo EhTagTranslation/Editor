@@ -87,6 +87,8 @@ THE SOFTWARE.
 
 @angular/material/button
 
+@angular/material/chips
+
 @angular/material/core
 
 @angular/material/form-field
