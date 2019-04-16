@@ -17,7 +17,8 @@ import {
   MatInputModule,
   MatSortModule,
   MatProgressSpinnerModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatChipsModule
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
@@ -49,6 +50,7 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     MatPaginatorModule,
     MatFormFieldModule,
     MatSortModule,
+    MatChipsModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
     FormsModule,

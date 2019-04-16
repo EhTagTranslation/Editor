@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
 import { ETRepoInfo } from 'src/interfaces/interface';
@@ -20,6 +20,9 @@ export class GithubOauthService {
   ) {
     // make sure `token` is valid
     this.setToken(this.token);
+    if (isDevMode()) {
+      globalThis.setToken = this.setToken.bind(this);
+    }
   }
 
   get token() {

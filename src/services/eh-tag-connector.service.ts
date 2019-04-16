@@ -6,8 +6,6 @@ import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interfa
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease } from 'src/interfaces/github';
 
-declare const globalThis: any;
-
 const EH_TAG_HASH = 'eh-tag-hash';
 const EH_TAG_DATA = 'eh-tag-data';
 

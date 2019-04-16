@@ -10,14 +10,12 @@ const routes: Routes = [
     component: EditorComponent,
   },
   {
+    path: 'list/:ns',
+    component: ListComponent,
+  },
+  {
     path: 'list',
     component: ListComponent,
-    children: [
-      {
-        path: ':ns',
-        component: ListComponent,
-      }
-    ]
   },
   {
     path: 'about',

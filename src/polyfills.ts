@@ -61,3 +61,11 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+if (!globalThis) {
+  Object.defineProperty(window, 'globalThis', {
+    value: window,
+    writable: false,
+    enumerable: false,
+  });
+}
