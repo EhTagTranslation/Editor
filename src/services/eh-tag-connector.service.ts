@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, JsonpClientBackend, JsonpInterceptor } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { fromEvent, Observable, Subject, from } from 'rxjs';
-import { filter, map, merge } from 'rxjs/operators';
-import { switchTap } from '@angular/router/src/operators/switch_tap';
+import { filter, map, merge, tap } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
-import { forEach } from '@angular/router/src/utils/collection';
 import { ApiEndpointService } from './api-endpoint.service';
 
+declare const globalThis: any;
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +13,8 @@ import { ApiEndpointService } from './api-endpoint.service';
 export class EhTagConnectorService {
 
   hashChange: Observable<any>;
-
   hash: string;
-
-  namespace;
   loading: boolean;
-
   tags: ETItem[] = [];
 
   private getEndpoint(item: NonNullable<ETKey>) {
@@ -58,32 +53,35 @@ export class EhTagConnectorService {
 
   async getTags(): Promise<ETItem[]> {
 
-    const info: any = await this.http.get(this.endpoints.github + 'repos/ehtagtranslation/Database/releases/latest').toPromise();
-
-    console.log('info', info);
-
-    const asset: any = info.assets.find(i => i.name === 'db.raw.js');
-
+    const dataUrl = await this.http.get(this.endpoints.github + 'repos/ehtagtranslation/Database/releases/latest').pipe(
+      map(info => {
+        console.log('info', info);
+        return ((info as any).assets as { name: string, browser_download_url: string }[])
+          .find(i => i.name === 'db.raw.js').browser_download_url;
+      })
+    ).toPromise();
 
     const promise = new Promise<ETRoot>((resolve, reject) => {
+      let timeoutGuard: ReturnType<typeof setTimeout>;
+
       const close = () => {
         clearTimeout(timeoutGuard);
-        (window as any).load_ehtagtranslation_database = null;
+        globalThis.load_ehtagtranslation_database = null;
       };
 
-      const timeoutGuard = setTimeout(() => {
+      timeoutGuard = setTimeout(() => {
         reject(new Error('Get EhTag Timeout'));
         close();
       }, 30 * 1000);
 
-      (window as any).load_ehtagtranslation_database = (data: ETRoot) => {
+      globalThis.load_ehtagtranslation_database = (data: ETRoot) => {
         resolve(data);
         close();
       };
     });
 
     const script = document.createElement('script');
-    script.setAttribute('src', asset.browser_download_url);
+    script.setAttribute('src', dataUrl);
     document.getElementsByTagName('head')[0].appendChild(script);
 
     try {

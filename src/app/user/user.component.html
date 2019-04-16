@@ -1,0 +1,7 @@
+<button mat-button (click)="user ? logOut() : logIn()" [title]="user ? 'Log out' : 'Log in'">
+  <span *ngIf="!user">Log in</span>
+  <ng-container *ngIf="user">
+    <img [src]="user?.avatar_url" />
+    <span (click)="logOut()">{{user?.name}}</span>
+  </ng-container>
+</button>
