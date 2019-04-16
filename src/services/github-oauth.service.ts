@@ -60,7 +60,7 @@ export class GithubOauthService {
     if (this.token) {
       return Promise.resolve(false);
     }
-    const callback = location.origin + this.location.prepareExternalUrl('/assets/callback.html');
+    const callback = new URL(this.location.prepareExternalUrl('/assets/callback.html'), window.location.href);
     const authWindow = window.open(
       `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${callback}`,
       windowName,

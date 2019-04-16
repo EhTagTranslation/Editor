@@ -1,11 +1,10 @@
-<button mat-button *ngIf="user" [matMenuTriggerFor]="userMenu">
+<button mat-button *ngIf="user; else noUser" [matMenuTriggerFor]="userMenu">
   <img [src]="user?.avatar_url" />
   <span>{{user?.name}}</span>
 </button>
-<ng-template #elseBlock>
+<ng-template #noUser>
   <button mat-button (click)="logIn()">登录</button>
 </ng-template>
-
 
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-template matMenuContent>
