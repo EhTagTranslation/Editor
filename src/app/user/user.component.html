@@ -2,6 +2,6 @@
   <span *ngIf="!user">登录</span>
   <ng-container *ngIf="user">
     <img [src]="user?.avatar_url" />
-    <span (click)="logOut()">{{user?.name}}</span>
+    <span>{{user?.name}}</span>
   </ng-container>
 </button>
