@@ -24,7 +24,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
   }
 
   private handleEag(response: HttpResponseBase) {
-    if (response.url.startsWith(this.endpoints.ehTagConnector)) {
+    if (response.url.startsWith(this.endpoints.ehTagConnector())) {
       // `W/` might be added by some CDN
       const etag = (response.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
       if (etag) {
@@ -38,7 +38,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     let authReq = req;
     const token = this.githubOauth.token;
 
-    if (req.url.startsWith(this.endpoints.github) && token) {
+    if (req.url.startsWith(this.endpoints.github()) && token) {
       /**
        * use `access_token` for more rate limits
        * @see https://developer.github.com/v3/#rate-limiting
@@ -48,7 +48,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
       });
     }
 
-    if (req.url.startsWith(this.endpoints.ehTagConnector)) {
+    if (req.url.startsWith(this.endpoints.ehTagConnector())) {
       const mod: Parameters<typeof req.clone>[0] = {
         setHeaders: {}
       };

@@ -27,6 +27,7 @@ export class ListComponent implements OnInit {
   tags: ETItem[] = [];
 
   searchChange(text) {
+    console.log(text);
     this.search = text;
     this.paginator.firstPage();
     this.searchSubject.next(text);
@@ -69,6 +70,7 @@ export class ListComponent implements OnInit {
   private getSearchData(data: ETItem[]) {
     return data.filter(v => (
       v.name.indexOf(this.search) !== -1 ||
+      v.intro.indexOf(this.search) !== -1 ||
       v.raw.indexOf(this.search) !== -1
     ));
   }

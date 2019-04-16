@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GithubOauthService } from 'src/services/github-oauth.service';
-import { GithubUser } from 'src/interfaces/github-user';
+import { GithubUser } from 'src/interfaces/github';
 
 @Component({
   selector: 'app-user',

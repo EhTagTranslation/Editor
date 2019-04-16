@@ -4,8 +4,12 @@ import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
 import { filter, map, merge, tap } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey } from '../interfaces/interface';
 import { ApiEndpointService } from './api-endpoint.service';
+import { GithubRelease } from 'src/interfaces/github';
 
 declare const globalThis: any;
+
+const EH_TAG_HASH = 'eh-tag-hash';
+const EH_TAG_DATA = 'eh-tag-data';
 
 @Injectable({
   providedIn: 'root'
@@ -17,21 +21,25 @@ export class EhTagConnectorService {
     return this.hashStr;
   }
   set hash(value) {
-    if (this.hashStr === value) {
+    const oldVal = this.hashStr;
+    if (oldVal === value) {
       return;
     }
     this.hashStr = value;
-    this.onHashChange();
+    this.onHashChange(oldVal, value);
   }
   loading: boolean;
-  private tags: ETItem[] = [];
-  private onHashChange() {
-    this.hashChange.emit(this.hashStr);
-    this.tags = [];
+  private tags: ETItem[];
+
+  private onHashChange(oldValue: string, newValue: string) {
+    console.log(`hash: ${oldValue} -> ${newValue}`);
+    this.hashChange.emit(newValue);
+    this.tags = null;
+    localStorage.setItem(EH_TAG_HASH, newValue);
   }
 
   private getEndpoint(item: NonNullable<ETKey>) {
-    return `${this.endpoints.ehTagConnector}${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`;
+    return this.endpoints.ehTagConnector(`${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`);
   }
 
   async getTag(item: NonNullable<ETKey>): Promise<ETItem> {
@@ -64,15 +72,18 @@ export class EhTagConnectorService {
     return await this.http.delete<void>(endpoint).toPromise();
   }
 
-  async getTags(): Promise<ETItem[]> {
+  async getHash() {
+    return await this.http.head<void>(this.endpoints.ehTagConnector()).toPromise();
+  }
 
-    const dataUrl = await this.http.get(this.endpoints.github + 'repos/ehtagtranslation/Database/releases/latest').pipe(
-      map(info => {
-        console.log('info', info);
-        return ((info as any).assets as { name: string, browser_download_url: string }[])
-          .find(i => i.name === 'db.raw.js').browser_download_url;
-      })
-    ).toPromise();
+  async getTags(): Promise<ETItem[]> {
+    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+    const release = await this.http.get<GithubRelease>(endpoint).toPromise();
+    this.hash = release.target_commitish;
+    if (this.tags) {
+      return this.tags;
+    }
+    const assetUrl = release.assets.find(i => i.name === 'db.raw.js').browser_download_url;
 
     const promise = new Promise<ETRoot>((resolve, reject) => {
       let timeoutGuard: ReturnType<typeof setTimeout>;
@@ -94,18 +105,18 @@ export class EhTagConnectorService {
     });
 
     const script = document.createElement('script');
-    script.setAttribute('src', dataUrl);
+    script.setAttribute('src', assetUrl);
     document.getElementsByTagName('head')[0].appendChild(script);
 
     try {
       const data = await promise;
       this.hash = data.head.sha;
-      this.tags = [];
+      const tags: ETItem[] = [];
       data.data.forEach(namespace => {
         for (const raw in namespace.data) {
           if (namespace.data.hasOwnProperty(raw)) {
             const element = namespace.data[raw];
-            this.tags.push({
+            tags.push({
               ...element,
               raw,
               namespace: namespace.namespace,
@@ -113,7 +124,9 @@ export class EhTagConnectorService {
           }
         }
       });
-      return this.tags;
+      this.tags = tags;
+      localStorage.setItem(EH_TAG_DATA, JSON.stringify(tags));
+      return tags;
     } catch (e) {
       console.error(e);
     }
@@ -124,29 +137,10 @@ export class EhTagConnectorService {
     private http: HttpClient,
     private endpoints: ApiEndpointService,
   ) {
-    this.hash = window.localStorage.getItem('EhTagHash');
-
-
-    //
-    // this.hash = from(window.localStorage.getItem('EhTagHash'))
-    //   .pipe(
-    //     filter(v => !!v),
-    //     switchTap(() =>
-    //       fromEvent(window, 'storage').pipe(
-    //         map(v => {
-    //           console.log(v);
-    //           return v;
-    //         })
-    //       )
-    //     )
-    //   ).subscribe(e => {
-    //
-    //   });
-
-
-
-    // this.hash = this.hashChange.pipe(filter(v => !!v));
-    // this.hashChange.next();
-
+    this.hash = localStorage.getItem(EH_TAG_HASH);
+    const data = localStorage.getItem(EH_TAG_DATA);
+    if (data) {
+      this.tags = JSON.parse(data);
+    }
   }
 }

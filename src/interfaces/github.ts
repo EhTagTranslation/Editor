@@ -35,3 +35,40 @@ export interface GithubUser {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface GithubReleaseAsset {
+  url: string;
+  id: number;
+  node_id: string;
+  name: string;
+  label: string;
+  uploader: GithubUser;
+  content_type: string;
+  state: string;
+  size: number;
+  download_count: number;
+  created_at: string;
+  updated_at: string;
+  browser_download_url: string;
+}
+
+export interface GithubRelease {
+  url: string;
+  assets_url: string;
+  upload_url: string;
+  html_url: string;
+  id: number;
+  node_id: string;
+  tag_name: string;
+  target_commitish: string;
+  name: string;
+  draft: boolean;
+  author: GithubUser;
+  prerelease: boolean;
+  created_at: string;
+  published_at: string;
+  assets: GithubReleaseAsset[];
+  tarball_url: string;
+  zipball_url: string;
+  body: string;
+}

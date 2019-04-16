@@ -4,6 +4,18 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ApiEndpointService {
-  get github() { return 'https://api.github.com/'; }
-  get ehTagConnector() { return 'https://ehtagconnector.azurewebsites.net/api/database/'; }
+
+  private makePath(root: string, path: string) {
+    if (path.startsWith('/') || path === '') {
+      return root + path;
+    } else {
+      return root + '/' + path;
+    }
+  }
+  github(path: string = '') {
+    return this.makePath('https://api.github.com', path);
+  }
+  ehTagConnector(path: string = '') {
+    return this.makePath('https://ehtagconnector.azurewebsites.net/api/database', path);
+  }
 }
