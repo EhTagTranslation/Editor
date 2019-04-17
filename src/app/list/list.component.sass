@@ -1,19 +1,23 @@
-.page-box
-  max-width: 90%
-  margin: 40px auto
-table
-  width: 100%
-  .mat-cell > div
-    padding: 0 8px 0 0
-div.spinner
-  padding: 120px
-  mat-spinner
-    margin: auto
-.mat-toolbar
-  background: white
-header
-  display: flex
-  padding: 0 24px
-.filter-list
-  margin: auto 24px
-  padding-bottom: 8px
+
+
+app-list
+  .page-box
+    max-width: 90%
+    margin: 40px auto
+  table
+    width: 100%
+    .mat-cell:not(:last-child) > *
+      margin: 0 8px 0 0
+  div.spinner
+    padding: 120px
+    mat-spinner
+      margin: auto
+  .mat-toolbar
+    background: white
+  header
+    display: flex
+    padding: 0 12px
+    > *
+      margin: auto 12px
+    > .filter-list
+      padding-bottom: 8px

@@ -4,10 +4,11 @@ import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
 import { filter, map, merge, tap } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem } from '../interfaces/interface';
 import { ApiEndpointService } from './api-endpoint.service';
-import { GithubRelease } from 'src/interfaces/github';
+import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 const EH_TAG_DATA = 'eh-tag-data';
+const EH_TAG_DATA_HASH = 'eh-tag-data-hash';
 
 @Injectable({
   providedIn: 'root'
@@ -74,8 +75,10 @@ export class EhTagConnectorService {
     return await this.http.head<void>(this.endpoints.ehTagConnector()).toPromise();
   }
 
-  private async jsonpLoad(url: string) {
-    if (globalThis.load_ehtagtranslation_database) {
+  private async jsonpLoad(asset: GithubReleaseAsset) {
+    const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
+
+    if (callbackName in globalThis) {
       throw new Error('Fetching other data.');
     }
     const promise = new Promise<ETRoot>((resolve, reject) => {
@@ -83,7 +86,7 @@ export class EhTagConnectorService {
 
       const close = () => {
         clearTimeout(timeoutGuard);
-        globalThis.load_ehtagtranslation_database = null;
+        globalThis[callbackName] = null;
       };
 
       timeoutGuard = setTimeout(() => {
@@ -91,14 +94,14 @@ export class EhTagConnectorService {
         close();
       }, 30 * 1000);
 
-      globalThis.load_ehtagtranslation_database = (data: ETRoot) => {
+      globalThis[callbackName] = (data: ETRoot) => {
         resolve(data);
         close();
       };
     });
 
     const script = document.createElement('script');
-    script.setAttribute('src', url);
+    script.setAttribute('src', asset.browser_download_url);
     document.getElementsByTagName('head')[0].appendChild(script);
 
     return promise;
@@ -108,16 +111,22 @@ export class EhTagConnectorService {
     const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
     const release = await this.http.get<GithubRelease>(endpoint).toPromise();
     this.hash = release.target_commitish;
-    if (this.tags) {
+    if (this.tags && release.target_commitish === localStorage.getItem(EH_TAG_DATA_HASH)) {
       return this.tags;
     }
     try {
-      const assetUrlRaw = release.assets.find(i => i.name === 'db.raw.js').browser_download_url;
-      const assetUrlHtml = release.assets.find(i => i.name === 'db.html.js').browser_download_url;
-      const assetUrlText = release.assets.find(i => i.name === 'db.text.js').browser_download_url;
-      const dataRaw = await this.jsonpLoad(assetUrlRaw);
-      const dataHtml = await this.jsonpLoad(assetUrlHtml);
-      const dataText = await this.jsonpLoad(assetUrlText);
+      const assetRaw = release.assets.find(i => i.name === 'db.raw.js');
+      const assetHtml = release.assets.find(i => i.name === 'db.html.js');
+      const assetText = release.assets.find(i => i.name === 'db.text.js');
+
+      const reqRaw = this.jsonpLoad(assetRaw);
+      const reqHtml = this.jsonpLoad(assetHtml);
+      const reqText = this.jsonpLoad(assetText);
+
+      const dataRaw = await reqRaw;
+      const dataHtml = await reqHtml;
+      const dataText = await reqText;
+
       this.hash = dataRaw.head.sha;
       const tags: RenderedETItem[] = [];
       dataRaw.data.forEach(namespaceRaw => {
@@ -144,6 +153,7 @@ export class EhTagConnectorService {
       });
       this.tags = tags;
       localStorage.setItem(EH_TAG_DATA, JSON.stringify(tags));
+      localStorage.setItem(EH_TAG_DATA_HASH, release.target_commitish);
       return tags;
     } catch (e) {
       console.error(e);

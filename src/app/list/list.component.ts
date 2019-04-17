@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { EhTagConnectorService } from '../../services/eh-tag-connector.service';
 import { ETItem, ETTag, RenderedETItem } from '../../interfaces/interface';
@@ -23,6 +23,7 @@ const sortKeyMap: {
 
 @Component({
   selector: 'app-list',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.sass']
 })
@@ -34,9 +35,13 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
   ) { }
-
+  @ViewChild('root') root: ElementRef<HTMLDivElement>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  addStyle: HTMLStyleElement;
+
+  showNsfw = false;
   search = '';
   loading = false;
   displayedColumns: Observable<ReadonlyArray<string>>;
@@ -56,12 +61,19 @@ export class ListComponent implements OnInit {
     this.paginator.firstPage();
     this.searchSubject.next(text);
   }
+  showNsfwChange(val: boolean) {
+    if (val) {
+      this.addStyle.innerHTML = '';
+    } else {
+      this.addStyle.innerHTML = 'img[nsfw]{display:none;}';
+    }
+  }
 
   async ngOnInit() {
     this.nsFilter = this.route.paramMap.pipe(map(data => data.get('ns')));
     this.displayedColumns = this.nsFilter.pipe(map(ns => (ns
-      ? ['raw', 'name', 'intro', 'links', 'handle']
-      : ['namespace', 'raw', 'name', 'intro', 'links', 'handle'])));
+      ? ['handle', 'raw', 'name', 'intro', 'links']
+      : ['handle', 'namespace', 'raw', 'name', 'intro', 'links'])));
 
     this.filteredTags = combineLatest(
       this.tags,
@@ -89,6 +101,10 @@ export class ListComponent implements OnInit {
       this.searchChange(this.search);
     }).catch(console.log)
       .finally(() => this.loading = false);
+
+    this.addStyle = document.createElement('style');
+    this.root.nativeElement.appendChild(this.addStyle);
+    this.showNsfwChange(this.showNsfw);
   }
 
   private getPagedData(data: ReadonlyArray<RenderedETItem>) {

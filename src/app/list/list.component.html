@@ -1,4 +1,4 @@
-<div class="page-box">
+<div #root class="page-box">
   <div class="mat-elevation-z8">
     <header>
       <mat-form-field appearance="legacy" floatLabel="never">
@@ -14,6 +14,7 @@
         </mat-chip>
       </mat-chip-list>
       <span style="flex: 1 1 auto;"></span>
+      <mat-checkbox [(ngModel)]="showNsfw" (ngModelChange)="showNsfwChange($event)">显示标记为 NSFW 的图片</mat-checkbox>
       <mat-paginator #paginator [length]="(filteredTags | async)?.length" [pageIndex]="0" [pageSize]="10"
         [pageSizeOptions]="[10, 25, 50, 100]">
       </mat-paginator>
@@ -58,10 +59,14 @@
       </ng-container>
 
       <ng-container matColumnDef="handle">
-        <th mat-header-cell *matHeaderCellDef style="width:40px;"></th>
+        <th mat-header-cell *matHeaderCellDef style="width:40px;">
+          <button title="新增" mat-icon-button class="mat-accent"
+            [routerLink]="[ '/edit', ((nsFilter | async) || 'aritst'), '*new' ]">
+            <mat-icon>add_circle</mat-icon>
+          </button></th>
         <td mat-cell *matCellDef="let row">
-          <button mat-icon-button [matMenuTriggerFor]="handleMenu" [matMenuTriggerData]="{key: row}">
-            <mat-icon>more_vert</mat-icon>
+          <button title="编辑" mat-icon-button class="mat-accent" [routerLink]="[ '/edit', row.namespace, row.raw ]">
+            <mat-icon>edit</mat-icon>
           </button>
         </td>
       </ng-container>
@@ -74,16 +79,3 @@
     </div>
   </div>
 </div>
-
-<mat-menu #handleMenu="matMenu" xPosition="before">
-  <ng-template matMenuContent let-key="key">
-    <button [routerLink]="[ '/edit', key.namespace, key.raw ]" mat-menu-item>
-      <mat-icon>edit</mat-icon>
-      <span>编辑</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>delete</mat-icon>
-      <span>删除</span>
-    </button>
-  </ng-template>
-</mat-menu>

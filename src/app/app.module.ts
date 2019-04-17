@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
+  MatCheckboxModule,
   MatMenuModule,
   MatTableModule,
   MatIconModule,
@@ -42,6 +43,7 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatToolbarModule,
     MatMenuModule,
     MatTableModule,
