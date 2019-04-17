@@ -24,7 +24,7 @@ export interface ETRoot extends ETRepoInfo {
   data: ETNamespace[];
 }
 
-export type ETNamespaceName = 'row'
+export type ETNamespaceName = 'rows'
   | 'reclass'
   | 'language'
   | 'parody'
@@ -34,6 +34,19 @@ export type ETNamespaceName = 'row'
   | 'male'
   | 'female'
   | 'misc';
+
+export enum ETNamespaceEnum {
+  'rows',
+  'reclass',
+  'language',
+  'parody',
+  'character',
+  'group',
+  'artist',
+  'male',
+  'female',
+  'misc',
+}
 
 export interface ETNamespaceInfo {
   count: number;
@@ -68,3 +81,27 @@ export interface ETKey {
 export interface ETItem extends ETTag, ETKey { }
 
 export interface RenderedETItem extends ETTag, RenderedETTag, ETKey { }
+
+export function isValidRaw(raw?: string | null) {
+  if (!raw) {
+    return false;
+  }
+  return raw.search(/^[-\.a-zA-Z0-9][- \.a-zA-Z0-9]*[-\.a-zA-Z0-9]$/) >= 0;
+}
+
+export const notEditableNs: ReadonlyArray<ETNamespaceName> = [
+  'rows',
+];
+export const editableNs: ReadonlyArray<ETNamespaceName> = [
+  'reclass',
+  'language',
+  'parody',
+  'character',
+  'group',
+  'artist',
+  'male',
+  'female',
+  'misc',
+];
+
+

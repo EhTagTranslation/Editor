@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
 import { MatPaginator, MatSort, PageEvent, SortDirection } from '@angular/material';
 import { EhTagConnectorService } from '../../services/eh-tag-connector.service';
-import { ETItem, ETTag, RenderedETItem } from '../../interfaces/interface';
+import { ETItem, ETTag, RenderedETItem, ETNamespaceName, ETNamespaceEnum, editableNs } from '../../interfaces/ehtranslation';
 import { merge, Observable, of as observableOf, Subject, zip, of, combineLatest } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, Params } from '@angular/router';
 import { map, tap, distinctUntilChanged } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
+import { RouteService } from 'src/services/route.service';
 
 
 function compare(a: any, b: any, isAsc: boolean) {
@@ -35,7 +36,7 @@ export class ListComponent implements OnInit {
   constructor(
     private ehTagConnector: EhTagConnectorService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: RouteService,
   ) { }
   @ViewChild('root') root: ElementRef<HTMLDivElement>;
 
@@ -49,67 +50,41 @@ export class ListComponent implements OnInit {
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
-  ns: Observable<string | null>;
+  ns: Observable<ETNamespaceName | null>;
   sortBy: Observable<SortableKeys | null>;
   sortDirection: Observable<SortDirection>;
 
-  setNs(ns?: string) {
-    const list = ns ? ['/list', ns] : ['/list'];
-    this.route.queryParams.subscribe(data => this.router.navigate(list, {
-      replaceUrl: true,
-      queryParams: {
-        ...data,
-        pageIndex: 0,
-      }
-    }));
-  }
+  editableNs = editableNs;
 
-  navigateParam(params: Params, replaceUrl: boolean = true) {
-    zip(this.route.url, this.route.queryParams).subscribe(data => {
-      this.router.navigate(data[0].map(seg => seg.path), {
-        replaceUrl,
-        queryParams: {
-          ...data[1],
-          ...params,
-        }
-      });
+  setNs(ns?: ETNamespaceName) {
+    const list = ns && ns in ETNamespaceEnum ? ['/list', ns] : ['/list'];
+    this.router.navigate(this.route, list, {
+      pageIndex: 0,
     });
   }
 
-  private initQueryParam<V>(key: keyof this & string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
-    if (action) {
-      return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged(), tap(action));
-    } else {
-      return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged());
-    }
-  }
-  private initParam<V>(key: keyof this & string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
-    if (action) {
-      return this.route.paramMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged(), tap(action));
-    } else {
-      return this.route.paramMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged());
-    }
+  navigateParam(params: Params, replaceUrl: boolean = true) {
+    this.router.navigateParam(this.route, params, replaceUrl);
   }
 
   async ngOnInit() {
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
-
-    this.ns = this.initParam('ns', ns => ns || null);
-    this.search = this.initQueryParam('search', s => s || '');
-    this.showImg = this.initQueryParam('showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
+    this.ns = this.router.initParam(this.route, 'ns', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
+    this.search = this.router.initQueryParam(this.route, 'search', s => s || '');
+    this.showImg = this.router.initQueryParam(this.route, 'showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
       if (val === 'all') {
         addStyle.innerHTML = '';
       } else if (val === 'none') {
-        addStyle.innerHTML = 'app-list table td img{display:none;}';
+        addStyle.innerHTML = 'app-list table td img[ehimg]{display:none;}';
       } else {
-        addStyle.innerHTML = 'app-list table td img[nsfw]{display:none;}';
+        addStyle.innerHTML = 'app-list table td img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
       }
     });
-    this.pageSize = this.initQueryParam('pageSize', v => parseInt(v || '10', 10));
-    this.pageIndex = this.initQueryParam('pageIndex', v => parseInt(v || '0', 10));
-    this.sortBy = this.initQueryParam('sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
-    this.sortDirection = this.initQueryParam('sortDirection', v => (v || '') as SortDirection);
+    this.pageSize = this.router.initQueryParam(this.route, 'pageSize', v => parseInt(v || '10', 10));
+    this.pageIndex = this.router.initQueryParam(this.route, 'pageIndex', v => parseInt(v || '0', 10));
+    this.sortBy = this.router.initQueryParam(this.route, 'sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
+    this.sortDirection = this.router.initQueryParam(this.route, 'sortDirection', v => (v || '') as SortDirection);
 
     this.displayedColumns = this.ns.pipe(map(ns => (ns
       ? ['handle', 'raw', 'name', 'intro', 'links']

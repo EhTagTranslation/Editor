@@ -27,7 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { AboutComponent } from './about/about.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 
 @NgModule({
@@ -40,10 +40,10 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     MarkPipe,
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
+    BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCheckboxModule,
@@ -60,6 +60,7 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     MatProgressSpinnerModule,
     MatTooltipModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [ehHttpInterceptorProvider],
   bootstrap: [AppComponent]
