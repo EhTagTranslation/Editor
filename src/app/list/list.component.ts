@@ -26,7 +26,6 @@ type SortableKeys = keyof typeof sortKeyMap;
 
 @Component({
   selector: 'app-list',
-  encapsulation: ViewEncapsulation.None,
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.sass']
 })
@@ -93,6 +92,12 @@ export class ListComponent implements OnInit {
   }
 
   async ngOnInit() {
+    {
+      const imgStyle = document.createElement('style');
+      imgStyle.innerHTML = `app-list table td img{ border: transparent solid; }
+      app-list table td img[nsfw]{ border: red solid; }`;
+      this.root.nativeElement.appendChild(imgStyle);
+    }
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
 
