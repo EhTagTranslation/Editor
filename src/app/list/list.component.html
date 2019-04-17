@@ -35,7 +35,13 @@
       <ng-container matColumnDef="raw">
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:80px;">原始</th>
         <td mat-cell *matCellDef="let row">
-          <div [innerHTML]="row.raw | mark: (search | async)"></div>
+          <div>
+            <a *ngIf="row.namespace === 'rows'; else notRow;" (click)="setNs(row.raw)"
+              [routerLink]="[ '/list', row.raw ]" replaceUrl [innerHTML]="row.raw | mark: (search | async)"></a>
+            <ng-template #notRow>
+              <span [innerHTML]="row.raw | mark: (search | async)"></span>
+            </ng-template>
+          </div>
         </td>
       </ng-container>
 
@@ -65,7 +71,7 @@
       <ng-container matColumnDef="links">
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:80px;">链接</th>
         <td mat-cell *matCellDef="let row">
-          <div [innerHTML]="row.renderedLinks"></div>
+          <div [innerHTML]="row.renderedLinks | mark: (search | async): true"></div>
         </td>
       </ng-container>
 

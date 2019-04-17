@@ -170,6 +170,7 @@ export class ListComponent implements OnInit {
       data = data.filter(v => (
         v.textIntro.search(regex) !== -1 ||
         v.textName.search(regex) !== -1 ||
+        v.textLinks.search(regex) !== -1 ||
         v.raw.search(regex) !== -1
       ));
     }
