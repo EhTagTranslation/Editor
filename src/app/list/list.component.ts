@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, PageEvent, SortDirection } from '@angular/material';
 import { EhTagConnectorService } from '../../services/eh-tag-connector.service';
 import { ETItem, ETTag, RenderedETItem } from '../../interfaces/interface';
 import { merge, Observable, of as observableOf, Subject, zip, of, combineLatest } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap, Router, Params } from '@angular/router';
+import { map, tap, distinctUntilChanged } from 'rxjs/operators';
 
 
 function compare(a: any, b: any, isAsc: boolean) {
@@ -36,94 +36,113 @@ export class ListComponent implements OnInit {
     private router: Router,
   ) { }
   @ViewChild('root') root: ElementRef<HTMLDivElement>;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
-  addStyle: HTMLStyleElement;
-
-  showNsfw = false;
-  search = '';
+  showNsfw: Observable<boolean>;
+  search: Observable<string>;
+  pageSize: Observable<number>;
+  pageIndex: Observable<number>;
   loading = false;
   displayedColumns: Observable<ReadonlyArray<string>>;
-  searchSubject: Subject<string> = new Subject();
   tags: Subject<ReadonlyArray<RenderedETItem>> = new Subject();
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
-  nsFilter: Observable<string>;
+  ns: Observable<string>;
+  sortBy: Observable<string>;
+  sortDirection: Observable<SortDirection>;
 
   clearNsFilter() {
-    this.router.navigate(['/list']);
+    this.router.navigate(['/list'], { replaceUrl: true });
   }
 
-  searchChange(text: string) {
-    this.search = text;
-    this.paginator.firstPage();
-    this.searchSubject.next(text);
+  private navigateParam(params: Params, replaceUrl: boolean = true) {
+    zip(this.route.url, this.route.queryParams).subscribe(data => {
+      this.router.navigate(data[0].map(seg => seg.path), {
+        replaceUrl,
+        queryParams: {
+          ...data[1],
+          ...params,
+        }
+      });
+    });
   }
-  showNsfwChange(val: boolean) {
-    if (val) {
-      this.addStyle.innerHTML = '';
+
+  private initQueryParam<V>(key: keyof this & string, parse: ((v: string) => V), action?: ((v: V) => void)) {
+    if (action) {
+      return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged(), tap(action));
     } else {
-      this.addStyle.innerHTML = 'img[nsfw]{display:none;}';
+      return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged());
     }
   }
 
   async ngOnInit() {
-    this.nsFilter = this.route.paramMap.pipe(map(data => data.get('ns')));
-    this.displayedColumns = this.nsFilter.pipe(map(ns => (ns
+    const addStyle = document.createElement('style');
+    this.root.nativeElement.appendChild(addStyle);
+
+    this.ns = this.initQueryParam('ns', ns => ns || null);
+    this.search = this.initQueryParam('search', s => s || '');
+    this.showNsfw = this.initQueryParam('showNsfw', b => b === 'true', val => {
+      if (val) {
+        addStyle.innerHTML = '';
+      } else {
+        addStyle.innerHTML = 'img[nsfw]{display:none;}';
+      }
+    });
+    this.pageSize = this.initQueryParam('pageSize', v => parseInt(v, 10) || 10);
+    this.pageIndex = this.initQueryParam('pageIndex', v => parseInt(v, 10) || 0);
+    this.sortBy = this.initQueryParam('sortBy', v => v || '');
+    this.sortDirection = this.initQueryParam('sortDirection', v => (v || '') as SortDirection);
+
+    this.displayedColumns = this.ns.pipe(map(ns => (ns
       ? ['handle', 'raw', 'name', 'intro', 'links']
       : ['handle', 'namespace', 'raw', 'name', 'intro', 'links'])));
 
     this.filteredTags = combineLatest(
       this.tags,
-      this.nsFilter,
-      this.searchSubject,
-    ).pipe(map(data => this.getSearchData(data[0], data[1], data[2])));
+      this.ns,
+      this.search,
+    ).pipe(map(data => this.getFilteredData(...data)));
 
     this.orderedTags = combineLatest(
       this.filteredTags,
-      merge(
-        of(null),
-        this.sort.sortChange)
-    ).pipe(map(data => this.getSortedData(data[0])));
+      this.sortBy,
+      this.sortDirection,
+    ).pipe(map(data => this.getSortedData(...data)));
 
     this.pagedTags = combineLatest(
       this.orderedTags,
-      merge(
-        of(null),
-        this.paginator.page)
-    ).pipe(map(data => this.getPagedData(data[0])));
+      this.pageIndex,
+      this.pageSize,
+    ).pipe(map(data => this.getPagedData(...data)));
 
     this.loading = true;
     this.ehTagConnector.getTags().then(tags => {
       this.tags.next(tags);
-      this.searchChange(this.search);
     }).catch(console.log)
       .finally(() => this.loading = false);
-
-    this.addStyle = document.createElement('style');
-    this.root.nativeElement.appendChild(this.addStyle);
-    this.showNsfwChange(this.showNsfw);
   }
 
-  private getPagedData(data: ReadonlyArray<RenderedETItem>) {
-    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    return data.slice(startIndex, startIndex + this.paginator.pageSize);
+  private getPagedData(data: ReadonlyArray<RenderedETItem>, pageIndex: number, pageSize: number) {
+    console.log('paging');
+    const startIndex = pageIndex * pageSize;
+    return data.slice(startIndex, startIndex + pageSize);
   }
 
-  private getSortedData(data: ReadonlyArray<RenderedETItem>) {
-    if (!this.sort.active || this.sort.direction === '') {
+  private getSortedData(data: ReadonlyArray<RenderedETItem>, sortBy: string, sortDirection: SortDirection) {
+    console.log('sorting');
+
+    if (!sortBy || !(sortBy in sortKeyMap) || sortDirection === '') {
       return data;
     }
 
     return Array.from(data).sort((a, b) => {
-      const isAsc = this.sort.direction === 'asc';
-      return compare(a[sortKeyMap[this.sort.active]], b[sortKeyMap[this.sort.active]], isAsc);
+      const isAsc = sortDirection === 'asc';
+      return compare(a[sortKeyMap[sortBy]], b[sortKeyMap[sortBy]], isAsc);
     });
   }
 
-  private getSearchData(data: ReadonlyArray<RenderedETItem>, ns: string, search: string) {
+  private getFilteredData(data: ReadonlyArray<RenderedETItem>, ns: string, search: string) {
+    console.log('filtering');
     if (ns) {
       data = data.filter(v => v.namespace === ns);
     }

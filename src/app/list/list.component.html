@@ -5,40 +5,45 @@
         <mat-label>
           <mat-icon matPrefix>search</mat-icon> 搜索
         </mat-label>
-        <input [(ngModel)]="search" (ngModelChange)="searchChange($event)" matInput placeholder="Placeholder">
+        <input [ngModel]="search | async" (ngModelChange)="navigateParam({search: $event, pageIndex: 0})" matInput
+          placeholder="Placeholder">
       </mat-form-field>
       <mat-chip-list class="filter-list">
-        <mat-chip *ngIf="nsFilter | async" [removable]="true" [selectable]="false" (removed)="clearNsFilter()">
-          命名空间：{{nsFilter | async}}
+        <mat-chip *ngIf="ns | async" [removable]="true" [selectable]="false" (removed)="clearNsFilter()">
+          命名空间：{{ns | async}}
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
       </mat-chip-list>
       <span style="flex: 1 1 auto;"></span>
-      <mat-checkbox [(ngModel)]="showNsfw" (ngModelChange)="showNsfwChange($event)">显示标记为 NSFW 的图片</mat-checkbox>
-      <mat-paginator #paginator [length]="(filteredTags | async)?.length" [pageIndex]="0" [pageSize]="10"
-        [pageSizeOptions]="[10, 25, 50, 100]">
+      <mat-checkbox [ngModel]="showNsfw | async" (ngModelChange)="navigateParam({showNsfw: $event})">显示 NSFW 图片
+      </mat-checkbox>
+      <mat-paginator [length]="(filteredTags | async)?.length" [pageIndex]="pageIndex | async"
+        [pageSize]="pageSize | async" [pageSizeOptions]="[10, 25, 50, 100]"
+        (page)="navigateParam({ pageIndex: $event.pageIndex, pageSize: $event.pageSize })">
       </mat-paginator>
     </header>
-    <table mat-table [dataSource]="pagedTags" matSort aria-label="Elements">
+    <table mat-table [dataSource]="pagedTags" aria-label="Elements" matSort [matSortActive]="sortBy | async"
+      [matSortDirection]="sortDirection | async"
+      (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })">
       <!-- Id Column -->
       <ng-container matColumnDef="raw">
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:80px;">原始</th>
         <td mat-cell *matCellDef="let row">
-          <div [innerHTML]="row.raw | mark: search"></div>
+          <div [innerHTML]="row.raw | mark: (search | async)"></div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:80px;">名称</th>
         <td mat-cell *matCellDef="let row">
-          <div [innerHTML]="row.renderedName | mark: search: true"></div>
+          <div [innerHTML]="row.renderedName | mark: (search | async): true"></div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="intro">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>描述</th>
         <td mat-cell *matCellDef="let row">
-          <div [innerHTML]="row.renderedIntro | mark: search: true"></div>
+          <div [innerHTML]="row.renderedIntro | mark: (search | async): true"></div>
         </td>
       </ng-container>
 
@@ -46,7 +51,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:80px;">命名空间</th>
         <td mat-cell *matCellDef="let row">
           <div>
-            <a [routerLink]="[ '/list', row.namespace ]">{{row.namespace}}</a>
+            <a [routerLink]="[ '/list', row.namespace ]" replaceUrl>{{row.namespace}}</a>
           </div>
         </td>
       </ng-container>
@@ -61,7 +66,7 @@
       <ng-container matColumnDef="handle">
         <th mat-header-cell *matHeaderCellDef style="width:40px;">
           <button title="新增" mat-icon-button class="mat-accent"
-            [routerLink]="[ '/edit', ((nsFilter | async) || 'aritst'), '*new' ]">
+            [routerLink]="[ '/edit', ((ns | async) || 'aritst'), '*new' ]">
             <mat-icon>add_circle</mat-icon>
           </button></th>
         <td mat-cell *matCellDef="let row">

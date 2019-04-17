@@ -19,7 +19,8 @@ import {
   MatSortModule,
   MatProgressSpinnerModule,
   MatTooltipModule,
-  MatChipsModule
+  MatChipsModule,
+  MatButtonToggleModule
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
@@ -43,6 +44,7 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatCheckboxModule,
     MatToolbarModule,
     MatMenuModule,

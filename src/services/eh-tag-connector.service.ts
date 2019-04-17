@@ -77,20 +77,20 @@ export class EhTagConnectorService {
 
   private async jsonpLoad(asset: GithubReleaseAsset) {
     const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
-
-    if (callbackName in globalThis) {
-      throw new Error('Fetching other data.');
+    if (globalThis[callbackName]) {
+      throw new Error(`Callback ${callbackName} has registered.`);
     }
+
     const promise = new Promise<ETRoot>((resolve, reject) => {
       let timeoutGuard: ReturnType<typeof setTimeout>;
 
       const close = () => {
         clearTimeout(timeoutGuard);
-        globalThis[callbackName] = null;
+        globalThis[callbackName] = undefined;
       };
 
       timeoutGuard = setTimeout(() => {
-        reject(new Error('Get EhTag Timeout'));
+        reject(new Error(`Get ${asset.name} timeout`));
         close();
       }, 30 * 1000);
 
@@ -102,7 +102,7 @@ export class EhTagConnectorService {
 
     const script = document.createElement('script');
     script.setAttribute('src', asset.browser_download_url);
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.querySelector('head').appendChild(script);
 
     return promise;
   }

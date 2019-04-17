@@ -6,8 +6,10 @@ app-list
     margin: 40px auto
   table
     width: 100%
-    .mat-cell:not(:last-child) > *
-      margin: 0 8px 0 0
+    .mat-header-cell:not(:last-child), .mat-cell:not(:last-child)
+      padding-right: 8px
+    td p
+      margin: 4px 0
   div.spinner
     padding: 120px
     mat-spinner
