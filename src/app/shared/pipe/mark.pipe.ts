@@ -63,12 +63,14 @@ export class MarkPipe implements PipeTransform {
               // 元素节点
               const enode = node as Element;
               if (enode.tagName === 'A') {
+                enode.setAttribute('ehlink', '');
                 enode.setAttribute('target', '_blank');
                 if (!enode.getAttribute('title')) {
                   enode.setAttribute('title', enode.getAttribute('href') || '');
                 }
               }
               if (enode.tagName === 'IMG') {
+                enode.setAttribute('ehimg', '');
                 if (!enode.getAttribute('title')) {
                   enode.setAttribute('title', enode.getAttribute('src') || '');
                 }
