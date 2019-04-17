@@ -5,6 +5,7 @@ import { ETItem, ETTag, RenderedETItem } from '../../interfaces/interface';
 import { merge, Observable, of as observableOf, Subject, zip, of, combineLatest } from 'rxjs';
 import { ActivatedRoute, ParamMap, Router, Params } from '@angular/router';
 import { map, tap, distinctUntilChanged } from 'rxjs/operators';
+import { regexFromSearch } from '../shared/pipe/mark.pipe';
 
 
 function compare(a: any, b: any, isAsc: boolean) {
@@ -12,7 +13,7 @@ function compare(a: any, b: any, isAsc: boolean) {
 }
 
 const sortKeyMap: {
-  [x in keyof ETItem]: string;
+  [x in keyof ETItem]: keyof RenderedETItem;
 } = {
   namespace: 'namespace',
   raw: 'raw',
@@ -20,6 +21,8 @@ const sortKeyMap: {
   intro: 'textIntro',
   links: 'textLinks',
 };
+
+type SortableKeys = keyof typeof sortKeyMap;
 
 @Component({
   selector: 'app-list',
@@ -37,7 +40,7 @@ export class ListComponent implements OnInit {
   ) { }
   @ViewChild('root') root: ElementRef<HTMLDivElement>;
 
-  showNsfw: Observable<boolean>;
+  showImg: Observable<'all' | 'no-nsfw' | 'none'>;
   search: Observable<string>;
   pageSize: Observable<number>;
   pageIndex: Observable<number>;
@@ -47,15 +50,22 @@ export class ListComponent implements OnInit {
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
-  ns: Observable<string>;
-  sortBy: Observable<string>;
+  ns: Observable<string | null>;
+  sortBy: Observable<SortableKeys | null>;
   sortDirection: Observable<SortDirection>;
 
-  clearNsFilter() {
-    this.router.navigate(['/list'], { replaceUrl: true });
+  setNs(ns?: string) {
+    const list = ns ? ['/list', ns] : ['/list'];
+    this.route.queryParams.subscribe(data => this.router.navigate(list, {
+      replaceUrl: true,
+      queryParams: {
+        ...data,
+        pageIndex: 0,
+      }
+    }));
   }
 
-  private navigateParam(params: Params, replaceUrl: boolean = true) {
+  navigateParam(params: Params, replaceUrl: boolean = true) {
     zip(this.route.url, this.route.queryParams).subscribe(data => {
       this.router.navigate(data[0].map(seg => seg.path), {
         replaceUrl,
@@ -67,11 +77,18 @@ export class ListComponent implements OnInit {
     });
   }
 
-  private initQueryParam<V>(key: keyof this & string, parse: ((v: string) => V), action?: ((v: V) => void)) {
+  private initQueryParam<V>(key: keyof this & string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
     if (action) {
       return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged(), tap(action));
     } else {
       return this.route.queryParamMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged());
+    }
+  }
+  private initParam<V>(key: keyof this & string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
+    if (action) {
+      return this.route.paramMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged(), tap(action));
+    } else {
+      return this.route.paramMap.pipe(map(p => parse(p.get(key))), distinctUntilChanged());
     }
   }
 
@@ -79,18 +96,20 @@ export class ListComponent implements OnInit {
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
 
-    this.ns = this.initQueryParam('ns', ns => ns || null);
+    this.ns = this.initParam('ns', ns => ns || null);
     this.search = this.initQueryParam('search', s => s || '');
-    this.showNsfw = this.initQueryParam('showNsfw', b => b === 'true', val => {
-      if (val) {
+    this.showImg = this.initQueryParam('showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
+      if (val === 'all') {
         addStyle.innerHTML = '';
+      } else if (val === 'none') {
+        addStyle.innerHTML = 'app-list table td img{display:none;}';
       } else {
-        addStyle.innerHTML = 'img[nsfw]{display:none;}';
+        addStyle.innerHTML = 'app-list table td img[nsfw]{display:none;}';
       }
     });
-    this.pageSize = this.initQueryParam('pageSize', v => parseInt(v, 10) || 10);
-    this.pageIndex = this.initQueryParam('pageIndex', v => parseInt(v, 10) || 0);
-    this.sortBy = this.initQueryParam('sortBy', v => v || '');
+    this.pageSize = this.initQueryParam('pageSize', v => parseInt(v || '10', 10));
+    this.pageIndex = this.initQueryParam('pageIndex', v => parseInt(v || '0', 10));
+    this.sortBy = this.initQueryParam('sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
     this.sortDirection = this.initQueryParam('sortDirection', v => (v || '') as SortDirection);
 
     this.displayedColumns = this.ns.pipe(map(ns => (ns
@@ -128,7 +147,7 @@ export class ListComponent implements OnInit {
     return data.slice(startIndex, startIndex + pageSize);
   }
 
-  private getSortedData(data: ReadonlyArray<RenderedETItem>, sortBy: string, sortDirection: SortDirection) {
+  private getSortedData(data: ReadonlyArray<RenderedETItem>, sortBy: SortableKeys | null, sortDirection: SortDirection) {
     console.log('sorting');
 
     if (!sortBy || !(sortBy in sortKeyMap) || sortDirection === '') {
@@ -141,16 +160,19 @@ export class ListComponent implements OnInit {
     });
   }
 
-  private getFilteredData(data: ReadonlyArray<RenderedETItem>, ns: string, search: string) {
+  private getFilteredData(data: ReadonlyArray<RenderedETItem>, ns: string | null, search: string) {
     console.log('filtering');
+    const regex = regexFromSearch(search);
     if (ns) {
       data = data.filter(v => v.namespace === ns);
     }
-    data = data.filter(v => (
-      v.textIntro.indexOf(search) !== -1 ||
-      v.textName.indexOf(search) !== -1 ||
-      v.raw.indexOf(search) !== -1
-    ));
+    if (regex) {
+      data = data.filter(v => (
+        v.textIntro.search(regex) !== -1 ||
+        v.textName.search(regex) !== -1 ||
+        v.raw.search(regex) !== -1
+      ));
+    }
     return data;
   }
 

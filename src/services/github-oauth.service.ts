@@ -19,7 +19,7 @@ export class GithubOauthService {
     private endpoints: ApiEndpointService,
   ) {
     // make sure `token` is valid
-    this.setToken(this.token);
+    this.setToken(this.token || undefined);
     if (isDevMode()) {
       globalThis.setToken = this.setToken.bind(this);
     }

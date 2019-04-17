@@ -1,22 +1,28 @@
 <div #root class="page-box">
   <div class="mat-elevation-z8">
     <header>
-      <mat-form-field appearance="legacy" floatLabel="never">
+      <mat-form-field>
         <mat-label>
-          <mat-icon matPrefix>search</mat-icon> 搜索
+          <mat-icon matPrefix>search</mat-icon>搜索
         </mat-label>
         <input [ngModel]="search | async" (ngModelChange)="navigateParam({search: $event, pageIndex: 0})" matInput
-          placeholder="Placeholder">
+          placeholder="string or /regex/" type="search">
       </mat-form-field>
       <mat-chip-list class="filter-list">
-        <mat-chip *ngIf="ns | async" [removable]="true" [selectable]="false" (removed)="clearNsFilter()">
+        <mat-chip *ngIf="ns | async" [removable]="true" [selectable]="false" (removed)="setNs()">
           命名空间：{{ns | async}}
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
       </mat-chip-list>
       <span style="flex: 1 1 auto;"></span>
-      <mat-checkbox [ngModel]="showNsfw | async" (ngModelChange)="navigateParam({showNsfw: $event})">显示 NSFW 图片
-      </mat-checkbox>
+      <mat-form-field>
+        <mat-label>图片显示</mat-label>
+        <mat-select [ngModel]="showImg | async" (ngModelChange)="navigateParam({showImg: $event})">
+          <mat-option value="all">全部显示</mat-option>
+          <mat-option value="no-nsfw">隐藏 NSFW</mat-option>
+          <mat-option value="none">全部隐藏</mat-option>
+        </mat-select>
+      </mat-form-field>
       <mat-paginator [length]="(filteredTags | async)?.length" [pageIndex]="pageIndex | async"
         [pageSize]="pageSize | async" [pageSizeOptions]="[10, 25, 50, 100]"
         (page)="navigateParam({ pageIndex: $event.pageIndex, pageSize: $event.pageSize })">
@@ -51,13 +57,13 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header style="width:80px;">命名空间</th>
         <td mat-cell *matCellDef="let row">
           <div>
-            <a [routerLink]="[ '/list', row.namespace ]" replaceUrl>{{row.namespace}}</a>
+            <a (click)="setNs(row.namespace)" [routerLink]="[ '/list', row.namespace ]" replaceUrl>{{row.namespace}}</a>
           </div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="links">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>链接</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="min-width:80px;">链接</th>
         <td mat-cell *matCellDef="let row">
           <div [innerHTML]="row.renderedLinks"></div>
         </td>
@@ -65,12 +71,13 @@
 
       <ng-container matColumnDef="handle">
         <th mat-header-cell *matHeaderCellDef style="width:40px;">
-          <button title="新增" mat-icon-button class="mat-accent"
+          <button matTooltip="新增" matTooltipPosition="left" matTooltipShowDelay="500" mat-icon-button class="mat-accent"
             [routerLink]="[ '/edit', ((ns | async) || 'aritst'), '*new' ]">
             <mat-icon>add_circle</mat-icon>
           </button></th>
         <td mat-cell *matCellDef="let row">
-          <button title="编辑" mat-icon-button class="mat-accent" [routerLink]="[ '/edit', row.namespace, row.raw ]">
+          <button matTooltip="编辑" matTooltipPosition="left" matTooltipShowDelay="500" mat-icon-button class="mat-accent"
+            [routerLink]="[ '/edit', row.namespace, row.raw ]">
             <mat-icon>edit</mat-icon>
           </button>
         </td>

@@ -17,9 +17,11 @@ app-list
   .mat-toolbar
     background: white
   header
+    font-size: 14px
     display: flex
     padding: 0 12px
-    > *
+    > mat-form-field, mat-paginator
+      margin: 16px 12px -16px 12px
+    > mat-chip-list
       margin: auto 12px
-    > .filter-list
-      padding-bottom: 8px
+      padding-top: 12px

@@ -11,7 +11,7 @@ export class UserComponent implements OnInit {
 
   constructor(private github: GithubOauthService) { }
 
-  user: GithubUser;
+  user: GithubUser | null;
 
   async ngOnInit() {
     if (this.github.token) {

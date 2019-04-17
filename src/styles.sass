@@ -25,4 +25,12 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 @include angular-material-theme($candy-app-theme)
 
 html
-    font-family: "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif 
+  font-family: "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif 
+a
+  color: mat-color(map-get($candy-app-theme, primary))
+  text-decoration: none
+  &[target='_blank']
+    text-decoration: underline
+  &:hover
+    text-decoration: underline
+    color: mat-color(map-get($candy-app-theme, accent))

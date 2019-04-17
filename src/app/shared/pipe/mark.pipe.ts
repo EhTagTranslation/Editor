@@ -4,13 +4,30 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 const parser = new DOMParser();
 
-function escapeHtml(unsafe: string) {
+function escapeHtml(unsafe: string | null) {
+  if (!unsafe) {
+    return '';
+  }
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+export function regexFromSearch(search: string | null) {
+  if (!search) {
+    return null;
+  }
+  if (search.startsWith('/') && search.endsWith('/') && search.length > 2) {
+    try {
+      return new RegExp(search.substring(1, search.length - 1), 'g');
+    } catch {
+      return new RegExp(escapeStringRegexp(search), 'g');
+    }
+  }
+  return new RegExp(escapeStringRegexp(search), 'g');
 }
 
 @Pipe({
@@ -24,7 +41,7 @@ export class MarkPipe implements PipeTransform {
     if (!search && !inputAsHtml) {
       return value;
     }
-    const regexp = search ? new RegExp(escapeStringRegexp(search), 'g') : null;
+    const regexp = regexFromSearch(search);
     if (inputAsHtml) {
       const markNodes = (elem: Element) => {
         if (elem) {
@@ -36,7 +53,7 @@ export class MarkPipe implements PipeTransform {
               if (regexp) {
                 const text = escapeHtml(node.textContent);
                 const newText = text.replace(regexp, '<mark>$&</mark>');
-                if (text !== newText) {
+                if (text !== newText && node.parentElement) {
                   const spanNode = document.createElement('span');
                   spanNode.innerHTML = newText;
                   node.parentElement.replaceChild(spanNode, node);
@@ -48,12 +65,12 @@ export class MarkPipe implements PipeTransform {
               if (enode.tagName === 'A') {
                 enode.setAttribute('target', '_blank');
                 if (!enode.getAttribute('title')) {
-                  enode.setAttribute('title', enode.getAttribute('href'));
+                  enode.setAttribute('title', enode.getAttribute('href') || '');
                 }
               }
               if (enode.tagName === 'IMG') {
                 if (!enode.getAttribute('title')) {
-                  enode.setAttribute('title', enode.getAttribute('src'));
+                  enode.setAttribute('title', enode.getAttribute('src') || '');
                 }
               }
               markNodes(enode);
@@ -66,7 +83,7 @@ export class MarkPipe implements PipeTransform {
       markNodes(root);
       return this.sanitizer.bypassSecurityTrustHtml(root.innerHTML);
     } else {
-      return value.replace(regexp, '<mark>$&</mark>');
+      return regexp ? value.replace(regexp, '<mark>$&</mark>') : value;
     }
   }
 }

@@ -24,13 +24,14 @@ export class EhHttpInterceptor implements HttpInterceptor {
   }
 
   private handleEag(response: HttpResponseBase) {
-    if (response.url.startsWith(this.endpoints.ehTagConnector())) {
-      // `W/` might be added by some CDN
-      const etag = (response.headers.get('etag').match(/^(W\/)?"(\w+)"$/) || [])[2];
-      if (etag) {
-        EhHttpInterceptor.debugLog('etag', etag);
-        this.ehTagConnector.hash = etag;
-      }
+    if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnector())) { return; }
+    const etagV = response.headers.get('etag');
+    if (!etagV) { return; }
+    // `W/` might be added by some CDN
+    const etag = (etagV.match(/^(W\/)?"(\w+)"$/) || [])[2];
+    if (etag) {
+      EhHttpInterceptor.debugLog('etag', etag);
+      this.ehTagConnector.hash = etag;
     }
   }
 
@@ -53,7 +54,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
         setHeaders: {}
       };
 
-      if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+      if (['POST', 'PUT', 'DELETE'].includes(req.method) && mod.setHeaders) {
         if (token) {
           mod.setHeaders['X-Token'] = token;
         }

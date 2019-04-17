@@ -14,8 +14,8 @@ const EH_TAG_DATA_HASH = 'eh-tag-data-hash';
   providedIn: 'root'
 })
 export class EhTagConnectorService {
-  hashChange: EventEmitter<string> = new EventEmitter();
-  private hashStr: string;
+  hashChange: EventEmitter<string | null> = new EventEmitter();
+  private hashStr: string | null;
   get hash() {
     return this.hashStr;
   }
@@ -28,13 +28,13 @@ export class EhTagConnectorService {
     this.onHashChange(oldVal, value);
   }
   loading: boolean;
-  private tags: ReadonlyArray<RenderedETItem>;
+  private tags: ReadonlyArray<RenderedETItem> | null;
 
-  private onHashChange(oldValue: string, newValue: string) {
+  private onHashChange(oldValue: string | null, newValue: string | null) {
     console.log(`hash: ${oldValue} -> ${newValue}`);
     this.hashChange.emit(newValue);
     this.tags = null;
-    localStorage.setItem(EH_TAG_HASH, newValue);
+    localStorage.setItem(EH_TAG_HASH, newValue || '');
   }
 
   private getEndpoint(item: NonNullable<ETKey>) {
@@ -102,7 +102,11 @@ export class EhTagConnectorService {
 
     const script = document.createElement('script');
     script.setAttribute('src', asset.browser_download_url);
-    document.querySelector('head').appendChild(script);
+    const head = document.querySelector('head');
+    if (!head) {
+      throw new Error('head element not found!');
+    }
+    head.appendChild(script);
 
     return promise;
   }
@@ -114,50 +118,50 @@ export class EhTagConnectorService {
     if (this.tags && release.target_commitish === localStorage.getItem(EH_TAG_DATA_HASH)) {
       return this.tags;
     }
-    try {
-      const assetRaw = release.assets.find(i => i.name === 'db.raw.js');
-      const assetHtml = release.assets.find(i => i.name === 'db.html.js');
-      const assetText = release.assets.find(i => i.name === 'db.text.js');
 
-      const reqRaw = this.jsonpLoad(assetRaw);
-      const reqHtml = this.jsonpLoad(assetHtml);
-      const reqText = this.jsonpLoad(assetText);
-
-      const dataRaw = await reqRaw;
-      const dataHtml = await reqHtml;
-      const dataText = await reqText;
-
-      this.hash = dataRaw.head.sha;
-      const tags: RenderedETItem[] = [];
-      dataRaw.data.forEach(namespaceRaw => {
-        const namespaceHtml = dataHtml.data.find(ns => ns.namespace === namespaceRaw.namespace);
-        const namespaceText = dataText.data.find(ns => ns.namespace === namespaceRaw.namespace);
-        for (const raw in namespaceRaw.data) {
-          if (namespaceRaw.data.hasOwnProperty(raw)) {
-            const elementRaw = namespaceRaw.data[raw];
-            const elementHtml = namespaceHtml.data[raw];
-            const elementText = namespaceText.data[raw];
-            tags.push({
-              ...elementRaw,
-              renderedIntro: elementHtml.intro,
-              renderedLinks: elementHtml.links,
-              renderedName: elementHtml.name,
-              textIntro: elementText.intro,
-              textLinks: elementText.links,
-              textName: elementText.name,
-              raw,
-              namespace: namespaceRaw.namespace,
-            });
-          }
-        }
-      });
-      this.tags = tags;
-      localStorage.setItem(EH_TAG_DATA, JSON.stringify(tags));
-      localStorage.setItem(EH_TAG_DATA_HASH, release.target_commitish);
-      return tags;
-    } catch (e) {
-      console.error(e);
+    const assetRaw = release.assets.find(i => i.name === 'db.raw.js');
+    const assetHtml = release.assets.find(i => i.name === 'db.html.js');
+    const assetText = release.assets.find(i => i.name === 'db.text.js');
+    if (!assetRaw || !assetHtml || !assetText) {
+      throw new Error('Github release asset not found!');
     }
+
+    const reqRaw = this.jsonpLoad(assetRaw);
+    const reqHtml = this.jsonpLoad(assetHtml);
+    const reqText = this.jsonpLoad(assetText);
+
+    const dataRaw = await reqRaw;
+    const dataHtml = await reqHtml;
+    const dataText = await reqText;
+
+    this.hash = dataRaw.head.sha;
+    const tags: RenderedETItem[] = [];
+    dataRaw.data.forEach(namespaceRaw => {
+      const namespaceHtml = dataHtml.data.find(ns => ns.namespace === namespaceRaw.namespace) as ETNamespace;
+      const namespaceText = dataText.data.find(ns => ns.namespace === namespaceRaw.namespace) as ETNamespace;
+      for (const raw in namespaceRaw.data) {
+        if (namespaceRaw.data.hasOwnProperty(raw)) {
+          const elementRaw = namespaceRaw.data[raw];
+          const elementHtml = namespaceHtml.data[raw];
+          const elementText = namespaceText.data[raw];
+          tags.push({
+            ...elementRaw,
+            renderedIntro: elementHtml.intro,
+            renderedLinks: elementHtml.links,
+            renderedName: elementHtml.name,
+            textIntro: elementText.intro,
+            textLinks: elementText.links,
+            textName: elementText.name,
+            raw,
+            namespace: namespaceRaw.namespace,
+          });
+        }
+      }
+    });
+    this.tags = tags;
+    localStorage.setItem(EH_TAG_DATA, JSON.stringify(tags));
+    localStorage.setItem(EH_TAG_DATA_HASH, release.target_commitish);
+    return tags;
   }
 
   // https://ehtagconnector.azurewebsites.net/api/database
@@ -165,10 +169,17 @@ export class EhTagConnectorService {
     private http: HttpClient,
     private endpoints: ApiEndpointService,
   ) {
-    this.hash = localStorage.getItem(EH_TAG_HASH);
+    this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
     const data = localStorage.getItem(EH_TAG_DATA);
     if (data) {
-      this.tags = JSON.parse(data);
+      try {
+        const tags = JSON.parse(data);
+        if (Array.isArray(tags)) {
+          this.tags = tags;
+        }
+      } catch (ex) {
+        console.log(ex);
+      }
     }
   }
 }
