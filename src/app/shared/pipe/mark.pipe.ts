@@ -18,16 +18,25 @@ function escapeHtml(unsafe: string | null) {
 
 export function regexFromSearch(search: string | null) {
   if (!search) {
-    return null;
+    return { regex: null, isRegex: false };
   }
   if (search.startsWith('/') && search.endsWith('/') && search.length > 2) {
     try {
-      return new RegExp(search.substring(1, search.length - 1), 'g');
+      return {
+        regex: new RegExp(search.substring(1, search.length - 1), 'g'),
+        isRegex: true,
+      };
     } catch {
-      return new RegExp(escapeStringRegexp(search), 'g');
+      return {
+        regex: new RegExp(escapeStringRegexp(search), 'g'),
+        isRegex: false,
+      };
     }
   }
-  return new RegExp(escapeStringRegexp(search), 'g');
+  return {
+    regex: new RegExp(escapeStringRegexp(search), 'g'),
+    isRegex: false,
+  };
 }
 
 @Pipe({
@@ -41,7 +50,7 @@ export class MarkPipe implements PipeTransform {
     if (!search && !inputAsHtml) {
       return value;
     }
-    const regexp = regexFromSearch(search);
+    const regexp = regexFromSearch(search).regex;
     if (inputAsHtml) {
       const markNodes = (elem: Element) => {
         if (elem) {

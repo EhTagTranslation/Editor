@@ -1,11 +1,16 @@
 <div #root class="page-box mat-elevation-z8">
   <header>
-    <mat-form-field>
+    <mat-form-field id="search">
       <mat-label>
         <mat-icon matPrefix>search</mat-icon>搜索
       </mat-label>
       <input [ngModel]="search | async" (ngModelChange)="navigateParam({search: $event, pageIndex: 0})" matInput
         placeholder="string or /regex/" type="search">
+      <span *ngIf="(usingRegex | async) && (search | async)" matSuffix class="mat-hint" matTooltip="正在使用正则表达式进行匹配"
+        matTooltipPosition="above">.*</span>
+      <span *ngIf="!(usingRegex | async) && (search | async)" matSuffix class="mat-hint" matTooltip="正在使用普通文本进行匹配"
+        matTooltipPosition="above">ab</span>
+      <span *ngIf="!(search | async)" matSuffix class="mat-hint"></span>
     </mat-form-field>
     <mat-chip-list class="filter-list">
       <mat-chip *ngIf="ns | async" [removable]="true" [selectable]="false" (removed)="setNs()">
@@ -68,7 +73,7 @@
     </ng-container>
 
     <ng-container matColumnDef="links">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header  class="text">链接</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">链接</th>
       <td mat-cell *matCellDef="let row">
         <div [innerHTML]="row.renderedLinks | mark: (search | async): true"></div>
       </td>
@@ -81,9 +86,11 @@
           <mat-icon>add_circle</mat-icon>
         </button></th>
       <td mat-cell *matCellDef="let row">
-        <button [disabled]="editableNs.indexOf(row.namespace) < 0" [matTooltip]="(editableNs.indexOf(row.namespace) < 0) ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改' : '编辑'" matTooltipPosition="right"
-          matTooltipShowDelay="500" mat-icon-button class="mat-accent"
-          [routerLink]="[ '/edit', row.namespace, row.raw ]" [queryParams]="{ name: row.name, intro: row.intro, links: row.links }">
+        <button [disabled]="editableNs.indexOf(row.namespace) < 0"
+          [matTooltip]="(editableNs.indexOf(row.namespace) < 0) ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改' : '编辑'"
+          matTooltipPosition="right" matTooltipShowDelay="500" mat-icon-button class="mat-accent"
+          [routerLink]="[ '/edit', row.namespace, row.raw ]"
+          [queryParams]="{ name: row.name, intro: row.intro, links: row.links }">
           <mat-icon>edit</mat-icon>
         </button>
       </td>

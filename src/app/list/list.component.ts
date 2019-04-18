@@ -46,7 +46,8 @@ export class ListComponent implements OnInit {
   pageIndex: Observable<number>;
   loading = false;
   displayedColumns: Observable<ReadonlyArray<string>>;
-  tags: Subject<ReadonlyArray<RenderedETItem>> = new Subject();
+  tags = new Subject<ReadonlyArray<RenderedETItem>>();
+  usingRegex = new Subject<boolean>();
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
@@ -140,12 +141,13 @@ export class ListComponent implements OnInit {
     if (ns) {
       data = data.filter(v => v.namespace === ns);
     }
-    if (regex) {
+    this.usingRegex.next(regex.isRegex);
+    if (regex.regex) {
       data = data.filter(v => (
-        v.textIntro.search(regex) !== -1 ||
-        v.textName.search(regex) !== -1 ||
-        v.textLinks.search(regex) !== -1 ||
-        v.raw.search(regex) !== -1
+        v.textIntro.search(regex.regex) !== -1 ||
+        v.textName.search(regex.regex) !== -1 ||
+        v.textLinks.search(regex.regex) !== -1 ||
+        v.raw.search(regex.regex) !== -1
       ));
     }
     return data;
