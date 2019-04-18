@@ -1,90 +1,92 @@
-<div #root class="page-box mat-elevation-z8">
-  <header>
-    <ng-container *ngIf="create | async; else editHeader">创建标签</ng-container>
-    <ng-template #editHeader>修改标签</ng-template>
-    <span style="flex: 1 1 auto;"></span>
-    <button mat-flat-button [disabled]="(rendered.loading | async)" (click)="preview()">
-      <ng-container *ngIf="!(rendered.loading | async); else rendering">预览</ng-container>
-      <ng-template #rendering>
-        <mat-spinner class="loading" [diameter]="24"></mat-spinner>
-      </ng-template>
-    </button>
-    <button mat-flat-button color="accent">提交</button>
-  </header>
-  <section>
-    <div id="form-container">
-      <form [formGroup]="tagForm" autocomplete="off">
-        <mat-form-field>
-          <mat-label>命名空间</mat-label>
-          <mat-select formControlName="ns" required>
-            <mat-option *ngFor="let ns of nsOptions" [value]="ns">
-              {{ns}}
-            </mat-option>
-          </mat-select>
-          <mat-hint *ngIf="enabled('ns')">标签所在的命名空间</mat-hint>
-          <mat-hint *ngIf="!enabled('ns')">修改标签时无法更改此项</mat-hint>
-          <mat-error *ngIf="hasError('ns', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
-              href="https://github.com/ehtagtranslation/Database/issues" target="_blank">提交 ISSUE 讨论</a>或<a
-              [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + value('ns') + '.md'"
-              target="_blank">通过 PR 修改</a>
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>原始</mat-label>
-          <input matInput formControlName="raw" required />
-          <mat-hint *ngIf="enabled('raw')">输入原始的标签内容</mat-hint>
-          <mat-hint *ngIf="!enabled('raw')">修改标签时无法更改此项</mat-hint>
-          <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
-          <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母
-          </mat-error>
-          <mat-error *ngIf="hasError('raw','pattern', [ 'minlength', 'required' ])">
-            不能以空格开始或结束</mat-error>
-          <mat-error *ngIf="hasError('raw', 'raw', [ 'pattern', 'minlength', 'required' ])">
-            只能包含字母、数字、空格、'.' 和 '-'</mat-error>
-        </mat-form-field>
-        <mat-form-field class="markdown">
-          <mat-label>名称</mat-label>
-          <input matInput formControlName="name" required>
-          <mat-hint>输入标签的中文翻译</mat-hint>
-          <mat-error *ngIf="hasError('name', [ 'pattern', 'required' ])">必须填写</mat-error>
-        </mat-form-field>
-        <mat-form-field class="markdown">
-          <mat-label>描述</mat-label>
-          <textarea matInput formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-          <mat-hint>输入标签的描述</mat-hint>
-        </mat-form-field>
-        <mat-form-field class="markdown">
-          <mat-label>链接</mat-label>
-          <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-          <mat-hint>输入标签的相关链接</mat-hint>
-        </mat-form-field>
-      </form>
-    </div>
-    <div id="preview-container">
-      <div id="preview-row1">
+<div class="page-box mat-elevation-z8">
+  <div id="root">
+    <header>
+      <ng-container *ngIf="create | async; else editHeader">创建标签</ng-container>
+      <ng-template #editHeader>修改标签</ng-template>
+      <span style="flex: 1 1 auto;"></span>
+      <button mat-flat-button [disabled]="(rendered.loading | async)" (click)="preview()">
+        <ng-container *ngIf="!(rendered.loading | async); else rendering">预览</ng-container>
+        <ng-template #rendering>
+          <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+        </ng-template>
+      </button>
+      <button mat-flat-button color="accent">提交</button>
+    </header>
+    <section>
+      <div id="form-container">
+        <form [formGroup]="tagForm" autocomplete="off">
+          <mat-form-field>
+            <mat-label>命名空间</mat-label>
+            <mat-select formControlName="ns" required>
+              <mat-option *ngFor="let ns of nsOptions" [value]="ns">
+                {{ns}}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="enabled('ns')">标签所在的命名空间</mat-hint>
+            <mat-hint *ngIf="!enabled('ns')">修改标签时无法更改此项</mat-hint>
+            <mat-error *ngIf="hasError('ns', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
+                href="https://github.com/ehtagtranslation/Database/issues" target="_blank">提交 ISSUE 讨论</a>或<a
+                [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + value('ns') + '.md'"
+                target="_blank">通过 PR 修改</a>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>原始</mat-label>
+            <input matInput formControlName="raw" required />
+            <mat-hint *ngIf="enabled('raw')">输入原始的标签内容</mat-hint>
+            <mat-hint *ngIf="!enabled('raw')">修改标签时无法更改此项</mat-hint>
+            <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
+            <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母
+            </mat-error>
+            <mat-error *ngIf="hasError('raw','pattern', [ 'minlength', 'required' ])">
+              不能以空格开始或结束</mat-error>
+            <mat-error *ngIf="hasError('raw', 'raw', [ 'pattern', 'minlength', 'required' ])">
+              只能包含字母、数字、空格、'.' 和 '-'</mat-error>
+          </mat-form-field>
+          <mat-form-field class="markdown">
+            <mat-label>名称</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-hint>输入标签的中文翻译</mat-hint>
+            <mat-error *ngIf="hasError('name', [ 'pattern', 'required' ])">必须填写</mat-error>
+          </mat-form-field>
+          <mat-form-field class="markdown">
+            <mat-label>描述</mat-label>
+            <textarea matInput formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
+            <mat-hint>输入标签的描述</mat-hint>
+          </mat-form-field>
+          <mat-form-field class="markdown">
+            <mat-label>链接</mat-label>
+            <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
+            <mat-hint>输入标签的相关链接</mat-hint>
+          </mat-form-field>
+        </form>
+      </div>
+      <div id="preview-container">
+        <div id="preview-row1">
+          <mat-card>
+            <mat-card-subtitle>原始</mat-card-subtitle>
+            <mat-card-content [innerHtml]="inputs.raw | async"></mat-card-content>
+          </mat-card>
+          <mat-card>
+            <mat-card-subtitle>名称
+              <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
+            </mat-card-subtitle>
+            <mat-card-content [innerHtml]="rendered.name | async | mark: '': true"></mat-card-content>
+          </mat-card>
+        </div>
         <mat-card>
-          <mat-card-subtitle>原始</mat-card-subtitle>
-          <mat-card-content [innerHtml]="inputs.raw | async"></mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-subtitle>名称
+          <mat-card-subtitle>描述
             <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
           </mat-card-subtitle>
-          <mat-card-content [innerHtml]="rendered.name | async | mark: '': true"></mat-card-content>
+          <mat-card-content [innerHtml]="rendered.intro | async | mark: '': true"></mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-subtitle>链接
+            <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
+          </mat-card-subtitle>
+          <mat-card-content [innerHtml]="rendered.links | async | mark: '': true"></mat-card-content>
         </mat-card>
       </div>
-      <mat-card>
-        <mat-card-subtitle>描述
-          <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
-        </mat-card-subtitle>
-        <mat-card-content [innerHtml]="rendered.intro | async | mark: '': true"></mat-card-content>
-      </mat-card>
-      <mat-card>
-        <mat-card-subtitle>链接
-          <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
-        </mat-card-subtitle>
-        <mat-card-content [innerHtml]="rendered.links | async | mark: '': true"></mat-card-content>
-      </mat-card>
-    </div>
-  </section>
+    </section>
+  </div>
 </div>
