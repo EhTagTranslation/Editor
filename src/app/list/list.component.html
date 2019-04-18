@@ -41,7 +41,7 @@
       <td mat-cell *matCellDef="let row">
         <div>
           <a *ngIf="row.namespace === 'rows'; else notRow;" (click)="setNs(row.raw)" [routerLink]="[ '/list', row.raw ]"
-            replaceUrl [innerHTML]="row.raw | mark: (search | async)"></a>
+            [innerHTML]="row.raw | mark: (search | async)"></a>
           <ng-template #notRow>
             <span [innerHTML]="row.raw | mark: (search | async)"></span>
           </ng-template>
@@ -67,7 +67,7 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">命名空间</th>
       <td mat-cell *matCellDef="let row">
         <div>
-          <a (click)="setNs(row.namespace)" [routerLink]="[ '/list', row.namespace ]" replaceUrl>{{row.namespace}}</a>
+          <a (click)="setNs(row.namespace)" [routerLink]="[ '/list', row.namespace ]">{{row.namespace}}</a>
         </div>
       </td>
     </ng-container>

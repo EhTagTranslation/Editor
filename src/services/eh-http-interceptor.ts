@@ -24,7 +24,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
   }
 
   private handleEag(response: HttpResponseBase) {
-    if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnector())) { return; }
+    if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) { return; }
     const etagV = response.headers.get('etag');
     if (!etagV) { return; }
     // `W/` might be added by some CDN
@@ -49,7 +49,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
       });
     }
 
-    if (req.url.startsWith(this.endpoints.ehTagConnector())) {
+    if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
       const mod: Parameters<typeof req.clone>[0] = {
         setHeaders: {}
       };

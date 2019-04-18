@@ -2,13 +2,22 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
 import { filter, map, merge, tap } from 'rxjs/operators';
-import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem } from '../interfaces/ehtranslation';
+import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem, RenderedETTag } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 const EH_TAG_DATA = 'eh-tag-data';
 const EH_TAG_DATA_HASH = 'eh-tag-data-hash';
+type ApiFormat = 'raw' | 'html' | 'ast' | 'text';
+
+
+const normalizeCache = {
+  raw: new Map<string, string>(),
+  html: new Map<string, string>(),
+  text: new Map<string, string>(),
+  ast: new Map<string, any>(),
+};
 
 @Injectable({
   providedIn: 'root'
@@ -37,16 +46,16 @@ export class EhTagConnectorService {
     localStorage.setItem(EH_TAG_HASH, newValue || '');
   }
 
-  private getEndpoint(item: NonNullable<ETKey>) {
-    return this.endpoints.ehTagConnector(`${item.namespace}/${item.raw.trim().toLowerCase()}?format=raw.json`);
+  private getEndpoint(item: ETKey, format: ApiFormat = 'raw') {
+    return this.endpoints.ehTagConnectorDb(`${item.namespace}/${item.raw.trim().toLowerCase()}?format=${format}.json`);
   }
 
-  async getTag(item: NonNullable<ETKey>): Promise<ETItem> {
+  async getTag(item: ETKey): Promise<ETItem> {
     const endpoint = this.getEndpoint(item);
     return await this.http.get<ETItem>(endpoint).toPromise();
   }
 
-  async addTag(item: NonNullable<ETItem>): Promise<ETItem> {
+  async addTag(item: ETItem): Promise<ETItem> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
       intro: item.intro,
@@ -56,7 +65,32 @@ export class EhTagConnectorService {
     return await this.http.post<ETItem>(endpoint, payload).toPromise();
   }
 
-  async modifyTag(item: NonNullable<ETItem>): Promise<ETItem> {
+  async normalizeTag(item: ETTag, format: ApiFormat = 'raw'): Promise<ETTag> {
+    const payload: ETTag = {
+      intro: item.intro,
+      name: item.name,
+      links: item.links,
+    };
+    const cache = normalizeCache[format];
+    const cachedname = cache.get(item.name);
+    const cachedintro = cache.get(item.intro);
+    const cachedlinks = cache.get(item.links);
+    if (typeof cachedintro !== 'undefined' && typeof cachedname !== 'undefined' && typeof cachedlinks !== 'undefined') {
+      return {
+        intro: cachedintro,
+        name: cachedname,
+        links: cachedlinks,
+      };
+    }
+    const endpoint = this.endpoints.ehTagConnectorTools('normalize') + `?format=${format}.json`;
+    const result = await this.http.post<ETTag>(endpoint, payload).toPromise();
+    cache.set(item.name, result.name);
+    cache.set(item.intro, result.intro);
+    cache.set(item.links, result.links);
+    return result;
+  }
+
+  async modifyTag(item: ETItem): Promise<ETItem> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
       intro: item.intro,
@@ -66,13 +100,13 @@ export class EhTagConnectorService {
     return await this.http.put<ETItem>(endpoint, payload).toPromise();
   }
 
-  async deleteTag(item: NonNullable<ETKey>): Promise<void> {
+  async deleteTag(item: ETKey): Promise<void> {
     const endpoint = this.getEndpoint(item);
     return await this.http.delete<void>(endpoint).toPromise();
   }
 
   async getHash() {
-    return await this.http.head<void>(this.endpoints.ehTagConnector()).toPromise();
+    return await this.http.head<void>(this.endpoints.ehTagConnectorDb()).toPromise();
   }
 
   private async jsonpLoad(asset: GithubReleaseAsset) {

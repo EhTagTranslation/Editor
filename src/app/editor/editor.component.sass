@@ -2,13 +2,17 @@
 .page-box
   padding: 6px
   header
+    display: flex
     user-select: none
-    margin: 18px
+    margin: 18px 18px 0 18px
     font-size: 24px
+    button
+      margin: 6px
   section
     position: relative
+    display: flex
     #form-container
-      width: 50%
+      width: 45%
       form
         user-select: none
         mat-form-field
@@ -23,19 +27,21 @@
           margin: 18px
 
     #preview-container
-      $spaceing: 18px
-      width: 50%
-      top: -$spaceing
-      height: calc(100% + #{$spaceing} * 2)
-      position: absolute
-      right: 0
+      width: 55%
       mat-card
-        margin: $spaceing
+        margin: 18px
         mat-card-subtitle
           user-select: none
-
-  footer
-    margin: 12px
-    text-align: right
-    button
-      margin: 6px
+          .loading
+            margin-left: 8px
+      #preview-row1
+        display: flex
+        margin: 9px
+        mat-card
+          width: 50%
+          margin: 9px
+          
+            
+button, mat-card-subtitle
+  .loading
+    display: inline-block

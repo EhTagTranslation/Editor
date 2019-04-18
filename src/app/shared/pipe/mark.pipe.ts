@@ -46,7 +46,9 @@ export function regexFromSearch(search: string | null) {
 export class MarkPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) { }
 
-  transform(value: string, search: string, inputAsHtml?: boolean): string | SafeHtml {
+  transform(value: string | null, search: string, inputAsHtml?: boolean): string | SafeHtml {
+    value = value || '';
+    console.log('mark', value);
     if (!search && !inputAsHtml) {
       return value;
     }

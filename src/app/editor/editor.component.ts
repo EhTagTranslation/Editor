@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
 import { ErrorStateMatcher } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
-
+import * as Bluebird from 'bluebird';
 type Fields = Exclude<keyof ETItem, 'namespace'> | 'ns';
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
@@ -17,14 +17,16 @@ function legalRaw(control: AbstractControl): ValidationErrors | null {
   if (!control.touched && !control.dirty) {
     return null;
   }
-  return isValidRaw(String(control && control.value)) ? null : { raw: 'only a-zA-Z0-9. -' };
+  const value = String((control && control.value) || '');
+  return isValidRaw(value) ? null : { raw: 'only a-zA-Z0-9. -' };
 }
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
   if (!control) {
     return null;
   }
-  return editableNs.indexOf(String(control && control.value) as ETNamespaceName) >= 0 ? null : { editableNs: 'please use PR' };
+  const value = String((control && control.value) || '');
+  return editableNs.indexOf(value as ETNamespaceName) >= 0 ? null : { editableNs: 'please use PR' };
 }
 
 @Component({
@@ -71,9 +73,16 @@ export class EditorComponent implements OnInit {
   original: {
     ns: Observable<ETNamespaceName>;
     raw: Observable<string>;
-    // text: Observable<string>;
+    // name: Observable<string>;
     // intro: Observable<string>;
     // links: Observable<string>;
+  };
+
+  rendered = {
+    loading: new Subject<boolean>(),
+    name: new Subject<string>(),
+    intro: new Subject<string>(),
+    links: new Subject<string>(),
   };
 
   ngOnInit() {
@@ -149,11 +158,29 @@ export class EditorComponent implements OnInit {
   }
   value(field: Fields) {
     const form = this.getControl(field);
-    return form.value;
+    return form.value || '';
   }
 
   enabled(field: Fields) {
     const form = this.getControl(field);
     return form.enabled;
+  }
+
+  async preview() {
+    this.rendered.loading.next(true);
+    try {
+      const delay = Bluebird.delay(300);
+      const result = await this.ehTagConnector.normalizeTag({
+        name: this.value('name'),
+        intro: this.value('intro'),
+        links: this.value('links'),
+      }, 'html');
+      this.rendered.name.next(result.name);
+      this.rendered.intro.next(result.intro);
+      this.rendered.links.next(result.links);
+      await delay;
+    } finally {
+      this.rendered.loading.next(false);
+    }
   }
 }
