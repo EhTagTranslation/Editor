@@ -8,6 +8,7 @@ import { map, tap, distinctUntilChanged } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'src/services/route.service';
 import { DebugService } from 'src/services/debug.service';
+import { TitleService } from 'src/services/title.service';
 
 
 function compare(a: any, b: any, isAsc: boolean) {
@@ -39,6 +40,7 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: RouteService,
     private debug: DebugService,
+    private title: TitleService,
   ) { }
   @ViewChild('root') root: ElementRef<HTMLDivElement>;
 
@@ -74,7 +76,7 @@ export class ListComponent implements OnInit {
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
     this.ns = this.router.initParam(this.route, 'ns', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
-    this.search = this.router.initQueryParam(this.route, 'search', s => s || '');
+    this.search = this.router.initQueryParam(this.route, 'search', s => s || '', s => this.title.setTitle(s));
     this.showImg = this.router.initQueryParam(this.route, 'showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
       if (val === 'all') {
         addStyle.innerHTML = '';

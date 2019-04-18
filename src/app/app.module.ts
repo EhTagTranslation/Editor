@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -32,6 +32,7 @@ import { AboutComponent } from './about/about.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TitleService } from 'src/services/title.service';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     ReactiveFormsModule,
     TextFieldModule,
   ],
-  providers: [ehHttpInterceptorProvider],
+  providers: [ehHttpInterceptorProvider, TitleService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

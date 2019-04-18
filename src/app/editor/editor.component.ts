@@ -10,6 +10,7 @@ import { map, tap } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
 import { DebugService } from 'src/services/debug.service';
 import { ReadVarExpr } from '@angular/compiler';
+import { TitleService } from 'src/services/title.service';
 type Fields = Exclude<keyof ETItem, 'namespace'> | 'ns';
 const parser = new DOMParser();
 
@@ -43,7 +44,8 @@ export class EditorComponent implements OnInit {
     private ehTagConnector: EhTagConnectorService,
     private route: ActivatedRoute,
     private router: RouteService,
-    private debug: DebugService, ) { }
+    private debug: DebugService,
+    private title: TitleService, ) { }
   tagForm = new FormGroup({
     raw: new FormControl('', [
       Validators.required,
@@ -96,7 +98,14 @@ export class EditorComponent implements OnInit {
         v => v ? this.getControl('ns').setValue(v) : null),
       raw: this.router.initParam(this.route, 'raw',
         v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
-        v => v ? this.getControl('raw').setValue(v) : null),
+        v => {
+          if (v) {
+            this.getControl('raw').setValue(v);
+            this.title.setTitle('修改标签 - ' + v);
+          } else {
+            this.title.setTitle('新建标签');
+          }
+        }),
     };
     this.create = this.original.raw.pipe(map(v => !isValidRaw(v)), tap(v => {
       if (v) {
