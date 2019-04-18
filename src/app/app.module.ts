@@ -21,7 +21,8 @@ import {
   MatTooltipModule,
   MatChipsModule,
   MatButtonToggleModule,
-  MatSelectModule
+  MatSelectModule,
+  MatCardModule
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
@@ -29,6 +30,7 @@ import { EditorComponent } from './editor/editor.component';
 import { AboutComponent } from './about/about.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MarkPipe } from './shared/pipe/mark.pipe';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @NgModule({
   declarations: [
@@ -46,21 +48,23 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
     HttpClientModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatCardModule,
     MatCheckboxModule,
-    MatToolbarModule,
+    MatChipsModule,
     MatMenuModule,
-    MatTableModule,
+    MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatPaginatorModule,
-    MatFormFieldModule,
+    MatProgressSpinnerModule,
     MatSortModule,
     MatSelectModule,
-    MatChipsModule,
-    MatProgressSpinnerModule,
+    MatTableModule,
+    MatToolbarModule,
     MatTooltipModule,
     FormsModule,
     ReactiveFormsModule,
+    TextFieldModule,
   ],
   providers: [ehHttpInterceptorProvider],
   bootstrap: [AppComponent]

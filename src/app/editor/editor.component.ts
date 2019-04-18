@@ -3,12 +3,12 @@ import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
 import { Observable } from 'rxjs';
-import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs } from 'src/interfaces/ehtranslation';
+import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
 import { ErrorStateMatcher } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
 
-type Fields = 'raw' | 'ns' | 'text' | 'intro' | 'links';
+type Fields = Exclude<keyof ETItem, 'namespace'> | 'ns';
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
   if (!control) {
@@ -22,9 +22,6 @@ function legalRaw(control: AbstractControl): ValidationErrors | null {
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
   if (!control) {
-    return null;
-  }
-  if (!control.touched && !control.dirty) {
     return null;
   }
   return editableNs.indexOf(String(control && control.value) as ETNamespaceName) >= 0 ? null : { editableNs: 'please use PR' };
@@ -51,36 +48,44 @@ export class EditorComponent implements OnInit {
     ns: new FormControl('', [
       isEditableNs,
     ]),
-    text: new FormControl('', [
+    name: new FormControl('', [
       Validators.required,
       Validators.pattern(/(\S\s*){1,}/),
     ]),
     intro: new FormControl('', []),
     links: new FormControl('', []),
   });
-  ns: Observable<ETNamespaceName>;
 
   nsOptions = Object.getOwnPropertyNames(ETNamespaceEnum)
     .filter(v => isNaN(Number(v))) as ETNamespaceName[];
-  raw: Observable<string>;
-  create: Observable<boolean>;
 
+  create: Observable<boolean>;
   inputs: {
     ns: Observable<ETNamespaceName | null>;
     raw: Observable<string>;
-    text: Observable<string>;
+    name: Observable<string>;
     intro: Observable<string>;
     links: Observable<string>;
   };
 
+  original: {
+    ns: Observable<ETNamespaceName>;
+    raw: Observable<string>;
+    // text: Observable<string>;
+    // intro: Observable<string>;
+    // links: Observable<string>;
+  };
+
   ngOnInit() {
-    this.ns = this.router.initParam(this.route, 'ns',
-      v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist',
-      v => v ? this.getControl('ns').setValue(v) : null);
-    this.raw = this.router.initParam(this.route, 'raw',
-      v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
-      v => v ? this.getControl('raw').setValue(v) : null);
-    this.create = this.raw.pipe(map(v => !isValidRaw(v)), tap(v => {
+    this.original = {
+      ns: this.router.initParam(this.route, 'ns',
+        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist',
+        v => v ? this.getControl('ns').setValue(v) : null),
+      raw: this.router.initParam(this.route, 'raw',
+        v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
+        v => v ? this.getControl('raw').setValue(v) : null),
+    };
+    this.create = this.original.raw.pipe(map(v => !isValidRaw(v)), tap(v => {
       if (v) {
         this.getControl('ns').enable();
         this.getControl('raw').enable();
@@ -94,16 +99,16 @@ export class EditorComponent implements OnInit {
         v => v && v in ETNamespaceEnum ? v as ETNamespaceName : null,
         v => v ? this.getControl('ns').setValue(v) : null),
       raw: this.router.initQueryParam(this.route, 'raw',
-        v => (v || '').trim(),
+        v => (v || ''),
         v => v ? this.getControl('raw').setValue(v) : null),
-      text: this.router.initQueryParam(this.route, 'text',
-        v => (v || '').trim(),
-        v => v ? this.getControl('text').setValue(v) : null),
+      name: this.router.initQueryParam(this.route, 'name',
+        v => (v || ''),
+        v => v ? this.getControl('name').setValue(v) : null),
       intro: this.router.initQueryParam(this.route, 'intro',
-        v => (v || '').trim(),
+        v => (v || ''),
         v => v ? this.getControl('intro').setValue(v) : null),
       links: this.router.initQueryParam(this.route, 'links',
-        v => (v || '').trim(),
+        v => (v || ''),
         v => v ? this.getControl('links').setValue(v) : null),
     };
     for (const key in this.tagForm.controls) {
