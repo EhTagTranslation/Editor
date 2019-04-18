@@ -13,16 +13,26 @@ export class UserComponent implements OnInit {
 
   user: GithubUser | null;
 
-  async ngOnInit() {
+  loading = 0;
+
+  private getUserInfo() {
     if (this.github.token) {
-      this.user = await this.github.getCurrentUser();
+      this.loading++;
+      this.github.getCurrentUser().subscribe(u => this.user = u, undefined, () => this.loading--);
     }
   }
 
+  async ngOnInit() {
+    this.getUserInfo();
+  }
+
   async logIn() {
-    if (await this.github.logInIfNeeded()) {
-      this.user = await this.github.getCurrentUser();
-    }
+    this.loading++;
+    this.github.logInIfNeeded().subscribe(login => {
+      if (login) {
+        this.getUserInfo();
+      }
+    }, undefined, () => this.loading--);
   }
 
   logOut() {

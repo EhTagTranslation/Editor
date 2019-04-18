@@ -76,12 +76,12 @@
 
     <ng-container matColumnDef="handle">
       <th mat-header-cell *matHeaderCellDef style="width:40px;">
-        <button matTooltip="新增" matTooltipPosition="left" matTooltipShowDelay="500" mat-icon-button class="mat-accent"
+        <button matTooltip="新增" matTooltipPosition="right" matTooltipShowDelay="500" mat-icon-button class="mat-accent"
           [routerLink]="[ '/edit', ((ns | async) || 'aritst'), '*new' ]">
           <mat-icon>add_circle</mat-icon>
         </button></th>
       <td mat-cell *matCellDef="let row">
-        <button [disabled]="editableNs.indexOf(row.namespace) < 0" [matTooltip]="(editableNs.indexOf(row.namespace) < 0) ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改' : '编辑'" matTooltipPosition="left"
+        <button [disabled]="editableNs.indexOf(row.namespace) < 0" [matTooltip]="(editableNs.indexOf(row.namespace) < 0) ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改' : '编辑'" matTooltipPosition="right"
           matTooltipShowDelay="500" mat-icon-button class="mat-accent"
           [routerLink]="[ '/edit', row.namespace, row.raw ]" [queryParams]="{ name: row.name, intro: row.intro, links: row.links }">
           <mat-icon>edit</mat-icon>

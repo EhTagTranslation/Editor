@@ -1,10 +1,12 @@
-<button class="user-button" mat-button *ngIf="user; else noUser" [matMenuTriggerFor]="userMenu">
+<button class="user-button" mat-button *ngIf="user && !loading" [matMenuTriggerFor]="userMenu">
   <img [src]="user?.avatar_url" />
   <span>{{user?.name}}</span>
 </button>
-<ng-template #noUser>
-  <button class="user-button" mat-button (click)="logIn()">登录</button>
-</ng-template>
+<button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">登录</button>
+<button class="user-button" mat-button *ngIf="loading">
+  <mat-spinner id="loading" [diameter]="32"></mat-spinner>
+  正在登录
+</button>
 
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-template matMenuContent>
