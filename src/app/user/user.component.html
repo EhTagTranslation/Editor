@@ -2,7 +2,8 @@
   <img [src]="user?.avatar_url" />
   <span>{{user?.name}}</span>
 </button>
-<button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">登录</button>
+<button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">
+  <span class="iconfont" style="font-size: 1.8em">&#xe709; </span> 登录</button>
 <button class="user-button" mat-button *ngIf="loading">
   <mat-spinner id="loading" [diameter]="32"></mat-spinner>
   正在登录

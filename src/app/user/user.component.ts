@@ -18,7 +18,7 @@ export class UserComponent implements OnInit {
   private getUserInfo() {
     if (this.github.token) {
       this.loading++;
-      this.github.getCurrentUser().subscribe(u => this.user = u, undefined, () => this.loading--);
+      this.github.getCurrentUser().subscribe(u => this.user = u, () => this.loading--, () => this.loading--);
     }
   }
 
@@ -32,7 +32,7 @@ export class UserComponent implements OnInit {
       if (login) {
         this.getUserInfo();
       }
-    }, undefined, () => this.loading--);
+    }, () => this.loading--, () => this.loading--);
   }
 
   logOut() {

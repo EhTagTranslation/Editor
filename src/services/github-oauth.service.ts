@@ -6,6 +6,7 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
 import { Observable, of, from, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { resolve } from 'bluebird';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
@@ -51,7 +52,13 @@ export class GithubOauthService {
       return of(null);
     }
     return this.httpClient.get<GithubUser>(this.endpoints.github('user'))
-      .pipe(catchError(_ => of(null)));
+      .pipe(catchError(error => {
+        if (error.status === 401 && this.token === token) {
+          // token is invalid.
+          this.setToken();
+        }
+        return of(null);
+      }));
   }
   /**
    * @returns `true` for succeed login, `false` if has been logged in.
@@ -65,14 +72,31 @@ export class GithubOauthService {
       `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${encodeURIComponent(callback.href)}`,
       windowName,
       'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720');
-    const promise = new Promise<string>((resolve, reject) => {
+    if (!authWindow) {
+      return throwError(new Error('Failed to open new window.'));
+    }
+
+    const authChecker = new Promise<void>(res => {
+      const authTick = setInterval(() => {
+        if (authWindow.closed) {
+          clearInterval(authTick);
+          res();
+        }
+      }, 500);
+    });
+
+    const promise = new Promise<string>((res, rej) => {
       const onMessage = (ev: MessageEvent) => {
         if (ev.source !== authWindow) {
           return;
         }
-        resolve(ev.data as string);
+        res(ev.data as string);
         window.removeEventListener('message', onMessage);
       };
+      authChecker.then(() => {
+        window.removeEventListener('message', onMessage);
+        rej(new Error('Auth window closed.'));
+      });
       window.addEventListener('message', onMessage);
     })
       .then(code => this.httpClient.get<TokenData>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`).toPromise())
