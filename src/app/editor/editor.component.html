@@ -5,7 +5,7 @@
   </header>
   <section>
     <div id="form-container">
-      <form [formGroup]="tagForm">
+      <form [formGroup]="tagForm" autocomplete="off">
         <mat-form-field>
           <mat-label>命名空间</mat-label>
           <mat-select formControlName="ns" required>
@@ -42,17 +42,13 @@
         </mat-form-field>
         <mat-form-field class="markdown">
           <mat-label>描述</mat-label>
-          <textarea matInput formControlName="intro"
-            cdkTextareaAutosize
-            cdkAutosizeMinRows="2"
+          <textarea matInput formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2"
             cdkAutosizeMaxRows="5"></textarea>
           <mat-hint>输入标签的描述</mat-hint>
         </mat-form-field>
         <mat-form-field class="markdown">
           <mat-label>链接</mat-label>
-          <textarea matInput formControlName="links"
-            cdkTextareaAutosize
-            cdkAutosizeMinRows="2"
+          <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"
             cdkAutosizeMaxRows="5"></textarea>
           <mat-hint>输入标签的相关链接</mat-hint>
         </mat-form-field>

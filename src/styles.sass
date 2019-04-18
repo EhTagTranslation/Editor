@@ -31,10 +31,9 @@ html
 a
   color: mat-color(map-get($candy-app-theme, primary))
   text-decoration: none
-  &[target='_blank']
+  &[href^='http://'], &[href^='https://']
     text-decoration: underline
   &:hover
-    text-decoration: underline
     color: mat-color(map-get($candy-app-theme, accent))
 img[ehimg]
   border: transparent solid

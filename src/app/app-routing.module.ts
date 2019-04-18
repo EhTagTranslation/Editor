@@ -10,6 +10,10 @@ const routes: Routes = [
     component: EditorComponent,
   },
   {
+    path: 'edit',
+    redirectTo: '/edit/artist/*new',
+  },
+  {
     path: 'list/:ns',
     component: ListComponent,
   },
