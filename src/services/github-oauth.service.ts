@@ -5,7 +5,7 @@ import { ETRepoInfo } from 'src/interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
 import { Observable, of, from, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
@@ -48,15 +48,10 @@ export class GithubOauthService {
   getCurrentUser() {
     const token = this.token;
     if (!token) {
-      return throwError(new Error('Need log in.'));
+      return of(null);
     }
     return this.httpClient.get<GithubUser>(this.endpoints.github('user'))
-      .pipe(tap(undefined, error => {
-        if (error.status === 401 && this.token === token) {
-          // token is invalid.
-          this.setToken();
-        }
-      }));
+      .pipe(catchError(_ => of(null)));
   }
   /**
    * @returns `true` for succeed login, `false` if has been logged in.

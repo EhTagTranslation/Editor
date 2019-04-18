@@ -8,7 +8,10 @@ import { ErrorStateMatcher } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
+import { DebugService } from 'src/services/debug.service';
+import { ReadVarExpr } from '@angular/compiler';
 type Fields = Exclude<keyof ETItem, 'namespace'> | 'ns';
+const parser = new DOMParser();
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
   if (!control) {
@@ -39,7 +42,8 @@ export class EditorComponent implements OnInit {
   constructor(
     private ehTagConnector: EhTagConnectorService,
     private route: ActivatedRoute,
-    private router: RouteService, ) { }
+    private router: RouteService,
+    private debug: DebugService, ) { }
   tagForm = new FormGroup({
     raw: new FormControl('', [
       Validators.required,

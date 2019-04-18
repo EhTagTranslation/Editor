@@ -1,12 +1,13 @@
 import { Injectable, ClassProvider, isDevMode } from '@angular/core';
-import { catchError, mergeMap, tap } from 'rxjs/operators';
+import { catchError, mergeMap, tap, retry, map, flatMap } from 'rxjs/operators';
 import {
   HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType, HttpErrorResponse, HttpResponseBase
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
 import { EhTagConnectorService } from './eh-tag-connector.service';
 import { ApiEndpointService } from './api-endpoint.service';
+import { DebugService } from './debug.service';
 
 @Injectable()
 export class EhHttpInterceptor implements HttpInterceptor {
@@ -15,13 +16,8 @@ export class EhHttpInterceptor implements HttpInterceptor {
     private githubOauth: GithubOauthService,
     private ehTagConnector: EhTagConnectorService,
     private endpoints: ApiEndpointService,
+    private debug: DebugService,
   ) { }
-
-  private static debugLog(category: string, data: any) {
-    // if (isDevMode()) {
-    //   console.log(category, data);
-    // }
-  }
 
   private handleEag(response: HttpResponseBase) {
     if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) { return; }
@@ -30,12 +26,21 @@ export class EhHttpInterceptor implements HttpInterceptor {
     // `W/` might be added by some CDN
     const etag = (etagV.match(/^(W\/)?"(\w+)"$/) || [])[2];
     if (etag) {
-      EhHttpInterceptor.debugLog('etag', etag);
       this.ehTagConnector.hash = etag;
     }
   }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  private handleError(response: HttpErrorResponse) {
+    if (!response.url) { return; }
+    if (response.url.startsWith(this.endpoints.github())) {
+      if (response.status === 400 || response.status === 401) {
+        // token is invalid
+        this.githubOauth.logOut();
+      }
+    }
+  }
+
+  private getReq(req: HttpRequest<any>) {
     let authReq = req;
     const token = this.githubOauth.token;
 
@@ -65,23 +70,29 @@ export class EhHttpInterceptor implements HttpInterceptor {
 
       authReq = req.clone(mod);
     }
+    return authReq;
+  }
 
-    EhHttpInterceptor.debugLog('req', authReq);
-    return next.handle(authReq).pipe(
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const r = of(req).pipe(
+      map(rawReq => this.getReq(rawReq)),
+      flatMap(authReq => next.handle(authReq)),
       tap(response => {
-        EhHttpInterceptor.debugLog('tap', response);
         if (response.type === HttpEventType.Response) {
           this.handleEag(response);
         }
       }),
       catchError(err => {
-        EhHttpInterceptor.debugLog('catchError', err);
+        this.debug.error('catchError', err);
         if (err.name === HttpErrorResponse.name) {
           this.handleEag(err);
+          this.handleError(err);
         }
         throw err;
-      })
+      }),
+      retry(1)
     );
+    return r;
   }
 }
 

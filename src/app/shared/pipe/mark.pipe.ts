@@ -48,7 +48,6 @@ export class MarkPipe implements PipeTransform {
 
   transform(value: string | null, search: string, inputAsHtml?: boolean): string | SafeHtml {
     value = value || '';
-    console.log('mark', value);
     if (!search && !inputAsHtml) {
       return value;
     }

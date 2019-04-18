@@ -7,6 +7,7 @@ import { ActivatedRoute, ParamMap, Router, Params } from '@angular/router';
 import { map, tap, distinctUntilChanged } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'src/services/route.service';
+import { DebugService } from 'src/services/debug.service';
 
 
 function compare(a: any, b: any, isAsc: boolean) {
@@ -37,6 +38,7 @@ export class ListComponent implements OnInit {
     private ehTagConnector: EhTagConnectorService,
     private route: ActivatedRoute,
     private router: RouteService,
+    private debug: DebugService,
   ) { }
   @ViewChild('root') root: ElementRef<HTMLDivElement>;
 
@@ -112,18 +114,18 @@ export class ListComponent implements OnInit {
     this.loading = true;
     this.ehTagConnector.getTags().then(tags => {
       this.tags.next(tags);
-    }).catch(console.log)
+    }).catch(this.debug.log.bind(this))
       .finally(() => this.loading = false);
   }
 
   private getPagedData(data: ReadonlyArray<RenderedETItem>, pageIndex: number, pageSize: number) {
-    console.log('paging');
+    this.debug.log('paging');
     const startIndex = pageIndex * pageSize;
     return data.slice(startIndex, startIndex + pageSize);
   }
 
   private getSortedData(data: ReadonlyArray<RenderedETItem>, sortBy: SortableKeys | null, sortDirection: SortDirection) {
-    console.log('sorting');
+    this.debug.log('sorting');
 
     if (!sortBy || !(sortBy in sortKeyMap) || sortDirection === '') {
       return data;
@@ -136,7 +138,7 @@ export class ListComponent implements OnInit {
   }
 
   private getFilteredData(data: ReadonlyArray<RenderedETItem>, ns: string | null, search: string) {
-    console.log('filtering');
+    this.debug.log('filtering');
     const regex = regexFromSearch(search);
     if (ns) {
       data = data.filter(v => v.namespace === ns);

@@ -69,6 +69,3 @@ if (!globalThis) {
     enumerable: false,
   });
 }
-
-import * as Promise from 'bluebird';
-globalThis.Promise = Promise;

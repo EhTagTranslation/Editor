@@ -5,6 +5,7 @@ import { filter, map, merge, tap } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem, RenderedETTag } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
+import { DebugService } from './debug.service';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 const EH_TAG_DATA = 'eh-tag-data';
@@ -23,6 +24,26 @@ const normalizeCache = {
   providedIn: 'root'
 })
 export class EhTagConnectorService {
+
+  // https://ehtagconnector.azurewebsites.net/api/database
+  constructor(
+    private http: HttpClient,
+    private endpoints: ApiEndpointService,
+    private debug: DebugService,
+  ) {
+    this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
+    const data = localStorage.getItem(EH_TAG_DATA);
+    if (data) {
+      try {
+        const tags = JSON.parse(data);
+        if (Array.isArray(tags)) {
+          this.tags = tags;
+        }
+      } catch (ex) {
+        this.debug.error(ex);
+      }
+    }
+  }
   hashChange: EventEmitter<string | null> = new EventEmitter();
   private hashStr: string | null;
   get hash() {
@@ -40,7 +61,7 @@ export class EhTagConnectorService {
   private tags: ReadonlyArray<RenderedETItem> | null;
 
   private onHashChange(oldValue: string | null, newValue: string | null) {
-    console.log(`hash: ${oldValue} -> ${newValue}`);
+    this.debug.log(`hash: ${oldValue} -> ${newValue}`);
     this.hashChange.emit(newValue);
     this.tags = null;
     localStorage.setItem(EH_TAG_HASH, newValue || '');
@@ -196,24 +217,5 @@ export class EhTagConnectorService {
     localStorage.setItem(EH_TAG_DATA, JSON.stringify(tags));
     localStorage.setItem(EH_TAG_DATA_HASH, release.target_commitish);
     return tags;
-  }
-
-  // https://ehtagconnector.azurewebsites.net/api/database
-  constructor(
-    private http: HttpClient,
-    private endpoints: ApiEndpointService,
-  ) {
-    this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
-    const data = localStorage.getItem(EH_TAG_DATA);
-    if (data) {
-      try {
-        const tags = JSON.parse(data);
-        if (Array.isArray(tags)) {
-          this.tags = tags;
-        }
-      } catch (ex) {
-        console.log(ex);
-      }
-    }
   }
 }
