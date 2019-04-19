@@ -11,9 +11,9 @@
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>
         </ng-template>
       </button>
-      <button mat-raised-button [disabled]="!(canSubmit | async)"
-        [matTooltip]="tagForm.invalid ? '请检查填写的内容' : !(github.tokenChange | async) ? '请先登录' : '' " (click)="submit()"
-        color="accent">
+      <button mat-raised-button [disabled]="(tagForm.invalid && tagForm.touched) || !(github.tokenChange | async)"
+        [matTooltip]="!(github.tokenChange | async) ? '请先登录' : tagForm.invalid ? '请检查填写的内容' : '' " (click)="submit()"
+        (focus)="preSubmit()" (mouseenter)="preSubmit()" color="accent">
         <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
         <ng-template #submittingspinner>
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>

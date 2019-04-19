@@ -94,7 +94,6 @@ export class EditorComponent implements OnInit {
   };
 
   submitting = new BehaviorSubject<boolean>(false);
-  canSubmit: Observable<boolean>;
 
   ngOnInit() {
     this.original = {
@@ -134,8 +133,6 @@ export class EditorComponent implements OnInit {
         v => (v || ''),
         v => v ? this.getControl('links').setValue(v) : null),
     };
-    this.canSubmit = combineLatest(this.github.tokenChange, this.tagForm.statusChanges)
-      .pipe(map(data => !!data[0] && !(this.tagForm.invalid && this.tagForm.touched)));
     for (const key in this.tagForm.controls) {
       if (this.tagForm.controls.hasOwnProperty(key)) {
         const element = this.tagForm.controls[key];
@@ -209,10 +206,9 @@ export class EditorComponent implements OnInit {
       this.rendered.loading.next(false);
     }
   }
-
-  async submit() {
+  preSubmit() {
     if (this.submitting.getValue()) {
-      return;
+      return false;
     }
     if (this.tagForm.invalid) {
       for (const key in this.tagForm.controls) {
@@ -221,6 +217,13 @@ export class EditorComponent implements OnInit {
           element.markAsTouched();
         }
       }
+      return false;
+    }
+    return true;
+  }
+
+  async submit() {
+    if (!this.preSubmit()) {
       return;
     }
     this.submitting.next(true);
