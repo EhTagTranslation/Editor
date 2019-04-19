@@ -4,7 +4,7 @@ import { GithubUser } from '../interfaces/github';
 import { ETRepoInfo } from 'src/interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
-import { Observable, of, from, throwError } from 'rxjs';
+import { Observable, of, from, throwError, BehaviorSubject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { resolve } from 'bluebird';
 
@@ -31,7 +31,7 @@ export class GithubOauthService {
     }
   }
 
-  tokenChange: EventEmitter<string | null> = new EventEmitter();
+  tokenChange = new BehaviorSubject<string | undefined | null>(this.token || undefined);
   get token() {
     return localStorage.getItem(localStorageKey);
   }
@@ -39,10 +39,10 @@ export class GithubOauthService {
   private setToken(value?: string) {
     if (!value || !value.match(/^\w+$/)) {
       localStorage.removeItem(localStorageKey);
-      this.tokenChange.emit(null);
+      this.tokenChange.next(null);
     } else {
       localStorage.setItem(localStorageKey, value);
-      this.tokenChange.emit(value);
+      this.tokenChange.next(value);
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
-import { fromEvent, Observable, Subject, from, Subscriber, of } from 'rxjs';
+import { fromEvent, Observable, Subject, from, Subscriber, of, BehaviorSubject } from 'rxjs';
 import { filter, map, merge, tap, catchError } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem, RenderedETTag } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
@@ -39,10 +39,9 @@ export class EhTagConnectorService {
     private endpoints: ApiEndpointService,
     private debug: DebugService,
   ) {
-    this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
   }
-  hashChange: EventEmitter<string | null> = new EventEmitter();
-  private hashStr: string | null;
+  private hashStr = localStorage.getItem(EH_TAG_HASH) || null;
+  hashChange = new BehaviorSubject<string | null>(this.hashStr);
   get hash() {
     return this.hashStr;
   }
@@ -59,7 +58,7 @@ export class EhTagConnectorService {
 
   private onHashChange(oldValue: string | null, newValue: string | null) {
     this.debug.log(`hash: ${oldValue} -> ${newValue}`);
-    this.hashChange.emit(newValue);
+    this.hashChange.next(newValue);
     this.tags = null;
     localStorage.setItem(EH_TAG_HASH, newValue || '');
   }
