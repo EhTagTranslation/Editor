@@ -12,26 +12,22 @@ export class RouteService {
     private router: Router, ) { }
 
   navigate(route: ActivatedRoute, commands: any[], params: Params, replaceUrl: boolean = true) {
-    route.queryParams.subscribe(data => {
-      this.router.navigate(commands, {
-        replaceUrl,
-        queryParams: {
-          ...data,
-          ...params,
-        }
-      });
+    this.router.navigate(commands, {
+      replaceUrl,
+      queryParams: {
+        ...route.snapshot.queryParams,
+        ...params,
+      }
     });
   }
 
   navigateParam(route: ActivatedRoute, params: Params, replaceUrl: boolean = true) {
-    zip(route.url, route.queryParams).subscribe(data => {
-      this.router.navigate(data[0].map(seg => seg.path), {
-        replaceUrl,
-        queryParams: {
-          ...data[1],
-          ...params,
-        }
-      });
+    this.router.navigate(route.snapshot.url.map(seg => seg.path), {
+      replaceUrl,
+      queryParams: {
+        ...route.snapshot.queryParams,
+        ...params,
+      }
     });
   }
 
