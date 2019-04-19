@@ -6,7 +6,7 @@ import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   {
-    path: 'edit/:ns/:raw',
+    path: 'edit/:namespace/:raw',
     component: EditorComponent,
   },
   {
@@ -14,7 +14,7 @@ const routes: Routes = [
     redirectTo: '/edit/artist/*new',
   },
   {
-    path: 'list/:ns',
+    path: 'list/:namespace',
     component: ListComponent,
   },
   {

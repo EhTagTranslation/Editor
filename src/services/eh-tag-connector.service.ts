@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest } from '@angular/common/http';
-import { fromEvent, Observable, Subject, from, Subscriber } from 'rxjs';
-import { filter, map, merge, tap } from 'rxjs/operators';
+import { fromEvent, Observable, Subject, from, Subscriber, of } from 'rxjs';
+import { filter, map, merge, tap, catchError } from 'rxjs/operators';
 import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem, RenderedETTag } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
@@ -20,6 +20,14 @@ const normalizeCache = {
   ast: new Map<string, any>(),
 };
 
+function localRender(source: string) {
+  source = source.trim();
+  if (source.search(/[<*[_~\\]/) < 0) {
+    return source;
+  }
+  return undefined;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -32,17 +40,6 @@ export class EhTagConnectorService {
     private debug: DebugService,
   ) {
     this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
-    const data = localStorage.getItem(EH_TAG_DATA);
-    if (data) {
-      try {
-        const tags = JSON.parse(data);
-        if (Array.isArray(tags)) {
-          this.tags = tags;
-        }
-      } catch (ex) {
-        this.debug.error(ex);
-      }
-    }
   }
   hashChange: EventEmitter<string | null> = new EventEmitter();
   private hashStr: string | null;
@@ -71,9 +68,15 @@ export class EhTagConnectorService {
     return this.endpoints.ehTagConnectorDb(`${item.namespace}/${item.raw.trim().toLowerCase()}?format=${format}.json`);
   }
 
-  async getTag(item: ETKey): Promise<ETItem> {
+  async getTag(item: ETKey): Promise<ETItem | null> {
     const endpoint = this.getEndpoint(item);
-    return await this.http.get<ETItem>(endpoint).toPromise();
+    return await this.http.get<ETItem>(endpoint).pipe(catchError(ex => {
+      if (ex.status && ex.status === 404) {
+        return of(null);
+      } else {
+        throw ex;
+      }
+    })).toPromise();
   }
 
   async addTag(item: ETItem): Promise<ETItem> {
@@ -103,6 +106,18 @@ export class EhTagConnectorService {
         links: cachedlinks,
       };
     }
+    if (format !== 'ast') {
+      const localname = cachedname || localRender(item.name);
+      const localintro = cachedintro || localRender(item.intro);
+      const locallinks = cachedlinks || localRender(item.links);
+      if (typeof localname !== 'undefined' && typeof localintro !== 'undefined' && typeof locallinks !== 'undefined') {
+        return {
+          name: localname,
+          intro: localintro,
+          links: locallinks,
+        };
+      }
+    }
     const endpoint = this.endpoints.ehTagConnectorTools('normalize') + `?format=${format}.json`;
     const result = await this.http.post<ETTag>(endpoint, payload).toPromise();
     cache.set(item.name, result.name);
@@ -111,7 +126,7 @@ export class EhTagConnectorService {
     return result;
   }
 
-  async modifyTag(item: ETItem): Promise<ETItem> {
+  async modifyTag(item: ETItem): Promise<ETItem | null> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
       intro: item.intro,
@@ -170,8 +185,22 @@ export class EhTagConnectorService {
     const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
     const release = await this.http.get<GithubRelease>(endpoint).toPromise();
     this.hash = release.target_commitish;
-    if (this.tags && release.target_commitish === localStorage.getItem(EH_TAG_DATA_HASH)) {
-      return this.tags;
+    if (release.target_commitish === localStorage.getItem(EH_TAG_DATA_HASH)) {
+      if (this.tags) {
+        return this.tags;
+      }
+      const data = localStorage.getItem(EH_TAG_DATA);
+      if (data) {
+        try {
+          const localTags = JSON.parse(data);
+          if (Array.isArray(localTags)) {
+            this.tags = localTags;
+            return this.tags;
+          }
+        } catch (ex) {
+          this.debug.error(ex);
+        }
+      }
     }
 
     const assetRaw = release.assets.find(i => i.name === 'db.raw.js');

@@ -55,7 +55,7 @@ export class ListComponent implements OnInit {
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
-  ns: Observable<ETNamespaceName | null>;
+  namespace: Observable<ETNamespaceName | null>;
   sortBy: Observable<SortableKeys | null>;
   sortDirection: Observable<SortDirection>;
 
@@ -75,7 +75,7 @@ export class ListComponent implements OnInit {
   async ngOnInit() {
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
-    this.ns = this.router.initParam(this.route, 'ns', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
+    this.namespace = this.router.initParam(this.route, 'namespace', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
     this.search = this.router.initQueryParam(this.route, 'search', s => s || '', s => this.title.setTitle(s));
     this.showImg = this.router.initQueryParam(this.route, 'showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
       if (val === 'all') {
@@ -91,13 +91,13 @@ export class ListComponent implements OnInit {
     this.sortBy = this.router.initQueryParam(this.route, 'sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
     this.sortDirection = this.router.initQueryParam(this.route, 'sortDirection', v => (v || '') as SortDirection);
 
-    this.displayedColumns = this.ns.pipe(map(ns => (ns
+    this.displayedColumns = this.namespace.pipe(map(ns => (ns
       ? ['handle', 'raw', 'name', 'intro', 'links']
       : ['handle', 'namespace', 'raw', 'name', 'intro', 'links'])));
 
     this.filteredTags = combineLatest(
       this.tags,
-      this.ns,
+      this.namespace,
       this.search,
     ).pipe(map(data => this.getFilteredData(...data)));
 

@@ -3,9 +3,12 @@ header
   user-select: none
   font-size: 14px
   display: flex
+  flex-wrap: wrap
   padding: 0 12px
   > mat-form-field, mat-paginator
     margin: 16px 12px -16px 12px
+  > mat-paginator
+    margin-left: 0
   > mat-chip-list
     margin: auto 12px
     padding-top: 12px
@@ -15,17 +18,18 @@ header
       width: 20px
       text-align: right
 
-table
-  width: 100%
-  th.text
-    min-width: 80px
-  .mat-header-cell:not(:last-child), .mat-cell:not(:last-child)
-    padding-right: 8px
-  td p
-    margin: 4px 0
+section#table-wrapper
+  overflow-x: auto
+  table
+    width: 100%
+    min-width: 640px
+    th.text
+      min-width: 80px
+    .mat-header-cell:not(:last-child), .mat-cell:not(:last-child)
+      padding-right: 8px
 
-div.spinner
-  user-select: none
-  padding: 120px
-  mat-spinner
-    margin: auto
+  div.spinner
+    user-select: none
+    padding: 120px
+    mat-spinner
+      margin: auto

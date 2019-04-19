@@ -1,40 +1,45 @@
-<div class="page-box mat-elevation-z8">
+<div class="page-box">
   <div id="root">
     <header>
-      <ng-container *ngIf="create | async; else editHeader">创建标签</ng-container>
-      <ng-template #editHeader>修改标签</ng-template>
+      <span>
+        {{ (create | async) ? '创建标签' : '修改标签' }}
+      </span>
       <span style="flex: 1 1 auto;"></span>
-      <button mat-flat-button [disabled]="(rendered.loading | async)" (click)="preview()">
-        <ng-container *ngIf="!(rendered.loading | async); else rendering">预览</ng-container>
-        <ng-template #rendering>
+      <button mat-raised-button (click)="preview()">
+        <ng-container *ngIf="!(rendered.loading | async); else renderingspinner">预览</ng-container>
+        <ng-template #renderingspinner>
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>
         </ng-template>
       </button>
-      <button mat-flat-button color="accent">提交</button>
+      <button mat-raised-button [disabled]="tagForm.invalid && tagForm.touched"
+        [matTooltip]="tagForm.invalid ? '请检查填写的内容' : null" (click)="submit()" color="accent">
+        <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
+        <ng-template #submittingspinner>
+          <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+        </ng-template>
+      </button>
     </header>
     <section>
       <div id="form-container">
         <form [formGroup]="tagForm" autocomplete="off">
           <mat-form-field>
             <mat-label>命名空间</mat-label>
-            <mat-select formControlName="ns" required>
+            <mat-select formControlName="namespace" required>
               <mat-option *ngFor="let ns of nsOptions" [value]="ns">
                 {{ns}}
               </mat-option>
             </mat-select>
-            <mat-hint *ngIf="enabled('ns')">标签所在的命名空间</mat-hint>
-            <mat-hint *ngIf="!enabled('ns')">修改标签时无法更改此项</mat-hint>
-            <mat-error *ngIf="hasError('ns', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
+            <mat-hint>{{ enabled('namespace') ? '标签所在的命名空间' : '修改标签时无法更改此项' }}</mat-hint>
+            <mat-error *ngIf="hasError('namespace', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
                 href="https://github.com/ehtagtranslation/Database/issues" target="_blank">提交 ISSUE 讨论</a>或<a
-                [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + value('ns') + '.md'"
+                [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + value('namespace') + '.md'"
                 target="_blank">通过 PR 修改</a>
             </mat-error>
           </mat-form-field>
           <mat-form-field>
             <mat-label>原始</mat-label>
             <input matInput formControlName="raw" required />
-            <mat-hint *ngIf="enabled('raw')">输入原始的标签内容</mat-hint>
-            <mat-hint *ngIf="!enabled('raw')">修改标签时无法更改此项</mat-hint>
+            <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
             <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
             <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母
             </mat-error>

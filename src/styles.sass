@@ -30,6 +30,9 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 
 html
   font-family: "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif 
+body
+  margin: 0
+
 a
   color: mat-color(map-get($candy-app-theme, primary))
   text-decoration: none
@@ -43,5 +46,10 @@ img[ehimg]
     border: red solid
 
 div.page-box
-  max-width: 90%
-  margin: 32px auto 12px
+  @extend .mat-elevation-z8
+  margin: 32px 24px 12px
+  @media (max-width: 720px)
+    margin: 0 4px 4px
+
+p
+  margin: 4px 0

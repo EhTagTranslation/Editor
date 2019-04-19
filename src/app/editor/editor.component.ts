@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
 import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, distinctUntilChanged } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
 import { DebugService } from 'src/services/debug.service';
 import { ReadVarExpr } from '@angular/compiler';
 import { TitleService } from 'src/services/title.service';
-type Fields = Exclude<keyof ETItem, 'namespace'> | 'ns';
+type Fields = keyof ETItem;
 const parser = new DOMParser();
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
@@ -45,7 +45,9 @@ export class EditorComponent implements OnInit {
     private route: ActivatedRoute,
     private router: RouteService,
     private debug: DebugService,
-    private title: TitleService, ) { }
+    private title: TitleService,
+    private snackBar: MatSnackBar, ) {
+  }
   tagForm = new FormGroup({
     raw: new FormControl('', [
       Validators.required,
@@ -53,7 +55,7 @@ export class EditorComponent implements OnInit {
       Validators.pattern(/^\S.*\S$/),
       legalRaw,
     ]),
-    ns: new FormControl('', [
+    namespace: new FormControl('', [
       isEditableNs,
     ]),
     name: new FormControl('', [
@@ -69,7 +71,7 @@ export class EditorComponent implements OnInit {
 
   create: Observable<boolean>;
   inputs: {
-    ns: Observable<ETNamespaceName | null>;
+    namespace: Observable<ETNamespaceName | null>;
     raw: Observable<string>;
     name: Observable<string>;
     intro: Observable<string>;
@@ -77,7 +79,7 @@ export class EditorComponent implements OnInit {
   };
 
   original: {
-    ns: Observable<ETNamespaceName>;
+    namespace: Observable<ETNamespaceName>;
     raw: Observable<string>;
     // name: Observable<string>;
     // intro: Observable<string>;
@@ -85,22 +87,22 @@ export class EditorComponent implements OnInit {
   };
 
   rendered = {
-    loading: new Subject<boolean>(),
-    name: new Subject<string>(),
-    intro: new Subject<string>(),
-    links: new Subject<string>(),
+    loading: new BehaviorSubject<boolean>(false),
+    name: new BehaviorSubject<string>(''),
+    intro: new BehaviorSubject<string>(''),
+    links: new BehaviorSubject<string>(''),
   };
+
+  submitting = new BehaviorSubject<boolean>(false);
 
   ngOnInit() {
     this.original = {
-      ns: this.router.initParam(this.route, 'ns',
-        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist',
-        v => v ? this.getControl('ns').setValue(v) : null),
+      namespace: this.router.initParam(this.route, 'namespace',
+        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist'),
       raw: this.router.initParam(this.route, 'raw',
         v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
         v => {
           if (v) {
-            this.getControl('raw').setValue(v);
             this.title.setTitle('修改标签 - ' + v);
           } else {
             this.title.setTitle('新建标签');
@@ -109,20 +111,18 @@ export class EditorComponent implements OnInit {
     };
     this.create = this.original.raw.pipe(map(v => !isValidRaw(v)), tap(v => {
       if (v) {
-        this.getControl('ns').enable();
+        this.getControl('namespace').enable();
         this.getControl('raw').enable();
       } else {
-        this.getControl('ns').disable();
+        this.getControl('namespace').disable();
         this.getControl('raw').disable();
       }
     }));
     this.inputs = {
-      ns: this.router.initQueryParam(this.route, 'ns',
-        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : null,
-        v => v ? this.getControl('ns').setValue(v) : null),
+      namespace: this.router.initQueryParam(this.route, 'namespace',
+        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : null),
       raw: this.router.initQueryParam(this.route, 'raw',
-        v => (v || ''),
-        v => v ? this.getControl('raw').setValue(v) : null),
+        v => (v || '')),
       name: this.router.initQueryParam(this.route, 'name',
         v => (v || ''),
         v => v ? this.getControl('name').setValue(v) : null),
@@ -143,6 +143,10 @@ export class EditorComponent implements OnInit {
         });
       }
     }
+    merge(this.original.namespace, this.inputs.namespace).pipe(distinctUntilChanged())
+      .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
+    merge(this.original.raw, this.inputs.raw).pipe(distinctUntilChanged())
+      .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
   }
 
   private getControl(field: Fields | null) {
@@ -169,9 +173,12 @@ export class EditorComponent implements OnInit {
     }
     return false;
   }
-  value(field: Fields) {
+  value<F extends Fields>(field: F) {
     const form = this.getControl(field);
-    return form.value || '';
+    if (form.value) {
+      return form.value as ETItem[F];
+    }
+    return '';
   }
 
   enabled(field: Fields) {
@@ -180,6 +187,9 @@ export class EditorComponent implements OnInit {
   }
 
   async preview() {
+    if (this.rendered.loading.getValue()) {
+      return;
+    }
     this.rendered.loading.next(true);
     try {
       const delay = Bluebird.delay(300);
@@ -194,6 +204,50 @@ export class EditorComponent implements OnInit {
       await delay;
     } finally {
       this.rendered.loading.next(false);
+    }
+  }
+
+  async submit() {
+    if (this.submitting.getValue()) {
+      return;
+    }
+    if (this.tagForm.invalid) {
+      for (const key in this.tagForm.controls) {
+        if (this.tagForm.controls.hasOwnProperty(key)) {
+          const element = this.tagForm.controls[key];
+          element.markAsTouched();
+        }
+      }
+      return;
+    }
+    this.submitting.next(true);
+    try {
+      const payload = {
+        name: this.value('name'),
+        intro: this.value('intro'),
+        links: this.value('links'),
+      };
+      const key = {
+        namespace: this.value('namespace'),
+        raw: this.value('raw'),
+      };
+
+      const result = (await this.ehTagConnector.getTag(key))
+        ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
+        : await this.ehTagConnector.addTag({ ...key, ...payload });
+      console.log(result);
+      if (result) {
+        this.router.navigate(this.route, ['/edit', result.namespace, result.raw], result, false);
+      }
+      this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', { verticalPosition: 'top', duration: 5000, });
+    } catch (ex) {
+      console.log(ex);
+      this.snackBar.open('提交过程中出现错误', '重试', { verticalPosition: 'top', duration: 5000, })
+        .onAction().subscribe(() => {
+          this.submit();
+        });
+    } finally {
+      this.submitting.next(false);
     }
   }
 }

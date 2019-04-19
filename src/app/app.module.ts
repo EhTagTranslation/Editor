@@ -23,7 +23,8 @@ import {
   MatButtonToggleModule,
   MatSelectModule,
   MatCardModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ListComponent } from './list/list.component';
@@ -62,6 +63,7 @@ import { TitleService } from 'src/services/title.service';
     MatProgressSpinnerModule,
     MatSortModule,
     MatSelectModule,
+    MatSnackBarModule,
     MatTableModule,
     MatToolbarModule,
     MatTooltipModule,
