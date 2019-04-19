@@ -31,12 +31,7 @@ export class GithubOauthService {
     }
   }
 
-  private tokenChangeEvent: EventEmitter<string | null> = new EventEmitter();
-
-  public get tokenChange() {
-    return this.tokenChangeEvent.asObservable();
-  }
-
+  tokenChange: EventEmitter<string | null> = new EventEmitter();
   get token() {
     return localStorage.getItem(localStorageKey);
   }
@@ -44,10 +39,10 @@ export class GithubOauthService {
   private setToken(value?: string) {
     if (!value || !value.match(/^\w+$/)) {
       localStorage.removeItem(localStorageKey);
-      this.tokenChangeEvent.emit(null);
+      this.tokenChange.emit(null);
     } else {
       localStorage.setItem(localStorageKey, value);
-      this.tokenChangeEvent.emit(value);
+      this.tokenChange.emit(value);
     }
   }
 

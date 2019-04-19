@@ -41,12 +41,7 @@ export class EhTagConnectorService {
   ) {
     this.hashStr = localStorage.getItem(EH_TAG_HASH) || null;
   }
-  private hashChangeEvent: EventEmitter<string | null> = new EventEmitter();
-
-  get hashChange() {
-    return this.hashChangeEvent.asObservable();
-  }
-
+  hashChange: EventEmitter<string | null> = new EventEmitter();
   private hashStr: string | null;
   get hash() {
     return this.hashStr;
@@ -64,7 +59,7 @@ export class EhTagConnectorService {
 
   private onHashChange(oldValue: string | null, newValue: string | null) {
     this.debug.log(`hash: ${oldValue} -> ${newValue}`);
-    this.hashChangeEvent.emit(newValue);
+    this.hashChange.emit(newValue);
     this.tags = null;
     localStorage.setItem(EH_TAG_HASH, newValue || '');
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
-import { Observable, Subject, BehaviorSubject, merge } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, merge, combineLatest } from 'rxjs';
 import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
 import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -94,6 +94,7 @@ export class EditorComponent implements OnInit {
   };
 
   submitting = new BehaviorSubject<boolean>(false);
+  canSubmit: Observable<boolean>;
 
   ngOnInit() {
     this.original = {
@@ -133,6 +134,8 @@ export class EditorComponent implements OnInit {
         v => (v || ''),
         v => v ? this.getControl('links').setValue(v) : null),
     };
+    this.canSubmit = combineLatest(this.github.tokenChange, this.tagForm.statusChanges)
+      .pipe(map(data => !!data[0] && !(this.tagForm.invalid && this.tagForm.touched)));
     for (const key in this.tagForm.controls) {
       if (this.tagForm.controls.hasOwnProperty(key)) {
         const element = this.tagForm.controls[key];
