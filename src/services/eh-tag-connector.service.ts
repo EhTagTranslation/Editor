@@ -22,7 +22,7 @@ const normalizeCache = {
 
 function localRender(source: string) {
   source = source.trim();
-  if (source.search(/[<*[_~\\]/) < 0) {
+  if (source.search(/[<*[_~\\\r\n]/) < 0) {
     return source;
   }
   return undefined;
@@ -67,9 +67,9 @@ export class EhTagConnectorService {
     return this.endpoints.ehTagConnectorDb(`${item.namespace}/${item.raw.trim().toLowerCase()}?format=${format}.json`);
   }
 
-  async getTag(item: ETKey): Promise<ETItem | null> {
+  async getTag(item: ETKey): Promise<ETTag | null> {
     const endpoint = this.getEndpoint(item);
-    return await this.http.get<ETItem>(endpoint).pipe(catchError(ex => {
+    return await this.http.get<ETTag>(endpoint).pipe(catchError(ex => {
       if (ex.status && ex.status === 404) {
         return of(null);
       } else {
@@ -78,14 +78,14 @@ export class EhTagConnectorService {
     })).toPromise();
   }
 
-  async addTag(item: ETItem): Promise<ETItem> {
+  async addTag(item: ETItem): Promise<ETTag> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
       intro: item.intro,
       name: item.name,
       links: item.links,
     };
-    return await this.http.post<ETItem>(endpoint, payload).toPromise();
+    return await this.http.post<ETTag>(endpoint, payload).toPromise();
   }
 
   async normalizeTag(item: ETTag, format: ApiFormat = 'raw'): Promise<ETTag> {
@@ -125,14 +125,14 @@ export class EhTagConnectorService {
     return result;
   }
 
-  async modifyTag(item: ETItem): Promise<ETItem | null> {
+  async modifyTag(item: ETItem): Promise<ETTag | null> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
       intro: item.intro,
       name: item.name,
       links: item.links,
     };
-    return await this.http.put<ETItem>(endpoint, payload).toPromise();
+    return await this.http.put<ETTag>(endpoint, payload).toPromise();
   }
 
   async deleteTag(item: ETKey): Promise<void> {

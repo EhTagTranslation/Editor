@@ -68,10 +68,10 @@
             <mat-label>外部链接</mat-label>
             <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
             <mat-hint>输入标签的相关链接，如指向{{
-                ((inputs.namespace | async ) === 'artist') ? '画师的微博和 pixiv ' 
-              : ((inputs.namespace | async ) === 'group') ? '社团或公司的官方网站'
-              : ((inputs.namespace | async ) === 'parody') ? '作品的维基或萌百页面'
-              : ((inputs.namespace | async ) === 'character') ? '角色的百科页面'
+                ((inputs.namespace | async ) || (original.namespace | async)=== 'artist') ? '画师的微博和 pixiv ' 
+              : ((inputs.namespace | async ) || (original.namespace | async)=== 'group') ? '社团或公司的官方网站'
+              : ((inputs.namespace | async ) || (original.namespace | async)=== 'parody') ? '作品的维基或萌百页面'
+              : ((inputs.namespace | async ) || (original.namespace | async)=== 'character') ? '角色的百科页面'
               : ' EhWiki 页面'
             }}的链接</mat-hint>
           </mat-form-field>

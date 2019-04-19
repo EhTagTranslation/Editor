@@ -242,7 +242,7 @@ export class EditorComponent implements OnInit {
         ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
         : await this.ehTagConnector.addTag({ ...key, ...payload });
       if (result) {
-        this.router.navigate(['/edit', result.namespace, result.raw], result);
+        this.router.navigate(['/edit', key.namespace, key.raw], result);
       } else {
         this.router.navigate(['/edit', key.namespace, key.raw], payload);
       }
