@@ -25,6 +25,26 @@ const sortKeyMap: {
   links: 'textLinks',
 };
 
+const nsScore: {
+  [k in ETNamespaceName]: number;
+} = {
+  rows: 0,
+  female: -2,
+  male: -3,
+  misc: -4,
+  language: -5,
+  artist: -6,
+  group: -7,
+  parody: -8,
+  character: -9,
+  reclass: -10,
+};
+
+function sortByNs(data: RenderedETItem[]) {
+  data.sort((a, b) => nsScore[b.namespace] - nsScore[a.namespace]);
+}
+
+
 type SortableKeys = keyof typeof sortKeyMap;
 
 @Component({
@@ -80,9 +100,9 @@ export class ListComponent implements OnInit {
       if (val === 'all') {
         addStyle.innerHTML = '';
       } else if (val === 'none') {
-        addStyle.innerHTML = 'app-list table td img[ehimg]{display:none;}';
+        addStyle.innerHTML = 'app-list table td .md-container img[ehimg]{display:none;}';
       } else {
-        addStyle.innerHTML = 'app-list table td img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
+        addStyle.innerHTML = 'app-list table td .md-container img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
       }
     });
     this.pageSize = this.router.initQueryParam('pageSize', v => parseInt(v || '10', 10));
@@ -114,7 +134,9 @@ export class ListComponent implements OnInit {
 
     this.loading = true;
     this.ehTagConnector.getTags().then(tags => {
-      this.tags.next(tags);
+      const sortedTags = Array.from(tags);
+      sortByNs(sortedTags);
+      this.tags.next(sortedTags);
     }).catch(this.debug.log.bind(this))
       .finally(() => this.loading = false);
   }
@@ -146,14 +168,21 @@ export class ListComponent implements OnInit {
     }
     this.usingRegex.next(regex.isRegex);
     if (regex.regex) {
-      data = data.filter(v => (
-        v.textIntro.search(regex.regex) !== -1 ||
-        v.textName.search(regex.regex) !== -1 ||
-        v.textLinks.search(regex.regex) !== -1 ||
-        v.raw.search(regex.regex) !== -1
-      ));
+      const getScore = <K extends keyof RenderedETItem>(t: RenderedETItem, k: K, weight: number) => {
+        const str = t[k];
+        if (str.search(regex.regex) !== -1) {
+          return weight * regex.regex.source.length / str.length;
+        } else {
+          return 0;
+        }
+      };
+      const scoredata = data.map(v => ({
+        score: getScore(v, 'textIntro', 4) + getScore(v, 'textName', 20) + getScore(v, 'textLinks', 1) + getScore(v, 'raw', 50),
+        tag: v,
+      })).filter(sv => sv.score > 0);
+      scoredata.sort((a, b) => b.score - a.score);
+      data = scoredata.map(sv => sv.tag);
     }
     return data;
   }
-
 }

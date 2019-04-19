@@ -42,6 +42,8 @@ a
     color: mat-color(map-get($candy-app-theme, accent))
 img[ehimg]
   border: transparent solid
+  max-width: 300px
+  max-height: 200px
   &[nsfw]
     border: red solid
 
@@ -50,6 +52,7 @@ div.page-box
   margin: 32px 24px 12px
   @media (max-width: 720px)
     margin: 0 4px 4px
-
-p
+.md-container p
+  margin: 0.5em 0
+td .md-container p
   margin: 4px 0
