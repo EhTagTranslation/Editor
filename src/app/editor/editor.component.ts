@@ -11,6 +11,7 @@ import * as Bluebird from 'bluebird';
 import { DebugService } from 'src/services/debug.service';
 import { ReadVarExpr } from '@angular/compiler';
 import { TitleService } from 'src/services/title.service';
+import { GithubOauthService } from 'src/services/github-oauth.service';
 type Fields = keyof ETItem;
 const parser = new DOMParser();
 
@@ -42,9 +43,8 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private ehTagConnector: EhTagConnectorService,
-    private route: ActivatedRoute,
+    public github: GithubOauthService,
     private router: RouteService,
-    private debug: DebugService,
     private title: TitleService,
     private snackBar: MatSnackBar, ) {
   }
@@ -97,9 +97,9 @@ export class EditorComponent implements OnInit {
 
   ngOnInit() {
     this.original = {
-      namespace: this.router.initParam(this.route, 'namespace',
+      namespace: this.router.initParam('namespace',
         v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist'),
-      raw: this.router.initParam(this.route, 'raw',
+      raw: this.router.initParam('raw',
         v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
         v => {
           if (v) {
@@ -119,17 +119,17 @@ export class EditorComponent implements OnInit {
       }
     }));
     this.inputs = {
-      namespace: this.router.initQueryParam(this.route, 'namespace',
+      namespace: this.router.initQueryParam('namespace',
         v => v && v in ETNamespaceEnum ? v as ETNamespaceName : null),
-      raw: this.router.initQueryParam(this.route, 'raw',
+      raw: this.router.initQueryParam('raw',
         v => (v || '')),
-      name: this.router.initQueryParam(this.route, 'name',
+      name: this.router.initQueryParam('name',
         v => (v || ''),
         v => v ? this.getControl('name').setValue(v) : null),
-      intro: this.router.initQueryParam(this.route, 'intro',
+      intro: this.router.initQueryParam('intro',
         v => (v || ''),
         v => v ? this.getControl('intro').setValue(v) : null),
-      links: this.router.initQueryParam(this.route, 'links',
+      links: this.router.initQueryParam('links',
         v => (v || ''),
         v => v ? this.getControl('links').setValue(v) : null),
     };
@@ -137,7 +137,7 @@ export class EditorComponent implements OnInit {
       if (this.tagForm.controls.hasOwnProperty(key)) {
         const element = this.tagForm.controls[key];
         element.valueChanges.subscribe(value => {
-          this.router.navigateParam(this.route, {
+          this.router.navigateParam({
             [key]: value
           });
         });
@@ -236,9 +236,9 @@ export class EditorComponent implements OnInit {
         ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
         : await this.ehTagConnector.addTag({ ...key, ...payload });
       if (result) {
-        this.router.navigate(this.route, ['/edit', result.namespace, result.raw], result);
+        this.router.navigate(['/edit', result.namespace, result.raw], result);
       } else {
-        this.router.navigate(this.route, ['/edit', key.namespace, key.raw], payload);
+        this.router.navigate(['/edit', key.namespace, key.raw], payload);
       }
       this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', { verticalPosition: 'top', duration: 5000, });
     } catch (ex) {

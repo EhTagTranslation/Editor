@@ -9,23 +9,25 @@ import { map, distinctUntilChanged, tap } from 'rxjs/operators';
 export class RouteService {
 
   constructor(
-    private router: Router, ) { }
+    private router: Router,
+    private route: ActivatedRoute,
+ ) { }
 
-  navigate(route: ActivatedRoute, commands: any[], params: Params, replaceUrl: boolean = true) {
+  navigate(commands: any[], params: Params, replaceUrl: boolean = true) {
     this.router.navigate(commands, {
       replaceUrl,
       queryParams: {
-        ...route.snapshot.queryParams,
+        ...this.route.snapshot.queryParams,
         ...params,
       }
     });
   }
 
-  navigateParam(route: ActivatedRoute, params: Params, replaceUrl: boolean = true) {
-    this.router.navigate(route.snapshot.url.map(seg => seg.path), {
+  navigateParam(params: Params, replaceUrl: boolean = true) {
+    this.router.navigate(this.route.snapshot.url.map(seg => seg.path), {
       replaceUrl,
       queryParams: {
-        ...route.snapshot.queryParams,
+        ...this.route.snapshot.queryParams,
         ...params,
       }
     });
@@ -41,11 +43,13 @@ export class RouteService {
     return value;
   }
 
-  initQueryParam<V>(route: ActivatedRoute, key: string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
+  initQueryParam<V>( key: string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
+    const route = this.router.routerState.root.firstChild || this.router.routerState.root;
     return this.initParamImpl(route.queryParamMap, key, parse, action);
   }
 
-  initParam<V>(route: ActivatedRoute, key: string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
+  initParam<V>(key: string, parse: ((v: string | null) => V), action?: ((v: V) => void)) {
+    const route = this.router.routerState.root.firstChild || this.router.routerState.root;
     return this.initParamImpl(route.paramMap, key, parse, action);
   }
 }

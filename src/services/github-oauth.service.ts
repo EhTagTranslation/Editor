@@ -1,4 +1,4 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
 import { ETRepoInfo } from 'src/interfaces/ehtranslation';
@@ -31,6 +31,12 @@ export class GithubOauthService {
     }
   }
 
+  private tokenChangeEvent: EventEmitter<string | null> = new EventEmitter();
+
+  public get tokenChange() {
+    return this.tokenChangeEvent.asObservable();
+  }
+
   get token() {
     return localStorage.getItem(localStorageKey);
   }
@@ -38,8 +44,10 @@ export class GithubOauthService {
   private setToken(value?: string) {
     if (!value || !value.match(/^\w+$/)) {
       localStorage.removeItem(localStorageKey);
+      this.tokenChangeEvent.emit(null);
     } else {
       localStorage.setItem(localStorageKey, value);
+      this.tokenChangeEvent.emit(value);
     }
   }
 

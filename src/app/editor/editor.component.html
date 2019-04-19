@@ -11,8 +11,9 @@
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>
         </ng-template>
       </button>
-      <button mat-raised-button [disabled]="tagForm.invalid && tagForm.touched"
-        [matTooltip]="tagForm.invalid ? '请检查填写的内容' : null" (click)="submit()" color="accent">
+      <button mat-raised-button [disabled]="(tagForm.invalid && tagForm.touched) || !(github.tokenChange | async)"
+        [matTooltip]="tagForm.invalid ? '请检查填写的内容' : !(github.tokenChange | async) ? '请先登录' : '' " (click)="submit()"
+        color="accent">
         <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
         <ng-template #submittingspinner>
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>
@@ -32,7 +33,7 @@
             <mat-hint>{{ enabled('namespace') ? '标签所在的命名空间' : '修改标签时无法更改此项' }}</mat-hint>
             <mat-error *ngIf="hasError('namespace', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
                 href="https://github.com/ehtagtranslation/Database/issues" target="_blank">提交 ISSUE 讨论</a>或<a
-                [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + value('namespace') + '.md'"
+                [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + (value('namespace') || 'rows') + '.md'"
                 target="_blank">通过 PR 修改</a>
             </mat-error>
           </mat-form-field>

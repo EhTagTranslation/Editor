@@ -83,7 +83,7 @@
       <ng-container matColumnDef="handle">
         <th mat-header-cell *matHeaderCellDef style="width:40px;">
           <button matTooltip="新增" matTooltipPosition="right" matTooltipShowDelay="500" mat-icon-button
-            class="mat-accent" [routerLink]="[ '/edit', ((ns | async) || 'aritst'), '*new' ]">
+            class="mat-accent" [routerLink]="[ '/edit', ((namespace | async) || 'aritst'), '*new' ]">
             <mat-icon>add_circle</mat-icon>
           </button></th>
         <td mat-cell *matCellDef="let row">

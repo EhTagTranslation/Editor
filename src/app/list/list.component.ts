@@ -37,7 +37,6 @@ export class ListComponent implements OnInit {
 
   constructor(
     private ehTagConnector: EhTagConnectorService,
-    private route: ActivatedRoute,
     private router: RouteService,
     private debug: DebugService,
     private title: TitleService,
@@ -63,21 +62,21 @@ export class ListComponent implements OnInit {
 
   setNs(ns?: ETNamespaceName) {
     const list = ns && ns in ETNamespaceEnum ? ['/list', ns] : ['/list'];
-    this.router.navigate(this.route, list, {
+    this.router.navigate(list, {
       pageIndex: 0,
     });
   }
 
   navigateParam(params: Params, replaceUrl: boolean = true) {
-    this.router.navigateParam(this.route, params, replaceUrl);
+    this.router.navigateParam(params, replaceUrl);
   }
 
   async ngOnInit() {
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
-    this.namespace = this.router.initParam(this.route, 'namespace', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
-    this.search = this.router.initQueryParam(this.route, 'search', s => s || '', s => this.title.setTitle(s));
-    this.showImg = this.router.initQueryParam(this.route, 'showImg', b => b === 'all' ? 'all' : b === 'none' ? 'none' : 'no-nsfw', val => {
+    this.namespace = this.router.initParam('namespace', ns => ns && ns in ETNamespaceEnum ? ns as ETNamespaceName : null);
+    this.search = this.router.initQueryParam('search', s => s || '', s => this.title.setTitle(s));
+    this.showImg = this.router.initQueryParam('showImg', b => b === 'all' ? 'all' : b === 'no-nsfw' ? 'no-nsfw' : 'none', val => {
       if (val === 'all') {
         addStyle.innerHTML = '';
       } else if (val === 'none') {
@@ -86,10 +85,10 @@ export class ListComponent implements OnInit {
         addStyle.innerHTML = 'app-list table td img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
       }
     });
-    this.pageSize = this.router.initQueryParam(this.route, 'pageSize', v => parseInt(v || '10', 10));
-    this.pageIndex = this.router.initQueryParam(this.route, 'pageIndex', v => parseInt(v || '0', 10));
-    this.sortBy = this.router.initQueryParam(this.route, 'sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
-    this.sortDirection = this.router.initQueryParam(this.route, 'sortDirection', v => (v || '') as SortDirection);
+    this.pageSize = this.router.initQueryParam('pageSize', v => parseInt(v || '10', 10));
+    this.pageIndex = this.router.initQueryParam('pageIndex', v => parseInt(v || '0', 10));
+    this.sortBy = this.router.initQueryParam('sortBy', v => (v || '') in sortKeyMap ? v as SortableKeys : null);
+    this.sortDirection = this.router.initQueryParam('sortDirection', v => (v || '') as SortDirection);
 
     this.displayedColumns = this.namespace.pipe(map(ns => (ns
       ? ['handle', 'raw', 'name', 'intro', 'links']
