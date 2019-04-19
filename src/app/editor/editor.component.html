@@ -4,6 +4,10 @@
       <span>
         {{ (create | async) ? '创建标签' : '修改标签' }}
       </span>
+      <a mat-icon-button href="https://github.com/EhTagTranslation/Database/blob/master/CONTRIBUTING.md"
+        matTooltip="查看参与翻译指南" target="_blank">
+        <mat-icon>help</mat-icon>
+      </a>
       <span style="flex: 1 1 auto;"></span>
       <button mat-raised-button (click)="preview()">
         <ng-container *ngIf="!(rendered.loading | async); else renderingspinner">预览</ng-container>
@@ -38,7 +42,7 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <mat-label>原始</mat-label>
+            <mat-label>原始标签</mat-label>
             <input matInput formControlName="raw" required />
             <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
             <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
@@ -61,16 +65,22 @@
             <mat-hint>输入标签的描述</mat-hint>
           </mat-form-field>
           <mat-form-field class="markdown">
-            <mat-label>链接</mat-label>
+            <mat-label>外部链接</mat-label>
             <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-            <mat-hint>输入标签的相关链接</mat-hint>
+            <mat-hint>输入标签的相关链接，如指向{{
+                ((inputs.namespace | async ) === 'artist') ? '画师的微博和 pixiv ' 
+              : ((inputs.namespace | async ) === 'group') ? '社团或公司的官方网站'
+              : ((inputs.namespace | async ) === 'parody') ? '作品的维基或萌百页面'
+              : ((inputs.namespace | async ) === 'character') ? '角色的百科页面'
+              : ' EhWiki 页面'
+            }}的链接</mat-hint>
           </mat-form-field>
         </form>
       </div>
       <div id="preview-container">
         <div id="preview-row1">
           <mat-card>
-            <mat-card-subtitle>原始</mat-card-subtitle>
+            <mat-card-subtitle>原始标签</mat-card-subtitle>
             <mat-card-content [innerHtml]="inputs.raw | async"></mat-card-content>
           </mat-card>
           <mat-card>
@@ -87,7 +97,7 @@
           <mat-card-content [innerHtml]="rendered.intro | async | mark: '': true"></mat-card-content>
         </mat-card>
         <mat-card>
-          <mat-card-subtitle>链接
+          <mat-card-subtitle>外部链接
             <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
           </mat-card-subtitle>
           <mat-card-content [innerHtml]="rendered.links | async | mark: '': true"></mat-card-content>
