@@ -1,5 +1,6 @@
 
 #root
+  overflow-x: hidden
   padding: 6px
   header
     display: flex
@@ -12,7 +13,6 @@
     position: relative
     display: flex
     #form-container
-      width: 45%
       form
         user-select: none
         mat-form-field
@@ -23,7 +23,6 @@
           margin: 18px
 
     #preview-container
-      width: 55%
       mat-card
         margin: 18px
         mat-card-subtitle
@@ -41,3 +40,24 @@
 button, mat-card-subtitle
   .loading
     display: inline-block
+
+.hide
+  display: none !important
+
+@media not all and (max-width: 720px)
+  .narrow
+    display: none
+  section
+    transform: translateX(0) !important
+  #form-container
+    width: 45%
+  #preview-container
+    width: 55%
+
+@media (max-width: 720px)
+  .wide
+    display: none
+  section
+    width: 200%
+  #form-container, #preview-container
+    width: 100%

@@ -6,12 +6,13 @@ import { Observable, Subject, BehaviorSubject, merge, combineLatest } from 'rxjs
 import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
 import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, distinctUntilChanged } from 'rxjs/operators';
+import { map, tap, distinctUntilChanged, mergeAll } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
 import { DebugService } from 'src/services/debug.service';
 import { ReadVarExpr } from '@angular/compiler';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 type Fields = keyof ETItem;
 const parser = new DOMParser();
 
@@ -37,7 +38,17 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.sass']
+  styleUrls: ['./editor.component.sass'],
+  animations: [
+    trigger('slide', [
+      state('left', style({ transform: 'translateX(0)' })),
+      state('right', style({ transform: 'translateX(-50%)' })),
+      // ...
+      transition('* => *', [
+        animate('0.3s ease-in-out'),
+      ]),
+    ]),
+  ],
 })
 export class EditorComponent implements OnInit {
 
@@ -95,6 +106,8 @@ export class EditorComponent implements OnInit {
 
   submitting = new BehaviorSubject<boolean>(false);
 
+  narrowPreviewing = false;
+
   ngOnInit() {
     this.original = {
       namespace: this.router.initParam('namespace',
@@ -143,9 +156,11 @@ export class EditorComponent implements OnInit {
         });
       }
     }
-    merge(this.original.namespace, this.inputs.namespace).pipe(distinctUntilChanged())
+    combineLatest(this.create, this.original.namespace, this.inputs.namespace)
+      .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]))
       .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
-    merge(this.original.raw, this.inputs.raw).pipe(distinctUntilChanged())
+    combineLatest(this.create, this.original.raw, this.inputs.raw)
+      .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]))
       .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
   }
 

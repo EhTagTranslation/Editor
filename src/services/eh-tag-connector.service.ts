@@ -20,12 +20,47 @@ const normalizeCache = {
   ast: new Map<string, any>(),
 };
 
-function localRender(source: string) {
-  source = source.trim();
-  if (source.search(/[<*[_~\\\r\n]/) < 0) {
-    return source;
+function localRender(source: string, format: ApiFormat) {
+  if (format === 'ast') {
+    return undefined;
   }
-  return undefined;
+  source = source.trim();
+  const haveOne = (ch: string) => {
+    return source.indexOf(ch) >= 0;
+  };
+  const haveTwo = (ch: string) => {
+    return source.indexOf(ch) !== source.lastIndexOf(ch);
+  };
+  const havePair = (l: string, r: string) => {
+    return source.indexOf(l) < source.indexOf(r);
+  };
+  if (haveOne('\\') || haveTwo('~') || haveTwo('_') || haveTwo('*')) {
+    return undefined;
+  }
+  if (havePair('<', '>') || havePair('[', ']')) {
+    return undefined;
+  }
+  const lines = source.split('\n').map(l => l.trim());
+  if (format === 'raw') {
+    return lines.join('\n');
+  }
+  if (format === 'text') {
+    return lines.filter(l => l.length !== 0).join('\n');
+  }
+  let ret = '<p>';
+  for (const l of lines) {
+    if (l.length === 0) {
+      if (!ret.endsWith('</p><p>')) {
+        ret += '</p><p>';
+      }
+    } else {
+      if (!ret.endsWith('<p>') && !ret.endsWith('<br/>')) {
+        ret += '<br/>';
+      }
+      ret += l;
+    }
+  }
+  return ret + '</p>';
 }
 
 @Injectable({
@@ -105,17 +140,15 @@ export class EhTagConnectorService {
         links: cachedlinks,
       };
     }
-    if (format !== 'ast') {
-      const localname = cachedname || localRender(item.name);
-      const localintro = cachedintro || localRender(item.intro);
-      const locallinks = cachedlinks || localRender(item.links);
-      if (typeof localname !== 'undefined' && typeof localintro !== 'undefined' && typeof locallinks !== 'undefined') {
-        return {
-          name: localname,
-          intro: localintro,
-          links: locallinks,
-        };
-      }
+    const localname = cachedname || localRender(item.name, format);
+    const localintro = cachedintro || localRender(item.intro, format);
+    const locallinks = cachedlinks || localRender(item.links, format);
+    if (typeof localname !== 'undefined' && typeof localintro !== 'undefined' && typeof locallinks !== 'undefined') {
+      return {
+        name: localname,
+        intro: localintro,
+        links: locallinks,
+      };
     }
     const endpoint = this.endpoints.ehTagConnectorTools('normalize') + `?format=${format}.json`;
     const result = await this.http.post<ETTag>(endpoint, payload).toPromise();
