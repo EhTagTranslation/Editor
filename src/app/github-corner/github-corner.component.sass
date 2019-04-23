@@ -8,7 +8,7 @@ a
 svg
   width: $size
 @media (max-width: 599px)
-  :host
+  \:host
     width: 40px
   $size: 64px
   a, svg
@@ -17,6 +17,8 @@ svg
     width: $size * 1.415
   svg
     width: $size
+  .octo-arm
+    animation: octocat-wave 560ms ease-in-out infinite
 
 a, svg
   position: absolute
