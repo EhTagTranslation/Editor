@@ -6,6 +6,7 @@ import { ETItem, ETNamespace, ETRoot, ETTag, ETKey, RenderedETItem, RenderedETTa
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
+import { strictEqual } from 'assert';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 const EH_TAG_DATA = 'eh-tag-data';
@@ -24,43 +25,61 @@ function localRender(source: string, format: ApiFormat) {
   if (format === 'ast') {
     return undefined;
   }
-  source = source.trim();
-  const haveOne = (ch: string) => {
-    return source.indexOf(ch) >= 0;
+  const haveOne = (data: string, ch: string) => {
+    return data.indexOf(ch) >= 0;
   };
-  const haveTwo = (ch: string) => {
-    return source.indexOf(ch) !== source.lastIndexOf(ch);
+  const haveTwo = (data: string, ch: string) => {
+    return data.indexOf(ch) !== data.lastIndexOf(ch);
   };
-  const havePair = (l: string, r: string) => {
-    return source.indexOf(l) < source.indexOf(r);
+  const havePair = (data: string, l: string, r: string) => {
+    return data.indexOf(l) < data.indexOf(r);
   };
-  if (haveOne('\\') || haveTwo('~') || haveTwo('_') || haveTwo('*')) {
-    return undefined;
-  }
-  if (havePair('<', '>') || havePair('[', ']')) {
-    return undefined;
-  }
-  const lines = source.split('\n').map(l => l.trim());
-  if (format === 'raw') {
-    return lines.join('\n');
-  }
-  if (format === 'text') {
-    return lines.filter(l => l.length !== 0).join('\n');
-  }
-  let ret = '<p>';
-  for (const l of lines) {
-    if (l.length === 0) {
-      if (!ret.endsWith('</p><p>')) {
-        ret += '</p><p>';
+  const handlePara = (lines: ReadonlyArray<string>) => {
+    const joined = lines.join('\n');
+    if (haveOne(joined, '\\') || haveTwo(joined, '~') || haveTwo(joined, '_') || haveTwo(joined, '*')) {
+      return undefined;
+    }
+    if (havePair(joined, '<', '>') || havePair(joined, '[', ']')) {
+      return undefined;
+    }
+    if (format === 'raw' || format === 'text') {
+      return joined;
+    }
+    return '<p>' + lines.join('<br>\n') + '</p>';
+  };
+  const paras: string[][] = [];
+  const spaces: number[] = [0];
+  let pending: string[] | null = null;
+  for (const line of source.split('\n').map(l => l.trim())) {
+    if (line.length === 0) {
+      if (pending === null) {
+        spaces[spaces.length - 1]++;
+      } else {
+        paras.push(pending);
+        pending = null;
+        spaces[spaces.length] = 0;
       }
     } else {
-      if (!ret.endsWith('<p>') && !ret.endsWith('<br/>')) {
-        ret += '<br/>';
+      if (pending === null) {
+        pending = [line];
+      } else {
+        pending.push(line);
       }
-      ret += l;
     }
   }
-  return ret + '</p>';
+  if (pending !== null) {
+    paras.push(pending);
+    pending = null;
+    spaces[spaces.length] = 0;
+  }
+  const handledParas = paras.map(handlePara);
+  if (handledParas.indexOf(undefined) >= 0) {
+    return undefined;
+  }
+  if (format === 'raw') {
+    return spaces.reduce((str, sp, idx) => str + '\n'.repeat(sp) + (handledParas[idx] || ''), '');
+  }
+  return handledParas.join('\n');
 }
 
 @Injectable({

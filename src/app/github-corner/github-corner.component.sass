@@ -1,0 +1,41 @@
+:host
+  width: 48px
+$size: 80px
+a, svg
+  height: $size
+a
+  width: $size * 1.415
+svg
+  width: $size
+@media (max-width: 599px)
+  :host
+    width: 40px
+  $size: 64px
+  a, svg
+    height: $size
+  a
+    width: $size * 1.415
+  svg
+    width: $size
+
+a, svg
+  position: absolute
+  top: 0
+  border: 0
+  left: 0
+svg
+  pointer-events: none
+a
+  transform-origin: bottom left
+  transform: rotate(-45deg)
+
+@keyframes octocat-wave
+  0%, 100% 
+    transform: rotate(0)
+  20%, 60% 
+    transform: rotate(-25deg)
+  40%, 80%
+    transform: rotate(10deg)
+
+.octo-arm-wawe
+  animation: octocat-wave 560ms ease-in-out infinite

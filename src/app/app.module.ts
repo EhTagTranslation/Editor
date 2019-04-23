@@ -34,6 +34,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TitleService } from 'src/services/title.service';
+import { GithubCornerComponent } from './github-corner/github-corner.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { TitleService } from 'src/services/title.service';
     EditorComponent,
     AboutComponent,
     MarkPipe,
+    GithubCornerComponent,
   ],
   imports: [
     AppRoutingModule,
