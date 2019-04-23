@@ -37,7 +37,7 @@
     "@types/bluebird": "^3.5.26",
     "@types/escape-string-regexp": "^1.0.0",
     "@types/node": "^8.10.45",
-    "codelyzer": "^4.5.0",
+    "codelyzer": "^5.0.0",
     "protractor": "^5.4.2",
     "ts-node": "^7.0.1",
     "tslint": "^5.16.0",
