@@ -42,7 +42,7 @@
     "codelyzer": "^5.0.0",
     "protractor": "^5.4.2",
     "run-script-os": "^1.0.5",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "~3.2.4"
   }
