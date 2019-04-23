@@ -13,6 +13,7 @@ import { ReadVarExpr } from '@angular/compiler';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { snackBarConfig } from 'src/environments/environment';
 type Fields = keyof ETItem;
 const parser = new DOMParser();
 
@@ -256,15 +257,11 @@ export class EditorComponent implements OnInit {
       const result = (await this.ehTagConnector.hasTag(key))
         ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
         : await this.ehTagConnector.addTag({ ...key, ...payload });
-      if (result) {
-        this.router.navigate(['/edit', key.namespace, key.raw], result);
-      } else {
-        this.router.navigate(['/edit', key.namespace, key.raw], payload);
-      }
-      this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', { verticalPosition: 'top', duration: 5000, });
+      this.router.navigate(['/edit', key.namespace, key.raw], result || payload);
+      this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
     } catch (ex) {
       console.log(ex);
-      this.snackBar.open('提交过程中出现错误', '重试', { verticalPosition: 'top', duration: 5000, })
+      this.snackBar.open('提交过程中出现错误', '重试', snackBarConfig)
         .onAction().subscribe(() => {
           this.submit();
         });
