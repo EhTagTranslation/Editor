@@ -3,7 +3,7 @@ import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
 import { Observable, Subject, BehaviorSubject, merge, combineLatest } from 'rxjs';
-import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem } from 'src/interfaces/ehtranslation';
+import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem, ETNamespaceInfo } from 'src/interfaces/ehtranslation';
 import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap, distinctUntilChanged, mergeAll } from 'rxjs/operators';
@@ -171,6 +171,10 @@ export class EditorComponent implements OnInit {
       throw new Error(`Wrong field name, '${field}' is not in the form.`);
     }
     return form;
+  }
+
+  getNamespace(namespace: ETNamespaceName) {
+    return ETNamespaceInfo[namespace];
   }
 
   hasError(field: Fields | null, includeErrors: string | string[], excludedErrors?: string | string[]) {
