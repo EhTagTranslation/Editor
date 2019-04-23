@@ -1,5 +1,8 @@
 language: node_js
-node_js: node
+node_js: nod
+ebranches:
+  only:
+  - master
 script: npm run build
 deploy:
   provider: pages
