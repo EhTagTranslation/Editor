@@ -131,7 +131,6 @@ export class EhTagConnectorService {
       }
     })).toPromise();
   }
-
   async addTag(item: ETItem): Promise<ETTag> {
     const endpoint = this.getEndpoint(item);
     const payload: ETTag = {
@@ -140,6 +139,29 @@ export class EhTagConnectorService {
       links: item.links,
     };
     return await this.http.post<ETTag>(endpoint, payload).toPromise();
+  }
+  async hasTag(item: ETKey): Promise<boolean> {
+    const endpoint = this.getEndpoint(item);
+    return await this.http.head(endpoint).pipe(map(_ => true), catchError(ex => {
+      if (ex.status && ex.status === 404) {
+        return of(false);
+      } else {
+        throw ex;
+      }
+    })).toPromise();
+  }
+  async modifyTag(item: ETItem): Promise<ETTag | null> {
+    const endpoint = this.getEndpoint(item);
+    const payload: ETTag = {
+      intro: item.intro,
+      name: item.name,
+      links: item.links,
+    };
+    return await this.http.put<ETTag>(endpoint, payload).toPromise();
+  }
+  async deleteTag(item: ETKey): Promise<void> {
+    const endpoint = this.getEndpoint(item);
+    return await this.http.delete<void>(endpoint).toPromise();
   }
 
   async normalizeTag(item: ETTag, format: ApiFormat = 'raw'): Promise<ETTag> {
@@ -175,21 +197,6 @@ export class EhTagConnectorService {
     cache.set(item.intro, result.intro);
     cache.set(item.links, result.links);
     return result;
-  }
-
-  async modifyTag(item: ETItem): Promise<ETTag | null> {
-    const endpoint = this.getEndpoint(item);
-    const payload: ETTag = {
-      intro: item.intro,
-      name: item.name,
-      links: item.links,
-    };
-    return await this.http.put<ETTag>(endpoint, payload).toPromise();
-  }
-
-  async deleteTag(item: ETKey): Promise<void> {
-    const endpoint = this.getEndpoint(item);
-    return await this.http.delete<void>(endpoint).toPromise();
   }
 
   async getHash() {
@@ -231,7 +238,6 @@ export class EhTagConnectorService {
 
     return promise;
   }
-
   async getTags(): Promise<ReadonlyArray<RenderedETItem>> {
     const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
     const release = await this.http.get<GithubRelease>(endpoint).toPromise();

@@ -253,7 +253,7 @@ export class EditorComponent implements OnInit {
         raw: this.value('raw'),
       };
 
-      const result = (await this.ehTagConnector.getTag(key))
+      const result = (await this.ehTagConnector.hasTag(key))
         ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
         : await this.ehTagConnector.addTag({ ...key, ...payload });
       if (result) {
