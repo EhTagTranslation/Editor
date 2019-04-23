@@ -62,4 +62,4 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 
-const globalThis = require('globalThis')();
+const globalThis = require('globalthis')();
