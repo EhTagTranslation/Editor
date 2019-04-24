@@ -1,34 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RouteService } from 'src/services/route.service';
-import { Observable, Subject, BehaviorSubject, merge, combineLatest } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem, ETNamespaceInfo } from 'src/interfaces/ehtranslation';
-import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, distinctUntilChanged, mergeAll } from 'rxjs/operators';
+import {  MatSnackBar } from '@angular/material';
+import { FormControl,  Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
+import { map, tap } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
-import { DebugService } from 'src/services/debug.service';
-import { ReadVarExpr } from '@angular/compiler';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { snackBarConfig } from 'src/environments/environment';
 type Fields = keyof ETItem;
-const parser = new DOMParser();
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
-  if (!control) {
-    return null;
-  }
   const value = String(control.value || '');
   return isValidRaw(value) ? null : { raw: 'only a-zA-Z0-9. -' };
 }
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
-  if (!control) {
-    return null;
-  }
   const value = String(control.value || '') as ETNamespaceName;
   return editableNs.indexOf(value) >= 0 ? null : { editableNs: 'please use PR' };
 }
@@ -154,10 +144,10 @@ export class EditorComponent implements OnInit {
         });
       }
     }
-    combineLatest(this.create, this.original.namespace, this.inputs.namespace)
+    combineLatest([this.create, this.original.namespace, this.inputs.namespace])
       .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]))
       .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
-    combineLatest(this.create, this.original.raw, this.inputs.raw)
+    combineLatest([this.create, this.original.raw, this.inputs.raw])
       .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]))
       .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
   }
