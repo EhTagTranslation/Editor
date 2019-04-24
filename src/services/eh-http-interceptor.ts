@@ -50,7 +50,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
        * @see https://developer.github.com/v3/#rate-limiting
        */
       authReq = req.clone({
-        setParams: { access_token: token }
+        setHeaders: { Authorization: `token ${token}` }
       });
     }
 
