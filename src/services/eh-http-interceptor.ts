@@ -1,9 +1,9 @@
 import { Injectable, ClassProvider, isDevMode } from '@angular/core';
-import { catchError, mergeMap, tap, retry, map, flatMap } from 'rxjs/operators';
+import { catchError, mergeMap, tap, retry, map, flatMap, retryWhen } from 'rxjs/operators';
 import {
   HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType, HttpErrorResponse, HttpResponseBase
 } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError, timer } from 'rxjs';
 import { GithubOauthService } from './github-oauth.service';
 import { EhTagConnectorService } from './eh-tag-connector.service';
 import { ApiEndpointService } from './api-endpoint.service';
@@ -88,7 +88,15 @@ export class EhHttpInterceptor implements HttpInterceptor {
           this.handleError(error);
         }
       }),
-      retry(1)
+      retryWhen(attempts => attempts.pipe(mergeMap((error, i) => {
+        if (error.name === HttpErrorResponse.name && i === 0) {
+          const response = error as HttpErrorResponse;
+          if (response.status >= 500 || response.status === 401 || response.status === 403) {
+            return timer(300);
+          }
+        }
+        return throwError(error);
+      })))
     );
     return r;
   }
