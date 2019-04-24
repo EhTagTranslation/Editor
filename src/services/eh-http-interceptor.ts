@@ -81,14 +81,12 @@ export class EhHttpInterceptor implements HttpInterceptor {
         if (response.type === HttpEventType.Response) {
           this.handleEag(response);
         }
-      }),
-      catchError(err => {
-        this.debug.error('catchError', err);
-        if (err.name === HttpErrorResponse.name) {
-          this.handleEag(err);
-          this.handleError(err);
+      }, error => {
+        this.debug.error('catchError', error);
+        if (error.name === HttpErrorResponse.name) {
+          this.handleEag(error);
+          this.handleError(error);
         }
-        throw err;
       }),
       retry(1)
     );
