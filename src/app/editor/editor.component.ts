@@ -21,10 +21,7 @@ function legalRaw(control: AbstractControl): ValidationErrors | null {
   if (!control) {
     return null;
   }
-  if (!control.touched && !control.dirty) {
-    return null;
-  }
-  const value = String((control && control.value) || '');
+  const value = String(control.value || '');
   return isValidRaw(value) ? null : { raw: 'only a-zA-Z0-9. -' };
 }
 
@@ -32,8 +29,8 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
   if (!control) {
     return null;
   }
-  const value = String((control && control.value) || '');
-  return editableNs.indexOf(value as ETNamespaceName) >= 0 ? null : { editableNs: 'please use PR' };
+  const value = String(control.value || '') as ETNamespaceName;
+  return editableNs.indexOf(value) >= 0 ? null : { editableNs: 'please use PR' };
 }
 
 @Component({
