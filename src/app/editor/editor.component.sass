@@ -45,7 +45,11 @@ button, mat-card-subtitle
     line-height: 1.5em !important
   .ns-text
   .ns-raw
-    float: right
+    &::before
+      content: ' ('
+    &::after
+      content: ') '
+
   .ns-intro
     display: block
     color: rgba(0, 0, 0, 0.54)

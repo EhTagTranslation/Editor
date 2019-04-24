@@ -36,7 +36,8 @@
             <mat-label>命名空间</mat-label>
             <mat-select formControlName="namespace" required>
               <mat-select-trigger class="ns-option">
-                <span class="ns-name">{{getNamespace(value('namespace')).name}}</span><span class="ns-raw">{{value('namespace')}}</span>
+                <span class="ns-name">{{getNamespace(value('namespace')).name}}</span><span
+                  class="ns-raw">{{value('namespace')}}</span>
               </mat-select-trigger>
               <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
                 <span class="ns-name">{{getNamespace(ns).name}}</span><span class="ns-raw">{{ns}}</span>
@@ -76,13 +77,17 @@
           <mat-form-field class="markdown">
             <mat-label>外部链接</mat-label>
             <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"></textarea>
-            <mat-hint>输入标签的相关链接，如指向{{
-                (((inputs.namespace | async ) || (original.namespace | async)) === 'artist') ? '画师的微博和 pixiv ' 
-              : (((inputs.namespace | async ) || (original.namespace | async)) === 'group') ? '社团或公司的官方网站'
-              : (((inputs.namespace | async ) || (original.namespace | async)) === 'parody') ? '作品的维基或萌百页面'
-              : (((inputs.namespace | async ) || (original.namespace | async)) === 'character') ? '角色的百科页面'
-              : ' EhWiki 页面'
-            }}的链接</mat-hint>
+            <ng-container [ngSwitch]="(inputs.namespace | async ) || (original.namespace | async)">
+              <mat-hint *ngSwitchCase="'artist'">输入标签的相关链接，如指向艺术家的
+                <a href="https://www.pixiv.net/" target="_blank">pixiv</a>、<a href="http://weibo.com/"
+                  target="_blank">微博</a>或
+                <a href="https://twitter.com/" target="_blank">Twiter</a> 的链接</mat-hint>
+              <mat-hint *ngSwitchCase="'group'">输入标签的相关链接，如指向社团或公司的官方网站的链接</mat-hint>
+              <mat-hint *ngSwitchCase="'parody'">输入标签的相关链接，如指向作品的<a href="https://zh.wikipedia.org/"
+                 target="_blank">维基百科</a>或<a href="https://zh.moegirl.org/" target="_blank">萌娘百科</a>词条的链接</mat-hint>
+              <mat-hint *ngSwitchCase="'character'">输入标签的相关链接，如指向角色百科页面的链接</mat-hint>
+              <mat-hint *ngSwitchDefault>输入标签的相关链接，如指向标签 EhWiki 页面的链接</mat-hint>
+            </ng-container>
           </mat-form-field>
         </form>
       </div>
