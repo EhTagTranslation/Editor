@@ -5,8 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "run-script-os",
-    "build:win32": "ng build --prod && copy .\\docs\\index.html .\\docs\\404.html",
-    "build:linux:darwin": "ng build --prod && cp ./docs/index.html ./docs/404.html",
+    "build:win32": "ng build --prod && copy .\\docs\\index.html .\\docs\\404.html && type nul > .\\docs\\.nojekyll",
+    "build:linux:darwin": "ng build --prod && cp ./docs/index.html ./docs/404.html && touch ./docs/.nojekyll",
     "lint": "ng lint"
   },
   "private": true,
