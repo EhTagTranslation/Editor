@@ -4,12 +4,9 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
 import { TagType, RepoData, Sha1Value } from 'src/interfaces/ehtag';
-import { from, Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { finalize, map, tap } from 'rxjs/operators';
 import Dexie from 'dexie';
-
-const EH_TAG_HASH = 'github-eh-tag-hash-';
-const EH_TAG_DATA = 'github-eh-tag-data-';
 
 interface TagRecord<T extends TagType> {
   type: T;
@@ -40,41 +37,23 @@ export class GithubReleaseService {
     private debug: DebugService,
   ) {
   }
-    private db = new TagStore();
+  private db = new TagStore();
 
-  private tags: { [k in TagType]?: RepoData<k> } = {};
+  private tags: { [k in TagType]?: TagRecord<k> } = {};
   private getTagsPromise: { [k in TagType]?: Promise<RepoData<k>> } = {};
-  private get<T extends TagType>(type: T): RepoData<T> | undefined {
-    return this.tags[type] as RepoData<T> | undefined;
+  private get<T extends TagType>(type: T): TagRecord<T> | undefined {
+    return this.tags[type] as TagRecord<T> | undefined;
   }
-  private set<T extends TagType>(type: T, value: RepoData<T> | undefined) {
+  private set<T extends TagType>(type: T, value: TagRecord<T> | undefined) {
     this.tags[type] = value as any;
   }
 
-  getCachedTags<T extends TagType>(type: T): RepoData<T> | undefined {
+  getCachedTags<T extends TagType>(type: T): Observable<RepoData<T> | undefined> {
     const cache = this.get(type);
     if (cache) {
-      return cache;
+      return of(cache.data);
     }
-    const DATA_KEY = EH_TAG_DATA + type;
-    // this.db.data.get(type).then(console.log);
-    const sdata = localStorage.getItem(DATA_KEY);
-    if (!sdata) {
-      return undefined;
-    }
-    try {
-      const localTags = JSON.parse(sdata) as RepoData<T>;
-      if (!Array.isArray(localTags.data) || typeof localTags.repo !== 'string') {
-        throw new Error(`Invalid storage of ${type}.`);
-      }
-      this.set(type, localTags);
-      return localTags;
-    } catch (ex) {
-      // this.db.data.delete( type);
-      localStorage.removeItem(DATA_KEY);
-      this.debug.error(ex);
-      return undefined;
-    }
+    return from(this.db.data.get(type)).pipe(tap(d => d && this.set(type, d)), map(d => d && d.data));
   }
 
   private async jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
@@ -111,14 +90,16 @@ export class GithubReleaseService {
   private async getTagsImpl<T extends TagType>(type: T): Promise<RepoData<T>> {
     const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
     const release = await this.http.get<GithubRelease>(endpoint).toPromise();
-    const HASH_KEY = EH_TAG_HASH + type;
-    const DATA_KEY = EH_TAG_DATA + type;
-    // this.db.data.get(type).then(console.log);
-    if (release.target_commitish === localStorage.getItem(HASH_KEY)) {
-      const cache = this.getCachedTags(type);
-      if (cache) {
-        return cache;
-      }
+
+    const cachedata = this.get(type);
+    if (cachedata && cachedata.hash === release.target_commitish) {
+      return cachedata.data;
+    }
+
+    const dbdata = await this.db.data.get(type);
+    if (dbdata && dbdata.hash === release.target_commitish) {
+      this.set(type, dbdata);
+      return dbdata.data;
     }
 
     const asset = release.assets.find(i => i.name === `db.${type}.js`);
@@ -127,16 +108,14 @@ export class GithubReleaseService {
     }
 
     const req = this.jsonpLoad<T>(asset);
-    const data = await req;
+    const data = {
+      type,
+      data: await req,
+      hash: release.target_commitish,
+    };
     this.set(type, data);
-    // this.db.data.put({
-    //   type,
-    //   data,
-    //   hash: release.target_commitish,
-    // });
-    localStorage.setItem(DATA_KEY, JSON.stringify(data));
-    localStorage.setItem(HASH_KEY, release.target_commitish);
-    return data;
+    this.db.data.put(data);
+    return data.data;
   }
 
   getTags<T extends TagType>(type: T): Observable<RepoData<T>> {
