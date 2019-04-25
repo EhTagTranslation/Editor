@@ -32,15 +32,15 @@ function compare(a: any, b: any, isAsc: boolean) {
 const nsScore: {
   [k in NamespaceName]: number;
 } = {
-  rows: 5,
-  female: 1.2,
-  male: 1.18,
-  misc: 1.17,
+  rows: 10,
+  female: 5,
+  male: 4.995,
+  misc: 4.5,
   language: 1,
-  artist: 1.15,
-  group: 1.1,
-  parody: 1.05,
-  character: 1.15,
+  artist: 3,
+  group: 2.5,
+  parody: 4,
+  character: 3.5,
   reclass: 1,
 };
 
@@ -223,7 +223,8 @@ export class ListComponent implements OnInit {
         }
       };
       const scoredata = data.map(v => ({
-        score: getScore(v, 'textIntro', 4) + getScore(v, 'textName', 20) + getScore(v, 'textLinks', 1) + getScore(v, 'raw', 50),
+        score: nsScore[v.namespace] *
+          (getScore(v, 'textIntro', 4) + getScore(v, 'textName', 20) + getScore(v, 'textLinks', 1) + getScore(v, 'raw', 50)),
         tag: v,
       })).filter(sv => sv.score > 0);
       scoredata.sort((a, b) => b.score - a.score);
