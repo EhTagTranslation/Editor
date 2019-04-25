@@ -1,7 +1,6 @@
 import { Injectable, isDevMode, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
-import { ETRepoInfo } from 'src/interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
 import { Observable, of, from, throwError, BehaviorSubject } from 'rxjs';

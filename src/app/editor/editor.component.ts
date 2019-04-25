@@ -2,16 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { RouteService } from 'src/services/route.service';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { ETNamespaceName, ETNamespaceEnum, isValidRaw, editableNs, ETItem, ETNamespaceInfo } from 'src/interfaces/ehtranslation';
-import {  MatSnackBar } from '@angular/material';
-import { FormControl,  Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
+import { isValidRaw, editableNs, NamespaceInfo, ETKey } from 'src/interfaces/ehtranslation';
+import { MatSnackBar } from '@angular/material';
+import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { snackBarConfig } from 'src/environments/environment';
-type Fields = keyof ETItem;
+import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
+type Fields = keyof Tag<'raw'> | keyof ETKey;
+interface Item extends Tag<'raw'>, ETKey { }
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value || '');
@@ -19,7 +21,7 @@ function legalRaw(control: AbstractControl): ValidationErrors | null {
 }
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
-  const value = String(control.value || '') as ETNamespaceName;
+  const value = String(control.value || '') as NamespaceName;
   return editableNs.indexOf(value) >= 0 ? null : { editableNs: 'please use PR' };
 }
 
@@ -65,12 +67,12 @@ export class EditorComponent implements OnInit {
     links: new FormControl('', []),
   });
 
-  nsOptions = Object.getOwnPropertyNames(ETNamespaceEnum)
-    .filter(v => isNaN(Number(v))) as ETNamespaceName[];
+  nsOptions = Object.getOwnPropertyNames(NamespaceEnum)
+    .filter(v => isNaN(Number(v))) as NamespaceName[];
 
   create: Observable<boolean>;
   inputs: {
-    namespace: Observable<ETNamespaceName | null>;
+    namespace: Observable<NamespaceName | null>;
     raw: Observable<string>;
     name: Observable<string>;
     intro: Observable<string>;
@@ -78,7 +80,7 @@ export class EditorComponent implements OnInit {
   };
 
   original: {
-    namespace: Observable<ETNamespaceName>;
+    namespace: Observable<NamespaceName>;
     raw: Observable<string>;
     // name: Observable<string>;
     // intro: Observable<string>;
@@ -99,7 +101,7 @@ export class EditorComponent implements OnInit {
   ngOnInit() {
     this.original = {
       namespace: this.router.initParam('namespace',
-        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : 'artist'),
+        v => v && v in NamespaceEnum ? v as NamespaceName : 'artist'),
       raw: this.router.initParam('raw',
         v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
         v => {
@@ -121,7 +123,7 @@ export class EditorComponent implements OnInit {
     }));
     this.inputs = {
       namespace: this.router.initQueryParam('namespace',
-        v => v && v in ETNamespaceEnum ? v as ETNamespaceName : null),
+        v => v && v in NamespaceEnum ? v as NamespaceName : null),
       raw: this.router.initQueryParam('raw',
         v => (v || '')),
       name: this.router.initQueryParam('name',
@@ -160,8 +162,8 @@ export class EditorComponent implements OnInit {
     return form;
   }
 
-  getNamespace(namespace: ETNamespaceName) {
-    return ETNamespaceInfo[namespace];
+  getNamespace(namespace: NamespaceName) {
+    return NamespaceInfo[namespace];
   }
 
   hasError(field: Fields | null, includeErrors: string | string[], excludedErrors?: string | string[]) {
@@ -183,7 +185,7 @@ export class EditorComponent implements OnInit {
   value<F extends Fields>(field: F) {
     const form = this.getControl(field);
     if (form.value) {
-      return form.value as ETItem[F];
+      return form.value as Item[F];
     }
     return '';
   }
@@ -204,7 +206,7 @@ export class EditorComponent implements OnInit {
         name: this.value('name'),
         intro: this.value('intro'),
         links: this.value('links'),
-      }, 'html');
+      }, 'html').toPromise();
       this.rendered.name.next(result.name);
       this.rendered.intro.next(result.intro);
       this.rendered.links.next(result.links);
@@ -235,7 +237,7 @@ export class EditorComponent implements OnInit {
     }
     this.submitting.next(true);
     try {
-      const payload = {
+      const payload: Tag<'raw'> = {
         name: this.value('name'),
         intro: this.value('intro'),
         links: this.value('links'),
@@ -245,9 +247,9 @@ export class EditorComponent implements OnInit {
         raw: this.value('raw'),
       };
 
-      const result = (await this.ehTagConnector.hasTag(key))
-        ? await this.ehTagConnector.modifyTag({ ...key, ...payload })
-        : await this.ehTagConnector.addTag({ ...key, ...payload });
+      const result = (await this.ehTagConnector.hasTag(key).toPromise())
+        ? await this.ehTagConnector.modifyTag(key, payload).toPromise()
+        : await this.ehTagConnector.addTag(key, payload).toPromise();
       this.router.navigate(['/edit', key.namespace, key.raw], result || payload);
       this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
     } catch (ex) {
