@@ -12,8 +12,6 @@ export class AppComponent implements OnInit {
     private ehTagConnector: EhTagConnectorService,
     private githubRelease: GithubReleaseService, ) { }
   ngOnInit(): void {
-    console.log('app');
-    console.log(this.ehTagConnector);
     this.ehTagConnector.updateHash().subscribe(_ => { });
     this.githubRelease.getTags('ast').subscribe(_ => { });
     this.githubRelease.getTags('raw').subscribe(_ => { });
