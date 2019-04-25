@@ -73,7 +73,7 @@ export class GithubReleaseService {
       timeoutGuard = setTimeout(() => {
         reject(new Error(`Get ${asset.name} timeout`));
         close();
-      }, 30 * 1000);
+      }, 60 * 1000);
 
       globalThis[callbackName] = (data: RepoData<T>) => {
         resolve(data);
