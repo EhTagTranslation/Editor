@@ -119,7 +119,7 @@ export class EditorComponent implements OnInit {
       merge(
         of(undefined),
         this.release.getCachedTags('raw'),
-        timer(0, 30000).pipe(flatMap(i => this.release.getTags('raw').pipe(catchError(_ => this.release.getCachedTags('raw')))))
+        timer(0, 50_000).pipe(flatMap(i => this.release.getTags('raw').pipe(catchError(_ => this.release.getCachedTags('raw')))))
       )
     ]).pipe(map(data => {
       if (!data[2]) {

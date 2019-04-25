@@ -9,7 +9,7 @@ import { resolve } from 'bluebird';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
-const localStorageKey = 'github_oauth_token';
+const TOKEN_KEY = 'github_oauth_token';
 
 
 interface TokenData { token: string; error: any; }
@@ -32,15 +32,15 @@ export class GithubOauthService {
 
   tokenChange = new BehaviorSubject<string | undefined | null>(this.token || undefined);
   get token() {
-    return localStorage.getItem(localStorageKey);
+    return localStorage.getItem(TOKEN_KEY);
   }
 
   private setToken(value?: string) {
     if (!value || !value.match(/^\w+$/)) {
-      localStorage.removeItem(localStorageKey);
+      localStorage.removeItem(TOKEN_KEY);
       this.tokenChange.next(null);
     } else {
-      localStorage.setItem(localStorageKey, value);
+      localStorage.setItem(TOKEN_KEY, value);
       this.tokenChange.next(value);
     }
   }

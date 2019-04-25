@@ -40,6 +40,7 @@ export class GithubReleaseService {
   private db = new TagStore();
 
   private tags: { [k in TagType]?: TagRecord<k> } = {};
+  private getReleasePromise?: Promise<GithubRelease>;
   private getTagsPromise: { [k in TagType]?: Promise<RepoData<k>> } = {};
   private get<T extends TagType>(type: T): TagRecord<T> | undefined {
     return this.tags[type] as TagRecord<T> | undefined;
@@ -87,9 +88,21 @@ export class GithubReleaseService {
 
     return promise;
   }
+
+  private getRelease() {
+    const getReleaseImpl = async () => {
+      const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+      return await this.http.get<GithubRelease>(endpoint).toPromise();
+    };
+
+    if (this.getReleasePromise) {
+      return this.getReleasePromise;
+    }
+    return this.getReleasePromise = getReleaseImpl().finally(() => this.getReleasePromise = undefined);
+  }
+
   private async getTagsImpl<T extends TagType>(type: T): Promise<RepoData<T>> {
-    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
-    const release = await this.http.get<GithubRelease>(endpoint).toPromise();
+    const release = await this.getRelease();
 
     const cachedata = this.get(type);
     if (cachedata && cachedata.hash === release.target_commitish) {
