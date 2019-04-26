@@ -15,27 +15,35 @@ function escapeHtml(unsafe: string | null) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+type NoSearchTerm = { data: string; isRegex: undefined; regex?: undefined };
+type StringSearchTerm = { data: string; isRegex: false; string: string; regex: RegExp; };
+type RegexSearchTerm = { data: string; isRegex: true; regex: RegExp; };
 
-export function regexFromSearch(search: string | null) {
+let regexFromSearchCache: NoSearchTerm | StringSearchTerm | RegexSearchTerm = { data: '', isRegex: undefined, };
+export function regexFromSearch(search: string | null): NoSearchTerm | StringSearchTerm | RegexSearchTerm {
   if (!search) {
-    return { regex: null, isRegex: false };
+    return {
+      data: search || '',
+      isRegex: undefined,
+    };
+  }
+  if (search === regexFromSearchCache.data) {
+    return regexFromSearchCache;
   }
   if (search.startsWith('/') && search.endsWith('/') && search.length > 2) {
     try {
-      return {
-        regex: new RegExp(search.substring(1, search.length - 1), 'g'),
+      return regexFromSearchCache = {
+        data: search,
         isRegex: true,
+        regex: new RegExp(search.substring(1, search.length - 1), 'g'),
       };
-    } catch {
-      return {
-        regex: new RegExp(escapeStringRegexp(search), 'g'),
-        isRegex: false,
-      };
-    }
+    } catch{ }
   }
-  return {
-    regex: new RegExp(escapeStringRegexp(search), 'g'),
+  return regexFromSearchCache = {
+    data: search,
     isRegex: false,
+    regex: new RegExp(escapeStringRegexp(search), 'g'),
+    string: search,
   };
 }
 

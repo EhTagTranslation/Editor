@@ -78,7 +78,7 @@ export class ListComponent implements OnInit {
   loading = new BehaviorSubject<boolean>(true);
   displayedColumns: Observable<ReadonlyArray<string>>;
   tags: Observable<ReadonlyArray<RenderedETItem>>;
-  usingRegex = new Subject<boolean>();
+  usingRegex = new Subject<boolean | undefined>();
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
   pagedTags: Observable<ReadonlyArray<RenderedETItem>>;
@@ -227,14 +227,28 @@ export class ListComponent implements OnInit {
     }
     this.usingRegex.next(regex.isRegex);
     if (regex.regex) {
-      const getScore = <K extends keyof RenderedETItem>(t: RenderedETItem, k: K, weight: number) => {
-        const str = t[k];
-        if (str.search(regex.regex) !== -1) {
-          return weight * regex.regex.source.length / str.length;
-        } else {
-          return 0;
-        }
-      };
+      const getScore: <K extends keyof RenderedETItem>(t: RenderedETItem, k: K, weight: number) => number
+        = regex.isRegex
+          ? (t, k, weight) => {
+            const str = t[k];
+            if (str.search(regex.regex) !== -1) {
+              return weight * regex.regex.source.length / str.length;
+            } else {
+              return 0;
+            }
+          }
+          : (t, k, weight) => {
+            const str = t[k];
+            if (str.includes(regex.string)) {
+              const score = weight * regex.string.length / str.length;
+              if (str.startsWith(regex.string)) {
+                return score * 2;
+              }
+              return score;
+            } else {
+              return 0;
+            }
+          };
       const scoredata = data.map(v => ({
         score: nsScore[v.namespace] *
           (getScore(v, 'textIntro', 4) + getScore(v, 'textName', 20) + getScore(v, 'textLinks', 1) + getScore(v, 'raw', 50)),
