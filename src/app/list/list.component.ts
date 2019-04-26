@@ -3,7 +3,7 @@ import { SortDirection } from '@angular/material';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
 import { Observable, Subject, zip, combineLatest, BehaviorSubject } from 'rxjs';
 import { Params } from '@angular/router';
-import { map, tap, shareReplay, debounceTime } from 'rxjs/operators';
+import { map, tap, shareReplay, debounceTime, filter } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'src/services/route.service';
 import { DebugService } from 'src/services/debug.service';
@@ -41,10 +41,6 @@ const nsScore: {
   parody: 4,
   character: 3.5,
   reclass: 1,
-};
-
-const sortByNs = (data: RenderedETItem[]) => {
-  return data.sort((a, b) => nsScore[b.namespace] - nsScore[a.namespace]);
 };
 
 const sortKeyMap: {
@@ -94,7 +90,7 @@ export class ListComponent implements OnInit {
   editableNs = editableNs;
 
   setNs(ns?: NamespaceName) {
-    const list = ns && ns in NamespaceEnum ? ['/list', ns] : ['/list'];
+    const list = ns && ns in NamespaceEnum ? ['/list', ns] : ['/list', 'all'];
     this.router.navigate(list, {
       pageIndex: 0,
     });
@@ -105,6 +101,7 @@ export class ListComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.githubRelease.refresh();
     const addStyle = document.createElement('style');
     this.root.nativeElement.appendChild(addStyle);
     this.namespace = this.router.initParam('namespace', ns => ns && ns in NamespaceEnum ? ns as NamespaceName : null);
@@ -127,29 +124,49 @@ export class ListComponent implements OnInit {
       ? ['handle', 'raw', 'name', 'intro', 'links']
       : ['handle', 'namespace', 'raw', 'name', 'intro', 'links'])));
 
-    this.tags = zip(
+    this.tags = combineLatest([
       this.githubRelease.tags.html,
       this.githubRelease.tags.text,
       this.githubRelease.tags.raw,
-    ).pipe(tap(() => this.loading.next(true)), map(data => this.getData(...data)), map(sortByNs), shareReplay(1));
+    ]).pipe(
+      filter(data => data[0].head.sha === data[1].head.sha && data[1].head.sha === data[2].head.sha),
+      tap(() => this.loading.next(true)),
+      map(data => this.getData(...data)),
+      shareReplay(1),
+    );
 
     this.filteredTags = combineLatest([
       this.tags,
       this.namespace,
       this.search.pipe(debounceTime(200)),
-    ]).pipe(map(data => this.getFilteredData(...data)), shareReplay(1));
+    ]).pipe(
+      tap(() => this.loading.next(true)),
+      map(data => this.getFilteredData(...data)),
+      shareReplay(1),
+    );
 
     this.orderedTags = combineLatest([
       this.filteredTags,
-      this.sortBy,
-      this.sortDirection,
-    ]).pipe(debounceTime(1), map(data => this.getSortedData(...data)), shareReplay(1));
+      combineLatest([
+        this.sortBy,
+        this.sortDirection,
+      ]).pipe(debounceTime(1)),
+    ]).pipe(
+      tap(() => this.loading.next(true)),
+      map(data => this.getSortedData(data[0], ...data[1])),
+      shareReplay(1),
+    );
 
     this.pagedTags = combineLatest([
       this.orderedTags,
       this.pageIndex,
       this.pageSize,
-    ]).pipe(map(data => this.getPagedData(...data)), shareReplay(1), tap(() => this.loading.next(false)));
+    ]).pipe(
+      tap(() => this.loading.next(true)),
+      map(data => this.getPagedData(...data)),
+      shareReplay(1),
+      tap(() => this.loading.next(false)),
+    );
   }
 
   private getData(dataHtml: RepoData<'html'>, dataText: RepoData<'text'>, dataRaw: RepoData<'raw'>) {
@@ -180,7 +197,7 @@ export class ListComponent implements OnInit {
         }
       }
     });
-    return tags;
+    return tags.sort((a, b) => nsScore[b.namespace] - nsScore[a.namespace]);
   }
 
   private getPagedData(data: ReadonlyArray<RenderedETItem>, pageIndex: number, pageSize: number) {

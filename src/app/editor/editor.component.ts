@@ -102,6 +102,7 @@ export class EditorComponent implements OnInit {
   narrowPreviewing = false;
 
   ngOnInit() {
+    this.release.refresh();
     const ons = this.router.initParam('namespace',
       v => v && v in NamespaceEnum ? v as NamespaceName : 'artist');
     const oraw = this.router.initParam('raw',

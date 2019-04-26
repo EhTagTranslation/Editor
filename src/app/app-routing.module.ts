@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: 'list',
-    component: ListComponent,
+    redirectTo: '/list/all',
   },
   {
     path: 'about',
@@ -27,7 +27,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/list',
+    redirectTo: '/list/all',
   },
 ];
 

@@ -33,7 +33,7 @@
     </mat-paginator>
   </header>
   <section id="table-wrapper">
-    <table mat-table [dataSource]="pagedTags" aria-label="Elements" matSort [matSortActive]="sortBy | async"
+    <table [style.display]="(loading | async) ? 'hidden' : ''" mat-table [dataSource]="pagedTags" aria-label="Elements" matSort [matSortActive]="sortBy | async"
       [matSortDirection]="sortDirection | async"
       (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })">
 

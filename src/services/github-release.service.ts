@@ -4,8 +4,8 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
 import { TagType, RepoData, Sha1Value } from 'src/interfaces/ehtag';
-import { of, BehaviorSubject, merge, timer } from 'rxjs';
-import { map, tap, flatMap, catchError, filter, distinctUntilChanged } from 'rxjs/operators';
+import { of, BehaviorSubject, merge, timer, from } from 'rxjs';
+import { map, tap, flatMap, catchError, filter, distinctUntilChanged, debounceTime, finalize } from 'rxjs/operators';
 import Dexie from 'dexie';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
@@ -86,6 +86,18 @@ export class GithubReleaseService {
     ast: this.tagsData.ast.pipe(filter(notUndef), map(v => v.data)),
     full: this.tagsData.full.pipe(filter(notUndef), map(v => v.data)),
   };
+
+  private getReleasePromise?: Promise<GithubRelease>;
+  private getRelease() {
+    const get = () => {
+      const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+      return this.http.get<GithubRelease>(endpoint).toPromise();
+    };
+    if (this.getReleasePromise) {
+      return from(this.getReleasePromise);
+    }
+    return from(this.getReleasePromise = get()).pipe(finalize(() => this.getReleasePromise = undefined));
+  }
   refresh() {
     this.refreshEvent.next(-1);
   }
@@ -125,11 +137,6 @@ export class GithubReleaseService {
     document.head.appendChild(script);
 
     return promise;
-  }
-
-  private getRelease() {
-    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
-    return this.http.get<GithubRelease>(endpoint);
   }
 
   private async getTags<T extends TagType>(release: GithubRelease, type: T) {
