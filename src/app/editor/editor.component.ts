@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { RouteService } from 'src/services/route.service';
-import { Observable, BehaviorSubject, combineLatest, merge, of, interval, timer } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { isValidRaw, editableNs, NamespaceInfo, ETKey } from 'src/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, repeat, repeatWhen, delay, flatMap, catchError } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import * as Bluebird from 'bluebird';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
@@ -116,13 +116,9 @@ export class EditorComponent implements OnInit {
     const otag = combineLatest([
       ons,
       oraw,
-      merge(
-        of(undefined),
-        this.release.getCachedTags('raw'),
-        timer(0, 50_000).pipe(flatMap(i => this.release.getTags('raw').pipe(catchError(_ => this.release.getCachedTags('raw')))))
-      )
+      this.release.tags.raw,
     ]).pipe(map(data => {
-      if (!data[2]) {
+      if (!data[2] || !data[1]) {
         return undefined;
       }
       const nsdata = data[2].data.find(ns => ns.namespace === data[0]);
@@ -171,22 +167,40 @@ export class EditorComponent implements OnInit {
         });
       }
     }
+
+    function mapCurrentCanEdit<T>(creating: boolean, original: T, inputs: T | null) {
+      if (creating) {
+        return inputs;
+      } else {
+        // 不要使用 inputs || original，inputs === '' 表示已经编辑
+        return inputs === null ? original : inputs;
+      }
+    }
+
+    function mapCurrentCantEdit<T>(creating: boolean, original: T, inputs: T | null) {
+      if (creating) {
+        // 不要使用 inputs || original，inputs === '' 表示已经编辑
+        return inputs === null ? original : inputs;
+      } else {
+        return original;
+      }
+    }
+
     combineLatest([this.create, this.original.namespace, this.inputs.namespace])
-      .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]))
+      .pipe(map(v => mapCurrentCantEdit(...v)))
       .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
     combineLatest([this.create, this.original.raw, this.inputs.raw])
-      .pipe(map(v => v[0] ? (v[2] || v[1]) : v[1]), tap(v => this.rendered.raw.next(v)))
+      .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.rendered.raw.next(v)))
       .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
 
-    // 不要使用 v[1] || v[0]，v[1] === '' 表示已经编辑
-    combineLatest([this.original.name, this.inputs.name])
-      .pipe(map(v => v[1] === null ? v[0] : v[1]))
+    combineLatest([this.create, this.original.name, this.inputs.name])
+      .pipe(map(v => mapCurrentCanEdit(...v)))
       .subscribe(v => v ? this.getControl('name').setValue(v) : null);
-    combineLatest([this.original.intro, this.inputs.intro])
-      .pipe(map(v => v[1] === null ? v[0] : v[1]))
+    combineLatest([this.create, this.original.intro, this.inputs.intro])
+      .pipe(map(v => mapCurrentCanEdit(...v)))
       .subscribe(v => v ? this.getControl('intro').setValue(v) : null);
-    combineLatest([this.original.links, this.inputs.links])
-      .pipe(map(v => v[1] === null ? v[0] : v[1]))
+    combineLatest([this.create, this.original.links, this.inputs.links])
+      .pipe(map(v => mapCurrentCanEdit(...v)))
       .subscribe(v => v ? this.getControl('links').setValue(v) : null);
   }
 

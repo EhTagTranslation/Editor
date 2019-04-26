@@ -1,15 +1,14 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation, ElementRef } from '@angular/core';
-import { MatPaginator, MatSort, PageEvent, SortDirection } from '@angular/material';
-import { EhTagConnectorService } from '../../services/eh-tag-connector.service';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { SortDirection } from '@angular/material';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
-import { merge, Observable, of as observableOf, Subject, zip, of, combineLatest } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router, Params } from '@angular/router';
-import { map, tap, distinctUntilChanged, finalize } from 'rxjs/operators';
+import { Observable, Subject, zip, combineLatest, BehaviorSubject } from 'rxjs';
+import { Params } from '@angular/router';
+import { map, tap, shareReplay, debounceTime } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'src/services/route.service';
 import { DebugService } from 'src/services/debug.service';
 import { TitleService } from 'src/services/title.service';
-import { NamespaceName, Tag, NamespaceEnum } from 'src/interfaces/ehtag';
+import { NamespaceName, Tag, NamespaceEnum, RepoData } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from 'src/services/github-release.service';
 
 interface RenderedETTag {
@@ -80,9 +79,9 @@ export class ListComponent implements OnInit {
   search: Observable<string>;
   pageSize: Observable<number>;
   pageIndex: Observable<number>;
-  loading = false;
+  loading = new BehaviorSubject<boolean>(true);
   displayedColumns: Observable<ReadonlyArray<string>>;
-  tags = new Subject<ReadonlyArray<RenderedETItem>>();
+  tags: Observable<ReadonlyArray<RenderedETItem>>;
   usingRegex = new Subject<boolean>();
   filteredTags: Observable<ReadonlyArray<RenderedETItem>>;
   orderedTags: Observable<ReadonlyArray<RenderedETItem>>;
@@ -128,73 +127,70 @@ export class ListComponent implements OnInit {
       ? ['handle', 'raw', 'name', 'intro', 'links']
       : ['handle', 'namespace', 'raw', 'name', 'intro', 'links'])));
 
+    this.tags = zip(
+      this.githubRelease.tags.html,
+      this.githubRelease.tags.text,
+      this.githubRelease.tags.raw,
+    ).pipe(tap(() => this.loading.next(true)), map(data => this.getData(...data)), map(sortByNs), shareReplay(1));
+
     this.filteredTags = combineLatest([
       this.tags,
       this.namespace,
-      this.search,
-    ]).pipe(map(data => this.getFilteredData(...data)));
+      this.search.pipe(debounceTime(200)),
+    ]).pipe(map(data => this.getFilteredData(...data)), shareReplay(1));
 
     this.orderedTags = combineLatest([
       this.filteredTags,
       this.sortBy,
       this.sortDirection,
-    ]).pipe(map(data => this.getSortedData(...data)));
+    ]).pipe(debounceTime(1), map(data => this.getSortedData(...data)), shareReplay(1));
 
     this.pagedTags = combineLatest([
       this.orderedTags,
       this.pageIndex,
       this.pageSize,
-    ]).pipe(map(data => this.getPagedData(...data)));
-
-    this.loading = true;
-    this.getData().pipe(map(sortByNs), finalize(() => this.loading = false))
-      .subscribe(v => this.tags.next(v));
+    ]).pipe(map(data => this.getPagedData(...data)), shareReplay(1), tap(() => this.loading.next(false)));
   }
 
-  private getData() {
-    return zip(this.githubRelease.getTags('html'), this.githubRelease.getTags('text'), this.githubRelease.getTags('raw'))
-      .pipe(map(data => {
-        const tags: RenderedETItem[] = [];
-        const dataHtml = data[0];
-        const dataText = data[1];
-        const dataRaw = data[2];
-        dataRaw.data.forEach(namespaceRaw => {
-          const namespaceHtml = dataHtml.data.find(ns => ns.namespace === namespaceRaw.namespace);
-          const namespaceText = dataText.data.find(ns => ns.namespace === namespaceRaw.namespace);
-          if (!namespaceHtml || !namespaceText) {
-            return;
-          }
-          for (const raw in namespaceRaw.data) {
-            if (namespaceRaw.data.hasOwnProperty(raw)) {
-              const elementRaw = namespaceRaw.data[raw];
-              const elementHtml = namespaceHtml.data[raw];
-              const elementText = namespaceText.data[raw];
-              tags.push({
-                ...elementRaw,
-                renderedIntro: elementHtml.intro,
-                renderedLinks: elementHtml.links,
-                renderedName: elementHtml.name,
-                textIntro: elementText.intro,
-                textLinks: elementText.links,
-                textName: elementText.name,
-                raw,
-                namespace: namespaceRaw.namespace,
-              });
-            }
-          }
-        });
-        return tags;
-      }));
+  private getData(dataHtml: RepoData<'html'>, dataText: RepoData<'text'>, dataRaw: RepoData<'raw'>) {
+    this.debug.log('list: fetching', arguments);
+    const tags: RenderedETItem[] = [];
+    dataRaw.data.forEach(namespaceRaw => {
+      const namespaceHtml = dataHtml.data.find(ns => ns.namespace === namespaceRaw.namespace);
+      const namespaceText = dataText.data.find(ns => ns.namespace === namespaceRaw.namespace);
+      if (!namespaceHtml || !namespaceText) {
+        return;
+      }
+      for (const raw in namespaceRaw.data) {
+        if (namespaceRaw.data.hasOwnProperty(raw)) {
+          const elementRaw = namespaceRaw.data[raw];
+          const elementHtml = namespaceHtml.data[raw];
+          const elementText = namespaceText.data[raw];
+          tags.push({
+            ...elementRaw,
+            renderedIntro: elementHtml.intro,
+            renderedLinks: elementHtml.links,
+            renderedName: elementHtml.name,
+            textIntro: elementText.intro,
+            textLinks: elementText.links,
+            textName: elementText.name,
+            raw,
+            namespace: namespaceRaw.namespace,
+          });
+        }
+      }
+    });
+    return tags;
   }
 
   private getPagedData(data: ReadonlyArray<RenderedETItem>, pageIndex: number, pageSize: number) {
-    this.debug.log('paging');
+    this.debug.log('list: paging', arguments);
     const startIndex = pageIndex * pageSize;
     return data.slice(startIndex, startIndex + pageSize);
   }
 
   private getSortedData(data: ReadonlyArray<RenderedETItem>, sortBy: SortableKeys | null, sortDirection: SortDirection) {
-    this.debug.log('sorting');
+    this.debug.log('list: sorting', arguments);
 
     if (!sortBy || !(sortBy in sortKeyMap) || sortDirection === '') {
       return data;
@@ -207,7 +203,7 @@ export class ListComponent implements OnInit {
   }
 
   private getFilteredData(data: ReadonlyArray<RenderedETItem>, ns: string | null, search: string) {
-    this.debug.log('filtering');
+    this.debug.log('list: filtering', arguments);
     const regex = regexFromSearch(search);
     if (ns) {
       data = data.filter(v => v.namespace === ns);

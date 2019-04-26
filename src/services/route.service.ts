@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Params, ParamMap } from '@angular/router';
 import { zip, Observable } from 'rxjs';
-import { map, distinctUntilChanged, tap } from 'rxjs/operators';
+import { map, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +38,14 @@ export class RouteService {
     key: string,
     parse: ((v: string | null) => V),
     action?: ((v: V) => void)) {
-    const value = paramMap.pipe(map(p => p.get(key)), distinctUntilChanged(), map(parse), tap(action));
-    value.subscribe(v => null);
+    const value = paramMap.pipe(
+      map(p => p.get(key)),
+      distinctUntilChanged(),
+      map(parse),
+      distinctUntilChanged(),
+      tap(action),
+      shareReplay(1));
+    value.subscribe(_ => { });
     return value;
   }
 

@@ -10,13 +10,8 @@ import { GithubReleaseService } from 'src/services/github-release.service';
 export class AppComponent implements OnInit {
   constructor(
     private ehTagConnector: EhTagConnectorService,
-    private githubRelease: GithubReleaseService, ) { }
+  ) { }
   ngOnInit(): void {
     this.ehTagConnector.updateHash().subscribe(_ => { });
-    this.githubRelease.getTags('ast').subscribe(_ => { });
-    this.githubRelease.getTags('raw').subscribe(_ => { });
-    this.githubRelease.getTags('html').subscribe(_ => { });
-    this.githubRelease.getTags('text').subscribe(_ => { });
-    this.githubRelease.getTags('full').subscribe(_ => { });
   }
 }

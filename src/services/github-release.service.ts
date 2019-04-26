@@ -1,12 +1,16 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
 import { TagType, RepoData, Sha1Value } from 'src/interfaces/ehtag';
-import { from, Observable, of } from 'rxjs';
-import { finalize, map, tap } from 'rxjs/operators';
+import { of, BehaviorSubject, merge, timer } from 'rxjs';
+import { map, tap, flatMap, catchError, filter, distinctUntilChanged } from 'rxjs/operators';
 import Dexie from 'dexie';
+
+function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
+  return v !== undefined;
+}
 
 interface TagRecord<T extends TagType> {
   type: T;
@@ -36,27 +40,61 @@ export class GithubReleaseService {
     private endpoints: ApiEndpointService,
     private debug: DebugService,
   ) {
+    this.db.data.get('raw').then(v => v && this.set('raw', v));
+    this.db.data.get('html').then(v => v && this.set('html', v));
+    this.db.data.get('text').then(v => v && this.set('text', v));
+    this.db.data.get('ast').then(v => v && this.set('ast', v));
+    this.db.data.get('full').then(v => v && this.set('full', v));
+
+    merge(
+      this.refreshEvent,
+      timer(0, 50_000)
+    ).pipe(
+      tap(v => this.debug.log('release: fetch start', v)),
+      flatMap(_ => this.getRelease().pipe(catchError(error => of(error)))),
+      tap(v => this.debug.log('release: fetch end', v)),
+      filter((v): v is GithubRelease => v
+        && typeof v.id === 'number'
+        && typeof v.target_commitish === 'string'
+        && Array.isArray(v.assets)),
+      distinctUntilChanged((r1, r2) => r1.id === r2.id)
+    ).subscribe(release => {
+      this.getTags(release, 'raw');
+      this.getTags(release, 'html');
+      this.getTags(release, 'text');
+      this.getTags(release, 'ast');
+      this.getTags(release, 'full');
+    });
   }
+
+  private refreshEvent = new EventEmitter<number>(true);
+
   private db = new TagStore();
 
-  private tags: { [k in TagType]?: TagRecord<k> } = {};
-  private getReleasePromise?: Promise<GithubRelease>;
-  private getTagsPromise: { [k in TagType]?: Promise<RepoData<k>> } = {};
-  private get<T extends TagType>(type: T): TagRecord<T> | undefined {
-    return this.tags[type] as TagRecord<T> | undefined;
-  }
-  private set<T extends TagType>(type: T, value: TagRecord<T> | undefined) {
-    this.tags[type] = value as any;
-  }
+  private readonly tagsData = {
+    raw: new BehaviorSubject<TagRecord<'raw'> | undefined>(undefined),
+    html: new BehaviorSubject<TagRecord<'html'> | undefined>(undefined),
+    text: new BehaviorSubject<TagRecord<'text'> | undefined>(undefined),
+    ast: new BehaviorSubject<TagRecord<'ast'> | undefined>(undefined),
+    full: new BehaviorSubject<TagRecord<'full'> | undefined>(undefined),
+  };
 
-  getCachedTags<T extends TagType>(type: T): Observable<RepoData<T> | undefined> {
-    const cache = this.get(type);
-    if (cache) {
-      return of(cache.data);
-    }
-    return from(this.db.data.get(type)).pipe(tap(d => d && this.set(type, d)), map(d => d && d.data));
+  readonly tags = {
+    raw: this.tagsData.raw.pipe(filter(notUndef), map(v => v.data)),
+    html: this.tagsData.html.pipe(filter(notUndef), map(v => v.data)),
+    text: this.tagsData.text.pipe(filter(notUndef), map(v => v.data)),
+    ast: this.tagsData.ast.pipe(filter(notUndef), map(v => v.data)),
+    full: this.tagsData.full.pipe(filter(notUndef), map(v => v.data)),
+  };
+  refresh() {
+    this.refreshEvent.next(-1);
   }
-
+  private set<T extends TagType>(type: T, value: TagRecord<T>) {
+    (this.tagsData[type] as BehaviorSubject<TagRecord<T> | undefined>).next(value);
+  }
+  private get<T extends TagType>(type: T) {
+    return (this.tagsData[type] as BehaviorSubject<TagRecord<T> | undefined>).value;
+  }
   private async jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
     const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
     if (globalThis[callbackName]) {
@@ -90,29 +128,23 @@ export class GithubReleaseService {
   }
 
   private getRelease() {
-    const getReleaseImpl = async () => {
-      const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
-      return await this.http.get<GithubRelease>(endpoint).toPromise();
-    };
-
-    if (this.getReleasePromise) {
-      return this.getReleasePromise;
-    }
-    return this.getReleasePromise = getReleaseImpl().finally(() => this.getReleasePromise = undefined);
+    const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+    return this.http.get<GithubRelease>(endpoint);
   }
 
-  private async getTagsImpl<T extends TagType>(type: T): Promise<RepoData<T>> {
-    const release = await this.getRelease();
-
+  private async getTags<T extends TagType>(release: GithubRelease, type: T) {
+    this.debug.log('release: load start', type, release.target_commitish);
     const cachedata = this.get(type);
     if (cachedata && cachedata.hash === release.target_commitish) {
-      return cachedata.data;
+      this.debug.log('release: load end with cachedata', type, cachedata.hash);
+      return;
     }
 
     const dbdata = await this.db.data.get(type);
     if (dbdata && dbdata.hash === release.target_commitish) {
       this.set(type, dbdata);
-      return dbdata.data;
+      this.debug.log('release: load end with dbdata', type, dbdata.hash);
+      return;
     }
 
     const asset = release.assets.find(i => i.name === `db.${type}.js`);
@@ -127,17 +159,7 @@ export class GithubReleaseService {
       hash: release.target_commitish,
     };
     this.set(type, data);
+    this.debug.log('release: load end with remotedata', type, data.hash);
     this.db.data.put(data);
-    return data.data;
-  }
-
-  getTags<T extends TagType>(type: T): Observable<RepoData<T>> {
-    const cache = this.getTagsPromise[type];
-    if (cache) {
-      return from(cache as Promise<RepoData<T>>);
-    }
-    const promise = this.getTagsImpl(type);
-    this.getTagsPromise[type] = promise as any;
-    return from(promise).pipe(finalize(() => this.getTagsPromise[type] = undefined));
   }
 }
