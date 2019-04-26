@@ -40,23 +40,24 @@ export class GithubReleaseService {
     private endpoints: ApiEndpointService,
     private debug: DebugService,
   ) {
-    this.db.data.get('raw').then(v => v && this.set('raw', v));
-    this.db.data.get('html').then(v => v && this.set('html', v));
-    this.db.data.get('text').then(v => v && this.set('text', v));
-    this.db.data.get('ast').then(v => v && this.set('ast', v));
-    this.db.data.get('full').then(v => v && this.set('full', v));
+    this.fillCache('raw');
+    this.fillCache('html');
+    this.fillCache('text');
+    this.fillCache('ast');
+    this.fillCache('full');
 
     merge(
       this.refreshEvent,
       timer(0, 50_000)
     ).pipe(
       tap(v => this.debug.log('release: fetch start', v)),
-      flatMap(_ => this.getRelease().pipe(catchError(error => of(error)))),
+      flatMap(_ => this.getRelease().pipe(
+        map(data => ({ data, hash: data.target_commitish })),
+        catchError(error => of({ error }))
+      )),
       tap(v => this.debug.log('release: fetch end', v)),
-      filter((v): v is GithubRelease => v
-        && typeof v.id === 'number'
-        && typeof v.target_commitish === 'string'
-        && Array.isArray(v.assets)),
+      map(v => 'data' in v ? v.data : undefined),
+      filter(notUndef),
       distinctUntilChanged((r1, r2) => r1.id === r2.id && r1.target_commitish === r2.target_commitish)
     ).subscribe(release => {
       this.getTags(release, 'raw');
@@ -137,18 +138,31 @@ export class GithubReleaseService {
     });
   }
 
+  private async fillCache<T extends TagType>(type: T) {
+    try {
+      const data = await this.db.data.get(type);
+      if (data) {
+        this.debug.log('release: init with db data', { type, hash: data.hash });
+        this.set(type, data);
+      } else {
+        this.debug.log('release: init skipped, no db data', { type });
+      }
+    } catch (error){
+      this.debug.log('release: init failed', { type , error});
+    }
+  }
+
   private async getTags<T extends TagType>(release: GithubRelease, type: T) {
-    this.debug.log('release: load start', type, release.target_commitish);
     const cachedata = this.get(type);
     if (cachedata && cachedata.hash === release.target_commitish) {
-      this.debug.log('release: load end with cachedata', type, cachedata.hash);
       return;
     }
 
+    this.debug.log('release: load start', { type, hash: release.target_commitish });
     const dbdata = await this.db.data.get(type);
     if (dbdata && dbdata.hash === release.target_commitish) {
+      this.debug.log('release: load end with db data', { type, hash: dbdata.hash });
       this.set(type, dbdata);
-      this.debug.log('release: load end with dbdata', type, dbdata.hash);
       return;
     }
 
@@ -163,8 +177,8 @@ export class GithubReleaseService {
       data: await req,
       hash: release.target_commitish,
     };
+    this.debug.log('release: load end with remote data', { type, hash: data.hash });
     this.set(type, data);
-    this.debug.log('release: load end with remotedata', type, data.hash);
     this.db.data.put(data);
   }
 }
