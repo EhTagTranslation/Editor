@@ -33,28 +33,23 @@
     </mat-paginator>
   </header>
   <section id="table-wrapper">
-    <table [style.display]="(loading | async) ? 'hidden' : ''" mat-table [dataSource]="pagedTags" aria-label="Elements" matSort [matSortActive]="sortBy | async"
-      [matSortDirection]="sortDirection | async"
+    <table [style.display]="(loading | async) ? 'hidden' : ''" mat-table [dataSource]="pagedTags" aria-label="Elements"
+      matSort [matSortActive]="sortBy | async" [matSortDirection]="sortDirection | async"
       (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })">
 
       <ng-container matColumnDef="namespace">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">命名空间</th>
         <td mat-cell *matCellDef="let row">
-          <div>
-            <a (click)="setNs(row.namespace)" [routerLink]="[ '/list', row.namespace ]">{{row.namespace}}</a>
-          </div>
+          <div><a (click)="setNs(row.namespace)" [routerLink]="[ '/list', row.namespace ]">{{row.namespace}}</a></div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="raw">
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">原始标签</th>
         <td mat-cell *matCellDef="let row">
-          <div>
-            <a *ngIf="row.namespace === 'rows'; else notRow;" (click)="setNs(row.raw)"
+          <div><a *ngIf="row.namespace === 'rows'; else notRow;" (click)="setNs(row.raw)"
               [routerLink]="[ '/list', row.raw ]" [innerHTML]="row.raw | mark: (search | async)"></a>
-            <ng-template #notRow>
-              <span [innerHTML]="row.raw | mark: (search | async)"></span>
-            </ng-template>
+            <ng-template #notRow><span [innerHTML]="row.raw | mark: (search | async)"></span></ng-template>
           </div>
         </td>
       </ng-container>

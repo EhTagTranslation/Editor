@@ -17,6 +17,7 @@ header
 
 section#table-wrapper
   overflow-x: auto
+  user-select: none
   table
     width: 100%
     min-width: 640px
@@ -24,11 +25,13 @@ section#table-wrapper
       min-width: 80px
     .mat-header-cell:not(:last-child), .mat-cell:not(:last-child)
       padding-right: 8px
-    td div
+    td > div
       margin: 4px 0
+      /deep/ 
+        > span, > a, > p
+          user-select: text
 
   div.spinner
-    user-select: none
     padding: 120px
     position: sticky
     left: 0
