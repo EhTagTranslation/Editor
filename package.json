@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "run-script-os",
     "build:win32": "ng build --prod && copy .\\dist\\index.html .\\dist\\404.html && type nul > .\\dist\\.nojekyll",
-    "build:linux:darwin": "ng build --prod && cp ./dist/index.html ./dist/404.html && touch ./dist/.nojekyll",
-    "lint": "ng lint"
+    "build:linux:darwin": "ng build --prod && cp ./dist/index.html ./dist/404.html && touch ./dist/.nojekyll"
   },
   "private": true,
   "dependencies": {
@@ -39,8 +38,6 @@
     "@types/bluebird": "^3.5.26",
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^11.13.7",
-    "codelyzer": "^5.0.0",
-    "protractor": "^5.4.2",
     "run-script-os": "^1.0.5",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",

@@ -57,7 +57,7 @@ export class GithubReleaseService {
         && typeof v.id === 'number'
         && typeof v.target_commitish === 'string'
         && Array.isArray(v.assets)),
-      distinctUntilChanged((r1, r2) => r1.id === r2.id)
+      distinctUntilChanged((r1, r2) => r1.id === r2.id && r1.target_commitish === r2.target_commitish)
     ).subscribe(release => {
       this.getTags(release, 'raw');
       this.getTags(release, 'html');
@@ -107,16 +107,19 @@ export class GithubReleaseService {
   private get<T extends TagType>(type: T) {
     return (this.tagsData[type] as BehaviorSubject<TagRecord<T> | undefined>).value;
   }
-  private async jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
-    const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
-    if (globalThis[callbackName]) {
-      throw new Error(`Callback ${callbackName} has registered.`);
-    }
-
-    const promise = new Promise<RepoData<T>>((resolve, reject) => {
+  private jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
+    return new Promise<RepoData<T>>((resolve, reject) => {
+      const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
+      if (globalThis[callbackName]) {
+        reject(new Error(`Callback ${callbackName} has registered.`));
+      }
       let timeoutGuard: ReturnType<typeof setTimeout>;
 
+      const script = document.createElement('script');
+      script.setAttribute('src', asset.browser_download_url);
+
       const close = () => {
+        document.head.removeChild(script);
         clearTimeout(timeoutGuard);
         globalThis[callbackName] = undefined;
       };
@@ -130,13 +133,8 @@ export class GithubReleaseService {
         resolve(data);
         close();
       };
+      document.head.appendChild(script);
     });
-
-    const script = document.createElement('script');
-    script.setAttribute('src', asset.browser_download_url);
-    document.head.appendChild(script);
-
-    return promise;
   }
 
   private async getTags<T extends TagType>(release: GithubRelease, type: T) {

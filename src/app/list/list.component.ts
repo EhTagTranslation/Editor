@@ -138,7 +138,7 @@ export class ListComponent implements OnInit {
     this.filteredTags = combineLatest([
       this.tags,
       this.namespace,
-      this.search.pipe(debounceTime(200)),
+      this.search.pipe(debounceTime(50)),
     ]).pipe(
       tap(() => this.loading.next(true)),
       map(data => this.getFilteredData(...data)),

@@ -41,24 +41,24 @@ export class EhHttpInterceptor implements HttpInterceptor {
   }
 
   private getReq(req: HttpRequest<any>) {
-    let authReq = req;
-    const token = this.githubOauth.token;
-
-    if (req.url.startsWith(this.endpoints.github()) && token) {
-      /**
-       * use `access_token` for more rate limits
-       * @see https://developer.github.com/v3/#rate-limiting
-       */
-      authReq = req.clone({
-        setParams: { access_token: token }
-      });
+    const mod: Parameters<typeof req.clone>[0] = {
+      setHeaders: {},
+      setParams: {},
+    };
+    if (!mod.setHeaders || !mod.setParams) {
+      return req;
     }
-
-    if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
-      const mod: Parameters<typeof req.clone>[0] = {
-        setHeaders: {}
-      };
-
+    const token = this.githubOauth.token;
+    if (req.url.startsWith(this.endpoints.github())) {
+      mod.setHeaders.Accept = `application/vnd.github.v3+json`;
+      if (token) {
+        /**
+         * use `access_token` for more rate limits
+         * @see https://developer.github.com/v3/#rate-limiting
+         */
+        mod.setParams.access_token = token;
+      }
+    } else if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
       if (['POST', 'PUT', 'DELETE'].includes(req.method) && mod.setHeaders) {
         if (token) {
           mod.setHeaders['X-Token'] = token;
@@ -67,10 +67,8 @@ export class EhHttpInterceptor implements HttpInterceptor {
           mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
         }
       }
-
-      authReq = req.clone(mod);
     }
-    return authReq;
+    return req.clone(mod);
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
