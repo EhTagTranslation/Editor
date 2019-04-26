@@ -16,24 +16,31 @@ export interface ParaNode extends ContainerNode {
   type: 'paragraph';
 }
 export interface LeafNode extends InlineNode {
+  type: 'text' | 'code' | 'br';
+}
+export interface TextLeafNode extends LeafNode {
+  type: 'text' | 'code';
   text: string;
 }
-export interface TextNode extends LeafNode {
+export interface TextNode extends TextLeafNode {
   type: 'text';
 }
-export interface CodeNode extends LeafNode {
+export interface CodeNode extends TextLeafNode {
   type: 'code';
 }
-export interface BreakNode extends InlineNode {
+export interface BreakNode extends LeafNode {
   type: 'br';
 }
-export interface EmphasisNode extends InlineNode, ContainerNode {
+export interface StylingNode extends InlineNode, ContainerNode {
+  type: 'emphasis' | 'strong';
+}
+export interface EmphasisNode extends StylingNode {
   type: 'emphasis';
 }
-export interface StrongNode extends InlineNode, ContainerNode {
+export interface StrongNode extends StylingNode {
   type: 'strong';
 }
-export interface MediaNode extends ContainerNode, InlineNode {
+export interface MediaNode extends InlineNode, ContainerNode {
   type: 'link' | 'image';
   title: string;
   url: string;
