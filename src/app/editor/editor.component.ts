@@ -293,7 +293,7 @@ export class EditorComponent implements OnInit {
             const inner = myTrim(Array.from(el.childNodes).map(getMdPre).join(''));
             const tinner = inner.trim();
             switch (el.tagName) {
-              case 'P': case 'DIV': case 'SECTION': case 'TR': case 'TH': case 'PRE':
+              case 'P': case 'DIV': case 'SECTION': case 'TR': case 'TH': case 'PRE': case 'FIGURE':
                 return tinner + '\n\n';
               case 'A':
                 return `[${tinner}](${el.getAttribute('href')})`;
@@ -312,6 +312,8 @@ export class EditorComponent implements OnInit {
                 return `\`${(el.textContent || '').trim().split(/\s*(?:\r|\n|\r\n)/g).join('`\n`')}\``;
               case 'BODY':
                 return tinner;
+              case 'NOSCRIPT': case 'SCRIPT': case 'STYLE': case 'LINK': case 'TEMPLATE': case 'META':
+                return '';
               default:
                 return inner;
             }

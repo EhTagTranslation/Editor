@@ -1,5 +1,5 @@
 import { Injectable, ClassProvider, isDevMode } from '@angular/core';
-import { catchError, mergeMap, tap, retry, map, flatMap, retryWhen } from 'rxjs/operators';
+import { catchError, mergeMap, tap, retry, map, flatMap, retryWhen, filter, delay } from 'rxjs/operators';
 import {
   HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType, HttpErrorResponse, HttpResponseBase
 } from '@angular/common/http';
@@ -86,15 +86,13 @@ export class EhHttpInterceptor implements HttpInterceptor {
           this.handleError(error);
         }
       }),
-      retryWhen(attempts => attempts.pipe(mergeMap((error, i) => {
-        if (error.name === HttpErrorResponse.name && i === 0) {
-          const response = error as HttpErrorResponse;
-          if (response.status >= 500 || response.status === 401 || response.status === 403) {
-            return timer(300);
-          }
-        }
-        return throwError(error);
-      })))
+      retryWhen(attempts => attempts.pipe(
+        filter((error): error is HttpErrorResponse => error.name === HttpErrorResponse.name),
+        filter((_, i) => i === 0), // 只重试1次
+        filter(error => error.status >= 500 || error.status === 401 || error.status === 403), // 只重试指定的错误
+        filter(error => error.headers.get('X-RateLimit-Remaining') !== '0'), // 配额超出不重试
+        delay(300),
+      ))
     );
     return r;
   }
