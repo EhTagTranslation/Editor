@@ -14,6 +14,7 @@ import { snackBarConfig } from 'src/environments/environment';
 import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from 'src/services/github-release.service';
 import { dashCaseToCamelCase } from '@angular/compiler/src/util';
+import { DebugService } from 'src/services/debug.service';
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey { }
 
@@ -49,6 +50,7 @@ export class EditorComponent implements OnInit {
   constructor(
     private ehTagConnector: EhTagConnectorService,
     public github: GithubOauthService,
+    private debug: DebugService,
     public release: GithubReleaseService,
     private router: RouteService,
     private title: TitleService,
@@ -270,42 +272,46 @@ export class EditorComponent implements OnInit {
         return undefined;
       }
       const doc = parser.parseFromString(data, 'text/html');
+      this.debug.log("editor: paste", field, doc.body);
       return getMdPre(doc.body);
 
       function getMdPre(node: ChildNode): string {
+        function myTrim(text: string) {
+          if (text.trimLeft() !== text) {
+            text = ' ' + text.trimLeft();
+          }
+          if (text.trimRight() !== text) {
+            text = text.trimRight() + ' ';
+          }
+          return text;
+        }
         switch (node.nodeType) {
           case Node.TEXT_NODE:
-            let text = node.textContent || '';
-            if (text.trimLeft() !== text) {
-              text = ' ' + text.trimLeft();
-            }
-            if (text.trimRight() !== text) {
-              text = text.trimRight() + ' ';
-            }
-            return text;
+            return myTrim(node.textContent || '');
           case Node.ELEMENT_NODE: {
             const el = node as Element;
-            const inner = Array.from(el.childNodes).map(getMdPre).join('').trim();
+            const inner = myTrim(Array.from(el.childNodes).map(getMdPre).join(''));
+            const tinner = inner.trim();
             switch (el.tagName) {
-              case 'BODY':
-                return inner + '\n';
-              case 'P':
-                return inner + '\n\n';
+              case 'P': case 'DIV': case 'SECTION': case 'TR': case 'TH':
+                return tinner + '\n\n';
               case 'A':
-                return `[${inner}](${el.getAttribute('href')})`;
+                return `[${tinner}](${el.getAttribute('href')})`;
               case 'IMG':
                 if (typeof el.getAttribute('nsfw') === 'string') {
-                  return `![${inner || '图'}](# "${el.getAttribute('src')}")`;
+                  return `![${tinner || '图'}](# "${el.getAttribute('src')}")`;
                 }
-                return `![${inner || '图'}](${el.getAttribute('src')})`;
+                return `![${tinner || '图'}](${el.getAttribute('src')})`;
               case 'B': case 'STRONG':
-                return `**${inner}**`;
+                return `**${tinner}**`;
               case 'I': case 'EM':
-                return `*${inner}*`;
+                return `*${tinner}*`;
               case 'BR':
                 return '\n';
               case 'CODE':
                 return `\`${(el.textContent || '').trim()}\``;
+              case 'BODY':
+                return tinner;
               default:
                 return inner;
             }
