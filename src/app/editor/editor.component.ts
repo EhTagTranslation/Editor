@@ -13,6 +13,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { snackBarConfig } from 'src/environments/environment';
 import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from 'src/services/github-release.service';
+import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey { }
 
@@ -25,6 +26,8 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value || '') as NamespaceName;
   return editableNs.indexOf(value) >= 0 ? null : { editableNs: 'please use PR' };
 }
+
+const parser = new DOMParser();
 
 @Component({
   selector: 'app-editor',
@@ -244,6 +247,81 @@ export class EditorComponent implements OnInit {
   enabled(field: Fields) {
     const form = this.getControl(field);
     return form.enabled;
+  }
+
+  pasting(ev: ClipboardEvent, isMd: boolean) {
+    if (!(ev.target instanceof HTMLInputElement) && !(ev.target instanceof HTMLTextAreaElement)) {
+      return;
+    }
+    const field = ev.target.getAttribute('formControlName') as Fields;
+    if (!field) {
+      return;
+    }
+    const handleText = () => {
+      const data = ev.clipboardData.getData('Text');
+      if (!data) {
+        return undefined;
+      }
+      return data.trim().replace('\t', ' ');
+    }
+    const handleHtml = () => {
+      const data = ev.clipboardData.getData('text/html');
+      if (!data) {
+        return undefined;
+      }
+      const doc = parser.parseFromString(data, 'text/html');
+      return getMdPre(doc.body);
+
+      function getMdPre(node: ChildNode): string {
+        switch (node.nodeType) {
+          case Node.TEXT_NODE:
+            let text = node.textContent || '';
+            if (text.trimLeft() !== text) {
+              text = ' ' + text.trimLeft();
+            }
+            if (text.trimRight() !== text) {
+              text = text.trimRight() + ' ';
+            }
+            return text;
+          case Node.ELEMENT_NODE: {
+            const el = node as Element;
+            const inner = Array.from(el.childNodes).map(getMdPre).join('').trim();
+            switch (el.tagName) {
+              case 'BODY':
+                return inner + '\n';
+              case 'P':
+                return inner + '\n\n';
+              case 'A':
+                return `[${inner}](${el.getAttribute('href')})`;
+              case 'IMG':
+                if (typeof el.getAttribute('nsfw') === 'string') {
+                  return `![${inner || '图'}](# "${el.getAttribute('src')}")`;
+                }
+                return `![${inner || '图'}](${el.getAttribute('src')})`;
+              case 'B': case 'STRONG':
+                return `**${inner}**`;
+              case 'I': case 'EM':
+                return `*${inner}*`;
+              case 'BR':
+                return '\n';
+              default:
+                return inner;
+            }
+          }
+          default:
+            return '';
+        }
+      }
+    }
+    const data = isMd ? handleHtml() || handleText() : handleText();
+    if (!data) {
+      return;
+    }
+    ev.preventDefault();
+    ev.target.setRangeText(data, ev.target.selectionStart || 0, ev.target.selectionEnd || 0, 'end');
+    this.router.navigateParam({
+      [field]: ev.target.value,
+    });
   }
 
   async preview() {

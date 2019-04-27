@@ -174,9 +174,12 @@ export class ListComponent implements OnInit {
     if (!(ev.target instanceof HTMLInputElement)) {
       return;
     }
+    const data = ev.clipboardData.getData('Text');
+    if (!data) {
+      return;
+    }
     ev.preventDefault();
-    const data = ev.clipboardData.getData('Text').trim().replace('\t', ' ');
-    ev.target.setRangeText(data, ev.target.selectionStart || 0, ev.target.selectionEnd || 0, 'end');
+    ev.target.setRangeText(data.trim().replace('\t', ' '), ev.target.selectionStart || 0, ev.target.selectionEnd || 0, 'end');
     this.router.navigateParam({
       search: ev.target.value,
     });
