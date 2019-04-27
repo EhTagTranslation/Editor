@@ -159,14 +159,27 @@ export class ListComponent implements OnInit {
 
     this.pagedTags = combineLatest([
       this.orderedTags,
-      this.pageIndex,
-      this.pageSize,
+      combineLatest([
+        this.pageIndex,
+        this.pageSize,
+      ]).pipe(debounceTime(1)),
     ]).pipe(
       tap(() => this.loading.next(true)),
-      map(data => this.getPagedData(...data)),
+      map(data => this.getPagedData(data[0], ...data[1])),
       shareReplay(1),
       tap(() => this.loading.next(false)),
     );
+  }
+  pasting(ev: ClipboardEvent) {
+    if (!(ev.target instanceof HTMLInputElement)) {
+      return;
+    }
+    ev.preventDefault();
+    const data = ev.clipboardData.getData('Text').trim().replace('\t', ' ');
+    ev.target.setRangeText(data, ev.target.selectionStart || 0, ev.target.selectionEnd || 0, 'end');
+    this.router.navigateParam({
+      search: ev.target.value,
+    });
   }
 
   private getData(dataHtml: RepoData<'html'>, dataText: RepoData<'text'>, dataRaw: RepoData<'raw'>) {

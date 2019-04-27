@@ -88,6 +88,7 @@ export class MarkPipe implements PipeTransform {
                 }
               }
               if (enode.tagName === 'IMG') {
+                enode.setAttribute('referrerPolicy', 'no-referrer');
                 enode.setAttribute('ehimg', '');
                 if (!enode.getAttribute('title')) {
                   enode.setAttribute('title', enode.getAttribute('src') || '');
