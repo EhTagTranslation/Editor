@@ -55,12 +55,20 @@ img[ehimg]
   &[nsfw]
     border: red solid
 
-div.page-box
+code
+  background: rgba(100, 100, 100, .2)
+  border-radius: 4px
+  font-family: Consolas, Courier New, Courier, monospace
+  font-size: calc(100% - 2px)
+  padding: 2px 4px
+
+.page-box
   @extend .mat-elevation-z8
   margin: 32px 24px 12px
   @media (max-width: 720px)
     margin: 0 4px 4px
 .md-container p
-  margin: 0.5em 0
+  line-height: 1.5em
+  margin: .5em 0
 td .md-container p
   margin: 4px 0

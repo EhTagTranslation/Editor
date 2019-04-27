@@ -304,6 +304,8 @@ export class EditorComponent implements OnInit {
                 return `*${inner}*`;
               case 'BR':
                 return '\n';
+              case 'CODE':
+                return `\`${(el.textContent || '').trim()}\``;
               default:
                 return inner;
             }
