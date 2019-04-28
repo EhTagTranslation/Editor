@@ -273,7 +273,7 @@ export class EditorComponent implements OnInit {
       }
       const doc = parser.parseFromString(data, 'text/html');
       this.debug.log("editor: paste", field, doc.body);
-      return getMdPre(doc.body);
+      return getMdPre(doc.body).split('\n').map(s => s.trim()).join('\n');
 
       function getMdPre(node: ChildNode): string {
         function myTrim(text: string) {
