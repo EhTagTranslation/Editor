@@ -55,8 +55,14 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
+declare const Zone: any;
 
+import 'zone.js/dist/zone';  // Included with Angular CLI.
+import * as Bluebird from 'bluebird';
+import 'zone.js/dist/zone-bluebird';
+Zone[Zone['__symbol__']('bluebird')](Bluebird);
+
+Zone.assertZonePatched = function()  {  };
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

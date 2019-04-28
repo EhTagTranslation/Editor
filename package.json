@@ -35,7 +35,7 @@
     "@angular/cli": "^7.3.8",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "^7.2.14",
-    "@types/bluebird": "^3.5.26",
+    "@types/bluebird-global": "^3.5.11",
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^11.13.7",
     "run-script-os": "^1.0.5",

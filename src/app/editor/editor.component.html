@@ -4,8 +4,8 @@
       <span class="mat-headline">
         {{ (create | async) ? '创建标签' : '修改标签' }}
       </span>
-      <a mat-icon-button href="https://github.com/EhTagTranslation/Database/wiki/参与翻译"
-        matTooltip="查看参与翻译指南" target="_blank">
+      <a mat-icon-button href="https://github.com/EhTagTranslation/Database/wiki/参与翻译" matTooltip="查看参与翻译指南"
+        target="_blank">
         <mat-icon>help</mat-icon>
       </a>
       <span style="flex: 1 1 auto;"></span>
@@ -36,7 +36,8 @@
             <mat-label>命名空间</mat-label>
             <mat-select formControlName="namespace" required>
               <mat-select-trigger class="ns-option">
-                <span class="ns-name">{{getNamespace(value('namespace')).name}}</span><span class="ns-raw">{{value('namespace')}}</span>
+                <span class="ns-name">{{getNamespace(value('namespace')).name}}</span><span
+                  class="ns-raw">{{value('namespace')}}</span>
               </mat-select-trigger>
               <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
                 <span class="ns-name">{{getNamespace(ns).name}}</span><span class="ns-raw">{{ns}}</span>
@@ -52,7 +53,7 @@
           </mat-form-field>
           <mat-form-field>
             <mat-label>原始标签</mat-label>
-            <input matInput formControlName="raw" required (paste)="pasting($event, false)"/>
+            <input matInput formControlName="raw" required (paste)="pasting($event, false)" />
             <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
             <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
             <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母
@@ -70,12 +71,14 @@
           </mat-form-field>
           <mat-form-field class="markdown">
             <mat-label>描述</mat-label>
-            <textarea matInput formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2" (paste)="pasting($event, true)"></textarea>
+            <textarea matInput formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2"
+              cdkAutosizeMaxRows="10" (paste)="pasting($event, true)"></textarea>
             <mat-hint>输入标签的描述</mat-hint>
           </mat-form-field>
           <mat-form-field class="markdown">
             <mat-label>外部链接</mat-label>
-            <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2" (paste)="pasting($event, true)"></textarea>
+            <textarea matInput formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2"
+              cdkAutosizeMaxRows="10" (paste)="pasting($event, true)"></textarea>
             <mat-hint>输入标签的相关链接，如指向{{
                 (((inputs.namespace | async ) || (original.namespace | async)) === 'artist') ? '画师的微博和 pixiv ' 
               : (((inputs.namespace | async ) || (original.namespace | async)) === 'group') ? '社团或公司的官方网站'

@@ -6,15 +6,14 @@ import { isValidRaw, editableNs, NamespaceInfo, ETKey } from 'src/interfaces/eht
 import { MatSnackBar } from '@angular/material';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
-import * as Bluebird from 'bluebird';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { snackBarConfig } from 'src/environments/environment';
 import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from 'src/services/github-release.service';
-import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 import { DebugService } from 'src/services/debug.service';
+
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey { }
 
@@ -297,12 +296,12 @@ export class EditorComponent implements OnInit {
               case 'TABLE': case 'THEAD': case 'TBODY': case 'TFOOT': case 'TR': case 'TH':
                 return tinner + '\n\n';
               case 'A':
-                return `[${tinner}](${el.getAttribute('href')})`;
+                return `[${tinner}](${el.getAttribute('href') || ''})`;
               case 'IMG':
                 if (typeof el.getAttribute('nsfw') === 'string') {
-                  return `![${tinner || '图'}](# "${el.getAttribute('src')}")`;
+                  return `![${tinner || '图'}](# "${el.getAttribute('src') || ''}")`;
                 }
-                return `![${tinner || '图'}](${el.getAttribute('src')})`;
+                return `![${tinner || '图'}](${el.getAttribute('src') || ''})`;
               case 'B': case 'STRONG':
                 return `**${tinner}**`;
               case 'I': case 'EM':
@@ -341,7 +340,7 @@ export class EditorComponent implements OnInit {
     }
     this.rendered.loading.next(true);
     try {
-      const delay = Bluebird.delay(300);
+      const delay = Promise.delay(300);
       const result = await this.ehTagConnector.normalizeTag({
         name: this.value('name'),
         intro: this.value('intro'),

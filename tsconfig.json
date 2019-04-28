@@ -15,7 +15,8 @@
       "node_modules/@types"
     ],
     "types": [
-      "node"
+      "node",
+      "bluebird-global"
     ],
     "lib": [
       "es2018",
