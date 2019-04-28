@@ -284,6 +284,14 @@ export class EditorComponent implements OnInit {
           }
           return text;
         }
+        function decode(url: string | null) {
+          if (!url) { return ''; }
+          url = decodeURI(url)
+            .replace(/\s/g, encodeURIComponent)
+            .replace('(', '%28')
+            .replace(')', '%29');
+          return url;
+        }
         switch (node.nodeType) {
           case Node.TEXT_NODE:
             return myTrim(node.textContent || '');
@@ -296,12 +304,12 @@ export class EditorComponent implements OnInit {
               case 'TABLE': case 'THEAD': case 'TBODY': case 'TFOOT': case 'TR': case 'TH':
                 return tinner + '\n\n';
               case 'A':
-                return `[${tinner}](${el.getAttribute('href') || ''})`;
+                return `[${tinner}](${decode(el.getAttribute('href'))})`;
               case 'IMG':
                 if (typeof el.getAttribute('nsfw') === 'string') {
-                  return `![${tinner || '图'}](# "${el.getAttribute('src') || ''}")`;
+                  return `![${tinner || '图'}](# "${decode(el.getAttribute('src'))}")`;
                 }
-                return `![${tinner || '图'}](${el.getAttribute('src') || ''})`;
+                return `![${tinner || '图'}](${decode(el.getAttribute('src'))})`;
               case 'B': case 'STRONG':
                 return `**${tinner}**`;
               case 'I': case 'EM':
