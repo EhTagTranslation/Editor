@@ -1,5 +1,5 @@
 import { Injectable, ClassProvider, isDevMode } from '@angular/core';
-import { catchError, mergeMap, tap, retry, map, flatMap, retryWhen, filter, delay } from 'rxjs/operators';
+import { catchError, mergeMap, tap, retry, map, retryWhen, filter, delay } from 'rxjs/operators';
 import {
   HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HTTP_INTERCEPTORS, HttpEventType, HttpErrorResponse, HttpResponseBase
 } from '@angular/common/http';
@@ -23,6 +23,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) { return; }
     const etagV = response.headers.get('etag');
     if (!etagV) { return; }
+    this.debug.log('http: etag', etagV, 'from response', response);
     // `W/` might be added by some CDN
     const etag = (etagV.match(/^(W\/)?"(\w+)"$/) || [])[2];
     if (etag) {
@@ -74,7 +75,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const r = of(req).pipe(
       map(rawReq => this.getReq(rawReq)),
-      flatMap(authReq => next.handle(authReq)),
+      mergeMap(authReq => next.handle(authReq)),
       tap(response => {
         if (response.type === HttpEventType.Response) {
           this.handleEag(response);
@@ -86,13 +87,15 @@ export class EhHttpInterceptor implements HttpInterceptor {
           this.handleError(error);
         }
       }),
-      retryWhen(attempts => attempts.pipe(
-        filter((error): error is HttpErrorResponse => error.name === HttpErrorResponse.name),
-        filter((_, i) => i === 0), // 只重试1次
-        filter(error => error.status >= 500 || error.status === 401 || error.status === 403), // 只重试指定的错误
-        filter(error => error.headers.get('X-RateLimit-Remaining') !== '0'), // 配额超出不重试
-        delay(300),
-      ))
+      retryWhen(attempts => attempts.pipe(mergeMap((error, i) => {
+        if ((error.name !== HttpErrorResponse.name)
+          || (i !== 0)
+          || (error.status < 500 && error.status !== 401 && error.status !== 403)
+          || (error.headers.get('X-RateLimit-Remaining') === '0')) {
+          return throwError(error);
+        }
+        return timer(1000);
+      }))),
     );
     return r;
   }

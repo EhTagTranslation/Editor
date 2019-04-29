@@ -5,7 +5,7 @@ import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
 import { TagType, RepoData, Sha1Value } from 'src/interfaces/ehtag';
 import { of, BehaviorSubject, merge, timer, from } from 'rxjs';
-import { map, tap, flatMap, catchError, filter, distinctUntilChanged, debounceTime, finalize } from 'rxjs/operators';
+import { map, tap, mergeMap, catchError, filter, distinctUntilChanged, debounceTime, finalize } from 'rxjs/operators';
 import Dexie from 'dexie';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
@@ -51,7 +51,7 @@ export class GithubReleaseService {
       timer(0, 50_000)
     ).pipe(
       tap(v => this.debug.log('release: fetch start', v)),
-      flatMap(_ => this.getRelease().pipe(
+      mergeMap(_ => this.getRelease().pipe(
         map(data => ({ data, hash: data.target_commitish })),
         catchError(error => of({ error }))
       )),

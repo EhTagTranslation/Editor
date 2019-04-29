@@ -406,7 +406,7 @@ export class EditorComponent implements OnInit {
       const result = (await this.ehTagConnector.hasTag(key).toPromise())
         ? await this.ehTagConnector.modifyTag(key, payload).toPromise()
         : await this.ehTagConnector.addTag(key, payload).toPromise();
-      this.router.navigate(['/edit', key.namespace, key.raw], result || payload);
+      this.router.navigate(['/edit', key.namespace, key.raw], result || payload, true);
       this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
     } catch (ex) {
       console.log(ex);
