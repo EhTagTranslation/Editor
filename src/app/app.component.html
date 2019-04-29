@@ -1,8 +1,11 @@
 <mat-toolbar color="accent" role="heading" class="mat-elevation-z8">
-  <app-github-corner href="https://github.com/EhTagTranslation/Editor" target="_blank"></app-github-corner>
-  <a id="title" [routerLink]="['/']">EhTag Editor</a>
+  <button id="back-button" mat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button id="home-button" mat-button [routerLink]="['/']"><span class="mat-title">EhTag Editor</span></button>
   <span style="flex: 1 1 auto;"></span>
-  <app-user></app-user>
+  <app-user id="user-button"></app-user>
+  <app-github-corner href="https://github.com/EhTagTranslation/Editor" target="_blank"></app-github-corner>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

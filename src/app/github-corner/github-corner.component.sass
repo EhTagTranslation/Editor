@@ -1,35 +1,32 @@
 \:host
   width: 48px
 $size: 80px
-a, svg
-  height: $size
-a
-  width: $size * 1.415
 svg
-  width: $size
-@media (max-width: 599px)
-  \:host
-    width: 40px
-  $size: 64px
-  a, svg
-    height: $size
-  a
-    width: $size * 1.415
-  svg
-    width: $size
-  .octo-arm
-    animation: octocat-wave 560ms ease-in-out infinite
-
-a, svg
   position: absolute
   top: 0
   border: 0
-  left: 0
-svg
+  right: 0
+  width: $size
+  height: $size
   pointer-events: none
-a
-  transform-origin: bottom left
-  transform: rotate(-45deg)
+  #tribox
+    pointer-events: auto
+    cursor: pointer
+#octo-arm
+  animation: octocat-wave 560ms ease-in-out infinite
+  animation-play-state: paused
+  &.octo-arm-wawe
+    animation-play-state: running
+@media (max-width: 599px)
+  #octo-arm
+    animation-play-state: running
+  \:host
+    width: 40px
+  $size: 64px
+  svg
+    height: $size
+    width: $size
+
 
 @keyframes octocat-wave
   0%, 100% 
@@ -39,5 +36,3 @@ a
   40%, 80%
     transform: rotate(10deg)
 
-.octo-arm-wawe
-  animation: octocat-wave 560ms ease-in-out infinite

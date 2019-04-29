@@ -14,4 +14,8 @@ export class GithubCornerComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  open() {
+    window.open(this.href, this.target);
+  }
 }
