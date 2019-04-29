@@ -8,6 +8,14 @@
         target="_blank">
         <mat-icon>help</mat-icon>
       </a>
+      <a *ngIf="!(create | async)" mat-icon-button [routerLink]="['/edit', forms.namespace | async,'*new']" [queryParams]="{
+        raw: value('raw'),
+        name: value('name'),
+        intro: value('intro'),
+        links: value('links')
+      }" matTooltip="以此为模板新建标签">
+        <mat-icon>content_copy</mat-icon>
+      </a>
       <span style="flex: 1 1 auto;"></span>
       <button class="narrow" mat-raised-button (click)="narrowPreviewing 
         ? (narrowPreviewing = false)
@@ -52,6 +60,29 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field>
+            <button *ngIf="(forms.raw | async)" mat-icon-button matSuffix matTooltip="搜索"
+              [matMenuTriggerFor]="searchMenu">
+              <mat-icon>search</mat-icon>
+              <mat-menu #searchMenu="matMenu" xPosition="before">
+                <ng-template matMenuContent>
+                  <button mat-menu-item (click)="searchExternal('https://e-hentai.org/?f_search=%mns%22%raw$%22')">
+                    <span>在表站搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://exhentai.org/?f_search=%mns%22%raw$%22')">
+                    <span>在里站搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://ehwiki.org/index.php?search=%raw')">
+                    <span>在 EHWiki 搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%raw')">
+                    <span>在维基百科搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org/index.php?search=%raw')">
+                    <span>在萌娘百科搜索标签</span>
+                  </button>
+                </ng-template>
+              </mat-menu>
+            </button>
             <mat-label>原始标签</mat-label>
             <input matInput formControlName="raw" required (paste)="pasting($event, false)" />
             <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
@@ -64,6 +95,20 @@
               只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error>
           </mat-form-field>
           <mat-form-field class="markdown">
+            <button *ngIf="(forms.name | async)" mat-icon-button matSuffix matTooltip="搜索"
+              [matMenuTriggerFor]="searchMenu">
+              <mat-icon>search</mat-icon>
+              <mat-menu #searchMenu="matMenu" xPosition="before">
+                <ng-template matMenuContent>
+                  <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%name')">
+                    <span>在维基百科搜索名称</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org/index.php?search=%name')">
+                    <span>在萌娘百科搜索名称</span>
+                  </button>
+                </ng-template>
+              </mat-menu>
+            </button>
             <mat-label>名称</mat-label>
             <input matInput formControlName="name" required (paste)="pasting($event, true)">
             <mat-hint>输入标签的中文翻译</mat-hint>
@@ -93,7 +138,8 @@
         <div id="preview-row1">
           <mat-card>
             <mat-card-subtitle>原始标签</mat-card-subtitle>
-            <mat-card-content style="white-space: pre-wrap" [innerHtml]="rendered.raw | async"></mat-card-content>
+            <mat-card-content style="white-space: pre-wrap" [innerHtml]="(rendered.raw | async) || ''">
+            </mat-card-content>
           </mat-card>
           <mat-card>
             <mat-card-subtitle>名称

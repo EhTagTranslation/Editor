@@ -17,6 +17,19 @@ import { DebugService } from 'src/services/debug.service';
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey { }
 
+const namespaceMapToSearch: { [k in NamespaceName]: string } = {
+  artist: 'a:',
+  parody: 'p:',
+  reclass: 'r:',
+  character: 'c:',
+  group: 'g:',
+  language: 'l:',
+  male: 'm:',
+  female: 'f:',
+  misc: '',
+  rows: '',
+}
+
 function legalRaw(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value || '');
   return isValidRaw(value) ? null : { raw: 'only a-zA-Z0-9. -' };
@@ -93,9 +106,17 @@ export class EditorComponent implements OnInit {
     links: Observable<string>;
   };
 
+  forms = {
+    namespace: new BehaviorSubject<NamespaceName | null>(null),
+    raw: new BehaviorSubject<string | null>(null),
+    name: new BehaviorSubject<string | null>(null),
+    intro: new BehaviorSubject<string | null>(null),
+    links: new BehaviorSubject<string | null>(null),
+  }
+
   rendered = {
     loading: new BehaviorSubject<boolean>(false),
-    raw: new BehaviorSubject<string>(''),
+    raw: this.forms.raw,
     name: new BehaviorSubject<string>(''),
     intro: new BehaviorSubject<string>(''),
     links: new BehaviorSubject<string>(''),
@@ -192,24 +213,24 @@ export class EditorComponent implements OnInit {
     }
 
     combineLatest([this.create, this.original.namespace, this.inputs.namespace])
-      .pipe(map(v => mapCurrentCantEdit(...v)))
+      .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.namespace.next(v)))
       .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
     combineLatest([this.create, this.original.raw, this.inputs.raw])
-      .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.rendered.raw.next(v)))
+      .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.raw.next(v)))
       .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
 
     combineLatest([this.create, this.original.name, this.inputs.name])
-      .pipe(map(v => mapCurrentCanEdit(...v)))
+      .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.name.next(v)))
       .subscribe(v => v ? this.getControl('name').setValue(v) : null);
     combineLatest([this.create, this.original.intro, this.inputs.intro])
-      .pipe(map(v => mapCurrentCanEdit(...v)))
+      .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.intro.next(v)))
       .subscribe(v => v ? this.getControl('intro').setValue(v) : null);
     combineLatest([this.create, this.original.links, this.inputs.links])
-      .pipe(map(v => mapCurrentCanEdit(...v)))
+      .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.links.next(v)))
       .subscribe(v => v ? this.getControl('links').setValue(v) : null);
   }
 
-  private getControl(field: Fields | null) {
+  getControl(field: Fields | null) {
     const form = field ? this.tagForm.get(field) : this.tagForm;
     if (!form) {
       throw new Error(`Wrong field name, '${field}' is not in the form.`);
@@ -238,9 +259,9 @@ export class EditorComponent implements OnInit {
     return false;
   }
   value<F extends Fields>(field: F) {
-    const form = this.getControl(field);
-    if (form.value) {
-      return form.value as Item[F];
+    const v = this.forms[field];
+    if (v) {
+      return v.value as Item[F];;
     }
     return '';
   }
@@ -248,6 +269,16 @@ export class EditorComponent implements OnInit {
   enabled(field: Fields) {
     const form = this.getControl(field);
     return form.enabled;
+  }
+
+  searchExternal(url: string) {
+    url = url.replace(/%(raw|mns|namespace|name|intro|links)/g, k => {
+      if (k === "%mns") {
+        return encodeURIComponent(namespaceMapToSearch[this.value('namespace')] || '');
+      }
+      return encodeURIComponent(this.value(k.substr(1) as Fields));
+    });
+    window.open(url, '_blank');
   }
 
   pasting(ev: ClipboardEvent, isMd: boolean) {
