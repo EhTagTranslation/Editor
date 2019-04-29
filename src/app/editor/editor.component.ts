@@ -261,7 +261,7 @@ export class EditorComponent implements OnInit {
   value<F extends Fields>(field: F) {
     const v = this.forms[field];
     if (v) {
-      return v.value as Item[F];;
+      return (v.value || '') as Item[F];
     }
     return '';
   }
