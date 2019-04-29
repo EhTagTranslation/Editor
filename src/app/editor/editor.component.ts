@@ -214,20 +214,20 @@ export class EditorComponent implements OnInit {
 
     combineLatest([this.create, this.original.namespace, this.inputs.namespace])
       .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.namespace.next(v)))
-      .subscribe(v => v ? this.getControl('namespace').setValue(v) : null);
+      .subscribe(v => this.getControl('namespace').setValue(v));
     combineLatest([this.create, this.original.raw, this.inputs.raw])
       .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.raw.next(v)))
-      .subscribe(v => v ? this.getControl('raw').setValue(v) : null);
+      .subscribe(v => this.getControl('raw').setValue(v));
 
     combineLatest([this.create, this.original.name, this.inputs.name])
       .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.name.next(v)))
-      .subscribe(v => v ? this.getControl('name').setValue(v) : null);
+      .subscribe(v => this.getControl('name').setValue(v));
     combineLatest([this.create, this.original.intro, this.inputs.intro])
       .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.intro.next(v)))
-      .subscribe(v => v ? this.getControl('intro').setValue(v) : null);
+      .subscribe(v => this.getControl('intro').setValue(v));
     combineLatest([this.create, this.original.links, this.inputs.links])
       .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.links.next(v)))
-      .subscribe(v => v ? this.getControl('links').setValue(v) : null);
+      .subscribe(v => this.getControl('links').setValue(v));
   }
 
   getControl(field: Fields | null) {
@@ -279,6 +279,16 @@ export class EditorComponent implements OnInit {
       return encodeURIComponent(this.value(k.substr(1) as Fields));
     });
     window.open(url, '_blank');
+  }
+
+  reset() {
+    this.router.navigateParam({
+      namespace: undefined,
+      name: undefined,
+      raw: undefined,
+      links: undefined,
+      intro: undefined,
+    }, true);
   }
 
   pasting(ev: ClipboardEvent, isMd: boolean) {
