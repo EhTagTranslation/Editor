@@ -75,7 +75,7 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="handle">
+      <ng-container matColumnDef="handle" sticky>
         <th mat-header-cell *matHeaderCellDef style="width:40px;">
           <button matTooltip="新增" matTooltipPosition="right" matTooltipShowDelay="500" mat-icon-button
             class="mat-accent" [routerLink]="[ '/edit', ((namespace | async) || 'aritst'), '*new' ]">
@@ -91,7 +91,7 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns | async"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: (displayedColumns | async);"></tr>
     </table>
     <div class="spinner" *ngIf="loading | async">

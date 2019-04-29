@@ -147,8 +147,7 @@
       </div>
     </section>
     <footer>
-      <span style="flex: 1 1 auto;"></span>
-      <button mat-raised-button (click)="reset()">
+      <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">
         重置
       </button>
       <button class="narrow" mat-raised-button (click)="narrowPreviewing 
@@ -156,7 +155,7 @@
             : (preview() && (narrowPreviewing = true))">
         {{ narrowPreviewing ? '编辑' : '预览' }}
       </button>
-      <button class="wide" mat-raised-button (click)="preview() && (narrowPreviewing = false)">
+      <button class="wide" mat-raised-button (click)="(narrowPreviewing = false) || preview()">
         <ng-container *ngIf="!(rendered.loading | async); else renderingspinner">预览</ng-container>
         <ng-template #renderingspinner>
           <mat-spinner class="loading" [diameter]="24"></mat-spinner>
