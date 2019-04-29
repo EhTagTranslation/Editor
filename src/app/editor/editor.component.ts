@@ -272,7 +272,7 @@ export class EditorComponent implements OnInit {
       }
       const doc = parser.parseFromString(data, 'text/html');
       this.debug.log("editor: paste", field, doc.body);
-      return getMdPre(doc.body).split('\n').map(s => s.trim()).join('\n');
+      return getMdPre(doc.body).split('\n').map(s => s.trim()).join('\n').replace(/\n{2,}/g, '\n\n');
 
       function getMdPre(node: ChildNode): string {
         function myTrim(text: string) {
@@ -300,9 +300,9 @@ export class EditorComponent implements OnInit {
             const inner = myTrim(Array.from(el.childNodes).map(getMdPre).join(''));
             const tinner = inner.trim();
             switch (el.tagName) {
-              case 'P': case 'DIV': case 'SECTION': case 'PRE': case 'FIGURE':
+              case 'P': case 'DIV': case 'SECTION': case 'PRE': case 'FIGURE': case "OL": case "UL": case "LI":
               case 'TABLE': case 'THEAD': case 'TBODY': case 'TFOOT': case 'TR': case 'TH':
-                return tinner + '\n\n';
+                return '\n\n' + tinner + '\n\n';
               case 'A':
                 return `[${tinner}](${decode(el.getAttribute('href'))})`;
               case 'IMG':
@@ -317,7 +317,16 @@ export class EditorComponent implements OnInit {
               case 'BR':
                 return '\n';
               case 'CODE':
-                return `\`${(el.textContent || '').trim().split(/\s*(?:\r|\n|\r\n)/g).join('`\n`')}\``;
+                return (el.textContent || '').trim().split(/\s*(?:\r|\n|\r\n)\s*/g).map(content => {
+                  content = content.trim() || ' ';
+                  if (content.startsWith('`')) { content = ' ' + content; }
+                  if (content.endsWith('`')) { content = content + ' '; }
+                  let d = '`';
+                  while (content.includes(d)) {
+                    d += '`';
+                  }
+                  return `${d}${content}${d}`;
+                }).join('\n');
               case 'BODY':
                 return tinner;
               case 'NOSCRIPT': case 'SCRIPT': case 'STYLE': case 'LINK': case 'TEMPLATE': case 'META':
