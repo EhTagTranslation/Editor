@@ -1,10 +1,19 @@
-mat-toolbar
-  padding: 0
-  user-select: none
-  position: relative
-  z-index: 10000
-  #home-button
-    overflow: hidden
-  #user-button, #back-button, #home-button
-    height: 100%
-    margin: 0
+\:host
+  display: flex
+  flex-flow: column
+  height: 100vh
+  
+  > mat-toolbar
+    flex: 0 0 auto
+    padding: 0
+    user-select: none
+    position: relative
+    z-index: 10
+    #home-button
+      overflow: hidden
+    #user-button, #back-button, #home-button
+      height: 100%
+      margin: 0
+  > article
+    flex: auto
+    height: 0
