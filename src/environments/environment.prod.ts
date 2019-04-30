@@ -5,6 +5,7 @@ export const environment = {
 };
 
 export const snackBarConfig: MatSnackBarConfig = {
-  duration: 5000,
+  duration: 10000,
+  horizontalPosition: 'end',
   verticalPosition: 'top',
 }

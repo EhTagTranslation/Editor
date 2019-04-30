@@ -289,6 +289,7 @@ export class EditorComponent implements OnInit {
       links: undefined,
       intro: undefined,
     }, true);
+    this.tagForm.markAsPristine();
   }
 
   pasting(ev: ClipboardEvent, isMd: boolean) {
@@ -449,6 +450,7 @@ export class EditorComponent implements OnInit {
         : await this.ehTagConnector.addTag(key, payload).toPromise();
       this.router.navigate(['/edit', key.namespace, key.raw], result || payload, true);
       this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
+      this.tagForm.markAsPristine();
     } catch (ex) {
       console.log(ex);
       this.snackBar.open('提交过程中出现错误', '重试', snackBarConfig)
