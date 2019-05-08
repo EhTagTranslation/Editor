@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.0",
-    "@angular/cli": "^7.3.8",
+    "@angular/cli": "^7.3.9",
     "@angular/compiler-cli": "^7.2.13",
     "@angular/language-service": "^7.2.14",
     "@types/bluebird-global": "^3.5.11",
