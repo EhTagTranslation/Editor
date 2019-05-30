@@ -69,7 +69,7 @@ export class ListComponent implements OnInit {
     private debug: DebugService,
     private title: TitleService,
   ) { }
-  @ViewChild('root') root: ElementRef<HTMLDivElement>;
+  @ViewChild('root', { static: true }) root: ElementRef<HTMLDivElement>;
 
   showImg: Observable<'all' | 'no-nsfw' | 'none'>;
   search: Observable<string>;
@@ -174,7 +174,7 @@ export class ListComponent implements OnInit {
     if (!(ev.target instanceof HTMLInputElement)) {
       return;
     }
-    const data = ev.clipboardData.getData('Text');
+    const data = ev.clipboardData && ev.clipboardData.getData('Text');
     if (!data) {
       return;
     }

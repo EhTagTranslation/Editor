@@ -26,7 +26,7 @@ export class GithubOauthService {
     // make sure `token` is valid
     this.setToken(this.token || undefined);
     if (isDevMode()) {
-      globalThis.setToken = this.setToken.bind(this);
+      (globalThis as any).setToken = this.setToken.bind(this);
     }
   }
 

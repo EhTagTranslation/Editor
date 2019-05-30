@@ -144,7 +144,7 @@ export class EhTagConnectorService {
       return undefined;
     }
     if (format === 'raw') {
-      return spaces.reduce((str, sp, idx) => str + '\n'.repeat(sp) + (handledParas[idx] || ''), '') as CellType<T>;
+      return spaces.reduce<string>((str, sp, idx) => str + '\n'.repeat(sp) + (handledParas[idx] || ''), '') as CellType<T>;
     }
     return handledParas.join('\n') as CellType<T>;
   }

@@ -111,7 +111,7 @@ export class GithubReleaseService {
   private jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
     return new Promise<RepoData<T>>((resolve, reject) => {
       const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
-      if (globalThis[callbackName]) {
+      if ((globalThis as any)[callbackName]) {
         reject(new Error(`Callback ${callbackName} has registered.`));
       }
       let timeoutGuard: ReturnType<typeof setTimeout>;
@@ -122,7 +122,7 @@ export class GithubReleaseService {
       const close = () => {
         document.head.removeChild(script);
         clearTimeout(timeoutGuard);
-        globalThis[callbackName] = undefined;
+        (globalThis as any)[callbackName] = undefined;
       };
 
       timeoutGuard = setTimeout(() => {
@@ -130,7 +130,7 @@ export class GithubReleaseService {
         close();
       }, 60 * 1000);
 
-      globalThis[callbackName] = (data: RepoData<T>) => {
+      (globalThis as any)[callbackName] = (data: RepoData<T>) => {
         resolve(data);
         close();
       };
@@ -147,8 +147,8 @@ export class GithubReleaseService {
       } else {
         this.debug.log('release: init skipped, no db data', { type });
       }
-    } catch (error){
-      this.debug.log('release: init failed', { type , error});
+    } catch (error) {
+      this.debug.log('release: init failed', { type, error });
     }
   }
 

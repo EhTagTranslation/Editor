@@ -296,19 +296,22 @@ export class EditorComponent implements OnInit {
     if (!(ev.target instanceof HTMLInputElement) && !(ev.target instanceof HTMLTextAreaElement)) {
       return;
     }
+    if (!ev.clipboardData) {
+      return;
+    }
     const field = ev.target.getAttribute('formControlName') as Fields;
     if (!field) {
       return;
     }
-    const handleText = () => {
-      const data = ev.clipboardData.getData('Text');
+    const handleText = (clipboardData: DataTransfer) => {
+      const data = clipboardData.getData('Text');
       if (!data) {
         return undefined;
       }
       return data.trim().replace('\t', ' ');
     }
-    const handleHtml = () => {
-      const data = ev.clipboardData.getData('text/html');
+    const handleHtml = (clipboardData: DataTransfer) => {
+      const data = clipboardData.getData('text/html');
       if (!data) {
         return undefined;
       }
@@ -382,7 +385,7 @@ export class EditorComponent implements OnInit {
         }
       }
     }
-    const data = isMd ? handleHtml() || handleText() : handleText();
+    const data = isMd ? handleHtml(ev.clipboardData) || handleText(ev.clipboardData) : handleText(ev.clipboardData);
     if (!data) {
       return;
     }
