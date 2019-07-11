@@ -34,7 +34,7 @@
     "@angular-devkit/build-angular": "^0.801.0",
     "@angular/cli": "^8.1.1",
     "@angular/compiler-cli": "^8.0.0",
-    "@angular/language-service": "^8.1.0",
+    "@angular/language-service": "^8.1.1",
     "@types/bluebird-global": "^3.5.12",
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^12.6.2",
