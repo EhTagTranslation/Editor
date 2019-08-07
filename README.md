@@ -1,4 +1,4 @@
-# EhTagEditor
+# EhTag Editor
 
 [![Build Status](https://img.shields.io/travis/com/EhTagTranslation/Editor.svg?logo=travis-ci&logoColor=white)](https://travis-ci.com/EhTagTranslation/Editor)  
 
