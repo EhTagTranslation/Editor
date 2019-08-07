@@ -12,7 +12,7 @@ export const snackBarConfig: MatSnackBarConfig = {
   duration: undefined,
   horizontalPosition: 'end',
   verticalPosition: 'top',
-}
+};
 
 /*
  * For easier debugging in development mode, you can import the following file

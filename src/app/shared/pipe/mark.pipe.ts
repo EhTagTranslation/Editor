@@ -15,9 +15,9 @@ function escapeHtml(unsafe: string | null) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
-type NoSearchTerm = { data: string; isRegex: undefined; regex?: undefined };
-type StringSearchTerm = { data: string; isRegex: false; string: string; regex: RegExp; };
-type RegexSearchTerm = { data: string; isRegex: true; regex: RegExp; };
+interface NoSearchTerm { data: string; isRegex: undefined; regex?: undefined; }
+interface StringSearchTerm { data: string; isRegex: false; string: string; regex: RegExp; }
+interface RegexSearchTerm { data: string; isRegex: true; regex: RegExp; }
 
 let regexFromSearchCache: NoSearchTerm | StringSearchTerm | RegexSearchTerm = { data: '', isRegex: undefined, };
 export function regexFromSearch(search: string | null): NoSearchTerm | StringSearchTerm | RegexSearchTerm {
@@ -37,7 +37,7 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
         isRegex: true,
         regex: new RegExp(search.substring(1, search.length - 1), 'g'),
       };
-    } catch{ }
+    } catch { }
   }
   return regexFromSearchCache = {
     data: search,

@@ -6,29 +6,10 @@ import { DebugService } from './debug.service';
 import { TagType, RepoData, Sha1Value } from 'src/interfaces/ehtag';
 import { of, BehaviorSubject, merge, timer, from } from 'rxjs';
 import { map, tap, mergeMap, catchError, filter, distinctUntilChanged, debounceTime, finalize } from 'rxjs/operators';
-import Dexie from 'dexie';
+import { TagStore, TagRecord } from './TagStore';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
   return v !== undefined;
-}
-
-interface TagRecord<T extends TagType> {
-  type: T;
-  hash: Sha1Value;
-  data: RepoData<T>;
-}
-class TagStore extends Dexie {
-
-  // Declare implicit table properties.
-  // (just to inform Typescript. Instanciated by Dexie in stores() method)
-  data: Dexie.Table<TagRecord<TagType>, TagType>;
-
-  constructor() {
-    super('tag-store');
-    this.version(1).stores({
-      data: 'type, hash',
-    });
-  }
 }
 
 @Injectable({

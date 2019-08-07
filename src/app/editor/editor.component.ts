@@ -28,7 +28,7 @@ const namespaceMapToSearch: { [k in NamespaceName]: string } = {
   female: 'f:',
   misc: '',
   rows: '',
-}
+};
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value || '');
@@ -112,7 +112,7 @@ export class EditorComponent implements OnInit {
     name: new BehaviorSubject<string | null>(null),
     intro: new BehaviorSubject<string | null>(null),
     links: new BehaviorSubject<string | null>(null),
-  }
+  };
 
   rendered = {
     loading: new BehaviorSubject<boolean>(false),
@@ -273,7 +273,7 @@ export class EditorComponent implements OnInit {
 
   searchExternal(url: string) {
     url = url.replace(/%(raw|mns|namespace|name|intro|links)/g, k => {
-      if (k === "%mns") {
+      if (k === '%mns') {
         return encodeURIComponent(namespaceMapToSearch[this.value('namespace')] || '');
       }
       return encodeURIComponent(this.value(k.substr(1) as Fields));

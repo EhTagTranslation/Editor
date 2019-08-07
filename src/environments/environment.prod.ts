@@ -8,4 +8,4 @@ export const snackBarConfig: MatSnackBarConfig = {
   duration: 10000,
   horizontalPosition: 'end',
   verticalPosition: 'top',
-}
+};
