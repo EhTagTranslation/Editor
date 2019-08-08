@@ -91,8 +91,9 @@ export class GithubReleaseService {
   private jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
     return new Promise<RepoData<T>>((resolve, reject) => {
       const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
-      if ((globalThis as any)[callbackName]) {
+      if (callbackName in globalThis) {
         reject(new Error(`Callback ${callbackName} has registered.`));
+        return;
       }
       let timeoutGuard: ReturnType<typeof setTimeout>;
 
@@ -152,6 +153,10 @@ export class GithubReleaseService {
     }
 
     const req = this.jsonpLoad<T>(asset);
+    if (req.isRejected()) {
+      this.debug.log('release: load canceled', { type, hash: release.target_commitish });
+      return;
+    }
     const data = {
       type,
       data: await req,
