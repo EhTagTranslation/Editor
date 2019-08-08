@@ -24,7 +24,6 @@
     "codelyzer": "^5.1.0",
     "dexie": "^2.0.4",
     "escape-string-regexp": "^2.0.0",
-    "globalthis": "^1.0.0",
     "hammerjs": "^2.0.8",
     "material-design-icons": "^3.0.1",
     "rxjs": "^6.5.2",

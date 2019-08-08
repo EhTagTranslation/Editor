@@ -55,9 +55,11 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
+import 'core-js';
+
 declare const Zone: any;
 
-import 'zone.js/dist/zone';  // Included with Angular CLI.
+import 'zone.js';  // Included with Angular CLI.
 import * as Bluebird from 'bluebird';
 import 'zone.js/dist/zone-bluebird';
 Zone[Zone['__symbol__']('bluebird')](Bluebird);
@@ -67,13 +69,4 @@ Zone.assertZonePatched = function () { };
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-
-const globalThis: any = require('globalthis')();
-if (!('globalThis' in globalThis) || globalThis.globalThis !== globalThis) {
-  Object.defineProperty(globalThis, 'globalThis', {
-    enumerable: false,
-    value: globalThis,
-    writable: false,
-  });
-}
 

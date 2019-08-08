@@ -103,7 +103,7 @@ export class GithubReleaseService {
       const close = () => {
         document.head.removeChild(script);
         clearTimeout(timeoutGuard);
-        (globalThis as any)[callbackName] = undefined;
+        Reflect.deleteProperty(globalThis, callbackName);
       };
 
       timeoutGuard = setTimeout(() => {
@@ -111,10 +111,18 @@ export class GithubReleaseService {
         close();
       }, 60 * 1000);
 
-      (globalThis as any)[callbackName] = (data: RepoData<T>) => {
-        resolve(data);
+      if (!Reflect.defineProperty(globalThis, callbackName, {
+        value: (data: RepoData<T>) => {
+          resolve(data);
+          close();
+        },
+        writable: false,
+        configurable: true
+      })) {
+        reject(new Error(`Failed to register callback ${callbackName}.`));
         close();
-      };
+        return;
+      }
       document.head.appendChild(script);
     });
   }
