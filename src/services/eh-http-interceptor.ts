@@ -54,10 +54,10 @@ export class EhHttpInterceptor implements HttpInterceptor {
       mod.setHeaders.Accept = `application/vnd.github.v3+json`;
       if (token) {
         /**
-         * use `access_token` for more rate limits
+         * use `token` for more rate limits
          * @see https://developer.github.com/v3/#rate-limiting
          */
-        mod.setParams.access_token = token;
+        mod.setHeaders.Authorization = `token ${token}`;
       }
     } else if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
       if (['POST', 'PUT', 'DELETE'].includes(req.method) && mod.setHeaders) {
