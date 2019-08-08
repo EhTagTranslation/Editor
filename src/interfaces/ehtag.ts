@@ -26,7 +26,8 @@ export interface RepoData<T extends TagType> extends RepoInfo {
   data: NamespaceData<T>[];
 }
 
-export type NamespaceName = 'rows'
+export type NamespaceName =
+  | 'rows'
   | 'reclass'
   | 'language'
   | 'parody'

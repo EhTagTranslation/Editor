@@ -263,7 +263,10 @@ export class EditorComponent implements OnInit {
     if (v) {
       return (v.value || '') as Item[F];
     }
-    return '';
+    if (field === 'namespace') {
+      return 'misc' as Item[F];
+    }
+    return '' as Item[F];
   }
 
   enabled(field: Fields) {
@@ -274,7 +277,7 @@ export class EditorComponent implements OnInit {
   searchExternal(url: string) {
     url = url.replace(/%(raw|mns|namespace|name|intro|links)/g, k => {
       if (k === '%mns') {
-        return encodeURIComponent(namespaceMapToSearch[this.value('namespace')] || '');
+        return encodeURIComponent(namespaceMapToSearch[this.value('namespace')]);
       }
       return encodeURIComponent(this.value(k.substr(1) as Fields));
     });
@@ -339,7 +342,7 @@ export class EditorComponent implements OnInit {
         intro: this.value('intro'),
         links: this.value('links'),
       };
-      const key = {
+      const key: ETKey = {
         namespace: this.value('namespace'),
         raw: this.value('raw'),
       };
