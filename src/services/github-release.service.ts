@@ -38,8 +38,7 @@ export class GithubReleaseService {
       )),
       tap(v => this.debug.log('release: fetch end', v)),
       map(v => 'data' in v ? v.data : undefined),
-      filter(notUndef),
-      distinctUntilChanged((r1, r2) => r1.id === r2.id && r1.target_commitish === r2.target_commitish)
+      filter(notUndef)
     ).subscribe(release => {
       this.getTags(release, 'raw');
       this.getTags(release, 'html');
