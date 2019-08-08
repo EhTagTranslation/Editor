@@ -131,14 +131,7 @@ export class EditorComponent implements OnInit {
     const ons = this.router.initParam('namespace',
       v => v && v in NamespaceEnum ? v as NamespaceName : 'artist');
     const oraw = this.router.initParam('raw',
-      v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; },
-      v => {
-        if (v) {
-          this.title.setTitle('修改标签 - ' + v);
-        } else {
-          this.title.setTitle('新建标签');
-        }
-      });
+      v => { v = (v || '').trim(); return isValidRaw(v) ? v : ''; });
     const otag = combineLatest([
       ons,
       oraw,
@@ -228,6 +221,16 @@ export class EditorComponent implements OnInit {
     combineLatest([this.create, this.original.links, this.inputs.links])
       .pipe(map(v => mapCurrentCanEdit(...v)), tap(v => this.forms.links.next(v)))
       .subscribe(v => this.getControl('links').setValue(v));
+
+    combineLatest([this.original.namespace, this.original.raw])
+      .subscribe(v => {
+        if (v[1]) {
+          const nsshort = (v[0] === 'misc') ? '' : v[0][0] + ':';
+          this.title.setTitle(`${nsshort}${v[1]} - 修改标签`);
+        } else {
+          this.title.setTitle('新建标签');
+        }
+      });
   }
 
   getControl(field: Fields | null) {
