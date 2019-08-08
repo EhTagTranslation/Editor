@@ -72,7 +72,7 @@ export class GithubReleaseService {
   private getReleasePromise?: Promise<GithubRelease>;
   private getRelease() {
     const get = () => {
-      const endpoint = this.endpoints.github('repos/ehtagtranslation/Database/releases/latest');
+      const endpoint = this.endpoints.github('repos/EhTagTranslation/Database/releases/latest');
       return this.http.get<GithubRelease>(endpoint).toPromise();
     };
     if (this.getReleasePromise) {
