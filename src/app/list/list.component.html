@@ -23,7 +23,8 @@
       <mat-label>图片显示</mat-label>
       <mat-select [ngModel]="showImg | async" (ngModelChange)="navigateParam({showImg: $event})">
         <mat-option value="all">全部显示</mat-option>
-        <mat-option value="no-nsfw">模糊 NSFW</mat-option>
+        <mat-option value="no-r18g">模糊 R18G</mat-option>
+        <mat-option value="no-r18">模糊 R18</mat-option>
         <mat-option value="none">全部隐藏</mat-option>
       </mat-select>
     </mat-form-field>

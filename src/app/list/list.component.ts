@@ -55,6 +55,8 @@ const sortKeyMap: {
 
 type SortableKeys = keyof typeof sortKeyMap;
 
+type ShowImgType = 'all' | 'no-r18' | 'no-r18g' | 'none';
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -71,7 +73,7 @@ export class ListComponent implements OnInit {
   ) { }
   @ViewChild('root', { static: true }) root: ElementRef<HTMLDivElement>;
 
-  showImg: Observable<'all' | 'no-nsfw' | 'none'>;
+  showImg: Observable<ShowImgType>;
   search: Observable<string>;
   pageSize: Observable<number>;
   pageIndex: Observable<number>;
@@ -106,13 +108,15 @@ export class ListComponent implements OnInit {
     this.root.nativeElement.appendChild(addStyle);
     this.namespace = this.router.initParam('namespace', ns => ns && ns in NamespaceEnum ? ns as NamespaceName : null);
     this.search = this.router.initQueryParam('search', s => s || '', s => this.title.setTitle(s));
-    this.showImg = this.router.initQueryParam('showImg', b => b === 'all' ? 'all' : b === 'no-nsfw' ? 'no-nsfw' : 'none', val => {
+    this.showImg = this.router.initQueryParam('showImg', b => (b || 'none') as ShowImgType, val => {
       if (val === 'all') {
         addStyle.innerHTML = '';
-      } else if (val === 'none') {
-        addStyle.innerHTML = 'app-list table td .md-container img[ehimg]{display:none;}';
-      } else {
+      } else if (val === 'no-r18') {
         addStyle.innerHTML = 'app-list table td .md-container img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
+      } else if (val === 'no-r18g') {
+        addStyle.innerHTML = 'app-list table td .md-container img[ehimg][nsfw="R18G"]{filter:blur(10px);transform: scale(0.9);}';
+      } else {
+        addStyle.innerHTML = 'app-list table td .md-container img[ehimg]{display:none;}';
       }
     });
     this.pageSize = this.router.initQueryParam('pageSize', v => parseInt(v || '10', 10));
