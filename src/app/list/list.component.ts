@@ -145,6 +145,7 @@ export class ListComponent implements OnInit {
       this.search.pipe(debounceTime(50)),
     ]).pipe(
       tap(() => this.loading.next(true)),
+      tap(() => this.navigateParam({ pageIndex: 0 })),
       map(data => this.getFilteredData(...data)),
       shareReplay(1),
     );
