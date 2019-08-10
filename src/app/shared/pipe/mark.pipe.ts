@@ -90,9 +90,12 @@ export class MarkPipe implements PipeTransform {
               if (enode.tagName === 'IMG') {
                 enode.setAttribute('referrerPolicy', 'no-referrer');
                 enode.setAttribute('ehimg', '');
+                enode.setAttribute('class', 'lazyload');
                 if (!enode.getAttribute('title')) {
                   enode.setAttribute('title', enode.getAttribute('src') || '');
                 }
+                enode.setAttribute('data-src', enode.getAttribute('src') || '');
+                enode.setAttribute('src', '');
               }
               markNodes(enode);
             }
