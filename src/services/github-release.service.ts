@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { ApiEndpointService } from './api-endpoint.service';
 import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
 import { DebugService } from './debug.service';
-import { TagType, RepoData } from 'src/interfaces/ehtag';
+import { TagType, RepoData, NamespaceData, Tag } from 'src/interfaces/ehtag';
 import { of, BehaviorSubject, merge, timer, from } from 'rxjs';
-import { map, tap, mergeMap, catchError, filter, distinctUntilChanged, finalize } from 'rxjs/operators';
+import { map, tap, mergeMap, catchError, filter, distinctUntilChanged, finalize, throttleTime } from 'rxjs/operators';
 import { TagStore, TagRecord } from './TagStore';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
@@ -21,16 +21,17 @@ export class GithubReleaseService {
     private endpoints: ApiEndpointService,
     private debug: DebugService,
   ) {
+    this.fillCache('full');
     this.fillCache('raw');
     this.fillCache('html');
     this.fillCache('text');
     this.fillCache('ast');
-    this.fillCache('full');
 
     merge(
       this.refreshEvent,
       timer(0, 50_000)
     ).pipe(
+      throttleTime(100),
       tap(v => this.debug.log('release: fetch start', v)),
       mergeMap(_ => this.getRelease().pipe(
         map(data => ({ data, hash: data.target_commitish })),
@@ -39,13 +40,7 @@ export class GithubReleaseService {
       tap(v => this.debug.log('release: fetch end', v)),
       map(v => 'data' in v ? v.data : undefined),
       filter(notUndef)
-    ).subscribe(release => {
-      this.getTags(release, 'raw');
-      this.getTags(release, 'html');
-      this.getTags(release, 'text');
-      this.getTags(release, 'ast');
-      this.getTags(release, 'full');
-    });
+    ).subscribe(release => this.getTags(release));
   }
 
   private refreshEvent = new EventEmitter<number>(true);
@@ -88,8 +83,8 @@ export class GithubReleaseService {
   private get<T extends TagType>(type: T) {
     return (this.tagsData[type] as BehaviorSubject<TagRecord<T> | undefined>).value;
   }
-  private jsonpLoad<T extends TagType>(asset: GithubReleaseAsset) {
-    return new Promise<RepoData<T>>((resolve, reject) => {
+  private jsonpLoad(asset: GithubReleaseAsset) {
+    return new Promise<RepoData<TagType>>((resolve, reject) => {
       const callbackName = 'load_ehtagtranslation_' + asset.name.split('.').splice(0, 2).join('_');
       if (callbackName in globalThis) {
         reject(new Error(`Callback ${callbackName} has registered.`));
@@ -112,7 +107,7 @@ export class GithubReleaseService {
       }, 60 * 1000);
 
       if (!Reflect.defineProperty(globalThis, callbackName, {
-        value: (data: RepoData<T>) => {
+        value: (data: RepoData<TagType>) => {
           resolve(data);
           close();
         },
@@ -127,21 +122,66 @@ export class GithubReleaseService {
     });
   }
 
-  private async fillCache<T extends TagType>(type: T) {
+  private transformAndStore<T extends Exclude<TagType, 'full'>>(type: T): boolean {
+    const fulldata = this.get('full');
+    if (!fulldata) {
+      return false;
+    }
+    const data: TagRecord<T> = {
+      hash: fulldata.hash,
+      type: type,
+      data: {
+        ...fulldata.data,
+        data: fulldata.data.data.map(fullns => {
+          const mappeddata: { [raw: string]: Tag<T> } = {};
+          for (const key in fullns.data) {
+            if (fullns.data.hasOwnProperty(key)) {
+              const element = fullns.data[key];
+              mappeddata[key] = {
+                name: element.name[type],
+                intro: element.intro[type],
+                links: element.links[type],
+              } as Tag<T>;
+            }
+          }
+          return {
+            ...fullns,
+            data: mappeddata
+          };
+        }),
+      }
+    };
+
+    this.set(type, data);
+    this.db.data.put(data);
+    this.debug.log('release: store transformed data', { type, hash: fulldata.hash });
+    return true;
+  }
+
+  private async fillCache(type: TagType) {
     try {
       const data = await this.db.data.get(type);
       if (data) {
         this.debug.log('release: init with db data', { type, hash: data.hash });
         this.set(type, data);
       } else {
-        this.debug.log('release: init skipped, no db data', { type });
+        if (type !== 'full' && this.transformAndStore(type)) {
+          const fulldata = this.get('full');
+          if (!fulldata) {
+            throw Error('assertion failed');
+          }
+          this.debug.log('release: init with transformed data', { type, hash: fulldata.hash });
+        } else {
+          this.debug.log('release: init skipped, no db data', { type });
+        }
       }
     } catch (error) {
       this.debug.log('release: init failed', { type, error });
     }
   }
 
-  private async getTags<T extends TagType>(release: GithubRelease, type: T) {
+  private async getTags(release: GithubRelease) {
+    const type: TagType = 'full';
     const cachedata = this.get(type);
     if (cachedata && cachedata.hash === release.target_commitish) {
       return;
@@ -160,12 +200,12 @@ export class GithubReleaseService {
       throw new Error('Github release asset not found!');
     }
 
-    const req = this.jsonpLoad<T>(asset);
+    const req = this.jsonpLoad(asset);
     if (req.isRejected()) {
       this.debug.log('release: load canceled', { type, hash: release.target_commitish });
       return;
     }
-    const data = {
+    const data: TagRecord<'full'> = {
       type,
       data: await req,
       hash: release.target_commitish,
@@ -173,5 +213,10 @@ export class GithubReleaseService {
     this.debug.log('release: load end with remote data', { type, hash: data.hash });
     this.set(type, data);
     this.db.data.put(data);
+
+    this.transformAndStore('ast');
+    this.transformAndStore('text');
+    this.transformAndStore('html');
+    this.transformAndStore('raw');
   }
 }
