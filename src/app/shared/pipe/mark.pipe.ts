@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Location } from '@angular/common';
 import * as escapeStringRegexp from 'escape-string-regexp';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -52,7 +53,14 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
   pure: true,
 })
 export class MarkPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(
+    private sanitizer: DomSanitizer,
+    private location: Location,
+  ) {
+    this.loadingimg = this.location.prepareExternalUrl('/assets/loading.gif');
+  }
+
+  private loadingimg: string;
 
   transform(value: string | null, search: string, inputAsHtml?: boolean): string | SafeHtml {
     value = value || '';
@@ -95,7 +103,7 @@ export class MarkPipe implements PipeTransform {
                   enode.setAttribute('title', enode.getAttribute('src') || '');
                 }
                 enode.setAttribute('data-src', enode.getAttribute('src') || '');
-                enode.setAttribute('src', '');
+                enode.setAttribute('src', this.loadingimg);
               }
               markNodes(enode);
             }
