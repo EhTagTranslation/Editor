@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.0",
-    "@angular/cli": "^8.2.2",
+    "@angular/cli": "^8.3.0",
     "@angular/compiler-cli": "^8.2.0",
     "@angular/language-service": "^8.2.3",
     "@types/bluebird-global": "^3.5.12",
