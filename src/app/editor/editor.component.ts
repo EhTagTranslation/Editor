@@ -13,6 +13,7 @@ import { snackBarConfig } from 'src/environments/environment';
 import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from 'src/services/github-release.service';
 import { DebugService } from 'src/services/debug.service';
+import { DbRepoService } from 'src/services/db-repo.service';
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey { }
@@ -37,10 +38,8 @@ function legalRaw(control: AbstractControl): ValidationErrors | null {
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
   const value = String(control.value || '') as NamespaceName;
-  return editableNs.indexOf(value) >= 0 ? null : { editableNs: 'please use PR' };
+  return editableNs.includes(value) ? null : { editableNs: 'please use PR' };
 }
-
-const parser = new DOMParser();
 
 @Component({
   selector: 'app-editor',
@@ -66,7 +65,8 @@ export class EditorComponent implements OnInit {
     public release: GithubReleaseService,
     private router: RouteService,
     private title: TitleService,
-    private snackBar: MatSnackBar, ) {
+    private snackBar: MatSnackBar,
+    public dbRepo: DbRepoService, ) {
   }
   tagForm = new FormGroup({
     raw: new FormControl('', [
@@ -105,6 +105,8 @@ export class EditorComponent implements OnInit {
     intro: Observable<string>;
     links: Observable<string>;
   };
+
+  isEditableNs = new BehaviorSubject<boolean>(false);
 
   forms = {
     namespace: new BehaviorSubject<NamespaceName | null>(null),
@@ -207,7 +209,10 @@ export class EditorComponent implements OnInit {
 
     combineLatest([this.create, this.original.namespace, this.inputs.namespace])
       .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.namespace.next(v)))
-      .subscribe(v => this.getControl('namespace').setValue(v));
+      .subscribe(v => {
+        this.getControl('namespace').setValue(v);
+        this.isEditableNs.next(editableNs.includes(v));
+      });
     combineLatest([this.create, this.original.raw, this.inputs.raw])
       .pipe(map(v => mapCurrentCantEdit(...v)), tap(v => this.forms.raw.next(v)))
       .subscribe(v => this.getControl('raw').setValue(v));

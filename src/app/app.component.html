@@ -5,7 +5,7 @@
   <button id="home-button" mat-button [routerLink]="['/']"><span class="mat-title">EhTag Editor</span></button>
   <span style="flex: 1 1 auto;"></span>
   <app-user id="user-button"></app-user>
-  <app-github-corner href="https://github.com/EhTagTranslation/Database" target="_blank"></app-github-corner>
+  <app-github-corner [href]="dbRepo.root" target="_blank"></app-github-corner>
 </mat-toolbar>
 <article>
   <router-outlet></router-outlet>

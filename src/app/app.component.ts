@@ -4,6 +4,7 @@ import { GithubReleaseService } from 'src/services/github-release.service';
 import { RouteService } from 'src/services/route.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { DbRepoService } from 'src/services/db-repo.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
     private ehTagConnector: EhTagConnectorService,
     private router: Router,
     private location: Location,
+    public dbRepo: DbRepoService,
   ) { }
   ngOnInit(): void {
     this.ehTagConnector.updateHash().subscribe(_ => { });

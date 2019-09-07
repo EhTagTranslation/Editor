@@ -3,8 +3,7 @@
     <span class="mat-headline">
       {{ (create | async) ? '创建标签' : '修改标签' }}
     </span>
-    <a mat-icon-button matTooltip="查看参与翻译指南" href="https://github.com/EhTagTranslation/Database/wiki/参与翻译"
-      target="_blank">
+    <a mat-icon-button matTooltip="查看参与翻译指南" [href]="dbRepo.resolve('wiki/参与翻译')" target="_blank">
       <mat-icon>help</mat-icon>
     </a>
     <a *ngIf="!(create | async)" mat-icon-button matTooltip="以此为模板新建标签"
@@ -32,11 +31,25 @@
               <span class="mat-caption ns-intro">{{getNamespace(ns).intro}}</span>
             </mat-option>
           </mat-select>
-          <mat-hint>{{ enabled('namespace') ? '标签所在的命名空间' : '修改标签时无法更改此项' }}</mat-hint>
+          <mat-hint>
+            <ng-template *ngIf="enabled('namespace'); else nsDisabled">标签所在的命名空间</ng-template>
+            <ng-template #nsDisabled>
+              <ng-template [ngIf]="isEditableNs | async" [ngIfElse]="nsNotAllowed">
+                修改标签时无法更改此项
+              </ng-template>
+              <ng-template #nsNotAllowed>
+                该命名空间的标签暂不支持从此处修改，请<a [href]="dbRepo.issue(value('raw'), value('namespace'), (create | async))"
+                  target="_blank">提交 ISSUE
+                  讨论</a>或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')"
+                  target="_blank">通过
+                  PR 修改</a>
+              </ng-template>
+            </ng-template>
+          </mat-hint>
           <mat-error *ngIf="hasError('namespace', 'editableNs')">该命名空间的标签暂不支持从此处修改，请<a
-              href="https://github.com/EhTagTranslation/Database/issues" target="_blank">提交 ISSUE 讨论</a>或<a
-              [href]="'https://github.com/EhTagTranslation/Database/blob/master/database/' + (value('namespace') || 'rows') + '.md'"
-              target="_blank">通过 PR 修改</a>
+              [href]="dbRepo.issue(value('raw'), value('namespace'), (create | async))" target="_blank">提交 ISSUE
+              讨论</a>或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank">通过 PR
+              修改</a>
           </mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -97,12 +110,15 @@
         <mat-form-field class="markdown">
           <mat-label>描述</mat-label>
           <textarea matInput placeholder="![黑猫](http://tiny.cc/i8hzaz)
-网名黑猫。SNS社群“宅女集合”的成员之一。" formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="10"></textarea>
+网名黑猫。SNS社群“宅女集合”的成员之一。" formControlName="intro" cdkTextareaAutosize cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="10"></textarea>
           <mat-hint>输入标签的描述</mat-hint>
         </mat-form-field>
         <mat-form-field class="markdown">
           <mat-label>外部链接</mat-label>
-          <textarea matInput placeholder="[萌娘百科](https://zh.moegirl.org/五更琉璃) [Fandom](https://oreimo.fandom.com/zh/五更琉璃)" formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="10"></textarea>
+          <textarea matInput
+            placeholder="[萌娘百科](https://zh.moegirl.org/五更琉璃) [Fandom](https://oreimo.fandom.com/zh/五更琉璃)"
+            formControlName="links" cdkTextareaAutosize cdkAutosizeMinRows="2" cdkAutosizeMaxRows="10"></textarea>
           <mat-hint>输入标签的相关链接，如指向{{
                 (((inputs.namespace | async ) || (original.namespace | async)) === 'artist') ? '画师的微博、pixiv、Twitter 或个人主页' 
               : (((inputs.namespace | async ) || (original.namespace | async)) === 'group') ? '社团或公司的官方网站'
@@ -159,9 +175,9 @@
         <mat-spinner class="loading" [diameter]="24"></mat-spinner>
       </ng-template>
     </button>
-    <button mat-raised-button [disabled]="(tagForm.invalid) || (tagForm.pristine) || !(github.tokenChange | async)" [matTooltip]="
+    <button mat-raised-button [disabled]="(tagForm.invalid || !(isEditableNs | async)) || (tagForm.pristine) || !(github.tokenChange | async)" [matTooltip]="
         !(github.tokenChange | async) ? '请先登录' 
-        : tagForm.invalid ? '请检查填写的内容'  
+        : (tagForm.invalid || !(isEditableNs | async)) ? '请检查填写的内容'  
         : tagForm.pristine ? '没有更改'
         : '' " (click)="submit()" (focus)="preSubmit()" (mouseenter)="preSubmit()" color="accent">
       <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
