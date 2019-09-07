@@ -27,17 +27,17 @@ export function isValidRaw(raw?: string | null) {
 
 export const notEditableNs: ReadonlyArray<NamespaceName> = [
   'rows',
-];
-export const editableNs: ReadonlyArray<NamespaceName> = [
   'reclass',
   'language',
+  'male',
+  'female',
+  'misc',
+];
+export const editableNs: ReadonlyArray<NamespaceName> = [
   'parody',
   'character',
   'group',
   'artist',
-  'male',
-  'female',
-  'misc',
 ];
 
 
