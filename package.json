@@ -41,7 +41,7 @@
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^12.7.5",
     "run-script-os": "^1.0.7",
-    "ts-node": "^8.3.0",
+    "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "typescript": "^3.5.3"
   }
