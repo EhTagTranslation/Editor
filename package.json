@@ -20,7 +20,7 @@
     "@angular/platform-browser": "^8.0.0",
     "@angular/platform-browser-dynamic": "^8.0.0",
     "@angular/router": "^8.0.0",
-    "bluebird": "^3.5.5",
+    "bluebird": "^3.7.0",
     "codelyzer": "^5.1.2",
     "dexie": "^2.0.4",
     "escape-string-regexp": "^2.0.0",
