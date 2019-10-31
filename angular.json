@@ -36,6 +36,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "https://EhTagTranslation.GitHub.io/Editor/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
