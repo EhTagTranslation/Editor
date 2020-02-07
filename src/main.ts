@@ -10,5 +10,12 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .then(_ => {
+    import('bluebird').then(Bluebird => {
+      const Zone = (window as any)['Zone'];
+      Zone[Zone['__symbol__']('bluebird')]((Bluebird as any).default);
+    });
+  })
   .catch(err => console.error(err));

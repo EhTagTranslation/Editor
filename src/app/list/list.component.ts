@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { SortDirection } from '@angular/material';
+import { SortDirection } from '@angular/material/sort';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
 import { Observable, Subject, zip, combineLatest, BehaviorSubject } from 'rxjs';
 import { Params } from '@angular/router';

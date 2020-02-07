@@ -3,7 +3,7 @@ import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { RouteService } from 'src/services/route.service';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { isValidRaw, editableNs, NamespaceInfo, ETKey } from 'src/interfaces/ehtranslation';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap } from 'rxjs/operators';
 import { TitleService } from 'src/services/title.service';

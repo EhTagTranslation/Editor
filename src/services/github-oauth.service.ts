@@ -1,11 +1,10 @@
-import { Injectable, isDevMode, EventEmitter } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
-import { Observable, of, from, throwError, BehaviorSubject } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { resolve } from 'bluebird';
+import { of, from, throwError, BehaviorSubject } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
