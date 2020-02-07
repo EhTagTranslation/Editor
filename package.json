@@ -4,9 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "run-script-os",
-    "build:win32": "ng build --prod && copy .\\dist\\index.html .\\dist\\404.html && type nul > .\\dist\\.nojekyll",
-    "build:linux:darwin": "ng build --prod && cp ./dist/index.html ./dist/404.html && touch ./dist/.nojekyll"
+    "build": "ng build --prod"
   },
   "private": true,
   "dependencies": {
