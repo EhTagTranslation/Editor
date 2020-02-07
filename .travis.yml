@@ -3,4 +3,5 @@ node_js: lts/*
 branches:
   only:
   - master
-script: npm run build
+script: yarn build
+cache: yarn
