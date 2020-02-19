@@ -177,10 +177,10 @@
     source-map "^0.6.1"
     yargs "13.1.0"
 
-"@angular/compiler@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz#87e0bef4c369b6cadae07e3a4295778fc93799d5"
-  integrity sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ==
+"@angular/compiler@^9.0.2":
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.2.tgz#be238eb2e575e2945f8e88c4ae09d99b280b797d"
+  integrity sha512-IWlKn5v3y7k1Z2K2wfNNzbn9xgA4fFlWyPe9QpdS8iy6/bPe5GfKhHbMYIza5eIhPXDN93zdEptiAIXGP3kLBQ==
 
 "@angular/core@^9.0.0":
   version "9.0.0"
