@@ -26,7 +26,7 @@
     "lazysizes": "^5.2.0",
     "material-design-icons": "^3.0.1",
     "rxjs": "^6.5.4",
-    "tslib": "^1.10.0",
+    "tslib": "^1.11.0",
     "tslint-angular": "^3.0.2",
     "zone.js": "^0.10.2"
   },
