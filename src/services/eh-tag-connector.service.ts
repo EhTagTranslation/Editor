@@ -103,6 +103,9 @@ export class EhTagConnectorService {
     };
     const handlePara = (lines: ReadonlyArray<string>) => {
       const joined = lines.join('\n');
+      if (haveOne(joined, 'http://') || haveOne(joined, 'https://') || haveOne(joined, 'www.')) {
+        return undefined;
+      }
       if (haveOne(joined, '\\') || haveTwo(joined, '~') || haveTwo(joined, '_') || haveTwo(joined, '*') || haveTwo(joined, '`')) {
         return undefined;
       }
