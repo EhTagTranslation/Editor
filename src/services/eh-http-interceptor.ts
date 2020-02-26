@@ -19,7 +19,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     private debug: DebugService,
   ) { }
 
-  private handleEag(response: HttpResponseBase) {
+  private handleEtag(response: HttpResponseBase) {
     if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) { return; }
     const etagV = response.headers.get('etag');
     if (!etagV) { return; }
@@ -78,12 +78,12 @@ export class EhHttpInterceptor implements HttpInterceptor {
       mergeMap(authReq => next.handle(authReq)),
       tap(response => {
         if (response.type === HttpEventType.Response) {
-          this.handleEag(response);
+          this.handleEtag(response);
         }
       }, error => {
         this.debug.error('catchError', error);
         if (error.name === HttpErrorResponse.name) {
-          this.handleEag(error);
+          this.handleEtag(error);
           this.handleError(error);
         }
       }),

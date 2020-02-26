@@ -5,6 +5,7 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
 import { of, from, throwError, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { LocalStorageService } from './local-storage.service';
 
 const clientId = '2f2070671bda676ddb5a';
 const windowName = 'githubOauth';
@@ -21,27 +22,27 @@ export class GithubOauthService {
     private httpClient: HttpClient,
     private location: Location,
     private endpoints: ApiEndpointService,
+    private localStorage: LocalStorageService,
   ) {
     // make sure `token` is valid
     this.setToken(this.token || undefined);
     if (isDevMode()) {
-      (globalThis as any).setToken = this.setToken.bind(this);
+      (globalThis as any).setToken = (token: string) => this.setToken(token);
     }
   }
 
-  tokenChange = new BehaviorSubject<string | undefined | null>(this.token || undefined);
+  private readonly tokenStorage = this.localStorage.get(TOKEN_KEY);
+
+  readonly tokenChange = this.tokenStorage.valueChange;
   get token() {
-    return localStorage.getItem(TOKEN_KEY);
+    return this.tokenStorage.value;
   }
 
-  private setToken(value?: string) {
+  private setToken(value?: string|null) {
     if (!value || !value.match(/^\w+$/)) {
-      localStorage.removeItem(TOKEN_KEY);
-      this.tokenChange.next(null);
-    } else {
-      localStorage.setItem(TOKEN_KEY, value);
-      this.tokenChange.next(value);
+      value = null;
     }
+    this.tokenStorage.value = value;
   }
 
   /**

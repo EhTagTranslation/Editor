@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, throwError, combineLatest } from 'rxjs';
 import { map, tap, catchError, filter } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { DebugService } from './debug.service';
 import { TagType, CellType, Tag, RepoData } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
+import { LocalStorageService } from './local-storage.service';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 
@@ -25,6 +26,7 @@ export class EhTagConnectorService {
     private endpoints: ApiEndpointService,
     private relese: GithubReleaseService,
     private debug: DebugService,
+    private localStorage: LocalStorageService,
   ) {
     combineLatest([
       relese.tags.raw,
@@ -46,19 +48,19 @@ export class EhTagConnectorService {
       relese.tags.raw,
       relese.tags.full,
     ]).pipe(filter(v => v[0].head.sha === v[1].head.sha)).subscribe(v => this.fillCache(v[0], v[1], 'full'));
+
+    if (isDevMode()) {
+      (globalThis as any).setHash = (hash: string) => this.hash = hash;
+    }
   }
-  private hashStr = localStorage.getItem(EH_TAG_HASH) || null;
-  hashChange = new BehaviorSubject<string | null>(this.hashStr);
+
+  private readonly hashStorage = this.localStorage.get(EH_TAG_HASH);
+  readonly hashChange = this.hashStorage.valueChange;
   get hash() {
-    return this.hashStr;
+    return this.hashStorage.value;
   }
   set hash(value) {
-    const oldVal = this.hashStr;
-    if (oldVal === value) {
-      return;
-    }
-    this.hashStr = value;
-    this.onHashChange(oldVal, value);
+    this.hashStorage.value = value;
   }
 
   private readonly normalizeCache = {
@@ -150,12 +152,6 @@ export class EhTagConnectorService {
       return spaces.reduce<string>((str, sp, idx) => str + '\n'.repeat(sp) + (handledParas[idx] || ''), '') as CellType<T>;
     }
     return handledParas.join('\n') as CellType<T>;
-  }
-
-  private onHashChange(oldValue: string | null, newValue: string | null) {
-    this.debug.log(`hash: ${oldValue} -> ${newValue}`);
-    this.hashChange.next(newValue);
-    localStorage.setItem(EH_TAG_HASH, newValue || '');
   }
 
   private getEndpoint(item: ETKey, format: TagType) {
