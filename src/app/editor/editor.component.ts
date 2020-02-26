@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
 import { RouteService } from 'src/services/route.service';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { isValidRaw, editableNs, NamespaceInfo, ETKey } from 'src/interfaces/ehtranslation';
+import { isValidRaw, editableNs, ETKey } from 'src/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, pluck } from 'rxjs/operators';
 import { TitleService } from 'src/services/title.service';
 import { GithubOauthService } from 'src/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -247,7 +247,7 @@ export class EditorComponent implements OnInit {
   }
 
   getNamespace(namespace: NamespaceName) {
-    return NamespaceInfo[namespace];
+    return this.ehTagConnector.namespaceInfo.pipe(pluck(namespace));
   }
 
   hasError(field: Fields | null, includeErrors: string | string[], excludedErrors?: string | string[]) {

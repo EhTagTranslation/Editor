@@ -23,16 +23,16 @@
           <mat-label>命名空间</mat-label>
           <mat-select formControlName="namespace" required>
             <mat-select-trigger class="ns-option">
-              <span class="ns-name">{{getNamespace(value('namespace')).name}}</span><span
+              <span class="ns-name">{{(getNamespace(value('namespace')) | async).name}}</span><span
                 class="ns-raw">{{value('namespace')}}</span>
             </mat-select-trigger>
             <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
-              <span class="ns-name">{{getNamespace(ns).name}}</span><span class="ns-raw">{{ns}}</span>
-              <span class="mat-caption ns-intro">{{getNamespace(ns).intro}}</span>
+              <span class="ns-name">{{(getNamespace(ns) | async).name}}</span><span class="ns-raw">{{ns}}</span>
+              <span class="mat-caption ns-intro">{{(getNamespace(ns) | async).description}}</span>
             </mat-option>
           </mat-select>
           <mat-hint>
-            <ng-template *ngIf="enabled('namespace'); else nsDisabled">标签所在的命名空间</ng-template>
+            <ng-template [ngIf]="enabled('namespace')" [ngIfElse]="nsDisabled">标签所在的命名空间</ng-template>
             <ng-template #nsDisabled>
               <ng-template [ngIf]="isEditableNs | async" [ngIfElse]="nsNotAllowed">
                 修改标签时无法更改此项
@@ -52,6 +52,10 @@
               修改</a>
           </mat-error>
         </mat-form-field>
+        <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
+          填写指南
+          <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules">{{item}}</p>
+        </mat-hint>
         <mat-form-field>
           <button *ngIf="(forms.raw | async)" mat-icon-button matSuffix matTooltip="搜索"
             [matMenuTriggerFor]="searchMenu">
@@ -175,7 +179,9 @@
         <mat-spinner class="loading" [diameter]="24"></mat-spinner>
       </ng-template>
     </button>
-    <button mat-raised-button [disabled]="(tagForm.invalid || !(isEditableNs | async)) || (tagForm.pristine) || !(github.tokenChange | async)" [matTooltip]="
+    <button mat-raised-button
+      [disabled]="(tagForm.invalid || !(isEditableNs | async)) || (tagForm.pristine) || !(github.tokenChange | async)"
+      [matTooltip]="
         !(github.tokenChange | async) ? '请先登录' 
         : (tagForm.invalid || !(isEditableNs | async)) ? '请检查填写的内容'  
         : tagForm.pristine ? '没有更改'

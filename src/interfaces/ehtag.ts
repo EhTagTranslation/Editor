@@ -45,7 +45,15 @@ export enum NamespaceEnum {
 export interface NamespaceInfo {
   count: number;
   namespace: NamespaceName;
+  frontMatters: FrontMatters;
+}
 
+export interface FrontMatters {
+  key: NamespaceName;
+  name: string;
+  description: string;
+  copyright?: string;
+  rules?: string[];
 }
 
 export interface NamespaceData<T extends TagType> extends NamespaceInfo {

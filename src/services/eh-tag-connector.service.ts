@@ -1,11 +1,11 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject, throwError, combineLatest } from 'rxjs';
-import { map, tap, catchError, filter } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, throwError, combineLatest, race, concat } from 'rxjs';
+import { map, tap, catchError, filter, shareReplay } from 'rxjs/operators';
 import { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { DebugService } from './debug.service';
-import { TagType, CellType, Tag, RepoData } from 'src/interfaces/ehtag';
+import { TagType, CellType, Tag, RepoData, NamespaceName, RepoInfo, NamespaceInfo, FrontMatters } from 'src/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
 
@@ -49,10 +49,30 @@ export class EhTagConnectorService {
       relese.tags.full,
     ]).pipe(filter(v => v[0].head.sha === v[1].head.sha)).subscribe(v => this.fillCache(v[0], v[1], 'full'));
 
+    const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = ({
+      rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },
+      artist: { name: '艺术家', description: '绘画作者 / Coser。' },
+      female: { name: '女性', description: '女性角色相关的恋物标签。' },
+      male: { name: '男性', description: '男性角色相关的恋物标签。' },
+      parody: { name: '原作', description: '同人作品模仿的原始作品。' },
+      character: { name: '角色', description: '作品中出现的角色。' },
+      group: { name: '团队', description: '制作社团或公司。' },
+      language: { name: '语言', description: '作品的语言。' },
+      reclass: { name: '重新分类', description: '用于分类出错的画廊，当某个重新分类标签权重达到 100，将移动画廊至对应分类。' },
+      misc: { name: '杂项', description: '两性/中性的恋物标签或没有具体分类的标签，可以在论坛发帖请求管理员添加新的标签或将标签移动到正确分类。' },
+    });
+    this.namespaceInfo = concat(of(fallback), relese.tags.full.pipe(map(v => {
+      const data: Partial<Record<NamespaceName, Omit<FrontMatters, 'key'>>> = {};
+      v.data.forEach(d => data[d.namespace] = d.frontMatters);
+      return data as Record<NamespaceName, Omit<FrontMatters, 'key'>>;
+    }))).pipe(shareReplay(1));
+
     if (isDevMode()) {
       (globalThis as any).setHash = (hash: string) => this.hash = hash;
     }
   }
+
+  readonly namespaceInfo: Observable<Record<NamespaceName, Omit<FrontMatters, 'key'>>>;
 
   private readonly hashStorage = this.localStorage.get(EH_TAG_HASH);
   readonly hashChange = this.hashStorage.valueChange;

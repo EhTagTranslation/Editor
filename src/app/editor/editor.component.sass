@@ -28,12 +28,18 @@
     > #form-container
       form
         user-select: none
-        mat-form-field
+        > *
           &.markdown mat-label::after
             font-family: 'iconfont'
             content: ' \00e6d1'
           display: block
           margin: 18px
+        > mat-hint 
+          font-size: 12px
+          > p
+            margin: 10px 0 10px 8px
+            user-select: text
+
 
     > #preview-container
       mat-card
