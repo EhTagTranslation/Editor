@@ -182,10 +182,10 @@
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.2.tgz#be238eb2e575e2945f8e88c4ae09d99b280b797d"
   integrity sha512-IWlKn5v3y7k1Z2K2wfNNzbn9xgA4fFlWyPe9QpdS8iy6/bPe5GfKhHbMYIza5eIhPXDN93zdEptiAIXGP3kLBQ==
 
-"@angular/core@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/core/download/@angular/core-9.0.2.tgz#250093b6a4d3137e2cc30e73e6cee919f1386165"
-  integrity sha1-JQCTtqTTE34sww5z5s7pGfE4YWU=
+"@angular/core@^9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-9.0.3.tgz#14b523eec09238a8cdebb59959860abd3327ac1c"
+  integrity sha512-zVnRHI4XFJO/5pbr9tpBDehdKpeesDcV4zmhZsUJMJTW4G1cu1bltUpxCWrbZGudnW1t6R84HOc4iEDTwTDDMQ==
 
 "@angular/forms@^9.0.3":
   version "9.0.3"
