@@ -10,7 +10,7 @@
     "@angular/animations": "^9.0.3",
     "@angular/cdk": "^9.1.0",
     "@angular/common": "^9.0.2",
-    "@angular/compiler": "^9.0.2",
+    "@angular/compiler": "^9.0.4",
     "@angular/core": "^9.0.3",
     "@angular/forms": "^9.0.3",
     "@angular/material": "^9.1.0",
