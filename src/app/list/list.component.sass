@@ -3,11 +3,12 @@
   height: 100%
 
 header
-  user-select: none
   font-size: 14px
   display: flex
   flex-wrap: wrap
   padding: 16px 16px 0
+  > *
+    user-select: none
   > mat-form-field
     margin: 0 8px
   > mat-chip-list
@@ -21,7 +22,6 @@ header
 section
   flex: auto
   position: relative
-  user-select: none
   #table-wrapper
     position: absolute
     overflow: auto
@@ -32,8 +32,11 @@ section
     table
       width: 100%
       min-width: 640px
-      th.text
-        min-width: 80px
+      th
+        > *
+          user-select: none
+        &.text
+          min-width: 80px
       .mat-header-cell:not(:last-child), .mat-cell:not(:last-child)
         padding-right: 8px
       tr
@@ -42,6 +45,7 @@ section
         margin: 4px 0
 
   div.spinner
+    user-select: none
     padding: 120px
     position: sticky
     left: 0

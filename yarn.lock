@@ -117,10 +117,10 @@
     ora "4.0.2"
     rxjs "6.5.3"
 
-"@angular/animations@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-9.0.3.tgz#9bdc1f9d6a0bb90e3d5cd981758c6892b66f34ce"
-  integrity sha512-J+i64I8VDsIQxk7vNii+whUz0GXtCpi/OU/RsINoZ2LCc3KKTQ/ZJpP/VoQV+pDatNK6orgNP3fohoKRJYkgkQ==
+"@angular/animations@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-9.0.4.tgz#c95c601dfb8fc4e96aee577c9c0f6cf18b64e5d7"
+  integrity sha1-yVxgHfuPxOlq7ld8nA9s8Ytk5dc=
 
 "@angular/cdk@^9.1.0":
   version "9.1.0"
@@ -155,15 +155,15 @@
     universal-analytics "^0.4.20"
     uuid "^3.3.2"
 
-"@angular/common@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-9.0.2.tgz#767c659b4a34c478009a40373ca1ebb84091c0b4"
-  integrity sha1-dnxlm0o0xHgAmkA3PKHruECRwLQ=
+"@angular/common@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-9.0.4.tgz#7d168b22c5c43e72112d0a19242eca22b62bb4f3"
+  integrity sha1-fRaLIsXEPnIRLQoZJC7KIrYrtPM=
 
-"@angular/compiler-cli@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-9.0.2.tgz#41868d23f2d062e072c9cff267c835151d237e8c"
-  integrity sha512-2AAZr1jX72OG9k1viVShiDGAwV9PZEcoDt80PXkUjLTUwWxicuSBKYauph47PzK/qzqWhdbvMbh8wCWHSLq0Qg==
+"@angular/compiler-cli@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/compiler-cli/download/@angular/compiler-cli-9.0.4.tgz#1dec287ef3c6428f1837b8176d74993e83db08c4"
+  integrity sha1-HewofvPGQo8YN7gXbXSZPoPbCMQ=
   dependencies:
     canonical-path "1.0.0"
     chokidar "^3.0.0"
@@ -175,22 +175,23 @@
     reflect-metadata "^0.1.2"
     semver "^6.3.0"
     source-map "^0.6.1"
+    sourcemap-codec "^1.4.8"
     yargs "13.1.0"
 
-"@angular/compiler@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.2.tgz#be238eb2e575e2945f8e88c4ae09d99b280b797d"
-  integrity sha512-IWlKn5v3y7k1Z2K2wfNNzbn9xgA4fFlWyPe9QpdS8iy6/bPe5GfKhHbMYIza5eIhPXDN93zdEptiAIXGP3kLBQ==
+"@angular/compiler@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/compiler/download/@angular/compiler-9.0.4.tgz#038c9cdbf76f1cce47bd1b355c7d212cc89b18f9"
+  integrity sha1-A4yc2/dvHM5HvRs1XH0hLMibGPk=
 
-"@angular/core@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-9.0.3.tgz#14b523eec09238a8cdebb59959860abd3327ac1c"
-  integrity sha512-zVnRHI4XFJO/5pbr9tpBDehdKpeesDcV4zmhZsUJMJTW4G1cu1bltUpxCWrbZGudnW1t6R84HOc4iEDTwTDDMQ==
+"@angular/core@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/core/download/@angular/core-9.0.4.tgz#6baa5ec6c594b47de541e47f4aa37241adec393a"
+  integrity sha1-a6pexsWUtH3lQeR/SqNyQa3sOTo=
 
-"@angular/forms@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-9.0.3.tgz#ca2975dfd6f91e5e3ffd679bf02de2f41b0301c8"
-  integrity sha512-j842d7uIfstOpTKVlJ/b1Wg9B4SOZEEzQBaSxtck0MWgOf5cnnUY4m6XQfOrH1j8guvAw1rkbzVyN/FQ1Crsyw==
+"@angular/forms@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/forms/download/@angular/forms-9.0.4.tgz#31edac9917e592695a5c12b846e93dbda6afc510"
+  integrity sha1-Me2smRflkmlaXBK4Ruk9vaavxRA=
 
 "@angular/language-service@^9.0.4":
   version "9.0.4"
@@ -202,20 +203,20 @@
   resolved "https://registry.yarnpkg.com/@angular/material/-/material-9.1.0.tgz#550cbf7f6a9ce679b77435278faebfc4f2a3b2ed"
   integrity sha512-KjA1ARoZ1vBg4jUH1y39muynxAFvkD8QZFGKH8Nh4zXW5pOP/7NyjokxXsNx5qSBCq/6ac2xBxCrCYJN7HmoDw==
 
-"@angular/platform-browser-dynamic@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/platform-browser-dynamic/download/@angular/platform-browser-dynamic-9.0.2.tgz#1ed55756abd29830c2952f07c5fdea6be0b33acc"
-  integrity sha1-HtVXVqvSmDDClS8Hxf3qa+CzOsw=
+"@angular/platform-browser-dynamic@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/platform-browser-dynamic/download/@angular/platform-browser-dynamic-9.0.4.tgz#343bd43fe00a279a737e02c16dd8790dc0da93a8"
+  integrity sha1-NDvUP+AKJ5pzfgLBbdh5DcDak6g=
 
-"@angular/platform-browser@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/platform-browser/download/@angular/platform-browser-9.0.2.tgz#159456404b35f4c86ecf64ecc2b427389ede057d"
-  integrity sha1-FZRWQEs19Mhuz2TswrQnOJ7eBX0=
+"@angular/platform-browser@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/platform-browser/download/@angular/platform-browser-9.0.4.tgz#03853b435c3b964660727ac9d7e15912c920cdb8"
+  integrity sha1-A4U7Q1w7lkZgcnrJ1+FZEskgzbg=
 
-"@angular/router@^9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-9.0.2.tgz#f33a56b16966eabdb7b24ae484d9577d47fe117f"
-  integrity sha1-8zpWsWlm6r23skrkhNlXfUf+EX8=
+"@angular/router@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-9.0.4.tgz#1d15496eff2f47e09bb1d9c44592a2c44d0f63c1"
+  integrity sha1-HRVJbv8vR+CbsdnERZKixE0PY8E=
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5", "@babel/code-frame@^7.8.3":
   version "7.8.3"
@@ -6671,7 +6672,7 @@ source-map@^0.6.0, source-map@^0.6.1, source-map@~0.6.0, source-map@~0.6.1:
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-sourcemap-codec@^1.4.4:
+sourcemap-codec@^1.4.4, sourcemap-codec@^1.4.8:
   version "1.4.8"
   resolved "https://registry.npmjs.org/sourcemap-codec/-/sourcemap-codec-1.4.8.tgz#ea804bd94857402e6992d05a38ef1ae35a9ab4c4"
   integrity sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==

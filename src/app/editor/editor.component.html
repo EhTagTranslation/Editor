@@ -53,7 +53,7 @@
           </mat-error>
         </mat-form-field>
         <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
-          填写指南
+          <span class="no-user-select">填写指南</span>
           <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules">{{item}}</p>
         </mat-hint>
         <mat-form-field>
