@@ -179,10 +179,10 @@
   resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-9.0.4.tgz#7d168b22c5c43e72112d0a19242eca22b62bb4f3"
   integrity sha1-fRaLIsXEPnIRLQoZJC7KIrYrtPM=
 
-"@angular/compiler-cli@^9.0.4":
-  version "9.0.4"
-  resolved "https://registry.npm.taobao.org/@angular/compiler-cli/download/@angular/compiler-cli-9.0.4.tgz#1dec287ef3c6428f1837b8176d74993e83db08c4"
-  integrity sha1-HewofvPGQo8YN7gXbXSZPoPbCMQ=
+"@angular/compiler-cli@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-9.0.5.tgz#b7b7dba46a9495e2ca7efd412f6555e2544fc59d"
+  integrity sha512-lFlasm8UBApTq4/MkxnYrRAMfpOvvg3YYBEMibuEGlaJjW/Xd1JcisUuFiooCxCIKF5phyORHmxjywGPhHqQgQ==
   dependencies:
     canonical-path "1.0.0"
     chokidar "^3.0.0"
