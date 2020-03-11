@@ -7207,10 +7207,10 @@ tslint-angular@^3.0.2:
   resolved "https://registry.npmjs.org/tslint-angular/-/tslint-angular-3.0.2.tgz#6f7480cc34f26fcc03df18d7ec3d5ce364b65064"
   integrity sha512-UgeGO776Z7VvzCnW6pOsbL3qs7PwzZatKkk2OzQO45H9Zf4T+bNBz87nFkB96W/swyCHmpK2M0vl61n0biFVTQ==
 
-tslint@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/tslint/-/tslint-6.0.0.tgz#1c0148beac4779924216302f192cdaa153618310"
-  integrity sha512-9nLya8GBtlFmmFMW7oXXwoXS1NkrccqTqAtwXzdPV9e2mqSEvCki6iHL/Fbzi5oqbugshzgGPk7KBb2qNP1DSA==
+tslint@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/tslint/-/tslint-6.1.0.tgz#c6c611b8ba0eed1549bf5a59ba05a7732133d851"
+  integrity sha512-fXjYd/61vU6da04E505OZQGb2VCN2Mq3doeWcOIryuG+eqdmFUXTYVwdhnbEu2k46LNLgUYt9bI5icQze/j0bQ==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     builtin-modules "^1.1.1"
