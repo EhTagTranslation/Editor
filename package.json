@@ -16,7 +16,7 @@
     "@angular/material": "^9.1.1",
     "@angular/platform-browser": "^9.0.4",
     "@angular/platform-browser-dynamic": "^9.0.4",
-    "@angular/router": "^9.0.4",
+    "@angular/router": "^9.0.6",
     "bluebird": "^3.7.2",
     "codelyzer": "^5.2.1",
     "dexie": "^2.0.4",
