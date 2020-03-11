@@ -8,17 +8,16 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^9.0.6",
-    "@angular/cdk": "^9.1.1",
-    "@angular/common": "^9.0.4",
-    "@angular/compiler": "^9.0.4",
+    "@angular/cdk": "^9.1.2",
+    "@angular/common": "^9.0.6",
+    "@angular/compiler": "^9.0.6",
     "@angular/core": "^9.0.6",
     "@angular/forms": "^9.0.6",
-    "@angular/material": "^9.1.1",
-    "@angular/platform-browser": "^9.0.4",
-    "@angular/platform-browser-dynamic": "^9.0.4",
+    "@angular/material": "^9.1.2",
+    "@angular/platform-browser": "^9.0.6",
+    "@angular/platform-browser-dynamic": "^9.0.6",
     "@angular/router": "^9.0.6",
     "bluebird": "^3.7.2",
-    "codelyzer": "^5.2.1",
     "dexie": "^2.0.4",
     "escape-string-regexp": "^2.0.0",
     "hammerjs": "^2.0.8",
@@ -26,7 +25,6 @@
     "material-design-icons": "^3.0.1",
     "rxjs": "^6.5.4",
     "tslib": "^1.11.1",
-    "tslint-angular": "^3.0.2",
     "zone.js": "^0.10.2"
   },
   "devDependencies": {
@@ -37,8 +35,10 @@
     "@types/bluebird-global": "^3.5.12",
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^13.9.0",
+    "codelyzer": "^5.2.1",
     "ts-node": "^8.6.2",
     "tslint": "^6.0.0",
+    "tslint-angular": "^3.0.2",
     "typescript": "^3.7.5"
   }
 }

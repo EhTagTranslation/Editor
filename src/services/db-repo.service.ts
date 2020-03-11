@@ -17,7 +17,7 @@ export class DbRepoService {
     return this.resolve(`issues/new?assignees=&labels=翻译&template=tag-translation.md&title=${title}`);
   }
 
-  code(page: string): string{
+  code(page: string): string {
     return this.resolve(`blob/master/${encodeURI(page)}`);
   }
 

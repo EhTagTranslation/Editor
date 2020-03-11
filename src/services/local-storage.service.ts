@@ -29,10 +29,12 @@ class LocalStorageItemImpl implements LocalStorageItem {
   }
 
   private static getValueRep(value: string | undefined | null) {
-    if (value === undefined)
+    if (value === undefined) {
       return '?';
-    if (value === null)
+    }
+    if (value === null) {
       return 'null';
+    }
     return `"${value}"`;
   }
   onValueChange(oldValue?: string | null, newValue?: string | null) {
@@ -57,6 +59,9 @@ export class LocalStorageService {
   ) {
     window.addEventListener('storage', this.storageChanged);
   }
+
+  private readonly values = new Map<string, LocalStorageItemImpl>();
+
   private readonly storageChanged = (ev: StorageEvent) => {
     if (ev.storageArea !== localStorage) {
       return;
@@ -71,11 +76,9 @@ export class LocalStorageService {
     this.values.forEach(value => value.onValueChange());
   }
 
-  private readonly values = new Map<string, LocalStorageItemImpl>();
-
   get(token: string): LocalStorageItem {
     const exist = this.values.get(token);
-    if (exist) return exist;
+    if (exist) { return exist; }
 
     const created = new LocalStorageItemImpl(token, this.debug);
     this.values.set(token, created);
