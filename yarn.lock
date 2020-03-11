@@ -117,10 +117,10 @@
     ora "4.0.2"
     rxjs "6.5.3"
 
-"@angular/animations@^9.0.4":
-  version "9.0.4"
-  resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-9.0.4.tgz#c95c601dfb8fc4e96aee577c9c0f6cf18b64e5d7"
-  integrity sha1-yVxgHfuPxOlq7ld8nA9s8Ytk5dc=
+"@angular/animations@^9.0.6":
+  version "9.0.6"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-9.0.6.tgz#d0c26f9e103948989416f7d8c26b5f5fd298d4a4"
+  integrity sha512-LNtzUrrjqLTlZyhuAEV0sdEV0yi52Ih/p+ozCr/ivhTSSemcPbniTBbJlFZO4NJ2BuS2iEXkXwZs3mm8Fvx5Sg==
 
 "@angular/cdk@^9.1.1":
   version "9.1.1"
