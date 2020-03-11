@@ -50,5 +50,5 @@ export interface LinkNode extends MediaNode {
 }
 export interface ImageNode extends MediaNode {
   type: 'image';
-  nsfw: boolean;
+  nsfw: false | 'R18' | 'R18G';
 }

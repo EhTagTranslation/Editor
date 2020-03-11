@@ -1,6 +1,0 @@
-{
-  "extends": "tslint-angular",
-  "rules": {
-    "template-no-negated-async": false
-  }
-}

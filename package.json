@@ -35,10 +35,7 @@
     "@types/bluebird-global": "^3.5.12",
     "@types/escape-string-regexp": "^2.0.1",
     "@types/node": "^13.9.0",
-    "codelyzer": "^5.2.1",
     "ts-node": "^8.6.2",
-    "tslint": "^6.0.0",
-    "tslint-angular": "^3.0.2",
     "typescript": "^3.7.5"
   }
 }
