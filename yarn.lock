@@ -213,10 +213,10 @@
   resolved "https://registry.npm.taobao.org/@angular/platform-browser/download/@angular/platform-browser-9.0.4.tgz#03853b435c3b964660727ac9d7e15912c920cdb8"
   integrity sha1-A4U7Q1w7lkZgcnrJ1+FZEskgzbg=
 
-"@angular/router@^9.0.4":
-  version "9.0.4"
-  resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-9.0.4.tgz#1d15496eff2f47e09bb1d9c44592a2c44d0f63c1"
-  integrity sha1-HRVJbv8vR+CbsdnERZKixE0PY8E=
+"@angular/router@^9.0.6":
+  version "9.0.6"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-9.0.6.tgz#a0d38380916337c4c0359892c03f75f93bf469bd"
+  integrity sha512-Ki1uk3jWPsoFh27SnyXatPSFK3ghF25pjiwWw9/inPvlS/HshSWgS2FbYf49LD5xVFF3Ni2Z5GRKxSEqxL8vQw==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5", "@babel/code-frame@^7.8.3":
   version "7.8.3"
