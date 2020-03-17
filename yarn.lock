@@ -198,10 +198,10 @@
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-9.0.6.tgz#484bbaab9c08e72be31ca741e12f1b134d641c85"
   integrity sha512-lyEYYsBXFhXKu3aT6XkKBmmf4c59lb/C6C15q4Dl8BW/wIuA/mNLosDKLnd/jCS0VpcY4v0HJRKg9SCopa8BhQ==
 
-"@angular/material@^9.1.2":
-  version "9.1.2"
-  resolved "https://registry.npm.taobao.org/@angular/material/download/@angular/material-9.1.2.tgz#3065d48aa1fa106963a8d9889f68fb5686e88f91"
-  integrity sha1-MGXUiqH6EGljqNmIn2j7Voboj5E=
+"@angular/material@^9.1.3":
+  version "9.1.3"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-9.1.3.tgz#9ac9d4e270deb13d6ca63e75ae271ce2181058b2"
+  integrity sha512-tRdd5+z9XwsbN+4WCuH3goyEjqw1Q6vKeURCdas8bh5AVOrCt8pcFlj3yA3P/u4fdhfTeFc67PJRz8Zm0n3moQ==
 
 "@angular/platform-browser-dynamic@^9.0.6":
   version "9.0.6"
