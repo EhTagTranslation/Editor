@@ -34,7 +34,7 @@
     "@angular/language-service": "^9.0.7",
     "@types/bluebird-global": "^3.5.12",
     "@types/escape-string-regexp": "^2.0.1",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.9.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
   }
