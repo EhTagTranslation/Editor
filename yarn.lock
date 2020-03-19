@@ -155,10 +155,10 @@
     universal-analytics "^0.4.20"
     uuid "^3.3.2"
 
-"@angular/common@^9.0.6":
-  version "9.0.6"
-  resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-9.0.6.tgz#d9796d1f52f51852992aca09a1fe4794638cc953"
-  integrity sha1-2XltH1L1GFKZKsoJof5HlGOMyVM=
+"@angular/common@^9.0.7":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-9.0.7.tgz#a5d96515ac0db6d7fccb14e16d2bf713cf845a9d"
+  integrity sha512-B58YgxZva1DBaeayOBsaUOOkoyR+GRibuNC3gfOMm2vXeW9eCNX+jvDtw767GnKm2yGzIq8wB3x6GHojN00dPw==
 
 "@angular/compiler-cli@^9.0.7":
   version "9.0.7"
