@@ -7058,10 +7058,10 @@ tree-kill@1.2.2:
   resolved "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-ts-node@^8.7.0:
-  version "8.7.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.7.0.tgz#266186947596bef9f3a034687595b30e31b20976"
-  integrity sha512-s659CsHrsxaRVDEleuOkGvbsA0rWHtszUNEt1r0CgAFN5ZZTQtDzpsluS7W5pOGJIa1xZE8R/zK4dEs+ldFezg==
+ts-node@^8.8.0:
+  version "8.8.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.8.0.tgz#41a301811ac96174db75c24462ec7ebadfa9668b"
+  integrity sha512-cHZpac2e71Df6/kC7AmqXObjHLs+oooxXmBqeiml9TBJk1Car9IsF12iPEeXxYVqwN/b/ZLoAsRcQ587wdwSkw==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"
