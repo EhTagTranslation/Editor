@@ -178,10 +178,10 @@
     sourcemap-codec "^1.4.8"
     yargs "13.1.0"
 
-"@angular/compiler@^9.0.6":
-  version "9.0.6"
-  resolved "https://registry.npm.taobao.org/@angular/compiler/download/@angular/compiler-9.0.6.tgz#b5f23c34a0585aa68f88a95b64877775018b0577"
-  integrity sha1-tfI8NKBYWqaPiKlbZId3dQGLBXc=
+"@angular/compiler@^9.0.7":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-9.0.7.tgz#3cf8f9f6dc6e787506a0bc9444c4abb857bb1068"
+  integrity sha512-hFpkuGpzxpK5h59LHHAjTFWsY6DCXZwgJFqvCuTPxWi/srvLGZRXrpC6Z1SlgHI9xxXaPfoa4uWw2VfA3BnqEg==
 
 "@angular/core@^9.0.7":
   version "9.0.7"
