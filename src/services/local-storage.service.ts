@@ -8,10 +8,10 @@ interface LocalStorageItem {
 }
 
 class LocalStorageItemImpl implements LocalStorageItem {
-    constructor(private token: string, private debug: DebugService) {}
+    constructor(private readonly token: string, private readonly debug: DebugService) {}
 
     valueChange = new BehaviorSubject<string | null>(this.value);
-    get value() {
+    get value(): string | null {
         return localStorage.getItem(this.token) ?? null;
     }
     set value(value) {
@@ -25,7 +25,7 @@ class LocalStorageItemImpl implements LocalStorageItem {
         }
     }
 
-    private static getValueRep(value: string | undefined | null) {
+    private static getValueRep(value: string | undefined | null): string {
         if (value === undefined) {
             return '?';
         }
@@ -34,7 +34,7 @@ class LocalStorageItemImpl implements LocalStorageItem {
         }
         return `"${value}"`;
     }
-    onValueChange(oldValue?: string | null, newValue?: string | null) {
+    onValueChange(oldValue?: string | null, newValue?: string | null): void {
         if (newValue === undefined) {
             newValue = this.value;
         }
@@ -54,13 +54,13 @@ class LocalStorageItemImpl implements LocalStorageItem {
     providedIn: 'root',
 })
 export class LocalStorageService {
-    constructor(private debug: DebugService) {
+    constructor(private readonly debug: DebugService) {
         window.addEventListener('storage', this.storageChanged);
     }
 
     private readonly values = new Map<string, LocalStorageItemImpl>();
 
-    private readonly storageChanged = (ev: StorageEvent) => {
+    private readonly storageChanged = (ev: StorageEvent): void => {
         if (ev.storageArea !== localStorage) {
             return;
         }

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class ApiEndpointService {
-    private makePath(root: string, path: string) {
+    private makePath(root: string, path: string): string {
         if (path.startsWith('/') || path === '') {
             return root + path;
         } else {
