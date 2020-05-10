@@ -5,13 +5,13 @@ import { MatSnackBarConfig } from '@angular/material/snack-bar';
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
 };
 
 export const snackBarConfig: MatSnackBarConfig = {
-  duration: undefined,
-  horizontalPosition: 'end',
-  verticalPosition: 'top',
+    duration: undefined,
+    horizontalPosition: 'end',
+    verticalPosition: 'top',
 };
 
 /*

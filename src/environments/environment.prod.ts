@@ -1,11 +1,11 @@
 import { MatSnackBarConfig } from '@angular/material/snack-bar';
 
 export const environment = {
-  production: true
+    production: true,
 };
 
 export const snackBarConfig: MatSnackBarConfig = {
-  duration: 10000,
-  horizontalPosition: 'end',
-  verticalPosition: 'top',
+    duration: 10000,
+    horizontalPosition: 'end',
+    verticalPosition: 'top',
 };

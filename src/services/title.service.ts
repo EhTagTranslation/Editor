@@ -5,15 +5,14 @@ import { map, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
-export class TitleService  {
-
-  constructor(private title: Title) {  }
-  getTitle() { return this.title.getTitle(); }
-  setTitle(newTitle: string) {
-    newTitle
-      ? this.title.setTitle(newTitle + ' - EhTag Editor')
-      : this.title.setTitle('EhTag Editor');
-  }
+export class TitleService {
+    constructor(private title: Title) {}
+    getTitle() {
+        return this.title.getTitle();
+    }
+    setTitle(newTitle: string) {
+        newTitle ? this.title.setTitle(newTitle + ' - EhTag Editor') : this.title.setTitle('EhTag Editor');
+    }
 }

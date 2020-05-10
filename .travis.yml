@@ -1,7 +1,7 @@
 language: node_js
 node_js: lts/*
 branches:
-  only:
-  - master
+    only:
+        - master
 script: yarn build
 cache: yarn

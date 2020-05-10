@@ -1,11 +1,28 @@
 {
-    "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-    "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
-    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-    "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
-    "[typescript]": {
-        "editor.tabSize": 2,
-        "files.encoding": "utf8"
+    "npm.packageManager": "yarn",
+    "eslint.packageManager": "yarn",
+    "eslint.enable": true,
+    "eslint.lintTask.enable": true,
+    "eslint.format.enable": true,
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "vue"],
+    "editor.tabSize": 4,
+    "files.eol": "\n",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
     },
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+    "[vue]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    }
 }

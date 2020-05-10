@@ -7,22 +7,22 @@ import { Location } from '@angular/common';
 import { DbRepoService } from 'src/services/db-repo.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.sass'],
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private ehTagConnector: EhTagConnectorService,
-    private router: Router,
-    private location: Location,
-    public dbRepo: DbRepoService,
-  ) { }
-  ngOnInit(): void {
-    this.ehTagConnector.updateHash().subscribe(_ => { });
-  }
+    constructor(
+        private ehTagConnector: EhTagConnectorService,
+        private router: Router,
+        private location: Location,
+        public dbRepo: DbRepoService,
+    ) {}
+    ngOnInit(): void {
+        this.ehTagConnector.updateHash().subscribe((_) => {});
+    }
 
-  goBack() {
-    this.location.back();
-  }
+    goBack() {
+        this.location.back();
+    }
 }
