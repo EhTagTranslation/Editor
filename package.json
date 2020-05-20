@@ -16,7 +16,7 @@
     "@angular/core": "^9.1.6",
     "@angular/forms": "^9.1.6",
     "@angular/material": "^9.2.3",
-    "@angular/platform-browser": "^9.1.7",
+    "@angular/platform-browser": "^9.1.8",
     "@angular/platform-browser-dynamic": "^9.1.6",
     "@angular/router": "^9.1.6",
     "bluebird": "^3.7.2",
