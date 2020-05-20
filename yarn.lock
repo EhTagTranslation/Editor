@@ -208,10 +208,10 @@
   resolved "https://registry.npm.taobao.org/@angular/platform-browser-dynamic/download/@angular/platform-browser-dynamic-9.1.6.tgz#3522fd43825f12f8e9982acab85c0a9cdc0c5c86"
   integrity sha1-NSL9Q4JfEvjpmCrKuFwKnNwMXIY=
 
-"@angular/platform-browser@^9.1.8":
-  version "9.1.8"
-  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-9.1.8.tgz#541b25bd81488a2a4fdf40857c297e7d0eb93aa3"
-  integrity sha512-nXUhtu3YBkyCj0Uz/hAtZp+TTn9/VYHUrcIiGY7HJpGF0M9huTAu7gqtItQ2Fbtqfi0EPSGt1NqH75W6HvMvAA==
+"@angular/platform-browser@^9.1.9":
+  version "9.1.9"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-9.1.9.tgz#c2fcc50aebfdc268521b407e32dc0d967cb40411"
+  integrity sha512-V861X3MxJp1AlMTnkUPldpBLIJbApXF3ka0A5Dq2nVJCyOFeteGkaRWSBgqe2jxmq+LVpJbzcNvtDFXw6mQ0jA==
 
 "@angular/router@^9.1.6":
   version "9.1.6"
