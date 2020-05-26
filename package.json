@@ -23,7 +23,7 @@
     "dexie": "^3.0.1",
     "escape-string-regexp": "^4.0.0",
     "hammerjs": "^2.0.8",
-    "lazysizes": "^5.2.1-rc2",
+    "lazysizes": "^5.2.1",
     "material-design-icons": "^3.0.1",
     "rxjs": "^6.5.5",
     "tslib": "^2.0.0",
