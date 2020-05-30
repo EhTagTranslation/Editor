@@ -117,7 +117,12 @@
                         </mat-menu>
                     </button>
                     <mat-label>原始标签</mat-label>
-                    <input matInput placeholder="ruri gokou" formControlName="raw" required />
+                    <input
+                        matInput
+                        [placeholder]="(getNamespace(value('namespace')) | async).example?.raw"
+                        formControlName="raw"
+                        required
+                    />
                     <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
                     <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
                     <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母 </mat-error>
@@ -155,7 +160,12 @@
                         </mat-menu>
                     </button>
                     <mat-label>名称</mat-label>
-                    <input matInput placeholder="五更琉璃（黑猫）" formControlName="name" required />
+                    <input
+                        matInput
+                        [placeholder]="(getNamespace(value('namespace')) | async).example?.name"
+                        formControlName="name"
+                        required
+                    />
                     <mat-hint>输入标签的中文翻译</mat-hint>
                     <mat-error *ngIf="hasError('name', ['pattern', 'required'])">必须填写</mat-error>
                 </mat-form-field>
@@ -163,8 +173,7 @@
                     <mat-label>描述</mat-label>
                     <textarea
                         matInput
-                        placeholder="![黑猫](http://tiny.cc/i8hzaz)
-网名黑猫。SNS社群“宅女集合”的成员之一。"
+                        [placeholder]="(getNamespace(value('namespace')) | async).example?.intro"
                         formControlName="intro"
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="2"
@@ -176,7 +185,7 @@
                     <mat-label>外部链接</mat-label>
                     <textarea
                         matInput
-                        placeholder="[萌娘百科](https://zh.moegirl.org/五更琉璃) [Fandom](https://oreimo.fandom.com/zh/五更琉璃)"
+                        [placeholder]="(getNamespace(value('namespace')) | async).example?.links"
                         formControlName="links"
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="2"
