@@ -1,5 +1,6 @@
 
 /dist
+/db
 /*.config.js
 .*.{js,ts}
 
