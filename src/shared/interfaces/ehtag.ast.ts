@@ -1,6 +1,7 @@
 export type Tree = ParaNode[];
 
-export type NodeType = 'paragraph' | 'text' | 'br' | 'code' | 'image' | 'link' | 'emphasis' | 'strong';
+export type NodeType = 'paragraph' | 'text' | 'br' | 'tagref' | 'image' | 'link' | 'emphasis' | 'strong';
+
 export interface Node {
     type: NodeType;
 }
@@ -15,17 +16,18 @@ export interface ParaNode extends ContainerNode {
     type: 'paragraph';
 }
 export interface LeafNode extends InlineNode {
-    type: 'text' | 'code' | 'br';
+    type: 'text' | 'tagref' | 'br';
 }
 export interface TextLeafNode extends LeafNode {
-    type: 'text' | 'code';
+    type: 'text' | 'tagref';
     text: string;
 }
 export interface TextNode extends TextLeafNode {
     type: 'text';
 }
-export interface CodeNode extends TextLeafNode {
-    type: 'code';
+export interface TagRefNode extends TextLeafNode {
+    type: 'tagref';
+    tag?: string;
 }
 export interface BreakNode extends LeafNode {
     type: 'br';

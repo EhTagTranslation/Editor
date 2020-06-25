@@ -11,6 +11,8 @@ import * as path from 'path';
 import * as execa from 'execa';
 import * as shell from 'shell-quote';
 
+import { Database } from 'shared/database';
+
 let execId = 0;
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 
@@ -39,6 +41,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         await this.git(`config user.name '${this.botUserInfo.login}'`);
         await this.git(`config user.email '${userEmail(this.botUserInfo)}'`);
         await this.pull();
+        this.data = await Database.create(this.path);
     }
 
     private createOctokit(options?: OctokitOptions): Octokit {
@@ -123,5 +126,8 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             clientId: this.config.get('APP_CLIENT_ID'),
             clientSecret: this.config.get('APP_CLIENT_SECRET'),
         } as Types['StrategyOptions'],
+        userAgent: 'EhTagTranslation Nest',
     });
+
+    private data!: Database;
 }

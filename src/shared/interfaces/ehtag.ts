@@ -67,11 +67,11 @@ export interface FrontMatters {
     rules?: string[];
 }
 
-export interface NamespaceData<T extends TagType> extends NamespaceInfo {
+export interface NamespaceData<T = TagType> extends NamespaceInfo {
     data: { [raw: string]: Tag<T> };
 }
 
-export interface Tag<T extends TagType> {
+export interface Tag<T = TagType> {
     intro: CellType<T>;
     links: CellType<T>;
     name: CellType<T>;
@@ -79,7 +79,7 @@ export interface Tag<T extends TagType> {
 
 export type TagType = 'raw' | 'ast' | 'html' | 'text' | 'full';
 
-export type CellType<T extends TagType> = T extends 'raw'
+export type CellType<T> = T extends 'raw'
     ? string
     : T extends 'ast'
     ? Ast.Tree
@@ -89,4 +89,4 @@ export type CellType<T extends TagType> = T extends 'raw'
     ? string
     : T extends 'full'
     ? { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> }
-    : never;
+    : T;
