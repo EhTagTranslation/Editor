@@ -1,6 +1,9 @@
 # compiled output
 /dist/
 
+# env
+/.env
+
 # packages
 /node_modules/
 /.pnp.js
