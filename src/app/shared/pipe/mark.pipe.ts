@@ -5,7 +5,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 const parser = new DOMParser();
 
-function escapeHtml(unsafe: string | null) {
+function escapeHtml(unsafe: string | null): string {
     if (!unsafe) {
         return '';
     }
@@ -66,7 +66,7 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
     pure: true,
 })
 export class MarkPipe implements PipeTransform {
-    constructor(private sanitizer: DomSanitizer, private location: Location) {
+    constructor(private readonly sanitizer: DomSanitizer, private readonly location: Location) {
         this.loadingimg = this.location.prepareExternalUrl('/assets/loading.gif');
     }
 
