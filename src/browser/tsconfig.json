@@ -1,8 +1,7 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "lib": ["es2019", "dom"],
-        "outDir": "../out-tsc/app"
+        "lib": ["es2019", "dom"]
     },
     "exclude": ["test.ts", "**/*.spec.ts"]
 }
