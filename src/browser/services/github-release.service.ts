@@ -1,9 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiEndpointService } from './api-endpoint.service';
-import { GithubRelease, GithubReleaseAsset } from 'src/interfaces/github';
+import { GithubRelease, GithubReleaseAsset } from 'browser/interfaces/github';
 import { DebugService } from './debug.service';
-import { TagType, RepoData, Tag } from 'src/interfaces/ehtag';
+import { TagType, RepoData, Tag } from 'browser/interfaces/ehtag';
 import { of, BehaviorSubject, merge, timer, from, Observable } from 'rxjs';
 import { map, tap, mergeMap, catchError, filter, finalize, throttleTime } from 'rxjs/operators';
 import { TagStore, TagRecord } from './TagStore';

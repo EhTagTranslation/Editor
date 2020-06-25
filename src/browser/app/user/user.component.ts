@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GithubOauthService } from 'src/services/github-oauth.service';
-import { GithubUser } from 'src/interfaces/github';
-import { GithubReleaseService } from 'src/services/github-release.service';
+import { GithubOauthService } from 'browser/services/github-oauth.service';
+import { GithubUser } from 'browser/interfaces/github';
+import { GithubReleaseService } from 'browser/services/github-release.service';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -12,7 +12,7 @@ import { finalize } from 'rxjs/operators';
 export class UserComponent implements OnInit {
     constructor(private github: GithubOauthService, private release: GithubReleaseService) {}
 
-    user: GithubUser | null;
+    user: GithubUser | null = null;
 
     loading = 0;
 

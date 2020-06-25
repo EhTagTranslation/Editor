@@ -5,7 +5,7 @@ import { map, tap, catchError, filter, shareReplay } from 'rxjs/operators';
 import { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
 import { DebugService } from './debug.service';
-import { TagType, CellType, Tag, RepoData, NamespaceName, FrontMatters } from 'src/interfaces/ehtag';
+import { TagType, CellType, Tag, RepoData, NamespaceName, FrontMatters } from 'browser/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
 

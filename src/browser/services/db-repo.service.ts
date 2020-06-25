@@ -1,4 +1,4 @@
-import { Tag, NamespaceEnum } from 'src/interfaces/ehtag';
+import { Tag, NamespaceEnum } from 'browser/interfaces/ehtag';
 import { Injectable } from '@angular/core';
 
 @Injectable({

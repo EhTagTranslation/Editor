@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
-import { RouteService } from 'src/services/route.service';
+import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
+import { RouteService } from 'browser/services/route.service';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { isValidRaw, editableNs, ETKey } from 'src/interfaces/ehtranslation';
+import { isValidRaw, editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap, pluck } from 'rxjs/operators';
-import { TitleService } from 'src/services/title.service';
-import { GithubOauthService } from 'src/services/github-oauth.service';
+import { TitleService } from 'browser/services/title.service';
+import { GithubOauthService } from 'browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { snackBarConfig } from 'src/environments/environment';
-import { Tag, NamespaceName, NamespaceEnum } from 'src/interfaces/ehtag';
-import { GithubReleaseService } from 'src/services/github-release.service';
-import { DebugService } from 'src/services/debug.service';
-import { DbRepoService } from 'src/services/db-repo.service';
+import { snackBarConfig } from 'browser/environments/environment';
+import { Tag, NamespaceName, NamespaceEnum } from 'browser/interfaces/ehtag';
+import { GithubReleaseService } from 'browser/services/github-release.service';
+import { DebugService } from 'browser/services/debug.service';
+import { DbRepoService } from 'browser/services/db-repo.service';
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
@@ -80,8 +80,8 @@ export class EditorComponent implements OnInit {
 
     nsOptions = Object.getOwnPropertyNames(NamespaceEnum).filter((v) => isNaN(Number(v))) as NamespaceName[];
 
-    create: Observable<boolean>;
-    inputs: {
+    create!: Observable<boolean>;
+    inputs!: {
         namespace: Observable<NamespaceName | null>;
         raw: Observable<string | null>;
         name: Observable<string | null>;
@@ -89,7 +89,7 @@ export class EditorComponent implements OnInit {
         links: Observable<string | null>;
     };
 
-    original: {
+    original!: {
         namespace: Observable<NamespaceName>;
         raw: Observable<string>;
         name: Observable<string>;

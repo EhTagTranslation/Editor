@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { EhTagConnectorService } from 'src/services/eh-tag-connector.service';
-import { GithubReleaseService } from 'src/services/github-release.service';
-import { RouteService } from 'src/services/route.service';
+import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
+import { GithubReleaseService } from 'browser/services/github-release.service';
+import { RouteService } from 'browser/services/route.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { DbRepoService } from 'src/services/db-repo.service';
+import { DbRepoService } from 'browser/services/db-repo.service';
 
 @Component({
     selector: 'app-root',

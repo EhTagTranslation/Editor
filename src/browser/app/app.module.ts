@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ehHttpInterceptorProvider } from 'src/services/eh-http-interceptor';
+import { ehHttpInterceptorProvider } from 'browser/services/eh-http-interceptor';
 import { UserComponent } from './user/user.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,7 +31,7 @@ import { AboutComponent } from './about/about.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { TitleService } from 'src/services/title.service';
+import { TitleService } from 'browser/services/title.service';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
 
 @NgModule({

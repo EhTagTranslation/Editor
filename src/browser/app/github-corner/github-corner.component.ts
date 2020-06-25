@@ -6,8 +6,8 @@ import { Component, OnInit, Input } from '@angular/core';
     styleUrls: ['./github-corner.component.sass'],
 })
 export class GithubCornerComponent implements OnInit {
-    @Input() href: string;
-    @Input() target: string;
+    @Input() href!: string;
+    @Input() target!: string;
     hover = false;
     constructor() {}
 

@@ -5,11 +5,11 @@ import { Observable, Subject, zip, combineLatest, BehaviorSubject } from 'rxjs';
 import { Params } from '@angular/router';
 import { map, tap, shareReplay, debounceTime, filter } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
-import { RouteService } from 'src/services/route.service';
-import { DebugService } from 'src/services/debug.service';
-import { TitleService } from 'src/services/title.service';
-import { NamespaceName, Tag, NamespaceEnum, RepoData } from 'src/interfaces/ehtag';
-import { GithubReleaseService } from 'src/services/github-release.service';
+import { RouteService } from 'browser/services/route.service';
+import { DebugService } from 'browser/services/debug.service';
+import { TitleService } from 'browser/services/title.service';
+import { NamespaceName, Tag, NamespaceEnum, RepoData } from 'browser/interfaces/ehtag';
+import { GithubReleaseService } from 'browser/services/github-release.service';
 
 interface RenderedETTag {
     renderedIntro: string;
@@ -69,23 +69,23 @@ export class ListComponent implements OnInit {
         private debug: DebugService,
         private title: TitleService,
     ) {}
-    @ViewChild('root', { static: true }) root: ElementRef<HTMLDivElement>;
+    @ViewChild('root', { static: true }) root!: ElementRef<HTMLDivElement>;
 
-    showImg: Observable<ShowImgType>;
-    search: Observable<string>;
-    pageSize: Observable<number>;
-    pageIndex: Observable<number>;
+    showImg!: Observable<ShowImgType>;
+    search!: Observable<string>;
+    pageSize!: Observable<number>;
+    pageIndex!: Observable<number>;
     loading = new BehaviorSubject<boolean>(true);
-    displayedColumns: Observable<readonly string[]>;
-    tags: Observable<readonly RenderedETItem[]>;
+    displayedColumns!: Observable<readonly string[]>;
+    tags!: Observable<readonly RenderedETItem[]>;
     usingRegex = new Subject<boolean | undefined>();
-    filteredTags: Observable<readonly RenderedETItem[]>;
-    orderedTags: Observable<readonly RenderedETItem[]>;
-    pagedTags: Observable<readonly RenderedETItem[]>;
-    namespace: Observable<NamespaceName | null>;
+    filteredTags!: Observable<readonly RenderedETItem[]>;
+    orderedTags!: Observable<readonly RenderedETItem[]>;
+    pagedTags!: Observable<readonly RenderedETItem[]>;
+    namespace!: Observable<NamespaceName | null>;
 
-    sortBy: Observable<SortableKeys | null>;
-    sortDirection: Observable<SortDirection>;
+    sortBy!: Observable<SortableKeys | null>;
+    sortDirection!: Observable<SortDirection>;
 
     editableNs = editableNs;
 
