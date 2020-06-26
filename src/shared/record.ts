@@ -1,5 +1,6 @@
 import { Tag } from './interfaces/ehtag';
 import { Cell } from './cell';
+import { Context } from './markdown';
 
 const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
@@ -25,9 +26,10 @@ export class Record implements Tag<Cell> {
     intro!: Cell;
     links!: Cell;
 
-    stringify(raw: string): string {
-        raw = raw.trim().toLowerCase();
-        return `| ${raw} | ${escape(this.name.raw)} | ${escape(this.intro.raw)} | ${escape(this.links.raw)} |`;
+    stringify(context: Context): string {
+        const raw = context.raw.trim().toLowerCase();
+        const render = (cell: Cell): string => escape(cell.render('raw', context));
+        return `| ${raw} | ${render(this.name)} | ${render(this.intro)} | ${render(this.links)} |`;
     }
 
     static parse(line: string): [string, Record] | null {

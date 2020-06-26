@@ -52,17 +52,22 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
                 warn: (arg: unknown) => this.logger.warn(arg),
                 error: (arg: unknown) => this.logger.error(arg),
             },
+            userAgent: 'EhTagTranslation Nest',
             ...options,
         });
     }
 
+    private appToken: AsyncReturnType<Octokit['apps']['createInstallationAccessToken']>['data'] | undefined;
     private async setOrigin(): Promise<void> {
-        const tokenRes = await this.octokit.apps.createInstallationAccessToken({
-            installation_id: this.config.get('APP_INSTALLATION_ID') as number,
-        });
-        const token = tokenRes.data.token;
-        const origin = `https://${this.botUserInfo.login}:${token}@github.com/${this.repo}.git`;
-        await this.git(`remote set-url origin '${origin}'`);
+        if (!this.appToken || Date.parse(this.appToken.expires_at) < Date.now() + 600_000) {
+            const tokenRes = await this.octokit.apps.createInstallationAccessToken({
+                installation_id: this.config.get('APP_INSTALLATION_ID') as number,
+            });
+            this.appToken = tokenRes.data;
+            const token = this.appToken.token;
+            const origin = `https://${this.botUserInfo.login}:${token}@github.com/${this.repo}.git`;
+            await this.git(`remote set-url origin '${origin}'`);
+        }
     }
 
     private async git(command: string[]): Promise<string>;
@@ -93,12 +98,17 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         checkperiod: 0,
         useClones: false,
     });
+    async user(userToken: string): Promise<User> {
+        const cache = this.userInfoCache.get<User>(userToken);
+        if (cache) return cache;
+
+        const user = (await this.createOctokit({ auth: userToken }).users.getAuthenticated()).data;
+        this.userInfoCache.set(userToken, user);
+        return user;
+    }
+
     async commitAndPush(userToken: string, message: string): Promise<void> {
-        let user = this.userInfoCache.get<User>(userToken);
-        if (!user) {
-            user = (await this.createOctokit({ auth: userToken }).users.getAuthenticated()).data;
-            this.userInfoCache.set(userToken, user);
-        }
+        const user = await this.user(userToken);
         const messageFile = path.join(this.path, '.git/COMMIT_MSG');
         await fs.writeFile(messageFile, message);
         await this.git([
@@ -126,7 +136,6 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             clientId: this.config.get('APP_CLIENT_ID'),
             clientSecret: this.config.get('APP_CLIENT_SECRET'),
         } as Types['StrategyOptions'],
-        userAgent: 'EhTagTranslation Nest',
     });
 
     private data!: Database;

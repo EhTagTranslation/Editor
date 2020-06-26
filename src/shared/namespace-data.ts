@@ -1,14 +1,15 @@
 import * as fs from 'fs-extra';
 import * as readline from 'readline';
-import * as path from 'path';
 import { NamespaceName, FrontMatters } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { Record } from './record';
 import { defaults } from 'lodash';
 import { promisify } from 'util';
+import { Context } from './markdown';
+import { Database } from './database';
 
 export class NamespaceData {
-    constructor(readonly namespace: NamespaceName, readonly file: string) {}
+    constructor(readonly namespace: NamespaceName, readonly file: string, private readonly database: Database) {}
 
     frontMatters!: FrontMatters;
     private rawData = new Array<[string, Record]>();
@@ -98,28 +99,38 @@ export class NamespaceData {
         this.frontMatters = defaults({ key: this.namespace }, this.frontMatters, { name: '', description: '' });
     }
     async save(): Promise<void> {
-        const writer = fs.createWriteStream(this.file, { encoding: 'utf-8' });
-        const write = promisify(writer.write.bind(writer));
+        let content = '';
+        const write = (v: string): void => {
+            content += v;
+        };
 
-        await write('---\n');
+        write('---\n');
         this.frontMatters.key = this.namespace;
-        await write(safeDump(this.frontMatters));
-        await write('---\n\n');
+        write(safeDump(this.frontMatters));
+        write('---\n\n');
 
-        await write(this.prefix);
-        await write('\n');
+        write(this.prefix);
+        write('\n');
 
+        const context: Context = {
+            database: this.database,
+            namespace: this.namespace,
+            raw: '',
+        };
         for (const [raw, record] of this.rawData) {
-            await write(record.stringify(raw));
-            await write('\n');
+            context.raw = raw;
+            write(record.stringify(context));
+            write('\n');
         }
 
         if (this.suffix) {
-            await write('\n');
-            await write(this.suffix);
-            await write('\n');
+            write('\n');
+            write(this.suffix);
+            write('\n');
         }
 
+        const writer = fs.createWriteStream(this.file, { encoding: 'utf-8' });
+        writer.write(content);
         await promisify(writer.end.bind(writer))();
     }
 }

@@ -1,6 +1,7 @@
 export type Tree = ParaNode[];
 
-export type NodeType = 'paragraph' | 'text' | 'br' | 'tagref' | 'image' | 'link' | 'emphasis' | 'strong';
+export const NodeType = ['paragraph', 'text', 'br', 'tagref', 'image', 'link', 'emphasis', 'strong'] as const;
+export type NodeType = typeof NodeType[number];
 
 export interface Node {
     type: NodeType;

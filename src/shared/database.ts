@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as execa from 'execa';
 import * as _ from 'lodash';
 import { NamespaceData } from './namespace-data';
 import { NamespaceName } from './interfaces/ehtag';
@@ -20,21 +19,19 @@ export class Database {
         await fs.access(path.join(repoPath, 'database'));
         const files = NamespaceName.map((ns) => path.join(repoPath, 'database', `${ns}.md`));
         await Promise.all(files.map((f) => fs.access(f)));
-        const data = NamespaceName.reduce((obj, v, i) => {
-            obj[v] = new NamespaceData(v, files[i]);
-            return obj;
-        }, {} as { [key in NamespaceName]: NamespaceData });
 
-        const db = new Database(repoPath, version, data);
+        const db = new Database(repoPath, version, files);
         await db.load();
         return db;
     }
 
-    private constructor(
-        readonly repoPath: string,
-        readonly version: number,
-        readonly data: { readonly [key in NamespaceName]: NamespaceData },
-    ) {}
+    private constructor(readonly repoPath: string, readonly version: number, files: readonly string[]) {
+        this.data = NamespaceName.reduce((obj, v, i) => {
+            obj[v] = new NamespaceData(v, files[i], this);
+            return obj;
+        }, {} as { [key in NamespaceName]: NamespaceData });
+    }
+    readonly data: { readonly [key in NamespaceName]: NamespaceData };
 
     async load(): Promise<void> {
         await Promise.all(Object.values(this.data).map((n) => n.load()));

@@ -1955,6 +1955,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/linkify-it@*":
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/@types/linkify-it/download/@types/linkify-it-2.1.0.tgz#ea3dd64c4805597311790b61e872cbd1ed2cd806"
+  integrity sha1-6j3WTEgFWXMReQth6HLL0e0s2AY=
+
 "@types/lodash@^4.14.157":
   version "4.14.157"
   resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.157.tgz?cache=0&sync_timestamp=1592997873162&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.157.tgz#fdac1c52448861dfde1a2e1515dbc46e54926dc8"
@@ -1964,6 +1969,19 @@
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/@types/lru-cache/download/@types/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
   integrity sha1-V/Io8rgMBGtKG9XKwDH4HyB/TwM=
+
+"@types/markdown-it@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@types/markdown-it/download/@types/markdown-it-10.0.1.tgz#94e252ab689c8e9ceb9aff2946e0a458390105eb"
+  integrity sha1-lOJSq2icjpzrmv8pRuCkWDkBBes=
+  dependencies:
+    "@types/linkify-it" "*"
+    "@types/mdurl" "*"
+
+"@types/mdurl@*":
+  version "1.0.2"
+  resolved "https://registry.npm.taobao.org/@types/mdurl/download/@types/mdurl-1.0.2.tgz#e2ce9d83a613bacf284c7be7d491945e39e1f8e9"
+  integrity sha1-4s6dg6YTus8oTHvn1JGUXjnh+Ok=
 
 "@types/minimatch@*":
   version "3.0.3"
@@ -1984,6 +2002,11 @@
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/@types/parse-json/download/@types/parse-json-4.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fparse-json%2Fdownload%2F%40types%2Fparse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha1-L4u0QUNNFjs1+4/9zNcTiSf/uMA=
+
+"@types/parse5@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.npm.taobao.org/@types/parse5/download/@types/parse5-5.0.3.tgz#e7b5aebbac150f8b5fdd4a46e7f0bd8e65e19109"
+  integrity sha1-57Wuu6wVD4tf3UpG5/C9jmXhkQk=
 
 "@types/prettier@^2.0.0":
   version "2.0.1"
@@ -4421,6 +4444,11 @@ entities@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/entities/download/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
   integrity sha1-aNYITKsbB5dnVA2A5Wo5tCPkq/Q=
+
+entities@~2.0.0:
+  version "2.0.3"
+  resolved "https://registry.npm.taobao.org/entities/download/entities-2.0.3.tgz?cache=0&sync_timestamp=1591227405887&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fentities%2Fdownload%2Fentities-2.0.3.tgz#5c487e5742ab93c15abb5da22759b8590ec03b7f"
+  integrity sha1-XEh+V0Krk8Fau12iJ1m4WQ7AO38=
 
 err-code@^1.0.0:
   version "1.1.2"
@@ -7021,6 +7049,13 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.npm.taobao.org/lines-and-columns/download/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
+linkify-it@^3.0.1:
+  version "3.0.2"
+  resolved "https://registry.npm.taobao.org/linkify-it/download/linkify-it-3.0.2.tgz?cache=0&sync_timestamp=1589974521138&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flinkify-it%2Fdownload%2Flinkify-it-3.0.2.tgz#f55eeb8bc1d3ae754049e124ab3bb56d97797fb8"
+  integrity sha1-9V7ri8HTrnVASeEkqzu1bZd5f7g=
+  dependencies:
+    uc.micro "^1.0.1"
+
 loader-runner@^2.4.0:
   version "2.4.0"
   resolved "https://registry.npm.taobao.org/loader-runner/download/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
@@ -7251,6 +7286,17 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+markdown-it@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.npm.taobao.org/markdown-it/download/markdown-it-11.0.0.tgz#dbfc30363e43d756ebc52c38586b91b90046b876"
+  integrity sha1-2/wwNj5D11brxSw4WGuRuQBGuHY=
+  dependencies:
+    argparse "^1.0.7"
+    entities "~2.0.0"
+    linkify-it "^3.0.1"
+    mdurl "^1.0.1"
+    uc.micro "^1.0.5"
+
 material-design-icons@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npm.taobao.org/material-design-icons/download/material-design-icons-3.0.1.tgz#9a71c48747218ebca51e51a66da682038cdcb7bf"
@@ -7274,6 +7320,11 @@ mdn-data@2.0.6:
   version "2.0.6"
   resolved "https://registry.npm.taobao.org/mdn-data/download/mdn-data-2.0.6.tgz#852dc60fcaa5daa2e8cf6c9189c440ed3e042978"
   integrity sha1-hS3GD8ql2qLoz2yRicRA7T4EKXg=
+
+mdurl@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/mdurl/download/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
+  integrity sha1-/oWy7HWlkDfyrf7BAP1sYBdhFS4=
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -8286,6 +8337,11 @@ parse5@5.1.1, parse5@^5.0.0:
   version "5.1.1"
   resolved "https://registry.npm.taobao.org/parse5/download/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
   integrity sha1-9o5OW6GFKsLK3AD0VV//bCq7YXg=
+
+parse5@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npm.taobao.org/parse5/download/parse5-6.0.0.tgz#d2ac3448289c84b49947d49a39f7bef6200fa6ba"
+  integrity sha1-0qw0SCichLSZR9SaOfe+9iAPpro=
 
 parseurl@~1.3.2, parseurl@~1.3.3:
   version "1.3.3"
@@ -10890,6 +10946,11 @@ typescript@^3.6.4, typescript@^3.9.5:
   version "3.9.5"
   resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.9.5.tgz?cache=0&sync_timestamp=1593070417279&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
   integrity sha1-WG8NujAM3ovlLdGsT34QCcGxPzY=
+
+uc.micro@^1.0.1, uc.micro@^1.0.5:
+  version "1.0.6"
+  resolved "https://registry.npm.taobao.org/uc.micro/download/uc.micro-1.0.6.tgz#9c411a802a409a91fc6cf74081baba34b24499ac"
+  integrity sha1-nEEagCpAmpH8bPdAgbq6NLJEmaw=
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"

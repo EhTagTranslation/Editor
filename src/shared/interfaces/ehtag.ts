@@ -1,6 +1,7 @@
 import * as Ast from './ehtag.ast';
+import { Opaque } from 'type-fest';
 
-export type Sha1Value = string;
+export type Sha1Value = Opaque<string, Commit>;
 
 export interface Signature {
     name: string;
@@ -39,19 +40,6 @@ export const NamespaceName = [
     'misc',
 ] as const;
 export type NamespaceName = typeof NamespaceName[number];
-
-export enum NamespaceEnum {
-    'rows',
-    'reclass',
-    'language',
-    'parody',
-    'character',
-    'group',
-    'artist',
-    'male',
-    'female',
-    'misc',
-}
 
 export interface NamespaceInfo {
     count: number;
