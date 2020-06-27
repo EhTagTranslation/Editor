@@ -1,6 +1,7 @@
 import { Tag, TagType } from './interfaces/ehtag';
 import { Cell } from './cell';
 import { Context } from './markdown';
+import { NamespaceDatabase } from './namespace-database';
 
 const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
@@ -17,7 +18,7 @@ function escape(value: string): string {
 }
 
 export class TagRecord implements Tag<Cell> {
-    constructor(data: Tag<'raw'>) {
+    constructor(data: Tag<'raw'>, readonly namespace: NamespaceDatabase) {
         this.name = new Cell(data.name);
         this.intro = new Cell(data.intro);
         this.links = new Cell(data.links);
@@ -40,18 +41,21 @@ export class TagRecord implements Tag<Cell> {
         };
     }
 
-    static parse(line: string): [string, TagRecord] | null {
+    static parse(line: string, namespace: NamespaceDatabase): [string, TagRecord] | null {
         const match = recordRegex.exec(line);
         if (!match || !match.groups) return null;
         const raw = match.groups.raw.trim().toLowerCase();
         const { name, intro, links } = match.groups;
         return [
             raw,
-            new TagRecord({
-                name: unescape(name),
-                intro: unescape(intro),
-                links: unescape(links),
-            }),
+            new TagRecord(
+                {
+                    name: unescape(name),
+                    intro: unescape(intro),
+                    links: unescape(links),
+                },
+                namespace,
+            ),
         ];
     }
 }

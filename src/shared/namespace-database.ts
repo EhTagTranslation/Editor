@@ -9,7 +9,7 @@ import { Context } from './markdown';
 import { Database } from './database';
 
 export class NamespaceDatabase {
-    constructor(readonly namespace: NamespaceName, readonly file: string, private readonly database: Database) {}
+    constructor(readonly namespace: NamespaceName, readonly file: string, readonly database: Database) {}
 
     frontMatters!: FrontMatters;
     private rawData = new Array<[string, TagRecord]>();
@@ -28,7 +28,7 @@ export class NamespaceDatabase {
         let frontMatters = '';
         let sep = '';
         for await (const line of reader) {
-            const record = TagRecord.parse(line);
+            const record = TagRecord.parse(line, this);
 
             switch (state) {
                 case 0: {

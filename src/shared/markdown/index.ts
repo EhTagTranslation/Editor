@@ -18,6 +18,7 @@ export interface Context {
     database: Database;
     namespace: NamespaceDatabase;
     raw: string;
+    normalized?: boolean;
 }
 
 function parseImpl(src: string, context: Context): ParseResult {
@@ -29,12 +30,14 @@ function parseImpl(src: string, context: Context): ParseResult {
 }
 
 export function normalize(src: string, context: Context): string {
+    context.normalized = false;
     const r = parseImpl(src, context);
     return renderMd(r.doc.content);
 }
 
 export function parse(src: string, context: Context): ParseResult {
     src = normalize(src, context);
+    context.normalized = true;
     return parseImpl(src, context);
 }
 

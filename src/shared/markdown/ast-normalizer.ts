@@ -121,14 +121,23 @@ const normalizer: { [T in NodeType]: undefined | ((node: NodeMap[T], context: Co
     text: undefined,
     br: undefined,
     tagref(node, context) {
+        if (!context.normalized) return;
         if (node.tag != null) return;
-        const tag = node.text.trim().toLowerCase();
+        const tagDef = node.text.trim();
+        const tag = tagDef.toLowerCase();
         const record = context.namespace.get(tag) ?? context.database.get(tag);
         if (record) {
-            node.tag = tag;
-            node.text = record.name.render('text', context);
+            node.tag = tagDef;
+            const nContext = {
+                ...context,
+                namespace: record.namespace,
+                raw: tag,
+            };
+            node.text = record.name.render('text', nContext);
         } else {
+            console.warn(`Invalid tagref: '${tagDef}' of '${context.raw}' in ${context.namespace.namespace}`);
             node.tag = '';
+            node.text = tagDef;
         }
     },
     image(node, context) {

@@ -110,4 +110,9 @@ export class Database {
         }
         return undefined;
     }
+
+    private _revision = 1;
+    get revision(): number {
+        return this._revision;
+    }
 }
