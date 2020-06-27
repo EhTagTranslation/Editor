@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
-import { Record } from './record';
+import { TagRecord } from './tag-record';
 import { defaults, cloneDeep } from 'lodash';
 import { promisify } from 'util';
 import { Context } from './markdown';
@@ -12,7 +12,7 @@ export class NamespaceDatabase {
     constructor(readonly namespace: NamespaceName, readonly file: string, private readonly database: Database) {}
 
     frontMatters!: FrontMatters;
-    private rawData = new Array<[string, Record]>();
+    private rawData = new Array<[string, TagRecord]>();
     private rawMap = new Map<string, number>();
     private prefix = '';
     private suffix = '';
@@ -28,7 +28,7 @@ export class NamespaceDatabase {
         let frontMatters = '';
         let sep = '';
         for await (const line of reader) {
-            const record = Record.parse(line);
+            const record = TagRecord.parse(line);
 
             switch (state) {
                 case 0: {
@@ -117,7 +117,7 @@ export class NamespaceDatabase {
 
         const context: Context = {
             database: this.database,
-            namespace: this.namespace,
+            namespace: this,
             raw: '',
         };
         for (const [raw, record] of this.rawData) {
@@ -150,7 +150,7 @@ export class NamespaceDatabase {
         const data: NamespaceData<T>['data'] = {};
         const context: Context = {
             database: this.database,
-            namespace: this.namespace,
+            namespace: this,
             raw: '',
         };
         for (const [k, i] of this.rawMap) {
@@ -162,5 +162,11 @@ export class NamespaceDatabase {
             ...info,
             data,
         };
+    }
+
+    get(raw: string): TagRecord | undefined {
+        const i = this.rawMap.get(raw);
+        if (i == null) return undefined;
+        return this.rawData[i][1];
     }
 }

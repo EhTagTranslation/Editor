@@ -6,6 +6,7 @@ import { parseTreeAdapter, serializeTreeAdapter, DocumentFragment } from './html
 import { normalizeAst } from './ast-normalizer';
 import { renderMd } from './md-renderer';
 import { parseMd } from './md-parser';
+import { NamespaceDatabase } from '../namespace-database';
 
 export interface ParseResult {
     raw: string;
@@ -15,15 +16,16 @@ export interface ParseResult {
 
 export interface Context {
     database: Database;
-    namespace: NamespaceName;
+    namespace: NamespaceDatabase;
     raw: string;
 }
 
 function parseImpl(src: string, context: Context): ParseResult {
     const html = parseMd(src);
     const doc = parseFragment(html, { treeAdapter: parseTreeAdapter }) as DocumentFragment;
-    normalizeAst(doc.content);
-    return { doc, context, raw: src };
+    const result = { doc, context, raw: src };
+    normalizeAst(result);
+    return result;
 }
 
 export function normalize(src: string, context: Context): string {

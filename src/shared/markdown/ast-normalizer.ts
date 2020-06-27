@@ -1,5 +1,6 @@
 import { Tree, LinkNode, ImageNode, Node, ContainerNode, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
 import { remove } from 'lodash';
+import { ParseResult, Context } from '.';
 
 function normalizeLink(
     url: string,
@@ -79,7 +80,7 @@ const knownHosts = new Map<string, string>([
 //     }
 // }
 
-function normalizeContainer(node: { content: Node[] }): void {
+function normalizeContainer(node: { content: Node[] }, context: Context): void {
     const content = node.content;
     for (let i = 0; i < content.length; i++) {
         const current = content[i];
@@ -102,42 +103,48 @@ function normalizeContainer(node: { content: Node[] }): void {
             content.splice(i + 1, j - (i + 1));
         }
     }
-    normalizeList(content);
+    normalizeList(content, context);
     remove(content, (c) => isNodeType(c, 'text') && !c.text);
 }
 
-function normalizeList(nodes: readonly Node[]): void {
+function normalizeList(nodes: readonly Node[], context: Context): void {
     nodes.forEach((n) => {
         const normalize = normalizer[n.type];
-        normalize?.(n as never);
+        normalize?.(n as never, context);
     });
 }
 
-const normalizer: { [T in NodeType]: undefined | ((node: NodeMap[T]) => void) } = {
-    paragraph(node) {
-        normalizeContainer(node);
+const normalizer: { [T in NodeType]: undefined | ((node: NodeMap[T], context: Context) => void) } = {
+    paragraph(node, context) {
+        normalizeContainer(node, context);
     },
     text: undefined,
     br: undefined,
-    tagref(node) {
-        //
+    tagref(node, context) {
+        if (node.tag != null) return;
+        const tag = node.text.trim().toLowerCase();
+        const record = context.namespace.get(tag) ?? context.database.get(tag);
+        if (record) {
+            node.tag = tag;
+            node.text = record.name.render('text', context);
+        } else {
+            node.tag = '';
+        }
     },
-    image(node) {
-        normalizeContainer(node);
-        //
+    image(node, context) {
+        normalizeContainer(node, context);
     },
-    link(node) {
-        normalizeContainer(node);
-        //
+    link(node, context) {
+        normalizeContainer(node, context);
     },
-    emphasis(node) {
-        normalizeContainer(node);
+    emphasis(node, context) {
+        normalizeContainer(node, context);
     },
-    strong(node) {
-        normalizeContainer(node);
+    strong(node, context) {
+        normalizeContainer(node, context);
     },
 };
 
-export function normalizeAst(ast: Tree): void {
-    normalizeContainer({ content: ast });
+export function normalizeAst(parsed: ParseResult): void {
+    normalizeContainer(parsed.doc, parsed.context);
 }

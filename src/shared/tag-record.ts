@@ -16,7 +16,7 @@ function escape(value: string): string {
     return value.replace(escapeRe1, '<br>').replace(escapeRe2, '\\$&');
 }
 
-export class Record implements Tag<Cell> {
+export class TagRecord implements Tag<Cell> {
     constructor(data: Tag<'raw'>) {
         this.name = new Cell(data.name);
         this.intro = new Cell(data.intro);
@@ -40,14 +40,14 @@ export class Record implements Tag<Cell> {
         };
     }
 
-    static parse(line: string): [string, Record] | null {
+    static parse(line: string): [string, TagRecord] | null {
         const match = recordRegex.exec(line);
         if (!match || !match.groups) return null;
         const raw = match.groups.raw.trim().toLowerCase();
         const { name, intro, links } = match.groups;
         return [
             raw,
-            new Record({
+            new TagRecord({
                 name: unescape(name),
                 intro: unescape(intro),
                 links: unescape(links),

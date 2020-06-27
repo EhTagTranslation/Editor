@@ -5,6 +5,7 @@ import * as execa from 'execa';
 import simpleGit, { SimpleGit } from 'simple-git';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
+import { TagRecord } from './tag-record';
 
 const SUPPORTED_REPO_VERSION = 5;
 
@@ -100,5 +101,13 @@ export class Database {
             ...(await this.repoInfo()),
             data: Object.values(this.data).map((ns) => ns.render(type)),
         };
+    }
+
+    get(raw: string): TagRecord | undefined {
+        for (const ns of NamespaceName) {
+            const record = this.data[ns].get(raw);
+            if (record) return record;
+        }
+        return undefined;
     }
 }

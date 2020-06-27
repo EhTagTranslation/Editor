@@ -19,7 +19,7 @@ const renderers: { [T in NodeType]: (node: NodeMap[T]) => string } = {
         return '\n';
     },
     tagref(node) {
-        let ref = node.tag ?? node.text;
+        let ref = node.tag ? node.tag : node.text;
         let backtick = '`';
         while (ref.includes(backtick)) {
             backtick += '`';
