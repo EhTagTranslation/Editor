@@ -1506,6 +1506,18 @@
     merge-source-map "^1.1.0"
     schema-utils "^2.6.4"
 
+"@kwsites/file-exists@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.npm.taobao.org/@kwsites/file-exists/download/@kwsites/file-exists-1.1.1.tgz#ad1efcac13e1987d8dbaf235ef3be5b0d96faa99"
+  integrity sha1-rR78rBPhmH2NuvI17zvlsNlvqpk=
+  dependencies:
+    debug "^4.1.1"
+
+"@kwsites/promise-deferred@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.0.1.tgz#63b170e0d02b85a1fa6ad6bdea1f2f14f6f6adc2"
+  integrity sha1-Y7Fw4NArhaH6ata96h8vFPb2rcI=
+
 "@nestjs/cli@^7.4.1":
   version "7.4.1"
   resolved "https://registry.npm.taobao.org/@nestjs/cli/download/@nestjs/cli-7.4.1.tgz#8430b906a4fa903efac193d88e9c02150c7a6b3e"
@@ -9936,6 +9948,15 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npm.taobao.org/signal-exit/download/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
   integrity sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=
+
+simple-git@^2.11.0:
+  version "2.11.0"
+  resolved "https://registry.npm.taobao.org/simple-git/download/simple-git-2.11.0.tgz#5bd99fe3465dcbcb82f0eb23ab3c1615cb947374"
+  integrity sha1-W9mf40Zdy8uC8OsjqzwWFcuUc3Q=
+  dependencies:
+    "@kwsites/file-exists" "^1.1.1"
+    "@kwsites/promise-deferred" "^1.0.1"
+    debug "^4.1.1"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"

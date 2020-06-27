@@ -1,4 +1,4 @@
-import { Tag } from './interfaces/ehtag';
+import { Tag, TagType } from './interfaces/ehtag';
 import { Cell } from './cell';
 import { Context } from './markdown';
 
@@ -30,6 +30,14 @@ export class Record implements Tag<Cell> {
         const raw = context.raw.trim().toLowerCase();
         const render = (cell: Cell): string => escape(cell.render('raw', context));
         return `| ${raw} | ${render(this.name)} | ${render(this.intro)} | ${render(this.links)} |`;
+    }
+
+    render<T extends TagType>(type: T, context: Context): Tag<T> {
+        return {
+            name: this.name.render(type, context),
+            intro: this.intro.render(type, context),
+            links: this.links.render(type, context),
+        };
     }
 
     static parse(line: string): [string, Record] | null {

@@ -1,18 +1,19 @@
 import * as fs from 'fs-extra';
 import * as readline from 'readline';
-import { NamespaceName, FrontMatters } from './interfaces/ehtag';
+import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { Record } from './record';
-import { defaults } from 'lodash';
+import { defaults, cloneDeep } from 'lodash';
 import { promisify } from 'util';
 import { Context } from './markdown';
 import { Database } from './database';
 
-export class NamespaceData {
+export class NamespaceDatabase {
     constructor(readonly namespace: NamespaceName, readonly file: string, private readonly database: Database) {}
 
     frontMatters!: FrontMatters;
     private rawData = new Array<[string, Record]>();
+    private rawMap = new Map<string, number>();
     private prefix = '';
     private suffix = '';
     async load(): Promise<void> {
@@ -21,6 +22,7 @@ export class NamespaceData {
         });
         let state = 0;
         this.rawData = [];
+        this.rawMap.clear();
         let prefix = '';
         let suffix = '';
         let frontMatters = '';
@@ -74,6 +76,7 @@ export class NamespaceData {
                 case 4: {
                     if (record) {
                         this.rawData.push(record);
+                        if (record[0]) this.rawMap.set(record[0], this.rawData.length - 1);
                     } else {
                         suffix += line;
                         suffix += '\n';
@@ -132,5 +135,32 @@ export class NamespaceData {
         const writer = fs.createWriteStream(this.file, { encoding: 'utf-8' });
         writer.write(content);
         await promisify(writer.end.bind(writer))();
+    }
+
+    info(): NamespaceInfo {
+        return {
+            namespace: this.namespace,
+            frontMatters: cloneDeep(this.frontMatters),
+            count: this.rawMap.size,
+        };
+    }
+
+    render<T extends TagType>(type: T): NamespaceData<T> {
+        const info = this.info();
+        const data: NamespaceData<T>['data'] = {};
+        const context: Context = {
+            database: this.database,
+            namespace: this.namespace,
+            raw: '',
+        };
+        for (const [k, i] of this.rawMap) {
+            const record = this.rawData[i];
+            context.raw = k;
+            data[k] = record[1].render(type, context);
+        }
+        return {
+            ...info,
+            data,
+        };
     }
 }
