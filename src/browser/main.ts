@@ -14,7 +14,7 @@ platformBrowserDynamic()
     .then((_) => {
         import('bluebird').then((Bluebird) => {
             const Zone = (window as any)['Zone'];
-            Zone[Zone['__symbol__']('bluebird')]((Bluebird as any).default);
+            Zone[Zone['__symbol__']('bluebird')](Bluebird.Promise);
         });
     })
     .catch((err) => console.error(err));
