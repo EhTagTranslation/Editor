@@ -1,4 +1,4 @@
-import { CellType, TagType, NamespaceName } from '../interfaces/ehtag';
+import { CellType, TagType } from '../interfaces/ehtag';
 import { Database } from '../database';
 import { parseFragment, serialize } from 'parse5';
 import { renderText } from './text-renderer';
@@ -7,6 +7,7 @@ import { normalizeAst } from './ast-normalizer';
 import { renderMd } from './md-renderer';
 import { parseMd } from './md-parser';
 import { NamespaceDatabase } from '../namespace-database';
+import { RawTag } from '../validate';
 
 export interface ParseResult {
     raw: string;
@@ -17,7 +18,7 @@ export interface ParseResult {
 export interface Context {
     database: Database;
     namespace: NamespaceDatabase;
-    raw: string;
+    raw?: RawTag;
     normalized?: boolean;
 }
 

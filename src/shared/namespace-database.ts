@@ -1,19 +1,25 @@
 import * as fs from 'fs-extra';
 import * as readline from 'readline';
-import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData } from './interfaces/ehtag';
+import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { defaults, cloneDeep } from 'lodash';
+import { defaults, cloneDeep, remove } from 'lodash';
 import { promisify } from 'util';
 import { Context } from './markdown';
 import { Database } from './database';
+import { RawTag } from './validate';
+
+interface TagLine {
+    raw?: RawTag;
+    record: TagRecord;
+}
 
 export class NamespaceDatabase {
     constructor(readonly namespace: NamespaceName, readonly file: string, readonly database: Database) {}
 
     frontMatters!: FrontMatters;
-    private rawData = new Array<[string, TagRecord]>();
-    private rawMap = new Map<string, number>();
+    private rawData = new Array<TagLine>();
+    private rawMap = new Map<RawTag, TagLine>();
     private prefix = '';
     private suffix = '';
     async load(): Promise<void> {
@@ -75,8 +81,12 @@ export class NamespaceDatabase {
                 }
                 case 4: {
                     if (record) {
-                        this.rawData.push(record);
-                        if (record[0]) this.rawMap.set(record[0], this.rawData.length - 1);
+                        const tagLine = {
+                            raw: record[0],
+                            record: record[1],
+                        };
+                        this.rawData.push(tagLine);
+                        if (tagLine.raw) this.rawMap.set(tagLine.raw, tagLine);
                     } else {
                         suffix += line;
                         suffix += '\n';
@@ -118,9 +128,8 @@ export class NamespaceDatabase {
         const context: Context = {
             database: this.database,
             namespace: this,
-            raw: '',
         };
-        for (const [raw, record] of this.rawData) {
+        for (const { raw, record } of this.rawData) {
             context.raw = raw;
             write(record.stringify(context));
             write('\n');
@@ -151,12 +160,10 @@ export class NamespaceDatabase {
         const context: Context = {
             database: this.database,
             namespace: this,
-            raw: '',
         };
-        for (const [k, i] of this.rawMap) {
-            const record = this.rawData[i];
-            context.raw = k;
-            data[k] = record[1].render(type, context);
+        for (const [raw, { record }] of this.rawMap) {
+            context.raw = raw;
+            data[raw] = record.render(type, context);
         }
         return {
             ...info,
@@ -164,9 +171,62 @@ export class NamespaceDatabase {
         };
     }
 
-    get(raw: string): TagRecord | undefined {
-        const i = this.rawMap.get(raw);
-        if (i == null) return undefined;
-        return this.rawData[i][1];
+    get size(): number {
+        return this.rawMap.size;
+    }
+
+    get(raw: RawTag): TagRecord | undefined {
+        const line = this.rawMap.get(raw);
+        if (line == null) return undefined;
+        return line.record;
+    }
+
+    has(raw: RawTag): boolean {
+        return this.rawMap.has(raw);
+    }
+
+    set(raw: RawTag, record: Tag<'raw'>, newRaw?: RawTag): TagRecord {
+        const line = this.rawMap.get(raw);
+        if (line == null) throw new Error(`'${raw}' not found in namespace ${this.namespace}`);
+        if (newRaw && this.rawMap.has(newRaw))
+            throw new Error(`'${newRaw}' is already defined in namespace ${this.namespace}`);
+
+        line.record = TagRecord.unsafeCreate(record, this);
+        if (newRaw) {
+            line.raw = newRaw;
+            this.rawMap.delete(raw);
+            this.rawMap.set(newRaw, line);
+        }
+        this.database.revision++;
+        return line.record;
+    }
+
+    add(raw: RawTag | undefined, record: Tag<'raw'>): TagRecord;
+    add(raw: RawTag | undefined, record: Tag<'raw'>, pos: 'before' | 'after', ref: RawTag): TagRecord;
+    add(raw: RawTag | undefined, record: Tag<'raw'>, pos?: 'before' | 'after', ref?: RawTag): TagRecord {
+        if (raw && this.rawMap.has(raw)) throw new Error(`'${raw}' exists in namespace ${this.namespace}`);
+
+        const line = { raw, record: TagRecord.unsafeCreate(record, this) };
+        if (pos) {
+            if (!ref) throw new Error(`adding with position needs a ref tag`);
+            const refLine = this.rawMap.get(ref);
+            if (!refLine) throw new Error(`'${ref}' not found in namespace ${this.namespace}`);
+            const refIndex = this.rawData.indexOf(refLine) + (pos === 'after' ? 1 : 0);
+            this.rawData.splice(refIndex, 0, line);
+        } else {
+            this.rawData.push(line);
+        }
+        if (raw) this.rawMap.set(raw, line);
+        this.database.revision++;
+        return line.record;
+    }
+
+    delete(raw: RawTag): boolean {
+        const line = this.rawMap.get(raw);
+        if (!line) return false;
+        this.rawMap.delete(raw);
+        const removed = remove(this.rawData, this.rawData.indexOf(line));
+        console.assert(removed[0] === line);
+        return true;
     }
 }

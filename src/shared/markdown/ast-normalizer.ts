@@ -1,19 +1,20 @@
 import { Tree, LinkNode, ImageNode, Node, ContainerNode, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
 import { remove } from 'lodash';
 import { ParseResult, Context } from '.';
+import { isRawTag } from '../validate';
 
 function normalizeLink(
     url: string,
 ): {
     url: string;
-    nsfw?: string;
+    nsfw?: ImageNode['nsfw'];
 } {
     const eh = /^(http|https):\/\/(?<domain>ehgt\.org(\/t|)|exhentai\.org\/t|ul\.ehgt\.org(\/t|))\/(?<tail>.+)$/.exec(
         url,
     );
     if (eh?.groups) {
         url = 'https://ehgt.org/' + eh.groups.tail;
-        return { url, nsfw: eh.groups.domain.includes('exhentai') ? '#' : undefined };
+        return { url, nsfw: eh.groups.domain.includes('exhentai') ? 'R18' : undefined };
     }
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
@@ -32,53 +33,6 @@ const knownHosts = new Map<string, string>([
     ['twitter.com', 'Twitter'],
     ['weibo.com', '微博'],
 ]);
-
-// const normalizer = {
-//     link(node: LinkNode, context) {
-//         const href = attr(node, 'href', (v) => (v ? normalizeLink(v).url : undefined));
-//         if (node.childNodes.length === 1) {
-//             const cNode = node.childNodes[0];
-//             if (isTextNode(cNode) && cNode.value === href) {
-//                 try {
-//                     const hrefUrl = new URL(href);
-//                     const host = hrefUrl.host.toLowerCase();
-//                     for (const [k, v] of knownHosts) {
-//                         if (host.endsWith(k)) {
-//                             cNode.value = v;
-//                             break;
-//                         }
-//                     }
-//                 } catch {
-//                     //
-//                 }
-//             }
-//         }
-//     },
-//     image(node: ImageNode, context) {
-//         let src = attr(node, 'src');
-//         const title = attr(node, 'title');
-//         const alt = attr(node, 'alt');
-
-//         let nsfw: string | undefined = undefined;
-//         if (src && src.startsWith('#') && title) {
-//             // nsfw link
-//             nsfw = src;
-//             src = title;
-//         }
-
-//         const nlink = normalizeLink(src ?? '');
-//         src = nlink.url;
-//         if (!nsfw) nsfw = nlink.nsfw;
-//     },
-// } as Record<string, (<T extends Node>(node: T, context: Context) => void) | undefined> & ThisType<never>;
-
-// function normalize(node: Node, context: Context): void {
-//     const handler = normalizer[node.type];
-//     if (handler) handler(node, context);
-//     if ('contents' in node) {
-//         (node as ContainerNode).content.forEach((n) => normalize(n, context));
-//     }
-// }
 
 function normalizeContainer(node: { content: Node[] }, context: Context): void {
     const content = node.content;
@@ -125,26 +79,60 @@ const normalizer: { [T in NodeType]: undefined | ((node: NodeMap[T], context: Co
         if (node.tag != null) return;
         const tagDef = node.text.trim();
         const tag = tagDef.toLowerCase();
-        const record = context.namespace.get(tag) ?? context.database.get(tag);
-        if (record) {
-            node.tag = tagDef;
-            const nContext = {
-                ...context,
-                namespace: record.namespace,
-                raw: tag,
-            };
-            node.text = record.name.render('text', nContext);
-        } else {
-            console.warn(`Invalid tagref: '${tagDef}' of '${context.raw}' in ${context.namespace.namespace}`);
+        if (!isRawTag(tag)) {
+            console.warn(
+                `Invalid tagref: '${tagDef}' of '${context.raw ?? ''}' in ${context.namespace.namespace} is not valid`,
+            );
             node.tag = '';
             node.text = tagDef;
+            return;
+        }
+        const record = context.namespace.get(tag) ?? context.database.get(tag);
+        if (!record) {
+            console.warn(
+                `Invalid tagref: '${tagDef}' of '${context.raw ?? ''}' in ${context.namespace.namespace} is not found`,
+            );
+            node.tag = '';
+            node.text = tagDef;
+            return;
+        }
+        node.tag = tagDef;
+        const nContext = {
+            ...context,
+            namespace: record.namespace,
+            raw: tag,
+        };
+        node.text = record.name.render('text', nContext);
+    },
+    link(node, context) {
+        normalizeContainer(node, context);
+
+        const href = node.url;
+        node.url = normalizeLink(href).url;
+        if (node.content.length === 1) {
+            const cNode = node.content[0];
+            if (isNodeType(cNode, 'text') && cNode.text === href) {
+                try {
+                    const hrefUrl = new URL(href);
+                    const host = hrefUrl.host.toLowerCase();
+                    for (const [k, v] of knownHosts) {
+                        if (host.endsWith(k)) {
+                            cNode.text = v;
+                            break;
+                        }
+                    }
+                } catch {
+                    //
+                }
+            }
         }
     },
     image(node, context) {
         normalizeContainer(node, context);
-    },
-    link(node, context) {
-        normalizeContainer(node, context);
+
+        const nlink = normalizeLink(node.url ?? '');
+        node.url = nlink.url;
+        if (!node.nsfw && nlink.nsfw) node.nsfw = nlink.nsfw;
     },
     emphasis(node, context) {
         normalizeContainer(node, context);

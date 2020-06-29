@@ -23,7 +23,7 @@ export interface RepoInfo {
     data: NamespaceInfo[];
 }
 
-export interface RepoData<T extends TagType> extends RepoInfo {
+export interface RepoData<T> extends RepoInfo {
     data: Array<NamespaceData<T>>;
 }
 
@@ -60,9 +60,9 @@ export interface NamespaceData<T = TagType> extends NamespaceInfo {
 }
 
 export interface Tag<T = TagType> {
+    name: CellType<T>;
     intro: CellType<T>;
     links: CellType<T>;
-    name: CellType<T>;
 }
 
 export type TagType = 'raw' | 'ast' | 'html' | 'text' | 'full';

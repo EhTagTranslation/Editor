@@ -12,6 +12,7 @@ import * as execa from 'execa';
 import * as shell from 'shell-quote';
 
 import { Database } from 'shared/database';
+import { OctokitService, UserInfo } from 'server/octokit/octokit.service';
 
 let execId = 0;
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
@@ -22,24 +23,21 @@ function userEmail(user: User): string {
 
 @Injectable()
 export class DatabaseService extends InjectableBase implements OnModuleInit {
-    constructor(private readonly config: ConfigService) {
+    constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
         this.repo = this.config.get('DB_REPO', '');
     }
-    async onModuleInit(): Promise<void> {
-        const appInfoRes = await this.octokit.apps.getAuthenticated();
-        this.appInfo = appInfoRes.data;
-        const userInfoRes = await this.octokit.users.getByUsername({ username: `${this.appInfo.slug}[bot]` });
-        this.botUserInfo = userInfoRes.data;
 
+    private readonly APP_INSTALLATION_ID: number = Number.parseInt(this.config.get('APP_INSTALLATION_ID', ''));
+    async onModuleInit(): Promise<void> {
         await fs.mkdirp(this.path);
         if (!(await fs.pathExists(path.join(this.path, '.git')))) {
             await this.git('init');
             await this.git(`remote add origin 'https://github.com/${this.repo}.git'`);
         }
-        await this.git(`config user.name '${this.botUserInfo.login}'`);
-        await this.git(`config user.email '${userEmail(this.botUserInfo)}'`);
+        await this.git(`config user.name '${this.octokit.botUserInfo.login}'`);
+        await this.git(`config user.email '${userEmail(this.octokit.botUserInfo)}'`);
         await this.pull();
         this.data = await Database.create(this.path);
     }
@@ -57,16 +55,13 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         });
     }
 
-    private appToken: AsyncReturnType<Octokit['apps']['createInstallationAccessToken']>['data'] | undefined;
+    private appToken?: string;
     private async setOrigin(): Promise<void> {
-        if (!this.appToken || Date.parse(this.appToken.expires_at) < Date.now() + 600_000) {
-            const tokenRes = await this.octokit.apps.createInstallationAccessToken({
-                installation_id: this.config.get('APP_INSTALLATION_ID') as number,
-            });
-            this.appToken = tokenRes.data;
-            const token = this.appToken.token;
-            const origin = `https://${this.botUserInfo.login}:${token}@github.com/${this.repo}.git`;
+        const token = await this.octokit.getAppToken();
+        if (this.appToken !== token) {
+            const origin = `https://${this.octokit.botUserInfo.login}:${token}@github.com/${this.repo}.git`;
             await this.git(`remote set-url origin '${origin}'`);
+            this.appToken = token;
         }
     }
 
@@ -93,22 +88,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         await this.git('reset --hard origin/master');
     }
 
-    private userInfoCache = new Cache({
-        stdTTL: 3600,
-        checkperiod: 0,
-        useClones: false,
-    });
-    async user(userToken: string): Promise<User> {
-        const cache = this.userInfoCache.get<User>(userToken);
-        if (cache) return cache;
-
-        const user = (await this.createOctokit({ auth: userToken }).users.getAuthenticated()).data;
-        this.userInfoCache.set(userToken, user);
-        return user;
-    }
-
-    async commitAndPush(userToken: string, message: string): Promise<void> {
-        const user = await this.user(userToken);
+    async commitAndPush(user: UserInfo, message: string): Promise<void> {
         const messageFile = path.join(this.path, '.git/COMMIT_MSG');
         await fs.writeFile(messageFile, message);
         await this.git([
@@ -122,21 +102,8 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         await this.setOrigin();
         await this.git('push origin HEAD:master');
     }
-
-    appInfo!: AsyncReturnType<Octokit['apps']['getAuthenticated']>['data'];
-    botUserInfo!: User;
     readonly path: string;
     readonly repo: string;
-    readonly octokit = this.createOctokit({
-        authStrategy: createAppAuth,
-        auth: {
-            id: Number.parseInt(this.config.get('APP_ID', '0')),
-            privateKey: this.config.get('APP_KEY', ''),
-            installationId: Number.parseInt(this.config.get('APP_INSTALLATION_ID', '0')),
-            clientId: this.config.get('APP_CLIENT_ID'),
-            clientSecret: this.config.get('APP_CLIENT_SECRET'),
-        } as Types['StrategyOptions'],
-    });
 
-    private data!: Database;
+    public data!: Database;
 }

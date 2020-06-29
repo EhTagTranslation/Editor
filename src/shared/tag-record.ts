@@ -2,6 +2,7 @@ import { Tag, TagType } from './interfaces/ehtag';
 import { Cell } from './cell';
 import { Context } from './markdown';
 import { NamespaceDatabase } from './namespace-database';
+import { RawTag, isRawTag } from './validate';
 
 const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
@@ -19,16 +20,16 @@ function escape(value: string): string {
 
 export class TagRecord implements Tag<Cell> {
     constructor(data: Tag<'raw'>, readonly namespace: NamespaceDatabase) {
-        this.name = new Cell(data.name);
-        this.intro = new Cell(data.intro);
-        this.links = new Cell(data.links);
+        this.name = new Cell(data.name.trim());
+        this.intro = new Cell(data.intro.trim());
+        this.links = new Cell(data.links.trim());
     }
-    name!: Cell;
-    intro!: Cell;
-    links!: Cell;
+    readonly name: Cell;
+    readonly intro: Cell;
+    readonly links: Cell;
 
     stringify(context: Context): string {
-        const raw = context.raw.trim().toLowerCase();
+        const raw = context.raw?.trim().toLowerCase() ?? '';
         const render = (cell: Cell): string => escape(cell.render('raw', context));
         return `| ${raw} | ${render(this.name)} | ${render(this.intro)} | ${render(this.links)} |`;
     }
@@ -41,21 +42,28 @@ export class TagRecord implements Tag<Cell> {
         };
     }
 
-    static parse(line: string, namespace: NamespaceDatabase): [string, TagRecord] | null {
+    static parse(line: string, namespace: NamespaceDatabase): [RawTag | undefined, TagRecord] | null {
         const match = recordRegex.exec(line);
         if (!match || !match.groups) return null;
-        const raw = match.groups.raw.trim().toLowerCase();
         const { name, intro, links } = match.groups;
-        return [
-            raw,
-            new TagRecord(
-                {
-                    name: unescape(name),
-                    intro: unescape(intro),
-                    links: unescape(links),
-                },
-                namespace,
-            ),
-        ];
+        const record = new TagRecord(
+            {
+                name: unescape(name),
+                intro: unescape(intro),
+                links: unescape(links),
+            },
+            namespace,
+        );
+        const raw = match.groups.raw.trim().toLowerCase();
+        return [isRawTag(raw) ? raw : undefined, record];
+    }
+
+    static unsafeCreate(data: Tag<'raw'>, namespace: NamespaceDatabase): TagRecord {
+        const tag = new TagRecord(data, namespace);
+        data = tag.render('raw', {
+            database: namespace.database,
+            namespace,
+        });
+        return new TagRecord(data, namespace);
     }
 }

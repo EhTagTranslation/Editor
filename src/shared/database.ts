@@ -1,11 +1,11 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as _ from 'lodash';
-import * as execa from 'execa';
 import simpleGit, { SimpleGit } from 'simple-git';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
 import { TagRecord } from './tag-record';
+import { RawTag } from './validate';
 
 const SUPPORTED_REPO_VERSION = 5;
 
@@ -49,14 +49,16 @@ export class Database {
         await Promise.all(Object.values(this.data).map((n) => n.save()));
     }
 
-    private async repoInfo(): Promise<Omit<RepoInfo, 'data'>> {
+    async sha(): Promise<string> {
+        return (await this.headInfo()).sha;
+    }
+
+    private async headInfo(): Promise<RepoInfo['head']> {
         if (!this.git) throw new Error('This is not a git repo');
-        const remote = await this.git.getRemotes(true);
-        const url = new URL(remote[0].refs.fetch);
-        url.username = '';
-        url.password = '';
         const commit = (
             await this.git.log({
+                from: 'HEAD^',
+                to: 'HEAD',
                 format: {
                     sha: '%H',
                     message: '%B',
@@ -70,21 +72,30 @@ export class Database {
             })
         ).latest;
         return {
-            repo: url.href,
-            head: {
-                sha: commit.sha as Sha1Value,
-                message: commit.message,
-                author: {
-                    name: commit['author.name'],
-                    email: commit['author.email'],
-                    when: new Date(commit['author.when']),
-                },
-                committer: {
-                    name: commit['committer.name'],
-                    email: commit['committer.email'],
-                    when: new Date(commit['committer.when']),
-                },
+            sha: commit.sha as Sha1Value,
+            message: commit.message,
+            author: {
+                name: commit['author.name'],
+                email: commit['author.email'],
+                when: new Date(commit['author.when']),
             },
+            committer: {
+                name: commit['committer.name'],
+                email: commit['committer.email'],
+                when: new Date(commit['committer.when']),
+            },
+        };
+    }
+
+    private async repoInfo(): Promise<Omit<RepoInfo, 'data'>> {
+        if (!this.git) throw new Error('This is not a git repo');
+        const remote = await this.git.getRemotes(true);
+        const url = new URL(remote[0].refs.fetch);
+        url.username = '';
+        url.password = '';
+        return {
+            repo: url.href,
+            head: await this.headInfo(),
             version: this.version,
         };
     }
@@ -103,7 +114,7 @@ export class Database {
         };
     }
 
-    get(raw: string): TagRecord | undefined {
+    get(raw: RawTag): TagRecord | undefined {
         for (const ns of NamespaceName) {
             const record = this.data[ns].get(raw);
             if (record) return record;
@@ -111,8 +122,5 @@ export class Database {
         return undefined;
     }
 
-    private _revision = 1;
-    get revision(): number {
-        return this._revision;
-    }
+    revision = 1;
 }
