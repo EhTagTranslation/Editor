@@ -13,25 +13,20 @@ import {
     Put,
     Delete,
     Query,
+    BadRequestException,
 } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
 import { EtagInterceptor } from 'server/etag.interceptor';
 import { NamespaceInfo, TagType } from 'shared/interfaces/ehtag';
-import {
-    ApiTags,
-    ApiOperation,
-    ApiNotFoundResponse,
-    ApiNoContentResponse,
-    ApiHeader,
-    ApiConflictResponse,
-} from '@nestjs/swagger';
-import { RepoInfoDto, TagDto, TagResponseDto } from 'server/dtos/repo-info.dto';
+import { ApiTags, ApiOperation, ApiNotFoundResponse, ApiNoContentResponse, ApiConflictResponse } from '@nestjs/swagger';
+import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
 import { NsParams, TagParams, PostTagQuery } from './params.dto';
 import { Format } from 'server/decorators/format.decorator';
 import { UserInfo } from 'server/octokit/octokit.service';
 import { User } from 'server/decorators/user.decorator';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from 'server/decorators/swagger.decoretor';
+import { RawTag } from 'shared/validate';
 
 @Controller('database')
 @ApiTags('Database')
@@ -106,6 +101,9 @@ export class DatabaseController extends InjectableBase {
     ): Promise<TagResponseDto> {
         const dic = this.service.data.data[p.namespace];
         if (dic.has(p.raw)) throw new ConflictException();
+        if (q.before && q.after) throw new BadRequestException('Before and after cannot be applied at the same time.');
+        if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
+        if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
         const rec = q.before
             ? dic.add(p.raw, tag, 'before', q.before)
             : q.after
@@ -117,6 +115,35 @@ export class DatabaseController extends InjectableBase {
             database: this.service.data,
             namespace: dic,
             raw: p.raw,
+        });
+    }
+
+    @Post(':namespace/~comment')
+    @ApiOperation({ summary: '插入注释行' })
+    @ApiIfMatchHeader()
+    async postComment(
+        @Param() p: NsParams,
+        @Format() format: TagType,
+        @Query() q: PostTagQuery,
+        @Body() tag: LooseTagDto,
+        @User() user: UserInfo,
+    ): Promise<TagResponseDto> {
+        const dic = this.service.data.data[p.namespace];
+        if (q.before && q.after) throw new BadRequestException('Before and after cannot be applied at the same time.');
+        if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
+        if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
+        if (!q.before && !q.after) throw new BadRequestException('Must set before or after for comment line.');
+        const rec = q.before
+            ? dic.add(undefined, tag, 'before', q.before)
+            : q.after
+            ? dic.add(undefined, tag, 'after', q.after)
+            : dic.add(undefined, tag);
+        await dic.save();
+        await this.service.commitAndPush(user, '~comment');
+        return rec.render(format, {
+            database: this.service.data,
+            namespace: dic,
+            raw: '~comment' as RawTag,
         });
     }
 

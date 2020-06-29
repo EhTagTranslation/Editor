@@ -1,25 +1,16 @@
 import { CellType, TagType } from '../interfaces/ehtag';
-import { Database } from '../database';
 import { parseFragment, serialize } from 'parse5';
 import { renderText } from './text-renderer';
 import { parseTreeAdapter, serializeTreeAdapter, DocumentFragment } from './html-tree-adapter';
 import { normalizeAst } from './ast-normalizer';
 import { renderMd } from './md-renderer';
 import { parseMd } from './md-parser';
-import { NamespaceDatabase } from '../namespace-database';
-import { RawTag } from '../validate';
+import { Context } from '../interfaces/database';
 
 export interface ParseResult {
     raw: string;
     doc: DocumentFragment;
     context: Context;
-}
-
-export interface Context {
-    database: Database;
-    namespace: NamespaceDatabase;
-    raw?: RawTag;
-    normalized?: boolean;
 }
 
 function parseImpl(src: string, context: Context): ParseResult {

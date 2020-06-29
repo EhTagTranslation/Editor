@@ -1,17 +1,20 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
-import { Observable, Subject, zip, combineLatest, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
 import { Params } from '@angular/router';
-import { map, tap, shareReplay, debounceTime, filter } from 'rxjs/operators';
+import { map, tap, shareReplay, debounceTime, filter, mergeMap } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'browser/services/route.service';
 import { DebugService } from 'browser/services/debug.service';
 import { TitleService } from 'browser/services/title.service';
-import { NamespaceName, Tag, NamespaceEnum, RepoData } from 'browser/interfaces/ehtag';
+import { NamespaceName, Tag, RepoData } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from 'browser/services/github-release.service';
+import { isNamespaceName } from 'shared/validate';
 
-interface RenderedETTag {
+export interface ETItem extends Tag<'raw'>, ETKey {}
+
+export interface RenderedETItem extends Tag<'raw'>, ETKey {
     renderedIntro: string;
     renderedLinks: string;
     renderedName: string;
@@ -20,11 +23,7 @@ interface RenderedETTag {
     textName: string;
 }
 
-export interface ETItem extends Tag<'raw'>, ETKey {}
-
-export interface RenderedETItem extends Tag<'raw'>, RenderedETTag, ETKey {}
-
-function compare(a: any, b: any, isAsc: boolean) {
+function compare(a: string, b: string, isAsc: boolean): number {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
 
@@ -64,10 +63,10 @@ type ShowImgType = 'all' | 'no-r18' | 'no-r18g' | 'none';
 })
 export class ListComponent implements OnInit {
     constructor(
-        private githubRelease: GithubReleaseService,
-        private router: RouteService,
-        private debug: DebugService,
-        private title: TitleService,
+        private readonly githubRelease: GithubReleaseService,
+        private readonly router: RouteService,
+        private readonly debug: DebugService,
+        private readonly title: TitleService,
     ) {}
     @ViewChild('root', { static: true }) root!: ElementRef<HTMLDivElement>;
 
@@ -89,28 +88,26 @@ export class ListComponent implements OnInit {
 
     editableNs = editableNs;
 
-    setNs(ns?: NamespaceName) {
-        const list = ns && ns in NamespaceEnum ? ['/list', ns] : ['/list', 'all'];
+    setNs(ns?: NamespaceName): void {
+        const list = isNamespaceName(ns) ? ['/list', ns] : ['/list', 'all'];
         this.router.navigate(list, {
             pageIndex: 0,
         });
     }
 
-    navigateParam(params: Params, replaceUrl = true) {
+    navigateParam(params: Params, replaceUrl = true): void {
         this.router.navigateParam(params, replaceUrl);
     }
 
-    async ngOnInit() {
+    ngOnInit(): void {
         this.githubRelease.refresh();
         const addStyle = document.createElement('style');
         this.root.nativeElement.appendChild(addStyle);
-        this.namespace = this.router.initParam('namespace', (ns) =>
-            ns && ns in NamespaceEnum ? (ns as NamespaceName) : null,
-        );
+        this.namespace = this.router.initParam('namespace', (ns) => (isNamespaceName(ns) ? ns : null));
         this.search = this.router.initQueryParam(
             'search',
             (s) => s ?? '',
-            (s) => this.title.setTitle(s),
+            (s) => (this.title.title = s),
         );
         this.showImg = this.router.initQueryParam(
             'showImg',
@@ -144,14 +141,11 @@ export class ListComponent implements OnInit {
             ),
         );
 
-        this.tags = combineLatest([
-            this.githubRelease.tags.html,
-            this.githubRelease.tags.text,
-            this.githubRelease.tags.raw,
-        ]).pipe(
-            filter((data) => data[0].head.sha === data[1].head.sha && data[1].head.sha === data[2].head.sha),
+        this.tags = this.githubRelease.tags.pipe(
+            filter((tags) => tags.valid),
             tap(() => this.loading.next(true)),
-            map((data) => this.getData(...data)),
+            mergeMap((tags) => from(tags.render('full'))),
+            map((data) => this.getData(data)),
             shareReplay(1),
         );
 
@@ -181,11 +175,11 @@ export class ListComponent implements OnInit {
             tap(() => this.loading.next(false)),
         );
     }
-    pasting(ev: ClipboardEvent) {
+    pasting(ev: ClipboardEvent): void {
         if (!(ev.target instanceof HTMLInputElement)) {
             return;
         }
-        const data = ev.clipboardData && ev.clipboardData.getData('Text');
+        const data = ev.clipboardData?.getData('Text');
         if (!data) {
             return;
         }
@@ -201,45 +195,46 @@ export class ListComponent implements OnInit {
         });
     }
 
-    private getData(dataHtml: RepoData<'html'>, dataText: RepoData<'text'>, dataRaw: RepoData<'raw'>) {
-        this.debug.log('list: fetching', arguments);
+    private getData(data: RepoData<'full'>): readonly RenderedETItem[] {
+        this.debug.log('list: fetching', data);
         const tags: RenderedETItem[] = [];
-        dataRaw.data.forEach((namespaceRaw) => {
-            const namespaceHtml = dataHtml.data.find((ns) => ns.namespace === namespaceRaw.namespace);
-            const namespaceText = dataText.data.find((ns) => ns.namespace === namespaceRaw.namespace);
-            if (!namespaceHtml || !namespaceText) {
-                return;
-            }
-            for (const raw in namespaceRaw.data) {
-                if (namespaceRaw.data.hasOwnProperty(raw)) {
-                    const elementRaw = namespaceRaw.data[raw];
-                    const elementHtml = namespaceHtml.data[raw];
-                    const elementText = namespaceText.data[raw];
-                    tags.push({
-                        ...elementRaw,
-                        renderedIntro: elementHtml.intro,
-                        renderedLinks: elementHtml.links,
-                        renderedName: elementHtml.name,
-                        textIntro: elementText.intro,
-                        textLinks: elementText.links,
-                        textName: elementText.name,
-                        raw,
-                        namespace: namespaceRaw.namespace,
-                    });
-                }
+        data.data.forEach((nsDb) => {
+            for (const raw in nsDb.data) {
+                const element = nsDb.data[raw];
+                tags.push({
+                    renderedIntro: element.intro.html,
+                    renderedLinks: element.links.html,
+                    renderedName: element.name.html,
+                    textIntro: element.intro.text,
+                    textLinks: element.links.text,
+                    textName: element.name.text,
+                    intro: element.intro.raw,
+                    links: element.links.raw,
+                    name: element.name.raw,
+                    raw,
+                    namespace: nsDb.namespace,
+                });
             }
         });
         return tags.sort((a, b) => nsScore[b.namespace] - nsScore[a.namespace]);
     }
 
-    private getPagedData(data: readonly RenderedETItem[], pageIndex: number, pageSize: number) {
-        this.debug.log('list: paging', arguments);
+    private getPagedData(
+        data: readonly RenderedETItem[],
+        pageIndex: number,
+        pageSize: number,
+    ): readonly RenderedETItem[] {
+        this.debug.log('list: paging', { data, pageIndex, pageSize });
         const startIndex = pageIndex * pageSize;
         return data.slice(startIndex, startIndex + pageSize);
     }
 
-    private getSortedData(data: readonly RenderedETItem[], sortBy: SortableKeys | null, sortDirection: SortDirection) {
-        this.debug.log('list: sorting', arguments);
+    private getSortedData(
+        data: readonly RenderedETItem[],
+        sortBy: SortableKeys | null,
+        sortDirection: SortDirection,
+    ): readonly RenderedETItem[] {
+        this.debug.log('list: sorting', { data, sortBy, sortDirection });
 
         if (!sortBy || !(sortBy in sortKeyMap) || sortDirection === '') {
             return data;
@@ -251,8 +246,12 @@ export class ListComponent implements OnInit {
         });
     }
 
-    private getFilteredData(data: readonly RenderedETItem[], ns: string | null, search: string) {
-        this.debug.log('list: filtering', arguments);
+    private getFilteredData(
+        data: readonly RenderedETItem[],
+        ns: string | null,
+        search: string,
+    ): readonly RenderedETItem[] {
+        this.debug.log('list: filtering', { data, ns, search });
         const regex = regexFromSearch(search);
         if (ns) {
             data = data.filter((v) => v.namespace === ns);

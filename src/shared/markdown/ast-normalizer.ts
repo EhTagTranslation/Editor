@@ -1,7 +1,8 @@
-import { Tree, LinkNode, ImageNode, Node, ContainerNode, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
+import { ImageNode, Node, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
 import { remove } from 'lodash';
-import { ParseResult, Context } from '.';
+import { ParseResult } from '.';
 import { isRawTag } from '../validate';
+import { Context } from '../interfaces/database';
 
 function normalizeLink(
     url: string,

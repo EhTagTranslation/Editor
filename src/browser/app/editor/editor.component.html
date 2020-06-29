@@ -69,8 +69,8 @@
                     </mat-error>
                 </mat-form-field>
                 <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
-                    <span class="no-user-select">填写指南</span>
-                    <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules">{{ item }}</p>
+                    <span>填写指南</span>
+                    <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules" [innerHTML]="item | linkify"></p>
                 </mat-hint>
                 <mat-form-field>
                     <button
@@ -211,32 +211,29 @@
             <div id="preview-row1">
                 <mat-card>
                     <mat-card-subtitle>原始标签</mat-card-subtitle>
-                    <mat-card-content style="white-space: pre-wrap;" [innerHtml]="(rendered.raw | async) || ''">
+                    <mat-card-content style="white-space: pre-wrap;" [innerHtml]="(rendered | async)?.raw || ''">
                     </mat-card-content>
                 </mat-card>
                 <mat-card>
                     <mat-card-subtitle
                         >名称
-                        <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
                     </mat-card-subtitle>
-                    <mat-card-content class="md-container" [innerHtml]="rendered.name | async | mark: '':true">
+                    <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.name | mark: '':true">
                     </mat-card-content>
                 </mat-card>
             </div>
             <mat-card>
                 <mat-card-subtitle
                     >描述
-                    <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
                 </mat-card-subtitle>
-                <mat-card-content class="md-container" [innerHtml]="rendered.intro | async | mark: '':true">
+                <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.intro | mark: '':true">
                 </mat-card-content>
             </mat-card>
             <mat-card>
                 <mat-card-subtitle
                     >外部链接
-                    <mat-spinner *ngIf="rendered.loading | async" class="loading" [diameter]="14"></mat-spinner>
                 </mat-card-subtitle>
-                <mat-card-content class="md-container" [innerHtml]="rendered.links | async | mark: '':true">
+                <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.links | mark: '':true">
                 </mat-card-content>
             </mat-card>
         </div>
@@ -248,15 +245,9 @@
         <button
             class="narrow"
             mat-raised-button
-            (click)="narrowPreviewing ? (narrowPreviewing = false) : preview() && (narrowPreviewing = true)"
+            (click)="narrowPreviewing = !narrowPreviewing"
         >
             {{ narrowPreviewing ? '编辑' : '预览' }}
-        </button>
-        <button class="wide" mat-raised-button (click)="(narrowPreviewing = false) || preview()">
-            <ng-container *ngIf="!(rendered.loading | async); else renderingspinner">预览</ng-container>
-            <ng-template #renderingspinner>
-                <mat-spinner class="loading" [diameter]="24"></mat-spinner>
-            </ng-template>
         </button>
         <button
             mat-raised-button

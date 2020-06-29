@@ -47,14 +47,21 @@ export class NamespaceInfoDto implements NamespaceInfo {
     namespace!: NamespaceName;
     frontMatters!: FrontMattersDto;
 }
-
-export class TagDto implements Tag<'raw'> {
-    @MinLength(1)
-    name!: string;
+class TagDtoBase {
     @IsString()
     intro!: string;
     @IsString()
     links!: string;
+}
+
+export class LooseTagDto extends TagDtoBase implements Tag<'raw'> {
+    @IsString()
+    name!: string;
+}
+
+export class TagDto extends TagDtoBase implements Tag<'raw'> {
+    @MinLength(1)
+    name!: string;
 }
 export class TagResponseDto implements Tag<unknown> {
     name!: unknown;

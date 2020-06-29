@@ -48,16 +48,6 @@ a
   &:hover
     color: mat-color(map-get($candy-app-theme, accent))
 
-img[ehimg]
-  border: transparent solid
-  max-width: 300px
-  max-height: 200px
-
-  &[nsfw]
-    border: yellow solid
-  &[nsfw='R18G']
-    border: red solid
-
 code
   background: rgba(128, 128, 64, 0.1)
   border-radius: 4px
@@ -73,9 +63,31 @@ code
   flex-direction: column
   @media (max-width: 720px)
     margin: 0 4px 4px
-.md-container p
-  line-height: 1.25em
-  margin: .5em 0
+.md-container
+  img[ehimg]
+    border: transparent solid
+    max-width: 300px
+    max-height: 200px
+
+    &[nsfw]
+      border: yellow solid
+    &[nsfw='R18G']
+      border: red solid
+  p
+    line-height: 1.25em
+    margin: .5em 0
+  abbr
+    margin: 0 2px
+    &::after
+      font-size: 70%
+    &:not([title])
+      text-decoration: red wavy underline
+      &::after
+        content: ' (无效的标签引用) '
+    &[title]
+      text-decoration: dotted underline
+      &::after
+        content: ' (' attr(title) ') '
 td .md-container p
   &:first-child
     margin-top: 0

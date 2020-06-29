@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, HttpCode, HttpStatus, Param, BadRequestException } from '@nestjs/common';
-import { TagDto, TagResponseDto } from 'server/dtos/repo-info.dto';
+import { Controller, Post, Body, HttpCode, HttpStatus, Param, BadRequestException } from '@nestjs/common';
+import { TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
 import { Format } from 'server/decorators/format.decorator';
 import { TagType } from 'shared/interfaces/ehtag';
 import { TagRecord } from 'shared/tag-record';
@@ -19,7 +19,7 @@ export class ToolsController extends InjectableBase {
     @Post('normalize')
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
-    normalize(@Body() tag: TagDto, @Format() format: TagType): TagResponseDto {
+    normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
         return new TagRecord(tag, this.db.data.data.misc).render(format, {
             database: this.db.data,
             namespace: this.db.data.data.misc,
@@ -41,11 +41,11 @@ export class ToolsController extends InjectableBase {
         },
     })
     @HttpCode(HttpStatus.OK)
-    serialize(@Param() p: TagParams, @Body() tag: TagDto): string {
+    serialize(@Param() p: TagParams, @Body() tag: LooseTagDto): string {
         return new TagRecord(tag, this.db.data.data.misc).stringify({
             database: this.db.data,
             namespace: this.db.data.data.misc,
-            raw: p.raw,
+            raw: p.raw.trim().toLowerCase() as RawTag,
         });
     }
 

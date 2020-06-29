@@ -2,20 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Location } from '@angular/common';
 import * as escapeStringRegexp from 'escape-string-regexp';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { escapeHtml } from 'markdown-it/lib/common/utils';
 
 const parser = new DOMParser();
 
-function escapeHtml(unsafe: string | null): string {
-    if (!unsafe) {
-        return '';
-    }
-    return unsafe
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
 interface NoSearchTerm {
     data: string;
     isRegex: undefined;
@@ -51,7 +41,9 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
                 isRegex: true,
                 regex: new RegExp(search.substring(1, search.length - 1), 'g'),
             });
-        } catch {}
+        } catch {
+            //
+        }
     }
     return (regexFromSearchCache = {
         data: search,
@@ -79,7 +71,7 @@ export class MarkPipe implements PipeTransform {
         }
         const regexp = regexFromSearch(search).regex;
         if (inputAsHtml) {
-            const markNodes = (elem: Element) => {
+            const markNodes = (elem: Element): void => {
                 if (elem) {
                     const nodes = elem.childNodes;
                     for (let i = nodes.length; i--; ) {
@@ -87,7 +79,7 @@ export class MarkPipe implements PipeTransform {
                         if (node.nodeType === 3) {
                             // 文本节点
                             if (regexp) {
-                                const text = escapeHtml(node.textContent);
+                                const text = escapeHtml(node.textContent ?? '');
                                 const newText = text.replace(regexp, '<mark>$&</mark>');
                                 if (text !== newText && node.parentElement) {
                                     const spanNode = document.createElement('span');

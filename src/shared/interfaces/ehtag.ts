@@ -53,6 +53,7 @@ export interface FrontMatters {
     description: string;
     copyright?: string;
     rules?: string[];
+    example?: Tag<'raw'> & { raw: string };
 }
 
 export interface NamespaceData<T = TagType> extends NamespaceInfo {

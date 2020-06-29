@@ -2,18 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
 import { RouteService } from 'browser/services/route.service';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { isValidRaw, editableNs, ETKey } from 'browser/interfaces/ehtranslation';
+import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, pluck } from 'rxjs/operators';
+import { map, tap, throttleTime, mergeMap, filter, shareReplay } from 'rxjs/operators';
 import { TitleService } from 'browser/services/title.service';
 import { GithubOauthService } from 'browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { snackBarConfig } from 'browser/environments/environment';
-import { Tag, NamespaceName, NamespaceEnum } from 'browser/interfaces/ehtag';
+import { Tag, NamespaceName, FrontMatters } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from 'browser/services/github-release.service';
 import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
+import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
+import { Context } from 'shared/interfaces/database';
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
@@ -33,7 +35,7 @@ const namespaceMapToSearch: { [k in NamespaceName]: string } = {
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
     const value = String(control.value || '');
-    return isValidRaw(value) ? null : { raw: 'only a-zA-Z0-9. -' };
+    return RawTag(value) ? null : { raw: 'only a-zA-Z0-9. -' };
 }
 
 function isEditableNs(control: AbstractControl): ValidationErrors | null {
@@ -56,29 +58,31 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 })
 export class EditorComponent implements OnInit {
     constructor(
-        private ehTagConnector: EhTagConnectorService,
-        public github: GithubOauthService,
-        private debug: DebugService,
-        public release: GithubReleaseService,
-        private router: RouteService,
-        private title: TitleService,
-        private snackBar: MatSnackBar,
-        public dbRepo: DbRepoService,
+        private readonly ehTagConnector: EhTagConnectorService,
+        public readonly github: GithubOauthService,
+        private readonly debug: DebugService,
+        public readonly release: GithubReleaseService,
+        private readonly router: RouteService,
+        private readonly title: TitleService,
+        private readonly snackBar: MatSnackBar,
+        public readonly dbRepo: DbRepoService,
     ) {}
     tagForm = new FormGroup({
         raw: new FormControl('', [
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             Validators.required,
             Validators.minLength(2),
             Validators.pattern(/^\S.*\S$/),
             legalRaw,
         ]),
         namespace: new FormControl('', [isEditableNs]),
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         name: new FormControl('', [Validators.required, Validators.pattern(/(\S\s*){1,}/)]),
         intro: new FormControl('', []),
         links: new FormControl('', []),
     });
 
-    nsOptions = Object.getOwnPropertyNames(NamespaceEnum).filter((v) => isNaN(Number(v))) as NamespaceName[];
+    readonly nsOptions = NamespaceName;
 
     create!: Observable<boolean>;
     inputs!: {
@@ -107,48 +111,74 @@ export class EditorComponent implements OnInit {
         links: new BehaviorSubject<string | null>(null),
     };
 
-    rendered = {
-        loading: new BehaviorSubject<boolean>(false),
-        raw: this.forms.raw,
-        name: new BehaviorSubject<string>(''),
-        intro: new BehaviorSubject<string>(''),
-        links: new BehaviorSubject<string>(''),
-    };
+    rendered = combineLatest([
+        this.forms.namespace,
+        this.forms.raw,
+        this.forms.name,
+        this.forms.intro,
+        this.forms.links,
+    ]).pipe(
+        filter(([namespace]) => isNamespaceName(namespace)),
+        throttleTime(100, undefined, {
+            leading: false,
+            trailing: true,
+        }),
+        mergeMap(([namespace, raw, name, intro, links]) => {
+            return this.ehTagConnector
+                .normalizeTag(
+                    {
+                        name: name ?? '',
+                        intro: intro ?? '',
+                        links: links ?? '',
+                    },
+                    namespace as NamespaceName,
+                    'html',
+                )
+                .pipe(
+                    map((tag) => ({
+                        ...tag,
+                        raw,
+                        namespace,
+                    })),
+                );
+        }),
+        shareReplay(1),
+    );
 
     submitting = new BehaviorSubject<boolean>(false);
 
     narrowPreviewing = false;
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.release.refresh();
-        const ons = this.router.initParam('namespace', (v) =>
-            v && v in NamespaceEnum ? (v as NamespaceName) : 'artist',
-        );
-        const oraw = this.router.initParam('raw', (v) => {
+        const oNs = this.router.initParam('namespace', (v) => (isNamespaceName(v) ? v : 'artist'));
+        const oRaw = this.router.initParam('raw', (v) => {
             v = (v ?? '').trim();
-            return isValidRaw(v) ? v : '';
+            return RawTag(v) ? v : '';
         });
-        const otag = combineLatest([ons, oraw, this.release.tags.raw]).pipe(
-            map((data) => {
-                if (!data[2] || !data[1]) {
+        const oTag = combineLatest([oNs, oRaw, this.release.tags]).pipe(
+            map(([ns, raw, db]) => {
+                if (!isRawTag(raw) || !db) {
                     return undefined;
                 }
-                const nsdata = data[2].data.find((ns) => ns.namespace === data[0]);
-                if (!nsdata) {
+                const nsDb = db.data[ns];
+                if (!nsDb) {
                     return undefined;
                 }
-                return nsdata.data[data[1]];
+                const tag = nsDb.get(raw);
+                if (!tag) return undefined;
+                return tag.render('raw', Context.create(nsDb, raw));
             }),
         );
         this.original = {
-            namespace: ons,
-            raw: oraw,
-            name: otag.pipe(map((t) => t?.name ?? '')),
-            intro: otag.pipe(map((t) => t?.intro ?? '')),
-            links: otag.pipe(map((t) => t?.links ?? '')),
+            namespace: oNs,
+            raw: oRaw,
+            name: oTag.pipe(map((t) => t?.name ?? '')),
+            intro: oTag.pipe(map((t) => t?.intro ?? '')),
+            links: oTag.pipe(map((t) => t?.links ?? '')),
         };
         this.create = this.original.raw.pipe(
-            map((v) => !isValidRaw(v)),
+            map((v) => !isRawTag(v)),
             tap((v) => {
                 if (v) {
                     this.getControl('namespace').enable();
@@ -160,28 +190,24 @@ export class EditorComponent implements OnInit {
             }),
         );
         this.inputs = {
-            namespace: this.router.initQueryParam('namespace', (v) =>
-                v && v in NamespaceEnum ? (v as NamespaceName) : null,
-            ),
+            namespace: this.router.initQueryParam('namespace', (v) => (isNamespaceName(v) ? v : null)),
             raw: this.router.initQueryParam('raw', (v) => v),
             name: this.router.initQueryParam('name', (v) => v),
             intro: this.router.initQueryParam('intro', (v) => v),
             links: this.router.initQueryParam('links', (v) => v),
         };
         for (const key in this.tagForm.controls) {
-            if (this.tagForm.controls.hasOwnProperty(key)) {
-                const element = this.tagForm.controls[key];
-                element.valueChanges.subscribe((value) => {
-                    if (element.dirty) {
-                        this.router.navigateParam({
-                            [key]: value,
-                        });
-                    }
-                });
-            }
+            const element = this.tagForm.controls[key];
+            element.valueChanges.subscribe((value) => {
+                if (element.dirty) {
+                    this.router.navigateParam({
+                        [key]: value as unknown,
+                    });
+                }
+            });
         }
 
-        function mapCurrentCanEdit<T>(creating: boolean, original: T, inputs: T | null) {
+        function mapCurrentCanEdit<T>(creating: boolean, original: T, inputs: T | null): T | null {
             if (creating) {
                 return inputs;
             } else {
@@ -190,7 +216,7 @@ export class EditorComponent implements OnInit {
             }
         }
 
-        function mapCurrentCantEdit<T>(creating: boolean, original: T, inputs: T | null) {
+        function mapCurrentCantEdit<T>(creating: boolean, original: T, inputs: T | null): T | null {
             if (creating) {
                 // 不要使用 inputs || original，inputs === '' 表示已经编辑
                 return inputs === null ? original : inputs;
@@ -206,7 +232,7 @@ export class EditorComponent implements OnInit {
             )
             .subscribe((v) => {
                 this.getControl('namespace').setValue(v);
-                this.isEditableNs.next(editableNs.includes(v));
+                this.isEditableNs.next(editableNs.includes(v as NamespaceName));
             });
         combineLatest([this.create, this.original.raw, this.inputs.raw])
             .pipe(
@@ -236,27 +262,27 @@ export class EditorComponent implements OnInit {
 
         combineLatest([this.original.namespace, this.original.raw]).subscribe((v) => {
             if (v[1]) {
-                const nsshort = v[0] === 'misc' ? '' : v[0][0] + ':';
-                this.title.setTitle(`${nsshort}${v[1]} - 修改标签`);
+                const nsShort = v[0] === 'misc' ? '' : v[0][0] + ':';
+                this.title.title = `${nsShort}${v[1]} - 修改标签`;
             } else {
-                this.title.setTitle('新建标签');
+                this.title.title = '新建标签';
             }
         });
     }
 
-    getControl(field: Fields | null) {
+    getControl(field: Fields | null): AbstractControl {
         const form = field ? this.tagForm.get(field) : this.tagForm;
         if (!form) {
-            throw new Error(`Wrong field name, '${field}' is not in the form.`);
+            throw new Error(`Wrong field name, '${field ?? ''}' is not in the form.`);
         }
         return form;
     }
 
-    getNamespace(namespace: NamespaceName) {
-        return this.ehTagConnector.namespaceInfo.pipe(pluck(namespace));
+    getNamespace(namespace: NamespaceName): Observable<FrontMatters> {
+        return this.release.tags.pipe(map((tags) => tags.data[namespace].frontMatters));
     }
 
-    hasError(field: Fields | null, includeErrors: string | string[], excludedErrors?: string | string[]) {
+    hasError(field: Fields | null, includeErrors: string | string[], excludedErrors?: string | string[]): boolean {
         const form = this.getControl(field);
         const ie = Array.isArray(includeErrors) ? includeErrors : [includeErrors];
         const ee = excludedErrors ? (Array.isArray(excludedErrors) ? excludedErrors : [excludedErrors]) : [];
@@ -272,7 +298,7 @@ export class EditorComponent implements OnInit {
         }
         return false;
     }
-    value<F extends Fields>(field: F) {
+    value<F extends Fields>(field: F): Item[F] {
         const v = this.forms[field];
         if (v) {
             return (v.value ?? '') as Item[F];
@@ -283,12 +309,12 @@ export class EditorComponent implements OnInit {
         return '' as Item[F];
     }
 
-    enabled(field: Fields) {
+    enabled(field: Fields): boolean {
         const form = this.getControl(field);
         return form.enabled;
     }
 
-    searchExternal(url: string) {
+    searchExternal(url: string): void {
         url = url.replace(/%(raw|mns|namespace|name|intro|links)/g, (k) => {
             if (k === '%mns') {
                 return encodeURIComponent(namespaceMapToSearch[this.value('namespace')]);
@@ -298,7 +324,7 @@ export class EditorComponent implements OnInit {
         window.open(url, '_blank');
     }
 
-    reset() {
+    reset(): void {
         this.router.navigateParam(
             {
                 namespace: undefined,
@@ -311,49 +337,21 @@ export class EditorComponent implements OnInit {
         );
         this.tagForm.markAsPristine();
     }
-
-    async preview() {
-        if (this.rendered.loading.getValue()) {
-            return;
-        }
-        this.rendered.loading.next(true);
-        try {
-            const delay = Promise.delay(300);
-            const result = await this.ehTagConnector
-                .normalizeTag(
-                    {
-                        name: this.value('name'),
-                        intro: this.value('intro'),
-                        links: this.value('links'),
-                    },
-                    'html',
-                )
-                .toPromise();
-            this.rendered.name.next(result.name);
-            this.rendered.intro.next(result.intro);
-            this.rendered.links.next(result.links);
-            await delay;
-        } finally {
-            this.rendered.loading.next(false);
-        }
-    }
-    preSubmit() {
+    preSubmit(): boolean {
         if (this.submitting.getValue()) {
             return false;
         }
         if (this.tagForm.invalid) {
             for (const key in this.tagForm.controls) {
-                if (this.tagForm.controls.hasOwnProperty(key)) {
-                    const element = this.tagForm.controls[key];
-                    element.markAsTouched();
-                }
+                const element = this.tagForm.controls[key];
+                element.markAsTouched();
             }
             return false;
         }
         return true;
     }
 
-    async submit() {
+    async submit(): Promise<void> {
         if (!this.preSubmit()) {
             return;
         }
@@ -376,12 +374,11 @@ export class EditorComponent implements OnInit {
             this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
             this.tagForm.markAsPristine();
         } catch (ex) {
-            console.log(ex);
             this.snackBar
                 .open('提交过程中出现错误', '重试', snackBarConfig)
                 .onAction()
                 .subscribe(() => {
-                    this.submit();
+                    void this.submit();
                 });
         } finally {
             this.submitting.next(false);

@@ -13,7 +13,6 @@ async function bootstrap(): Promise<void> {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {});
     app.enableCors({
         origin: /./,
-        allowedHeaders: ['X-Token', 'Authorization'],
         credentials: true,
         maxAge: 6000,
     });

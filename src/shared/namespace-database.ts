@@ -3,18 +3,18 @@ import * as readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { defaults, cloneDeep, remove } from 'lodash';
+import { defaults, cloneDeep, pullAt } from 'lodash';
 import { promisify } from 'util';
-import { Context } from './markdown';
 import { Database } from './database';
 import { RawTag } from './validate';
+import { Context, NamespaceDatabaseView } from './interfaces/database';
 
 interface TagLine {
     raw?: RawTag;
     record: TagRecord;
 }
 
-export class NamespaceDatabase {
+export class NamespaceDatabase implements NamespaceDatabaseView {
     constructor(readonly namespace: NamespaceName, readonly file: string, readonly database: Database) {}
 
     frontMatters!: FrontMatters;
@@ -125,10 +125,7 @@ export class NamespaceDatabase {
         write(this.prefix);
         write('\n');
 
-        const context: Context = {
-            database: this.database,
-            namespace: this,
-        };
+        const context = Context.create(this);
         for (const { raw, record } of this.rawData) {
             context.raw = raw;
             write(record.stringify(context));
@@ -157,10 +154,7 @@ export class NamespaceDatabase {
     render<T extends TagType>(type: T): NamespaceData<T> {
         const info = this.info();
         const data: NamespaceData<T>['data'] = {};
-        const context: Context = {
-            database: this.database,
-            namespace: this,
-        };
+        const context = Context.create(this);
         for (const [raw, { record }] of this.rawMap) {
             context.raw = raw;
             data[raw] = record.render(type, context);
@@ -221,12 +215,11 @@ export class NamespaceDatabase {
         return line.record;
     }
 
-    delete(raw: RawTag): boolean {
+    delete(raw: RawTag): TagRecord | undefined {
         const line = this.rawMap.get(raw);
-        if (!line) return false;
+        if (!line) return undefined;
         this.rawMap.delete(raw);
-        const removed = remove(this.rawData, this.rawData.indexOf(line));
-        console.assert(removed[0] === line);
-        return true;
+        pullAt(this.rawData, this.rawData.indexOf(line));
+        return line.record;
     }
 }

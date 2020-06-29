@@ -173,10 +173,10 @@
     ora "4.0.3"
     rxjs "6.5.4"
 
-"@angular/animations@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-10.0.0.tgz#a778f04584c93e7fb121ce5580e86ef0f6bc6dfe"
-  integrity sha1-p3jwRYTJPn+xIc5VgOhu8Pa8bf4=
+"@angular/animations@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-10.0.1.tgz#7ff9b62d5d4ce29bd0e4952d0c18e09dc1f0872c"
+  integrity sha1-f/m2LV1M4pvQ5JUtDBjgncHwhyw=
   dependencies:
     tslib "^2.0.0"
 
@@ -215,17 +215,17 @@
     universal-analytics "0.4.20"
     uuid "8.1.0"
 
-"@angular/common@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-10.0.0.tgz#a819dacbf3b9a3629f7e0d43a504cdd3b5fad58d"
-  integrity sha1-qBnay/O5o2Kffg1DpQTN07X61Y0=
+"@angular/common@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/common/download/@angular/common-10.0.1.tgz#f306fd8a9858fc5243fbec0508e6281419ec8ca9"
+  integrity sha1-8wb9iphY/FJD++wFCOYoFBnsjKk=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/compiler-cli@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/compiler-cli/download/@angular/compiler-cli-10.0.0.tgz#6fe60e239b01fd10d3923a3de88877512e0e2d40"
-  integrity sha1-b+YOI5sB/RDTkjo96Ih3US4OLUA=
+"@angular/compiler-cli@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/compiler-cli/download/@angular/compiler-cli-10.0.1.tgz#ba3994fed7704abd7d17b806993d510950a596fe"
+  integrity sha1-ujmU/tdwSr19F7gGmT1RCVCllv4=
   dependencies:
     canonical-path "1.0.0"
     chokidar "^3.0.0"
@@ -241,31 +241,31 @@
     tslib "^2.0.0"
     yargs "15.3.0"
 
-"@angular/compiler@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/compiler/download/@angular/compiler-10.0.0.tgz#15f0a0e5760ebc6fcbc06b0b3bb5f110282cf03d"
-  integrity sha1-FfCg5XYOvG/LwGsLO7XxECgs8D0=
+"@angular/compiler@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/compiler/download/@angular/compiler-10.0.1.tgz#6ceaa0fc9157fe273a4877bdae49fe5e48fe0873"
+  integrity sha1-bOqg/JFX/ic6SHe9rkn+Xkj+CHM=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/core@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/core/download/@angular/core-10.0.0.tgz?cache=0&sync_timestamp=1593051821476&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular%2Fcore%2Fdownload%2F%40angular%2Fcore-10.0.0.tgz#b199450576f8acc0549d2836cfa04294fa3a585e"
-  integrity sha1-sZlFBXb4rMBUnSg2z6BClPo6WF4=
+"@angular/core@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/core/download/@angular/core-10.0.1.tgz#7737de1e7e382034e86dcff32282af8c209a7787"
+  integrity sha1-dzfeHn44IDTobc/zIoKvjCCad4c=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/forms@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/forms/download/@angular/forms-10.0.0.tgz#5c3d88b962552789bae6ad0bd1ffd7914ceeb1bb"
-  integrity sha1-XD2IuWJVJ4m65q0L0f/XkUzusbs=
+"@angular/forms@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/forms/download/@angular/forms-10.0.1.tgz#b6fc657e00331d898540951b94b5704c3939bd69"
+  integrity sha1-tvxlfgAzHYmFQJUblLVwTDk5vWk=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/language-service@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/language-service/download/@angular/language-service-10.0.0.tgz#3fead07743f2d958cffc7a755314bfb11181e6cc"
-  integrity sha1-P+rQd0Py2VjP/Hp1UxS/sRGB5sw=
+"@angular/language-service@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/language-service/download/@angular/language-service-10.0.1.tgz#7f6d7c079876e0fa24ab9b88a912ebd7ae6c03a2"
+  integrity sha1-f218B5h24Pokq5uIqRLr165sA6I=
 
 "@angular/material@^10.0.0":
   version "10.0.0"
@@ -274,24 +274,24 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/platform-browser-dynamic@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/platform-browser-dynamic/download/@angular/platform-browser-dynamic-10.0.0.tgz?cache=0&sync_timestamp=1593051924804&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular%2Fplatform-browser-dynamic%2Fdownload%2F%40angular%2Fplatform-browser-dynamic-10.0.0.tgz#edf99f3276fa4f13a2a533f742053286fb005354"
-  integrity sha1-7fmfMnb6TxOipTP3QgUyhvsAU1Q=
+"@angular/platform-browser-dynamic@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/platform-browser-dynamic/download/@angular/platform-browser-dynamic-10.0.1.tgz#2dc05ef6bbc2a554fb55753c8708b42220fb784b"
+  integrity sha1-LcBe9rvCpVT7VXU8hwi0IiD7eEs=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/platform-browser@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/platform-browser/download/@angular/platform-browser-10.0.0.tgz#88cb200f611032c8fd2a54d3d87bda85c09f9dca"
-  integrity sha1-iMsgD2EQMsj9KlTT2HvahcCfnco=
+"@angular/platform-browser@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/platform-browser/download/@angular/platform-browser-10.0.1.tgz#ee1fb9777a5a50e9b97057a49f3fd0551c52870d"
+  integrity sha1-7h+5d3paUOm5cFeknz/QVRxShw0=
   dependencies:
     tslib "^2.0.0"
 
-"@angular/router@^10.0.0":
-  version "10.0.0"
-  resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-10.0.0.tgz#c06c873d3b06c4f5cc7c332b1d0887a473495c8b"
-  integrity sha1-wGyHPTsGxPXMfDMrHQiHpHNJXIs=
+"@angular/router@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.npm.taobao.org/@angular/router/download/@angular/router-10.0.1.tgz#fd73ecea4c32b34ee87d51c5e66350fb8c85edaa"
+  integrity sha1-/XPs6kwys07ofVHF5mNQ+4yF7ao=
   dependencies:
     tslib "^2.0.0"
 
@@ -1606,10 +1606,10 @@
     "@angular-devkit/schematics" "9.1.7"
     fs-extra "9.0.0"
 
-"@nestjs/swagger@^4.5.11":
-  version "4.5.11"
-  resolved "https://registry.npm.taobao.org/@nestjs/swagger/download/@nestjs/swagger-4.5.11.tgz#3e8c6ec98903ca060fdb1c8d4e8f1a3a0def4d5a"
-  integrity sha1-PoxuyYkDygYP2xyNTo8aOg3vTVo=
+"@nestjs/swagger@^4.5.12":
+  version "4.5.12"
+  resolved "https://registry.npm.taobao.org/@nestjs/swagger/download/@nestjs/swagger-4.5.12.tgz#e8aa65fbb0033007ece1d494b002f47ff472c20b"
+  integrity sha1-6Kpl+7ADMAfs4dSUsAL0f/Rywgs=
   dependencies:
     "@nestjs/mapped-types" "0.0.5"
     lodash "4.17.15"
@@ -7061,9 +7061,9 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.npm.taobao.org/lines-and-columns/download/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
-linkify-it@^3.0.1:
+linkify-it@^3.0.1, linkify-it@^3.0.2:
   version "3.0.2"
-  resolved "https://registry.npm.taobao.org/linkify-it/download/linkify-it-3.0.2.tgz?cache=0&sync_timestamp=1589974521138&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flinkify-it%2Fdownload%2Flinkify-it-3.0.2.tgz#f55eeb8bc1d3ae754049e124ab3bb56d97797fb8"
+  resolved "https://registry.npm.taobao.org/linkify-it/download/linkify-it-3.0.2.tgz#f55eeb8bc1d3ae754049e124ab3bb56d97797fb8"
   integrity sha1-9V7ri8HTrnVASeEkqzu1bZd5f7g=
   dependencies:
     uc.micro "^1.0.1"
@@ -10918,10 +10918,10 @@ type-fest@^0.11.0:
   resolved "https://registry.npm.taobao.org/type-fest/download/type-fest-0.11.0.tgz#97abf0872310fed88a5c466b25681576145e33f1"
   integrity sha1-l6vwhyMQ/tiKXEZrJWgVdhReM/E=
 
-type-fest@^0.15.1:
-  version "0.15.1"
-  resolved "https://registry.npm.taobao.org/type-fest/download/type-fest-0.15.1.tgz?cache=0&sync_timestamp=1591686795609&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftype-fest%2Fdownload%2Ftype-fest-0.15.1.tgz#d2c4e73d3e4a53cf1a906396dd460a1c5178ca00"
-  integrity sha1-0sTnPT5KU88akGOW3UYKHFF4ygA=
+type-fest@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.npm.taobao.org/type-fest/download/type-fest-0.16.0.tgz?cache=0&sync_timestamp=1593290909259&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftype-fest%2Fdownload%2Ftype-fest-0.16.0.tgz#3240b891a78b0deae910dbeb86553e552a148860"
+  integrity sha1-MkC4kaeLDerpENvrhlU+VSoUiGA=
 
 type-fest@^0.6.0:
   version "0.6.0"

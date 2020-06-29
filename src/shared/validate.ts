@@ -1,5 +1,6 @@
 import { Opaque } from 'type-fest';
 import { ValidationOptions, ValidationArguments, buildMessage, ValidateBy } from 'class-validator';
+import { NamespaceName } from './interfaces/ehtag';
 
 export type RawTag = Opaque<string, 'raw'>;
 
@@ -9,6 +10,13 @@ export function isRawTag(tag: unknown): tag is RawTag {
     if (tag.startsWith(' ') || tag.endsWith(' ')) return false;
     if (!/^[-a-z0-9. ]+$/g.test(tag)) return false;
     return true;
+}
+
+export function RawTag(tag: string | undefined): RawTag | undefined {
+    if (!tag) return undefined;
+    tag = tag.trim().toLowerCase();
+    if (isRawTag(tag)) return tag;
+    return undefined;
 }
 
 export function IsRawTag(validationOptions?: ValidationOptions): PropertyDecorator {
@@ -33,4 +41,9 @@ export function IsRawTag(validationOptions?: ValidationOptions): PropertyDecorat
         },
         validationOptions,
     );
+}
+
+export function isNamespaceName(ns: unknown): ns is NamespaceName {
+    if (typeof ns != 'string') return false;
+    return NamespaceName.includes(ns as NamespaceName);
 }

@@ -6,10 +6,11 @@ import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
 import { TagRecord } from './tag-record';
 import { RawTag } from './validate';
+import { DatabaseView } from './interfaces/database';
 
 const SUPPORTED_REPO_VERSION = 5;
 
-export class Database {
+export class Database implements DatabaseView {
     static async create(repoPath: string): Promise<Database> {
         repoPath = path.resolve(repoPath);
 

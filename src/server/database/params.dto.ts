@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NamespaceName } from 'shared/interfaces/ehtag';
-import { IsIn, IsString, IsOptional } from 'class-validator';
+import { IsIn, IsOptional } from 'class-validator';
 import { IsRawTag, RawTag } from 'shared/validate';
 export class NsParams {
     @ApiProperty({

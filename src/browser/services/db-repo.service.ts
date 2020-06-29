@@ -1,4 +1,4 @@
-import { Tag, NamespaceEnum } from 'browser/interfaces/ehtag';
+import { NamespaceName } from 'shared/interfaces/ehtag';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class DbRepoService {
         return new URL(path, this.root).href;
     }
 
-    issue(raw: string, ns?: NamespaceEnum, isNew = false): string {
+    issue(raw: string, ns?: NamespaceName, isNew = false): string {
         const title = encodeURIComponent(`${isNew ? '添加' : '更改'}标签 - ${ns ? `${ns}:${raw}` : raw}`);
         return this.resolve(`issues/new?assignees=&labels=翻译&template=tag-translation.md&title=${title}`);
     }

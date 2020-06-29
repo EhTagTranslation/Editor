@@ -11,13 +11,10 @@ export class ApiEndpointService {
             return root + '/' + path;
         }
     }
-    github(path = '') {
+    github(path = ''): string {
         return this.makePath('https://api.github.com', path);
     }
-    ehTagConnectorDb(path = '') {
+    ehTagConnectorDb(path = ''): string {
         return this.makePath('https://ehtagconnector.azurewebsites.net/api/database', path);
-    }
-    ehTagConnectorTools(path = '') {
-        return this.makePath('https://ehtagconnector.azurewebsites.net/api/tools', path);
     }
 }

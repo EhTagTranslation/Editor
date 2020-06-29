@@ -1,10 +1,6 @@
-import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ehHttpInterceptorProvider } from 'browser/services/eh-http-interceptor';
-import { UserComponent } from './user/user.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,14 +21,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { UserComponent } from './user/user.component';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { AboutComponent } from './about/about.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MarkPipe } from './shared/pipe/mark.pipe';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { TitleService } from 'browser/services/title.service';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
+import { MarkPipe } from './shared/pipe/mark.pipe';
+import { LinkifyPipe } from './shared/pipe/linkify.pipe';
+import { TitleService } from 'browser/services/title.service';
+import { ehHttpInterceptorProvider } from 'browser/services/eh-http-interceptor';
 
 @NgModule({
     declarations: [
@@ -41,8 +41,9 @@ import { GithubCornerComponent } from './github-corner/github-corner.component';
         ListComponent,
         EditorComponent,
         AboutComponent,
-        MarkPipe,
         GithubCornerComponent,
+        MarkPipe,
+        LinkifyPipe,
     ],
     imports: [
         AppRoutingModule,
