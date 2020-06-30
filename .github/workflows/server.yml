@@ -24,7 +24,7 @@ jobs:
     - name: Prepare app
       run: |
         yarn install --no-lockfile --prefer-offline --prod
-        rf -rf ./publish
+        rm -rf ./publish
         mkdir ./publish
         cp ./dist ./publish/ -r
         cp ./node_modules ./publish/ -r
