@@ -16,6 +16,8 @@ jobs:
       run: yarn install --frozen-lockfile --prefer-offline
     - name: Build
       run: yarn build:server
+    - name: Clean
+      run: yarn install --frozen-lockfile --prefer-offline --prod
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
