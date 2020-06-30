@@ -13,9 +13,7 @@ jobs:
       with:
         node-version: '12'
     - name: Install
-      run: |
-        npx lock-treatment-tool --registry=https://registry.npmjs.org
-        yarn install --frozen-lockfile --prefer-offline
+      run: yarn install --frozen-lockfile --prefer-offline
     - name: Build
       run: yarn build:server
     - name: Upload artifact
@@ -29,4 +27,4 @@ jobs:
       with: 
         app-name: ehtt
         publish-profile: ${{ secrets.AzureWebAppPublishProfile }}
-        package: './dist' 
+        package: '.' 
