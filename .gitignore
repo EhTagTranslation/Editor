@@ -1,6 +1,7 @@
 # compiled output
-/dist/
-/db/
+/dist
+/publish
+/db
 
 # env
 /.env

@@ -2,10 +2,7 @@
     "name": "eh-tag-editor",
     "version": "0.0.0",
     "scripts": {
-        "start":"yarn start:server:prod",
-
         "start:server": "nest start --debug --watch",
-        "start:server:prod": "node ./dist/server/main.js",
         "build:server": "nest build",
         "start:tool": "yarn build:tool --watch",
         "build:tool": "tsc --project ./src/tool",

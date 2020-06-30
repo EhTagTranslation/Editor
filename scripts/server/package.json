@@ -1,0 +1,8 @@
+{
+    "name": "eh-tag-editor",
+    "version": "0.0.0",
+    "scripts": {
+        "start": "apt install git -y && node dist/server/main.js"
+    },
+    "private": true
+}
