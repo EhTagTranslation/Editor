@@ -29,7 +29,7 @@ async function bootstrap(): Promise<void> {
     SwaggerModule.setup('/', app, document);
 
     const port = Number.parseInt(app.get(ConfigService).get('PORT', '3000'));
-    await app.listen(port);
+    await app.listen(port, '0.0.0.0');
 }
 
 bootstrap().catch((err) => console.error(err));
