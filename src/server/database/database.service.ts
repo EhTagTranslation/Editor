@@ -33,9 +33,9 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         if (!(await fs.pathExists(path.join(this.path, '.git')))) {
             await this.exec.git(this.path, 'init');
             await this.exec.git(this.path, `remote add origin 'https://github.com/${this.repo}.git'`);
+        } else {
+            await this.exec.git(this.path, `remote set-url origin 'https://github.com/${this.repo}.git'`);
         }
-        await this.exec.git(this.path, `config user.name '${this.octokit.botUserInfo.login}'`);
-        await this.exec.git(this.path, `config user.email '${userEmail(this.octokit.botUserInfo)}'`);
         await this.pull();
         this.data = await Database.create(this.path);
     }
@@ -44,24 +44,35 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     private async setOrigin(): Promise<void> {
         const token = await this.octokit.getAppToken();
         if (this.appToken !== token) {
-            const origin = `https://${this.octokit.botUserInfo.login}:${token}@github.com/${this.repo}.git`;
+            const login = (await this.octokit.botUserInfo()).login;
+            const origin = `https://${login}:${token}@github.com/${this.repo}.git`;
             await this.exec.git(
                 this.path,
                 [`remote`, `set-url`, `origin`, origin],
-                `remote set-url origin https://${this.octokit.botUserInfo.login}:[REDACTED]@github.com/${this.repo}.git`,
+                `remote set-url origin https://${login}:[REDACTED]@github.com/${this.repo}.git`,
             );
             this.appToken = token;
         }
     }
 
+    private userInfoSet = false;
+    private async setUserInfo(): Promise<void> {
+        if (!this.userInfoSet) {
+            const botUserInfo = await this.octokit.botUserInfo();
+            await this.exec.git(this.path, `config user.name '${botUserInfo.login}'`);
+            await this.exec.git(this.path, `config user.email '${userEmail(botUserInfo)}'`);
+            this.userInfoSet = true;
+        }
+    }
+
     async pull(): Promise<void> {
-        await this.setOrigin();
         await this.exec.git(this.path, 'fetch');
         await this.exec.git(this.path, 'reset --hard origin/master');
     }
 
     async commitAndPush(user: UserInfo, message: string): Promise<void> {
         const messageFile = path.join(this.path, '.git/COMMIT_MSG');
+        await this.setUserInfo();
         await fs.writeFile(messageFile, message);
         await this.exec.git(this.path, [
             'commit',

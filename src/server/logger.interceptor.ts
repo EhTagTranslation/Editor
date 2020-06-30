@@ -9,14 +9,21 @@ export class LoggerInterceptor extends InjectableBase implements NestInterceptor
     intercept(context: ExecutionContext, next: CallHandler<unknown>): Observable<unknown> {
         const httpContext = context.switchToHttp();
         const req = httpContext.getRequest<FastifyRequest>();
-        const message = `[${String(req.id).padStart(4)}] ${req.req.method ?? '???'} ${req.req.url ?? ''}`;
-        this.logger.verbose(message);
+        const start = Date.now();
+        const message = `[${String(req.id)}] ${req.req.method ?? '???'} ${req.req.url ?? ''}`;
         return next.handle().pipe(
             tap(
-                () => this.logger.verbose(message + ' OK'),
+                () => {
+                    const elapsed = Date.now() - start;
+                    this.logger.verbose(`${message} OK - ${elapsed}ms`);
+                },
                 (e) => {
-                    if (e instanceof HttpException) this.logger.verbose(`${message} ERROR ${e.getStatus()}`);
-                    else this.logger.verbose(message + ' ERROR');
+                    const elapsed = Date.now() - start;
+                    if (e instanceof HttpException) {
+                        this.logger.warn(`${message} ERROR - ${elapsed}ms ${e.getStatus()}`);
+                    } else {
+                        this.logger.error(`${message} ERROR - ${elapsed}ms ${String(e)}`);
+                    }
                 },
             ),
         );

@@ -33,7 +33,7 @@ export class ExecService extends InjectableBase {
         const result = await execa(file, commands, { all: true, reject: false });
         const elapsed = Date.now() - start;
 
-        this.logger[result.failed ? 'error' : 'log'](`EXEC ${log} - in ${elapsed}ms ${result.all ?? ''}`);
+        this.logger[result.failed ? 'error' : 'log'](`EXEC ${log} - in ${elapsed}ms`);
         if (result.all) this.logger.verbose(result.all);
         if (result.failed) {
             const err = result as execa.ExecaError;

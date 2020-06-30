@@ -14,11 +14,12 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     constructor(private readonly config: ConfigService) {
         super();
     }
-    async onModuleInit(): Promise<void> {
-        const appInfoRes = await this.forApp.apps.getAuthenticated();
-        this._appInfo = Object.freeze(appInfoRes.data);
-        const userInfoRes = await this.forApp.users.getByUsername({ username: `${this.appInfo.slug}[bot]` });
-        this._botUserInfo = Object.freeze(userInfoRes.data);
+    onModuleInit(): void {
+        this.getAppToken().catch((err: unknown) => this.logger.error(err));
+        this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => Object.freeze(appInfoRes.data));
+        this._botUserInfo = this._appInfo
+            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug}[bot]` }))
+            .then((userInfoReq) => Object.freeze(userInfoReq.data));
     }
 
     private createOctokit(options?: OctokitOptions): Octokit {
@@ -74,14 +75,14 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         checkperiod: 0,
         useClones: false,
     });
-    private _appInfo!: AppInfo;
-    private _botUserInfo!: UserInfo;
+    private _appInfo!: Promise<AppInfo>;
+    private _botUserInfo!: Promise<UserInfo>;
 
-    get appInfo(): AppInfo {
+    async appInfo(): Promise<AppInfo> {
         return this._appInfo;
     }
 
-    get botUserInfo(): UserInfo {
+    async botUserInfo(): Promise<UserInfo> {
         return this._botUserInfo;
     }
 }
