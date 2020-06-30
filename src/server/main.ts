@@ -17,7 +17,7 @@ const logger = new Logger('Main', true);
 async function bootstrap(): Promise<void> {
     logger.log(`App starting`);
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {});
-    app.register(compress);
+    app.register(compress, { encodings: ['gzip', 'deflate'] });
     app.enableCors({
         origin: true,
         credentials: false,

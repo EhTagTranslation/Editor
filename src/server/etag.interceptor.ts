@@ -48,7 +48,8 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
                     case 'PATCH':
                     case 'DELETE': {
                         const match = req.headers['if-match'] as unknown;
-                        if (!match)
+                        if (!match) {
+                            if (req.headers['x-github-delivery'] && req.headers['x-github-event']) return;
                             throw new HttpException(
                                 HttpException.createBody(
                                     "'If-Match' header is not present, use corresponding GET api to retrieve the ETag.",
@@ -57,7 +58,8 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
                                 ),
                                 428,
                             );
-                        if (sha !== getSha(match))
+                        }
+                        if (sha !== getSha(match)) {
                             throw new HttpException(
                                 HttpException.createBody(
                                     'The wiki has been modified, use corresponding GET api to renew the ETag.',
@@ -66,6 +68,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
                                 ),
                                 HttpStatus.PRECONDITION_FAILED,
                             );
+                        }
                         return;
                     }
                 }
