@@ -3,30 +3,30 @@ name: server
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v1
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12'
-    - name: Install
-      run: yarn install --no-lockfile --prefer-offline
-    - name: Build
-      run: yarn build:server
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: server
-        path: ./dist
-    - name: Prepare app
-      run:  node ./scripts/server.js
-    - name: 'Run Azure webapp deploy action using publish profile credentials'
-      uses: azure/webapps-deploy@v1
-      if: github.ref == 'refs/heads/master'
-      with: 
-        app-name: ehtt
-        publish-profile: ${{ secrets.AzureWebAppPublishProfile }}
-        package: ./dist 
+        steps:
+            - uses: actions/checkout@v1
+            - name: Setup Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '12'
+            - name: Install
+              run: yarn install --no-lockfile --prefer-offline
+            - name: Build
+              run: yarn build:server
+            - name: Upload artifact
+              uses: actions/upload-artifact@v1.0.0
+              with:
+                  name: server
+                  path: ./dist
+            - name: Prepare app
+              run: node ./scripts/server.js
+            - name: 'Run Azure webapp deploy action using publish profile credentials'
+              uses: azure/webapps-deploy@v1
+              if: github.ref == 'refs/heads/master'
+              with:
+                  app-name: ehtt
+                  publish-profile: ${{ secrets.AzureWebAppPublishProfile }}
+                  package: ./dist

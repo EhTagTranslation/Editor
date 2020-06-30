@@ -9,7 +9,7 @@
         "start:browser": "ng serve",
         "build:browser": "ng build --prod",
         "clean": "rimraf dist",
-        "format": "prettier --write .",
+        "format": "prettier --ignore-path .gitignore --write .",
         "lint": "eslint ."
     },
     "private": true,

@@ -70,7 +70,10 @@
                 </mat-form-field>
                 <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
                     <span>填写指南</span>
-                    <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules" [innerHTML]="item | linkify"></p>
+                    <p
+                        *ngFor="let item of (getNamespace(value('namespace')) | async).rules"
+                        [innerHTML]="item | linkify"
+                    ></p>
                 </mat-hint>
                 <mat-form-field>
                     <button
@@ -215,24 +218,18 @@
                     </mat-card-content>
                 </mat-card>
                 <mat-card>
-                    <mat-card-subtitle
-                        >名称
-                    </mat-card-subtitle>
+                    <mat-card-subtitle>名称 </mat-card-subtitle>
                     <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.name | mark: '':true">
                     </mat-card-content>
                 </mat-card>
             </div>
             <mat-card>
-                <mat-card-subtitle
-                    >描述
-                </mat-card-subtitle>
+                <mat-card-subtitle>描述 </mat-card-subtitle>
                 <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.intro | mark: '':true">
                 </mat-card-content>
             </mat-card>
             <mat-card>
-                <mat-card-subtitle
-                    >外部链接
-                </mat-card-subtitle>
+                <mat-card-subtitle>外部链接 </mat-card-subtitle>
                 <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.links | mark: '':true">
                 </mat-card-content>
             </mat-card>
@@ -242,11 +239,7 @@
         <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">
             重置
         </button>
-        <button
-            class="narrow"
-            mat-raised-button
-            (click)="narrowPreviewing = !narrowPreviewing"
-        >
+        <button class="narrow" mat-raised-button (click)="narrowPreviewing = !narrowPreviewing">
             {{ narrowPreviewing ? '编辑' : '预览' }}
         </button>
         <button
