@@ -1,5 +1,4 @@
 import { ImageNode, Node, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
-import { remove } from 'lodash-es';
 import { ParseResult } from '.';
 import { isRawTag } from '../validate';
 import { Context } from '../interfaces/database';
@@ -59,7 +58,12 @@ function normalizeContainer(node: { content: Node[] }, context: Context): void {
         }
     }
     normalizeList(content, context);
-    remove(content, (c) => isNodeType(c, 'text') && !c.text);
+    for (let i = content.length - 1; i >= 0; i--) {
+        const c = content[i];
+        if (isNodeType(c, 'text') && !c.text) {
+            content.splice(i, 1);
+        }
+    }
 }
 
 function normalizeList(nodes: readonly Node[], context: Context): void {

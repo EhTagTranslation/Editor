@@ -3,7 +3,6 @@ import * as readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { defaults, cloneDeep, pullAt } from 'lodash-es';
 import { promisify } from 'util';
 import { Database } from './database';
 import { RawTag } from './validate';
@@ -103,13 +102,16 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         }
         this.prefix = prefix.trim();
         this.suffix = suffix.trim();
+        let fmObj: Partial<FrontMatters> | undefined;
         if (frontMatters) {
-            const fmObj = safeLoad(frontMatters);
-            if (fmObj && typeof fmObj == 'object') {
-                this.frontMatters = fmObj as FrontMatters;
-            }
+            fmObj = safeLoad(frontMatters) as typeof fmObj;
         }
-        this.frontMatters = defaults({ key: this.namespace }, this.frontMatters, { name: '', description: '' });
+        this.frontMatters = {
+            name: '',
+            description: '',
+            ...fmObj,
+            key: this.namespace,
+        };
     }
     async save(): Promise<void> {
         let content = '';
@@ -146,7 +148,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     info(): NamespaceInfo {
         return {
             namespace: this.namespace,
-            frontMatters: cloneDeep(this.frontMatters),
+            frontMatters: this.frontMatters,
             count: this.rawMap.size,
         };
     }
@@ -219,7 +221,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         const line = this.rawMap.get(raw);
         if (!line) return undefined;
         this.rawMap.delete(raw);
-        pullAt(this.rawData, this.rawData.indexOf(line));
+        this.rawData.splice(this.rawData.indexOf(line), 1);
         return line.record;
     }
 }

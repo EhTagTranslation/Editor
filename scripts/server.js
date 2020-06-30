@@ -5,7 +5,7 @@ const removedPackageHeaders = ['@angular/'];
 
 const packageJson = fs.readJSONSync('./package.json');
 packageJson.scripts = {
-    prestart: 'which git || apt install git -y',
+    prestart: 'which git || apt-get install --no-install-recommends -y git',
     start: 'node server/main.js',
 };
 packageJson.devDependencies = undefined;

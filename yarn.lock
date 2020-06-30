@@ -1783,18 +1783,6 @@
   resolved "https://registry.npm.taobao.org/@types/linkify-it/download/@types/linkify-it-2.1.0.tgz#ea3dd64c4805597311790b61e872cbd1ed2cd806"
   integrity sha1-6j3WTEgFWXMReQth6HLL0e0s2AY=
 
-"@types/lodash-es@^4.17.3":
-  version "4.17.3"
-  resolved "https://registry.npm.taobao.org/@types/lodash-es/download/@types/lodash-es-4.17.3.tgz#87eb0b3673b076b8ee655f1890260a136af09a2d"
-  integrity sha1-h+sLNnOwdrjuZV8YkCYKE2rwmi0=
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*":
-  version "4.14.157"
-  resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.157.tgz?cache=0&sync_timestamp=1592997873162&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.157.tgz#fdac1c52448861dfde1a2e1515dbc46e54926dc8"
-  integrity sha1-/awcUkSIYd/eGi4VFdvEblSSbcg=
-
 "@types/lru-cache@^5.1.0":
   version "5.1.0"
   resolved "https://registry.npm.taobao.org/@types/lru-cache/download/@types/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
@@ -6894,11 +6882,6 @@ locate-path@^5.0.0:
   integrity sha1-Gvujlq/WdqbUJQTQpno6frn2KqA=
   dependencies:
     p-locate "^4.1.0"
-
-lodash-es@^4.17.15:
-  version "4.17.15"
-  resolved "https://registry.npm.taobao.org/lodash-es/download/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
-  integrity sha1-Ib2Wg5NUQS8j16EDQOXqxu5FXXg=
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
