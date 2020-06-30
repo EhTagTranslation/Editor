@@ -27,7 +27,6 @@ import { AppComponent } from './app.component';
 import { UserComponent } from './user/user.component';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
-import { AboutComponent } from './about/about.component';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { LinkifyPipe } from './shared/pipe/linkify.pipe';
@@ -40,7 +39,6 @@ import { ehHttpInterceptorProvider } from 'browser/services/eh-http-interceptor'
         UserComponent,
         ListComponent,
         EditorComponent,
-        AboutComponent,
         GithubCornerComponent,
         MarkPipe,
         LinkifyPipe,

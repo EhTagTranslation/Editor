@@ -1,19 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-github-corner',
     templateUrl: './github-corner.component.html',
     styleUrls: ['./github-corner.component.sass'],
 })
-export class GithubCornerComponent implements OnInit {
+export class GithubCornerComponent {
     @Input() href!: string;
     @Input() target!: string;
     hover = false;
-    constructor() {}
 
-    ngOnInit() {}
-
-    open() {
+    open(): void {
         window.open(this.href, this.target);
     }
 }

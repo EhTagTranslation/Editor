@@ -1,7 +1,17 @@
 const fs = require('fs-extra');
 
+const removedPackages = ['lazysizes', 'material-design-icons', 'zone.js'];
+const removedPackageHeaders = ['@angular/'];
+
 const packageJson = fs.readJSONSync('./package.json');
+packageJson.scripts = {
+    prestart: 'which git || apt install git -y',
+    start: 'node server/main.js',
+};
 packageJson.devDependencies = undefined;
-packageJson.dependencies = undefined;
-packageJson.scripts = { prestart: 'which git || apt install git -y', start: 'node server/main.js' };
+for (const key in packageJson.dependencies) {
+    if (removedPackageHeaders.some((leading) => key.startsWith(leading)) || removedPackages.includes(key)) {
+        packageJson.dependencies[key] = undefined;
+    }
+}
 fs.writeJSONSync('./dist/package.json', packageJson);

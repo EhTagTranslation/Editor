@@ -12,7 +12,7 @@ class LocalStorageItemImpl implements LocalStorageItem {
 
     valueChange = new BehaviorSubject<string | null>(this.value);
     get value(): string | null {
-        return localStorage.getItem(this.token) ?? null;
+        return localStorage.getItem(this.token);
     }
     set value(value) {
         const oldValue = this.value;

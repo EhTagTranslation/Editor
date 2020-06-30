@@ -1,5 +1,5 @@
-import { Injectable, ClassProvider, isDevMode } from '@angular/core';
-import { catchError, mergeMap, tap, retry, map, retryWhen, filter, delay } from 'rxjs/operators';
+import { Injectable, ClassProvider } from '@angular/core';
+import { mergeMap, tap, map, retryWhen } from 'rxjs/operators';
 import {
     HttpEvent,
     HttpHandler,
@@ -16,16 +16,20 @@ import { EhTagConnectorService } from './eh-tag-connector.service';
 import { ApiEndpointService } from './api-endpoint.service';
 import { DebugService } from './debug.service';
 
+function isHttpErrorResponse(error: Error): error is HttpErrorResponse {
+    return error.name === HttpErrorResponse.name;
+}
+
 @Injectable()
 export class EhHttpInterceptor implements HttpInterceptor {
     constructor(
-        private githubOauth: GithubOauthService,
-        private ehTagConnector: EhTagConnectorService,
-        private endpoints: ApiEndpointService,
-        private debug: DebugService,
+        private readonly githubOauth: GithubOauthService,
+        private readonly ehTagConnector: EhTagConnectorService,
+        private readonly endpoints: ApiEndpointService,
+        private readonly debug: DebugService,
     ) {}
 
-    private handleEtag(response: HttpResponseBase) {
+    private handleEtag(response: HttpResponseBase): void {
         if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) {
             return;
         }
@@ -35,13 +39,13 @@ export class EhHttpInterceptor implements HttpInterceptor {
         }
         this.debug.log('http: etag', etagV, 'from response', response);
         // `W/` might be added by some CDN
-        const etag = (etagV.match(/^(W\/)?"(\w+)"$/) ?? [])[2];
+        const etag = (/^(W\/)?"?(\w+)"?$/.exec(etagV) ?? [])[2];
         if (etag) {
             this.ehTagConnector.hash = etag;
         }
     }
 
-    private handleError(response: HttpErrorResponse) {
+    private handleError(response: HttpErrorResponse): void {
         if (!response.url) {
             return;
         }
@@ -53,7 +57,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
         }
     }
 
-    private getReq(req: HttpRequest<any>) {
+    private getReq(req: HttpRequest<unknown>): HttpRequest<unknown> {
         const mod: Parameters<typeof req.clone>[0] = {
             setHeaders: {},
             setParams: {},
@@ -84,7 +88,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
         return req.clone(mod);
     }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const r = of(req).pipe(
             map((rawReq) => this.getReq(rawReq)),
             mergeMap((authReq) => next.handle(authReq)),
@@ -94,9 +98,9 @@ export class EhHttpInterceptor implements HttpInterceptor {
                         this.handleEtag(response);
                     }
                 },
-                (error) => {
+                (error: Error) => {
                     this.debug.error('catchError', error);
-                    if (error.name === HttpErrorResponse.name) {
+                    if (isHttpErrorResponse(error)) {
                         this.handleEtag(error);
                         this.handleError(error);
                     }
@@ -104,9 +108,9 @@ export class EhHttpInterceptor implements HttpInterceptor {
             ),
             retryWhen((attempts) =>
                 attempts.pipe(
-                    mergeMap((error, i) => {
+                    mergeMap((error: Error, i) => {
                         if (
-                            error.name !== HttpErrorResponse.name ||
+                            !isHttpErrorResponse(error) ||
                             i !== 0 ||
                             (error.status < 500 && error.status !== 401 && error.status !== 403) ||
                             error.headers.get('X-RateLimit-Remaining') === '0'

@@ -1,9 +1,9 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
-import { of, from, throwError, BehaviorSubject } from 'rxjs';
+import { of, from, throwError, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService } from './local-storage.service';
 
@@ -13,7 +13,7 @@ const TOKEN_KEY = 'github_oauth_token';
 
 interface TokenData {
     token: string;
-    error: any;
+    error: unknown;
 }
 
 @Injectable({
@@ -21,54 +21,56 @@ interface TokenData {
 })
 export class GithubOauthService {
     constructor(
-        private httpClient: HttpClient,
-        private location: Location,
-        private endpoints: ApiEndpointService,
-        private localStorage: LocalStorageService,
+        private readonly httpClient: HttpClient,
+        private readonly location: Location,
+        private readonly endpoints: ApiEndpointService,
+        private readonly localStorage: LocalStorageService,
     ) {
         // make sure `token` is valid
         this.setToken(this.token ?? undefined);
         if (isDevMode()) {
-            (globalThis as any).setToken = (token: string) => this.setToken(token);
+            Object.defineProperty(globalThis, 'setToken', {
+                value: (token: string) => this.setToken(token),
+            });
         }
     }
 
     private readonly tokenStorage = this.localStorage.get(TOKEN_KEY);
 
     readonly tokenChange = this.tokenStorage.valueChange;
-    get token() {
-        return this.tokenStorage.value;
+    get token(): string | undefined {
+        return this.tokenStorage.value ?? undefined;
     }
 
-    private setToken(value?: string | null) {
-        if (!value || !value.match(/^\w+$/)) {
-            value = null;
+    private setToken(value?: string): void {
+        if (!value || !/^\w+$/.test(value)) {
+            value = undefined;
         }
-        this.tokenStorage.value = value;
+        this.tokenStorage.value = value ?? null;
     }
 
     /**
      * @see https://developer.github.com/v3/users/#get-the-authenticated-user
      */
-    getCurrentUser() {
+    getCurrentUser(): Observable<GithubUser | undefined> {
         const token = this.token;
         if (!token) {
-            return of(null);
+            return of(undefined);
         }
         return this.httpClient.get<GithubUser>(this.endpoints.github('user')).pipe(
-            catchError((error) => {
+            catchError((error: HttpErrorResponse) => {
                 if (error.status === 401 && this.token === token) {
                     // token is invalid.
                     this.setToken();
                 }
-                return of(null);
+                return of(undefined);
             }),
         );
     }
     /**
      * @returns `true` for succeed login, `false` if has been logged in.
      */
-    logInIfNeeded() {
+    logInIfNeeded(): Observable<boolean> {
         if (this.token) {
             return of(false);
         }
@@ -94,14 +96,14 @@ export class GithubOauthService {
         });
 
         const promise = new Promise<string>((res, rej) => {
-            const onMessage = (ev: MessageEvent) => {
+            const onMessage = (ev: MessageEvent): void => {
                 if (ev.source !== authWindow) {
                     return;
                 }
                 res(ev.data as string);
                 window.removeEventListener('message', onMessage);
             };
-            authChecker.then(() => {
+            void authChecker.then(() => {
                 window.removeEventListener('message', onMessage);
                 rej(new Error('Auth window closed.'));
             });
@@ -112,7 +114,7 @@ export class GithubOauthService {
                     .get<TokenData>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`)
                     .toPromise(),
             )
-            .catch((error) => ({ token: null, error }))
+            .catch((error: unknown) => ({ token: null, error }))
             .then((token) => {
                 if (!token.token || token.error) {
                     throw token.error || token;
@@ -123,7 +125,7 @@ export class GithubOauthService {
         return from(promise);
     }
 
-    logOut() {
+    logOut(): void {
         this.setToken();
     }
 
@@ -131,7 +133,7 @@ export class GithubOauthService {
      * Directing users to review their access
      * @see https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#directing-users-to-review-their-access
      */
-    get reviewUrl() {
+    get reviewUrl(): string {
         return `https://github.com/settings/connections/applications/${clientId}`;
     }
 }

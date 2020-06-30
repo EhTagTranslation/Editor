@@ -1,11 +1,11 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD, APP_PIPE, APP_INTERCEPTOR } from '@nestjs/core';
 import { DatabaseModule } from './database/database.module';
 import { ToolsModule } from './tools/tools.module';
 import { LoggerInterceptor } from './logger.interceptor';
 import { OctokitModule } from './octokit/octokit.module';
-import { GithubIndentityGuard } from './github-indentity.guard';
+import { GithubIdentityGuard } from './github-identity.guard';
 import { NoContentInterceptor } from './no-content.interceptor';
 
 @Module({
@@ -28,7 +28,7 @@ import { NoContentInterceptor } from './no-content.interceptor';
         },
         {
             provide: APP_GUARD,
-            useClass: GithubIndentityGuard,
+            useClass: GithubIdentityGuard,
         },
     ],
 })

@@ -1,15 +1,6 @@
 import { createParamDecorator, ExecutionContext, BadRequestException } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import {
-    ApiBearerAuth,
-    ApiHeader,
-    ApiOperation,
-    ApiConsumes,
-    ApiOkResponse,
-    ApiNoContentResponse,
-    ApiQuery,
-    ApiProduces,
-} from '@nestjs/swagger';
+import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
 import { TagType } from 'shared/interfaces/ehtag';
 

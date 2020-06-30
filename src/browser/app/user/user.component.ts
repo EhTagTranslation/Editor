@@ -10,13 +10,13 @@ import { finalize } from 'rxjs/operators';
     styleUrls: ['./user.component.sass'],
 })
 export class UserComponent implements OnInit {
-    constructor(private github: GithubOauthService, private release: GithubReleaseService) {}
+    constructor(private readonly github: GithubOauthService, private readonly release: GithubReleaseService) {}
 
-    user: GithubUser | null = null;
+    user?: GithubUser;
 
     loading = 0;
 
-    private getUserInfo() {
+    private getUserInfo(): void {
         if (this.github.token) {
             this.loading++;
             this.github
@@ -26,11 +26,11 @@ export class UserComponent implements OnInit {
         }
     }
 
-    async ngOnInit() {
+    ngOnInit(): void {
         this.getUserInfo();
     }
 
-    async logIn() {
+    logIn(): void {
         this.loading++;
         this.github
             .logInIfNeeded()
@@ -43,12 +43,12 @@ export class UserComponent implements OnInit {
             });
     }
 
-    logOut() {
+    logOut(): void {
         this.github.logOut();
-        this.user = null;
+        this.user = undefined;
     }
 
-    reviewSettings() {
+    reviewSettings(): void {
         window.open(this.github.reviewUrl, '_blank');
     }
 }

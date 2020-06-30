@@ -10,7 +10,7 @@
         "build:browser": "ng build --prod",
         "clean": "rimraf dist",
         "format": "prettier --ignore-path .gitignore --write .",
-        "lint": "eslint ."
+        "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern **/*.spec.ts -- ."
     },
     "private": true,
     "dependencies": {

@@ -2,10 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { ConfigService } from '@nestjs/config';
 import { Octokit } from '@octokit/rest';
-import { createAppAuth, Types } from '@octokit/auth-app';
-import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { AsyncReturnType } from 'type-fest';
-import * as Cache from 'node-cache';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as execa from 'execa';
@@ -40,19 +37,6 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         await this.git(`config user.email '${userEmail(this.octokit.botUserInfo)}'`);
         await this.pull();
         this.data = await Database.create(this.path);
-    }
-
-    private createOctokit(options?: OctokitOptions): Octokit {
-        return new Octokit({
-            log: {
-                // debug: (...args: unknown[]) => this.logger.debug(args),
-                info: (arg: unknown) => this.logger.log(arg),
-                warn: (arg: unknown) => this.logger.warn(arg),
-                error: (arg: unknown) => this.logger.error(arg),
-            },
-            userAgent: 'EhTagTranslation Nest',
-            ...options,
-        });
     }
 
     private appToken?: string;
