@@ -5,7 +5,7 @@
     "projects": {
         "eh-tag-editor": {
             "root": "",
-            "sourceRoot": "src",
+            "sourceRoot": "src/browser",
             "projectType": "application",
             "prefix": "app",
             "schematics": {
@@ -17,15 +17,15 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist",
-                        "index": "src/index.html",
-                        "main": "src/main.ts",
-                        "polyfills": "src/polyfills.ts",
-                        "tsConfig": "src/tsconfig.app.json",
-                        "assets": ["src/favicon.ico", "src/favicon.svg", "src/assets"],
+                        "outputPath": "dist/browser",
+                        "index": "src/browser/index.html",
+                        "main": "src/browser/main.ts",
+                        "polyfills": "src/browser/polyfills.ts",
+                        "tsConfig": "src/browser/tsconfig.json",
+                        "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
                         "styles": [
                             "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-                            "src/styles.sass"
+                            "src/browser/styles.sass"
                         ],
                         "scripts": []
                     },
@@ -33,8 +33,8 @@
                         "production": {
                             "fileReplacements": [
                                 {
-                                    "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.prod.ts"
+                                    "replace": "src/browser/environments/environment.ts",
+                                    "with": "src/browser/environments/environment.prod.ts"
                                 }
                             ],
                             "commonChunk": true,

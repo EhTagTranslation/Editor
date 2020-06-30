@@ -1,0 +1,29 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./",
+        "rootDir": "./",
+        "outDir": "../dist/out-tsc",
+
+        "sourceMap": true,
+        "inlineSources": true,
+        "removeComments": true,
+        "declaration": false,
+
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "es6",
+        "typeRoots": ["node_modules/@types"],
+        "types": ["node", "bluebird-global"],
+
+        "strict": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    }
+}

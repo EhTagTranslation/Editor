@@ -1,5 +1,9 @@
 # compiled output
 /dist/
+/db/
+
+# env
+/.env
 
 # packages
 /node_modules/
