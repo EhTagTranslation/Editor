@@ -22,7 +22,10 @@ jobs:
                   name: server
                   path: ./dist
             - name: Prepare app
-              run: node ./scripts/server.js
+              run: |
+                node ./scripts/server.js
+                yarn install --no-lockfile --prefer-offline
+                cp ./node_modules ./dist/ -r
             - name: 'Run Azure webapp deploy action using publish profile credentials'
               uses: azure/webapps-deploy@v1
               if: github.ref == 'refs/heads/master'

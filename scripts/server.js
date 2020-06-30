@@ -1,8 +1,7 @@
 const fs = require('fs-extra');
+
 const packageJson = fs.readJSONSync('./package.json');
 packageJson.devDependencies = undefined;
-packageJson.scripts = { start: 'apt install git -y && yarn install && node server/main.js' };
-for (const key in packageJson.dependencies) {
-    if (key.startsWith('@angular/')) packageJson.dependencies[key] = undefined;
-}
+packageJson.dependencies = undefined;
+packageJson.scripts = { prestart: 'which git || apt install git -y', start: 'node server/main.js' };
 fs.writeJSONSync('./dist/package.json', packageJson);
