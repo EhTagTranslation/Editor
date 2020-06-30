@@ -49,7 +49,7 @@ export class Database implements DatabaseView {
         await Promise.all(Object.values(this.data).map((n) => n.save()));
     }
 
-    async sha(): Promise<string> {
+    async sha(): Promise<Sha1Value> {
         return (await this.headInfo()).sha;
     }
 

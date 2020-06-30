@@ -14,14 +14,22 @@ import {
     Delete,
     Query,
     BadRequestException,
+    Headers,
 } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
 import { EtagInterceptor } from 'server/etag.interceptor';
 import { NamespaceInfo, TagType } from 'shared/interfaces/ehtag';
-import { ApiTags, ApiOperation, ApiNotFoundResponse, ApiNoContentResponse, ApiConflictResponse } from '@nestjs/swagger';
+import {
+    ApiTags,
+    ApiOperation,
+    ApiNotFoundResponse,
+    ApiNoContentResponse,
+    ApiConflictResponse,
+    ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
-import { NsParams, TagParams, PostTagQuery } from './params.dto';
+import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto';
 import { Format } from 'server/decorators/format.decorator';
 import { UserInfo } from 'server/octokit/octokit.service';
 import { User } from 'server/decorators/user.decorator';
@@ -191,5 +199,24 @@ export class DatabaseController extends InjectableBase {
 
         await dic.save();
         await this.service.commitAndPush(user, p.raw);
+    }
+
+    @ApiExcludeEndpoint()
+    @Post('~update-webhook')
+    async updateDatabase(
+        @Headers('X-GitHub-Delivery') delivery: string,
+        @Headers('X-GitHub-Event') event: string,
+        @Body() payload: PushEvent,
+    ): Promise<string> {
+        if (!delivery) return 'Unknown delivery.';
+        if (event === 'ping') return 'pong';
+        if (event !== 'push') return 'Unsupported event.';
+        if (payload.ref !== 'refs/heads/master') return 'Not master, skipped.';
+        const head = await this.service.data.sha();
+        if (payload.after === head) return 'Already up-to-date.';
+        const start = Date.now();
+        await this.service.pull();
+        const newHead = await this.service.data.sha();
+        return `Pulled from github in ${Date.now() - start}ms, updated from ${head} to ${newHead}.`;
     }
 }

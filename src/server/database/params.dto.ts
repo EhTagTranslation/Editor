@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { NamespaceName } from 'shared/interfaces/ehtag';
+import { NamespaceName, Sha1Value } from 'shared/interfaces/ehtag';
 import { IsIn, IsOptional } from 'class-validator';
 import { IsRawTag, RawTag } from 'shared/validate';
 export class NsParams {
@@ -27,4 +27,21 @@ export class PostTagQuery {
     @IsRawTag()
     @IsOptional()
     after?: RawTag;
+}
+export interface PushEvent {
+    ref: string;
+    before: Sha1Value;
+    after: Sha1Value;
+    head_commit: Commit;
+}
+interface Commit {
+    id: Sha1Value;
+    tree_id: string;
+    distinct: boolean;
+    message: string;
+    timestamp: Date;
+    url: string;
+    added: string[];
+    removed: string[];
+    modified: string[];
 }
