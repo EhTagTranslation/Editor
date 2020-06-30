@@ -204,8 +204,8 @@ export class DatabaseController extends InjectableBase {
     @ApiExcludeEndpoint()
     @Post('~update-webhook')
     async updateDatabase(
-        @Headers('X-GitHub-Delivery') delivery: string,
-        @Headers('X-GitHub-Event') event: string,
+        @Headers('x-github-delivery') delivery: string,
+        @Headers('x-github-event') event: string,
         @Body() payload: PushEvent,
     ): Promise<string> {
         if (!delivery) return 'Unknown delivery.';
