@@ -11,12 +11,10 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const http = context.switchToHttp();
         const request = http.getRequest<FastifyRequest>();
-        let token = ((request.headers['x-token'] ??
-            request.headers['authorization'] ??
-            request.query.access_token) as string)
-            ?.trim()
-            .toLowerCase();
+        let token = (request.headers['authorization'] ?? request.query.access_token) as string;
         if (!token) return true;
+        if (typeof token != 'string') throw new UnauthorizedException('Invalid token.');
+        token = token.trim().toLowerCase();
         if (token.startsWith('bearer')) token = token.slice(6).trimLeft();
         if (!/^[a-f0-9]{8,}$/i.test(token)) throw new UnauthorizedException('Invalid token.');
         try {

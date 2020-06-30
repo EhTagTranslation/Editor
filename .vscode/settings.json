@@ -27,6 +27,7 @@
     },
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "cSpell.words": [
+        "fastify",
         "execa",
         "nestjs",
         "octokit"

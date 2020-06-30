@@ -1,21 +1,30 @@
 import 'source-map-support/register';
-import * as bluebird from 'bluebird';
+import { Promise } from 'bluebird';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
+import * as compress from 'fastify-compress';
 
-Object.defineProperty(globalThis, 'Promise', { value: bluebird });
+Object.defineProperty(globalThis, 'Promise', { value: Promise, writable: false, enumerable: true });
+const logger = new Logger('Main', true);
+
 /**
  * 启动服务
  */
 async function bootstrap(): Promise<void> {
+    logger.log(`App starting`);
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {});
+    app.register(compress);
     app.enableCors({
-        origin: /./,
-        credentials: true,
-        maxAge: 6000,
+        origin: true,
+        credentials: false,
+        methods: ['OPTIONS', 'HEAD', 'GET', 'PUT', 'POST', 'DELETE'],
+        allowedHeaders: ['If-Match', 'If-None-Match', 'Content-Type', 'Authorization'],
+        exposedHeaders: ['ETag', 'Location'],
+        maxAge: 60 * 60 * 24,
     });
     const options = new DocumentBuilder()
         .setTitle('Eh Tag Translation Server')
@@ -30,6 +39,8 @@ async function bootstrap(): Promise<void> {
 
     const port = Number.parseInt(app.get(ConfigService).get('PORT', '3000'));
     await app.listen(port, '0.0.0.0');
+    const url = await app.getUrl();
+    Logger.log(`App start listening on ${url}`, 'Main');
 }
 
-bootstrap().catch((err) => console.error(err));
+bootstrap().catch((err: unknown) => logger.error(err));
