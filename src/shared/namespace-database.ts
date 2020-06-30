@@ -3,7 +3,7 @@ import * as readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { defaults, cloneDeep, pullAt } from 'lodash';
+import { defaults, cloneDeep, pullAt } from 'lodash-es';
 import { promisify } from 'util';
 import { Database } from './database';
 import { RawTag } from './validate';

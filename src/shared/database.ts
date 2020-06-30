@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import simpleGit, { SimpleGit } from 'simple-git';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';

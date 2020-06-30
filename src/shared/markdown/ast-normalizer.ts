@@ -1,5 +1,5 @@
 import { ImageNode, Node, isNodeType, NodeType, NodeMap } from '../interfaces/ehtag.ast';
-import { remove } from 'lodash';
+import { remove } from 'lodash-es';
 import { ParseResult } from '.';
 import { isRawTag } from '../validate';
 import { Context } from '../interfaces/database';

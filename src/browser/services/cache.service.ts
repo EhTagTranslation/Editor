@@ -1,18 +1,6 @@
-import Dexie from 'dexie';
 import { RepoData } from 'shared/interfaces/ehtag';
 import { Injectable } from '@angular/core';
-
-class CacheStore extends Dexie {
-    // Declare implicit table properties.
-    // (just to inform Typescript. Instanciated by Dexie in stores() method)
-    data!: Dexie.Table<{ key: string; value: unknown }, string>;
-    constructor() {
-        super('cache-store');
-        this.version(1).stores({
-            data: 'key',
-        });
-    }
-}
+import * as idb from 'idb-keyval';
 
 interface CacheMap {
     REPO_DATA_RAW: RepoData<'raw'>;
@@ -26,24 +14,29 @@ interface CacheMap {
     providedIn: 'root',
 })
 export class CacheService {
-    private db = new CacheStore();
-
     async get<T extends keyof CacheMap>(key: T): Promise<CacheMap[T] | undefined>;
     async get(key: string): Promise<unknown | undefined>;
     async get(key: string): Promise<unknown | undefined> {
-        const kv = await this.db.data.get(key);
-        return kv?.value;
+        return idb.get(key);
     }
 
     async set<T extends keyof CacheMap>(key: T, value: CacheMap[T]): Promise<void>;
     async set(key: string, value: unknown): Promise<void>;
     async set(key: string, value: unknown): Promise<void> {
-        await this.db.data.put({ key, value });
+        return idb.set(key, value);
     }
 
     async delete<T extends keyof CacheMap>(key: T): Promise<void>;
     async delete(key: string): Promise<void>;
     async delete(key: string): Promise<void> {
-        await this.db.data.delete(key);
+        return idb.del(key);
+    }
+
+    async keys(): Promise<string[]> {
+        return idb.keys() as Promise<string[]>;
+    }
+
+    async clear(): Promise<void> {
+        return idb.clear();
     }
 }
