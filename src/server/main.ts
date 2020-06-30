@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 Object.defineProperty(globalThis, 'Promise', { value: bluebird });
 /**
@@ -26,6 +27,9 @@ async function bootstrap(): Promise<void> {
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/', app, document);
-    await app.listen(3000, '0.0.0.0');
+
+    const port = Number.parseInt(app.get(ConfigService).get('PORT', '3000'));
+    await app.listen(port);
 }
+
 bootstrap().catch((err) => console.error(err));
