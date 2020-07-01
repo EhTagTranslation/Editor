@@ -78,7 +78,8 @@ export class EhHttpInterceptor implements HttpInterceptor {
         } else if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
             if (['POST', 'PUT', 'DELETE'].includes(req.method) && mod.setHeaders) {
                 if (token) {
-                    mod.setHeaders['Authorization'] = `Bearer ${token}`;
+                    //mod.setHeaders['Authorization'] = `Bearer ${token}`;
+                    mod.setHeaders['X-Token'] = token;
                 }
                 if (this.ehTagConnector.hash) {
                     mod.setHeaders['If-Match'] = `"${this.ehTagConnector.hash}"`;
