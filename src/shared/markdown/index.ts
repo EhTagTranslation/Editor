@@ -34,14 +34,26 @@ export function parse(src: string, context: Context): ParseResult {
 }
 
 export const render = <T extends TagType>(parsed: ParseResult, target: T): CellType<T> => {
-    if (target === 'ast') return parsed.doc.content as CellType<T>;
-    if (target === 'raw') return parsed.raw as CellType<T>;
-    if (target === 'html') return serialize(parsed.doc, { treeAdapter: serializeTreeAdapter }) as CellType<T>;
-    if (target === 'text') return renderText(parsed.doc.content) as CellType<T>;
-    return {
-        ast: render(parsed, 'ast'),
-        html: render(parsed, 'html'),
-        raw: render(parsed, 'raw'),
-        text: render(parsed, 'text'),
-    } as CellType<T>;
+    const t = target as TagType;
+    switch (t) {
+        case 'raw':
+            return parsed.raw as CellType<T>;
+        case 'text':
+            return renderText(parsed.doc.content) as CellType<T>;
+        case 'html':
+            return serialize(parsed.doc, { treeAdapter: serializeTreeAdapter }) as CellType<T>;
+        case 'ast':
+            return parsed.doc.content as CellType<T>;
+        case 'full':
+            return {
+                raw: render(parsed, 'raw'),
+                text: render(parsed, 'text'),
+                html: render(parsed, 'html'),
+                ast: render(parsed, 'ast'),
+            } as CellType<T>;
+        default: {
+            const _: never = t;
+            throw new Error(`Unknown tag type ${target}`);
+        }
+    }
 };

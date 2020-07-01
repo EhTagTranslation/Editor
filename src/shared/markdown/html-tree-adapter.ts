@@ -149,7 +149,7 @@ const ATTR_MAP: {
         const attr = [{ name: 'src', value: node.url }];
         if (node.title) attr.push({ name: 'title', value: node.title });
         if (node.content.length > 0) {
-            attr.push({ name: 'alt', value: renderText(node) });
+            attr.push({ name: 'alt', value: renderText(node.content) });
         }
         if (node.nsfw) attr.push({ name: 'nsfw', value: node.nsfw });
         return attr;

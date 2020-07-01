@@ -108,12 +108,21 @@ export class Database implements DatabaseView {
     private async repoInfo(): Promise<Omit<RepoInfo, 'data'>> {
         if (!this.repoInfoProvider) throw new Error('This is not a git repo');
         const head = this.repoInfoProvider.head();
-        const repo = await this.repoInfoProvider.repo();
-        const url = new URL(repo);
-        url.username = '';
-        url.password = '';
+        let repo = await this.repoInfoProvider.repo();
+        if (/^https?:\/\//.test(repo)) {
+            const url = new URL(repo);
+            url.username = '';
+            url.password = '';
+            repo = url.href;
+        } else if (/^git@/.test(repo)) {
+            const match = /^git@([^:]+):(.+)$/.exec(repo);
+            if (match) {
+                const [_, host, path] = match;
+                repo = `https://${host}/${path}`;
+            }
+        }
         return {
-            repo: url.href,
+            repo,
             head: await head,
             version: this.version,
         };

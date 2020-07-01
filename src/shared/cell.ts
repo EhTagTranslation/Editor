@@ -35,10 +35,10 @@ export class Cell {
         }
         if (target === 'full') {
             const i = rendered as CellType<'full'>;
-            this.cache.ast = i.ast;
-            this.cache.html = i.html;
             this.cache.raw = i.raw;
             this.cache.text = i.text;
+            this.cache.html = i.html;
+            this.cache.ast = i.ast;
         } else {
             this.cache[target as Exclude<TagType, 'full'>] = rendered as string & Tree;
         }

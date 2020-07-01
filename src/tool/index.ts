@@ -1,18 +1,25 @@
 import 'source-map-support/register';
 import { Database } from '../shared/database';
-import * as fs from 'fs-extra';
+import { createRelease } from './create-release';
+import * as path from 'path';
+import { program } from 'commander';
 
+const checkPath = (p: string): string => {
+    return path.resolve(p);
+};
+program
+    .version('0.0.1')
+    .option('--source <source>', 'Source folder of database, root of the git repo', checkPath, '.')
+    .option('--target <target>', 'Target folder of generated files', checkPath, './publish')
+    .parse();
+const opt = program.opts() as {
+    source: string;
+    target: string;
+};
+console.log(opt);
 async function main(): Promise<void> {
-    const db = await Database.create('db');
-    await db.load();
-    process.chdir(db.repoPath);
-    await fs.mkdirp('publish');
-    await fs.writeJSON('publish/db.full.json', await db.render('full'));
-    await fs.writeJSON('publish/db.ast.json', await db.render('ast'));
-    await fs.writeJSON('publish/db.html.json', await db.render('html'));
-    await fs.writeJSON('publish/db.text.json', await db.render('text'));
-    await fs.writeJSON('publish/db.raw.json', await db.render('raw'));
-    await db.save();
+    const db = await Database.create(opt.source);
+    await createRelease(db, opt.target);
 }
 
 void main();
