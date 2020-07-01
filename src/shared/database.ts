@@ -9,51 +9,16 @@ import { DatabaseView } from './interfaces/database';
 
 const SUPPORTED_REPO_VERSION = 5;
 
-export class Database implements DatabaseView {
-    static async create(repoPath: string): Promise<Database> {
-        repoPath = path.resolve(repoPath);
+export interface RepoInfoProvider {
+    head(): Promise<RepoInfo['head']> | RepoInfo['head'];
 
-        await fs.access(path.join(repoPath, 'version'));
-        const version = Number.parseFloat((await fs.readFile(path.join(repoPath, 'version'), 'utf-8')).trim());
-        if (Number.isNaN(version) || version < SUPPORTED_REPO_VERSION || version >= SUPPORTED_REPO_VERSION + 1) {
-            throw new Error('version not supported');
-        }
+    repo(): Promise<RepoInfo['repo']> | RepoInfo['repo'];
+}
 
-        await fs.access(path.join(repoPath, 'database'));
-        const files = NamespaceName.map((ns) => path.join(repoPath, 'database', `${ns}.md`));
-        await Promise.all(files.map((f) => fs.access(f)));
-
-        const git = (await fs.pathExists(path.join(repoPath, '.git'))) ? simpleGit({ baseDir: repoPath }) : undefined;
-        const db = new Database(repoPath, version, files, git);
-        await db.load();
-        return db;
-    }
-
-    private constructor(
-        readonly repoPath: string,
-        readonly version: number,
-        files: readonly string[],
-        private readonly git?: SimpleGit,
-    ) {
-        this.data = NamespaceName.reduce((obj, v, i) => {
-            obj[v] = new NamespaceDatabase(v, files[i], this);
-            return obj;
-        }, {} as { [key in NamespaceName]: NamespaceDatabase });
-    }
-    readonly data: { readonly [key in NamespaceName]: NamespaceDatabase };
-
-    async load(): Promise<void> {
-        await Promise.all(Object.values(this.data).map((n) => n.load()));
-    }
-    async save(): Promise<void> {
-        await Promise.all(Object.values(this.data).map((n) => n.save()));
-    }
-
-    async sha(): Promise<Sha1Value> {
-        return (await this.headInfo()).sha;
-    }
-
-    private async headInfo(): Promise<RepoInfo['head']> {
+class GitRepoInfoProvider implements RepoInfoProvider {
+    constructor(readonly repoPath: string) {}
+    private readonly git = simpleGit({ baseDir: this.repoPath });
+    async head(): Promise<RepoInfo['head']> {
         if (!this.git) throw new Error('This is not a git repo');
         const commit = (
             await this.git.log({
@@ -87,15 +52,70 @@ export class Database implements DatabaseView {
         };
     }
 
-    private async repoInfo(): Promise<Omit<RepoInfo, 'data'>> {
-        if (!this.git) throw new Error('This is not a git repo');
+    async repo(): Promise<RepoInfo['repo']> {
         const remote = await this.git.getRemotes(true);
-        const url = new URL(remote[0].refs.fetch);
+        return remote[0].refs.fetch;
+    }
+}
+
+export class Database implements DatabaseView {
+    static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider): Promise<Database> {
+        repoPath = path.resolve(repoPath);
+
+        await fs.access(path.join(repoPath, 'version'));
+        const version = Number.parseFloat((await fs.readFile(path.join(repoPath, 'version'), 'utf-8')).trim());
+        if (Number.isNaN(version) || version < SUPPORTED_REPO_VERSION || version >= SUPPORTED_REPO_VERSION + 1) {
+            throw new Error('version not supported');
+        }
+
+        await fs.access(path.join(repoPath, 'database'));
+        const files = NamespaceName.map((ns) => path.join(repoPath, 'database', `${ns}.md`));
+        await Promise.all(files.map((f) => fs.access(f)));
+
+        const info =
+            repoInfoProvider ?? (await fs.pathExists(path.join(repoPath, '.git')))
+                ? new GitRepoInfoProvider(repoPath)
+                : undefined;
+        const db = new Database(repoPath, version, files, info);
+        await db.load();
+        return db;
+    }
+
+    private constructor(
+        readonly repoPath: string,
+        readonly version: number,
+        files: readonly string[],
+        private readonly repoInfoProvider?: RepoInfoProvider,
+    ) {
+        this.data = NamespaceName.reduce((obj, v, i) => {
+            obj[v] = new NamespaceDatabase(v, files[i], this);
+            return obj;
+        }, {} as { [key in NamespaceName]: NamespaceDatabase });
+    }
+    readonly data: { readonly [key in NamespaceName]: NamespaceDatabase };
+
+    async load(): Promise<void> {
+        await Promise.all(Object.values(this.data).map((n) => n.load()));
+    }
+    async save(): Promise<void> {
+        await Promise.all(Object.values(this.data).map((n) => n.save()));
+    }
+
+    async sha(): Promise<Sha1Value> {
+        if (!this.repoInfoProvider) throw new Error('This is not a git repo');
+        return (await this.repoInfoProvider.head()).sha;
+    }
+
+    private async repoInfo(): Promise<Omit<RepoInfo, 'data'>> {
+        if (!this.repoInfoProvider) throw new Error('This is not a git repo');
+        const head = this.repoInfoProvider.head();
+        const repo = await this.repoInfoProvider.repo();
+        const url = new URL(repo);
         url.username = '';
         url.password = '';
         return {
             repo: url.href,
-            head: await this.headInfo(),
+            head: await head,
             version: this.version,
         };
     }

@@ -3,10 +3,9 @@ import { DatabaseService } from './database.service';
 import { DatabaseController } from './database.controller';
 import { OctokitModule } from 'server/octokit/octokit.module';
 import { DatabaseBadgeController } from './database-badge.controller';
-import { ExecModule } from 'server/exec/exec.module';
 
 @Module({
-    imports: [OctokitModule, ExecModule],
+    imports: [OctokitModule],
     providers: [DatabaseService],
     controllers: [DatabaseController, DatabaseBadgeController],
     exports: [DatabaseService],

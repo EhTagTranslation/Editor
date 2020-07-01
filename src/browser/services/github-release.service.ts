@@ -142,12 +142,12 @@ class DatabaseInMemory implements DatabaseView {
                     author: {
                         name: 'author',
                         email: 'author@example.com',
-                        when: new Date(),
+                        when: new Date(0),
                     },
                     committer: {
                         name: 'committer',
                         email: 'committer@example.com',
-                        when: new Date(),
+                        when: new Date(0),
                     },
                 },
                 data: Object.values(this.data).map((d) => d.info()),

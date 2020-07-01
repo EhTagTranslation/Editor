@@ -7,7 +7,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { Database } from 'shared/database';
 import { OctokitService, UserInfo } from 'server/octokit/octokit.service';
-import { ExecService } from 'server/exec/exec.service';
+import { Sha1Value, NamespaceName, Commit } from 'shared/interfaces/ehtag';
 
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 
@@ -17,73 +17,83 @@ function userEmail(user: User): string {
 
 @Injectable()
 export class DatabaseService extends InjectableBase implements OnModuleInit {
-    constructor(
-        private readonly config: ConfigService,
-        private readonly octokit: OctokitService,
-        private readonly exec: ExecService,
-    ) {
+    constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
         this.repo = this.config.get('DB_REPO', '');
+        this.headFile = path.join(this.path, '.head');
     }
 
-    private readonly APP_INSTALLATION_ID: number = Number.parseInt(this.config.get('APP_INSTALLATION_ID', ''));
+    private get head(): Commit {
+        if (!this._head) {
+            this._head = fs.readJSONSync(this.headFile) as Commit;
+        }
+        return this._head;
+    }
+    private set head(value: Commit) {
+        if (this._head?.sha !== value.sha) {
+            this._head = value;
+            fs.writeJSONSync(this.headFile, value);
+        }
+    }
+    private readonly headFile: string;
+    private _head?: Commit;
+
     async onModuleInit(): Promise<void> {
-        await fs.mkdirp(this.path);
-        if (!(await fs.pathExists(path.join(this.path, '.git')))) {
-            await this.exec.git(this.path, 'init');
-            await this.exec.git(this.path, `remote add origin 'https://github.com/${this.repo}.git'`);
-        } else {
-            await this.exec.git(this.path, `remote set-url origin 'https://github.com/${this.repo}.git'`);
+        await fs.mkdirp(path.join(this.path, 'database'));
+        if (!(await fs.pathExists(this.headFile))) {
+            this.head = {
+                sha: '' as Sha1Value,
+                message: '',
+                author: {
+                    name: 'author',
+                    email: 'author@example.com',
+                    when: new Date(0),
+                },
+                committer: {
+                    name: 'committer',
+                    email: 'committer@example.com',
+                    when: new Date(0),
+                },
+            };
         }
         await this.pull();
-        this.data = await Database.create(this.path);
+        this.data = await Database.create(this.path, {
+            head: () => this.head,
+            repo: () => `https://github.com/${this.repo}.git`,
+        });
     }
 
-    private appToken?: string;
-    private async setOrigin(): Promise<void> {
-        const token = await this.octokit.getAppToken();
-        if (this.appToken !== token) {
-            const login = (await this.octokit.botUserInfo()).login;
-            const origin = `https://${login}:${token}@github.com/${this.repo}.git`;
-            await this.exec.git(
-                this.path,
-                [`remote`, `set-url`, `origin`, origin],
-                `remote set-url origin https://${login}:[REDACTED]@github.com/${this.repo}.git`,
-            );
-            this.appToken = token;
-        }
+    private async pullFile(filename: string): Promise<void> {
+        const file = await this.octokit.getFile(filename);
+        await fs.writeFile(path.join(this.path, filename), file.content);
     }
-
-    private userInfoSet = false;
-    private async setUserInfo(): Promise<void> {
-        if (!this.userInfoSet) {
-            const botUserInfo = await this.octokit.botUserInfo();
-            await this.exec.git(this.path, `config user.name '${botUserInfo.login}'`);
-            await this.exec.git(this.path, `config user.email '${userEmail(botUserInfo)}'`);
-            this.userInfoSet = true;
-        }
-    }
-
     async pull(): Promise<void> {
-        await this.exec.git(this.path, 'fetch');
-        await this.exec.git(this.path, 'reset --hard origin/master');
+        const headCommit = await this.octokit.getHead();
+        if (this.head.sha === headCommit.sha) return;
+        if (this.head.sha.length !== 40) {
+            await Promise.all(
+                ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map((f) => this.pullFile(f)),
+            );
+        } else {
+            const comparison = await this.octokit.compare(headCommit.sha, this.head.sha);
+            await Promise.all(comparison.files.map((f) => this.pullFile(f.filename)));
+        }
+        this.head = headCommit;
     }
 
-    async commitAndPush(user: UserInfo, message: string): Promise<void> {
-        const messageFile = path.join(this.path, '.git/COMMIT_MSG');
-        await this.setUserInfo();
-        await fs.writeFile(messageFile, message);
-        await this.exec.git(this.path, [
-            'commit',
-            '--allow-empty',
-            '--author',
-            `${user.login} <${userEmail(user)}>`,
-            '-aF',
-            messageFile,
-        ]);
-        await this.setOrigin();
-        await this.exec.git(this.path, 'push origin HEAD:master');
+    async commitAndPush(ns: NamespaceName, user: UserInfo, message: string): Promise<void> {
+        await this.data.data[ns].save();
+        const result = await this.octokit.updateFile(
+            `database/${ns}.md`,
+            await fs.readFile(this.data.data[ns].file),
+            message,
+            {
+                name: user.login,
+                email: userEmail(user),
+            },
+        );
+        this.head = result.commit;
     }
     readonly path: string;
     readonly repo: string;

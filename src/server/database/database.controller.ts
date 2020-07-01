@@ -117,8 +117,7 @@ export class DatabaseController extends InjectableBase {
             : q.after
             ? dic.add(p.raw, tag, 'after', q.after)
             : dic.add(p.raw, tag);
-        await dic.save();
-        await this.service.commitAndPush(user, p.raw);
+        await this.service.commitAndPush(p.namespace, user, p.raw);
         return rec.render(format, {
             database: this.service.data,
             namespace: dic,
@@ -146,8 +145,7 @@ export class DatabaseController extends InjectableBase {
             : q.after
             ? dic.add(undefined, tag, 'after', q.after)
             : dic.add(undefined, tag);
-        await dic.save();
-        await this.service.commitAndPush(user, '~comment');
+        await this.service.commitAndPush(p.namespace, user, '~comment');
         return rec.render(format, {
             database: this.service.data,
             namespace: dic,
@@ -179,8 +177,7 @@ export class DatabaseController extends InjectableBase {
             return null;
         }
         const rec = dic.set(p.raw, tag);
-        await dic.save();
-        await this.service.commitAndPush(user, p.raw);
+        await this.service.commitAndPush(p.namespace, user, p.raw);
         return rec.render(format, {
             database: this.service.data,
             namespace: dic,
@@ -196,9 +193,7 @@ export class DatabaseController extends InjectableBase {
     async deleteTag(@Param() p: TagParams, @User() user: UserInfo): Promise<void> {
         const dic = this.service.data.data[p.namespace];
         if (!dic.delete(p.raw)) throw new NotFoundException();
-
-        await dic.save();
-        await this.service.commitAndPush(user, p.raw);
+        await this.service.commitAndPush(p.namespace, user, p.raw);
     }
 
     @ApiExcludeEndpoint()

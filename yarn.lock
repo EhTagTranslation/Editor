@@ -262,10 +262,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/language-service@^10.0.1":
-  version "10.0.1"
-  resolved "https://registry.npm.taobao.org/@angular/language-service/download/@angular/language-service-10.0.1.tgz#7f6d7c079876e0fa24ab9b88a912ebd7ae6c03a2"
-  integrity sha1-f218B5h24Pokq5uIqRLr165sA6I=
+"@angular/language-service@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.npm.taobao.org/@angular/language-service/download/@angular/language-service-10.0.2.tgz?cache=0&sync_timestamp=1593573484648&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular%2Flanguage-service%2Fdownload%2F%40angular%2Flanguage-service-10.0.2.tgz#31f22020be96ab2cf77283e0627f8a6fffedfe36"
+  integrity sha1-MfIgIL6Wqyz3coPgYn+Kb//t/jY=
 
 "@angular/material@^10.0.0":
   version "10.0.1"
@@ -1336,9 +1336,9 @@
     debug "^4.1.1"
 
 "@kwsites/promise-deferred@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npm.taobao.org/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.0.1.tgz#63b170e0d02b85a1fa6ad6bdea1f2f14f6f6adc2"
-  integrity sha1-Y7Fw4NArhaH6ata96h8vFPb2rcI=
+  version "1.1.1"
+  resolved "https://registry.npm.taobao.org/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
+  integrity sha1-is5SWSVEJszvV/MXW8ZO1wle2Rk=
 
 "@nestjs/cli@^7.4.1":
   version "7.4.1"
@@ -1368,16 +1368,16 @@
     webpack "4.43.0"
     webpack-node-externals "1.7.2"
 
-"@nestjs/common@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npm.taobao.org/@nestjs/common/download/@nestjs/common-7.2.0.tgz#f191c79dca5939188544975e624c1ab0fcb2f4db"
-  integrity sha1-8ZHHncpZORiFRJdeYkwasPyy9Ns=
+"@nestjs/common@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/common/download/@nestjs/common-7.3.0.tgz#7e1ca6ebc8da54f9cf0ed81e84e471ecb6a7d45d"
+  integrity sha1-fhym68jaVPnPDtgehORx7Lan1F0=
   dependencies:
     axios "0.19.2"
     cli-color "2.0.0"
     iterare "1.2.1"
     tslib "2.0.0"
-    uuid "8.1.0"
+    uuid "8.2.0"
 
 "@nestjs/config@^0.5.0":
   version "0.5.0"
@@ -1390,10 +1390,10 @@
     lodash.set "4.3.2"
     uuid "8.1.0"
 
-"@nestjs/core@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npm.taobao.org/@nestjs/core/download/@nestjs/core-7.2.0.tgz#759b0a5e4faacb2770215ed4537a0df8d088f093"
-  integrity sha1-dZsKXk+qyydwIV7UU3oN+NCI8JM=
+"@nestjs/core@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/core/download/@nestjs/core-7.3.0.tgz#27425480d86f8f5e4856ad4543f1961e94d7a0be"
+  integrity sha1-J0JUgNhvj15IVq1FQ/GWHpTXoL4=
   dependencies:
     "@nuxtjs/opencollective" "0.2.2"
     fast-safe-stringify "2.0.7"
@@ -1401,19 +1401,19 @@
     object-hash "2.0.3"
     path-to-regexp "3.2.0"
     tslib "2.0.0"
-    uuid "8.1.0"
+    uuid "8.2.0"
 
 "@nestjs/mapped-types@0.0.5":
   version "0.0.5"
   resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.0.5.tgz#0c3462de4125eea0e85e3a520f0de4e7e8dcfa40"
   integrity sha1-DDRi3kEl7qDoXjpSDw3k5+jc+kA=
 
-"@nestjs/platform-fastify@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npm.taobao.org/@nestjs/platform-fastify/download/@nestjs/platform-fastify-7.2.0.tgz#f8cdbdcfc2632ae2658a91681fd1669596cc501d"
-  integrity sha1-+M29z8JjKuJlipFoH9FmlZbMUB0=
+"@nestjs/platform-fastify@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/platform-fastify/download/@nestjs/platform-fastify-7.3.0.tgz#b843cb61bba487c8c03b69bdeeb5beae4d215294"
+  integrity sha1-uEPLYbukh8jAO2m97rW+rk0hUpQ=
   dependencies:
-    fastify "2.14.1"
+    fastify "2.15.1"
     fastify-cors "3.0.3"
     fastify-formbody "3.2.0"
     path-to-regexp "3.2.0"
@@ -1437,10 +1437,10 @@
     lodash "4.17.15"
     path-to-regexp "3.2.0"
 
-"@nestjs/testing@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npm.taobao.org/@nestjs/testing/download/@nestjs/testing-7.2.0.tgz#af70ca5684173eb8d7e2095074ea4baa1b93514d"
-  integrity sha1-r3DKVoQXPrjX4glQdOpLqhuTUU0=
+"@nestjs/testing@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.npm.taobao.org/@nestjs/testing/download/@nestjs/testing-7.3.0.tgz#f79f92bb94949a5baa8377c4489077214cf45b95"
+  integrity sha1-95+Su5SUmluqg3fESJB3IUz0W5U=
   dependencies:
     optional "0.1.4"
     tslib "2.0.0"
@@ -1835,11 +1835,6 @@
   version "1.5.4"
   resolved "https://registry.npm.taobao.org/@types/q/download/@types/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha1-FZJUFOCtLNdlv+9YhC9+JqesyyQ=
-
-"@types/shell-quote@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.npm.taobao.org/@types/shell-quote/download/@types/shell-quote-1.7.0.tgz?cache=0&sync_timestamp=1592988917292&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fshell-quote%2Fdownload%2F%40types%2Fshell-quote-1.7.0.tgz#0b6b930de00ad35128239b182c1fec8b8c40e876"
-  integrity sha1-C2uTDeAK01EoI5sYLB/si4xA6HY=
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -2519,7 +2514,7 @@ autoprefixer@9.8.0:
     postcss "^7.0.30"
     postcss-value-parser "^4.1.0"
 
-avvio@^6.3.1:
+avvio@^6.4.1:
   version "6.4.1"
   resolved "https://registry.npm.taobao.org/avvio/download/avvio-6.4.1.tgz#bb4127ca8b9b9c322d742a9b40962dfdca5d68b1"
   integrity sha1-u0EnyoubnDItdCqbQJYt/cpdaLE=
@@ -4626,7 +4621,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^4.0.0, execa@^4.0.2:
+execa@^4.0.0:
   version "4.0.2"
   resolved "https://registry.npm.taobao.org/execa/download/execa-4.0.2.tgz?cache=0&sync_timestamp=1590156579845&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fexeca%2Fdownload%2Fexeca-4.0.2.tgz#ad87fb7b2d9d564f70d2b62d511bee41d5cbb240"
   integrity sha1-rYf7ey2dVk9w0rYtURvuQdXLskA=
@@ -4886,14 +4881,14 @@ fastify-swagger@^2.6.0:
     fastify-static "^2.5.1"
     js-yaml "^3.12.1"
 
-fastify@2.14.1:
-  version "2.14.1"
-  resolved "https://registry.npm.taobao.org/fastify/download/fastify-2.14.1.tgz#2946e8e9adebcd1b4f634178c8fb7162fb816cf4"
-  integrity sha1-KUbo6a3rzRtPY0F4yPtxYvuBbPQ=
+fastify@2.15.1:
+  version "2.15.1"
+  resolved "https://registry.npm.taobao.org/fastify/download/fastify-2.15.1.tgz#195a068bca87c7b57a83fe81f0aa66e86c6a3992"
+  integrity sha1-GVoGi8qHx7V6g/6B8Kpm6GxqOZI=
   dependencies:
     abstract-logging "^2.0.0"
     ajv "^6.12.0"
-    avvio "^6.3.1"
+    avvio "^6.4.1"
     fast-json-stringify "^1.18.0"
     find-my-way "^2.2.2"
     flatstr "^1.0.12"
@@ -9756,11 +9751,6 @@ shebang-regex@^3.0.0:
   resolved "https://registry.npm.taobao.org/shebang-regex/download/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha1-rhbxZE2HPsrYQ7AwexQzYtTEIXI=
 
-shell-quote@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.npm.taobao.org/shell-quote/download/shell-quote-1.7.2.tgz#67a7d02c76c9da24f99d20808fcaded0e0e04be2"
-  integrity sha1-Z6fQLHbJ2iT5nSCAj8re0ODgS+I=
-
 shelljs@0.8.4:
   version "0.8.4"
   resolved "https://registry.npm.taobao.org/shelljs/download/shelljs-0.8.4.tgz?cache=0&sync_timestamp=1587787210621&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fshelljs%2Fdownload%2Fshelljs-0.8.4.tgz#de7684feeb767f8716b326078a8a00875890e3c2"
@@ -11021,6 +11011,11 @@ uuid@8.1.0:
   version "8.1.0"
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.1.0.tgz?cache=0&sync_timestamp=1592944257550&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
   integrity sha1-bxU260Mkn0c6vGvVj/mD2hyjDY0=
+
+uuid@8.2.0:
+  version "8.2.0"
+  resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.2.0.tgz?cache=0&sync_timestamp=1592944257550&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
+  integrity sha1-yxDdaxGOLa2n0M2XMLp0F8k9kg4=
 
 uuid@^3.0.0, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
