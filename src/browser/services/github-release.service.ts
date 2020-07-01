@@ -246,8 +246,15 @@ export class GithubReleaseService {
     refresh(): void {
         this.refreshEvent.next(-1);
     }
-    private set(value: RepoData<'raw'>): void {
-        this.tagsData.next(new DatabaseInMemory(this.cache, value, this.get().revision + 1));
+    private async set(value: RepoData<'raw'>): Promise<void> {
+        await Promise.delay(0);
+        const data = new DatabaseInMemory(this.cache, value, this.get().revision + 1);
+        await data.render('full');
+        await data.render('ast');
+        await data.render('html');
+        await data.render('raw');
+        await data.render('text');
+        this.tagsData.next(data);
     }
     private get(): DatabaseView {
         return this.tagsData.value;
@@ -302,7 +309,7 @@ export class GithubReleaseService {
             const data = await this.cache.get('REPO_DATA_RAW');
             if (data) {
                 this.debug.log('release: init with db data', { hash: data.head.sha });
-                this.set(data);
+                await this.set(data);
             } else {
                 this.debug.log('release: init skipped, no db data');
             }
@@ -321,12 +328,12 @@ export class GithubReleaseService {
         const dbData = await this.cache.get('REPO_DATA_RAW');
         if (dbData && dbData.head.sha === release.target_commitish) {
             this.debug.log('release: load end with db data', { hash: dbData.head.sha });
-            this.set(dbData);
+            await this.set(dbData);
             return;
         }
         const data = await this.jsonpLoad(release);
         this.debug.log('release: load end with remote data', { hash: data.head.sha });
-        this.set(data);
+        await this.set(data);
         await this.cache.set('REPO_DATA_RAW', data);
     }
 }
