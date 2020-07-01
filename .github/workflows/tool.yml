@@ -1,0 +1,24 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v1
+            - name: Setup Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '12'
+            - name: Install
+              uses: bahmutov/npm-install@v1
+
+            - name: Build
+              run: yarn build:tool
+            - name: Upload artifact
+              uses: actions/upload-artifact@v1.0.0
+              with:
+                  name: tool
+                  path: ./dist

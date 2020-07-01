@@ -182,7 +182,7 @@ class ParseTreeAdapter implements TreeAdapter {
         private readonly _ATTR_MAP: typeof ATTR_MAP,
         private readonly _TAG_NAME_MAP: typeof TAG_NAME_MAP,
     ) {}
-    adoptAttributes(recipient: Node, attrs: Attribute[]): void {
+    adoptAttributes(_recipient: Node, _attrs: Attribute[]): void {
         throw new Error('Method not implemented.');
     }
     appendChild(parentNode: ContainerNode, newNode: InlineNode): void {
@@ -232,16 +232,16 @@ class ParseTreeAdapter implements TreeAdapter {
     getCommentNodeContent(commentNode: __CommentNode): string {
         return commentNode.text;
     }
-    getDocumentMode(document: __Document): import('parse5').DocumentMode {
+    getDocumentMode(_document: __Document): import('parse5').DocumentMode {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodeName(doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodeName(_doctypeNode: import('parse5').DocumentType): string {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodePublicId(doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodePublicId(_doctypeNode: import('parse5').DocumentType): string {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodeSystemId(doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodeSystemId(_doctypeNode: import('parse5').DocumentType): string {
         throw new Error('Method not implemented.');
     }
     getFirstChild(node: ContainerNode): Node {
@@ -251,7 +251,7 @@ class ParseTreeAdapter implements TreeAdapter {
         return getProp(element, 'namespaceURI') ?? '';
     }
     getNodeSourceCodeLocation(
-        node: Node,
+        _node: Node,
     ): import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation {
         throw new Error('Method not implemented.');
     }
@@ -285,7 +285,7 @@ class ParseTreeAdapter implements TreeAdapter {
     isCommentNode(node: Node): boolean {
         return (node.type as string) === COMMENT_NODE;
     }
-    isDocumentTypeNode(node: Node): boolean {
+    isDocumentTypeNode(_node: Node): boolean {
         return false;
     }
     isElementNode(node: Node): boolean {
@@ -298,15 +298,15 @@ class ParseTreeAdapter implements TreeAdapter {
     isTextNode(node: Node): boolean {
         return node.type === 'text';
     }
-    setDocumentMode(document: import('parse5').Document, mode: import('parse5').DocumentMode): void {
+    setDocumentMode(_document: import('parse5').Document, _mode: import('parse5').DocumentMode): void {
         throw new Error('Method not implemented.');
     }
-    setDocumentType(document: import('parse5').Document, name: string, publicId: string, systemId: string): void {
+    setDocumentType(_document: import('parse5').Document, _name: string, _publicId: string, _systemId: string): void {
         throw new Error('Method not implemented.');
     }
     setNodeSourceCodeLocation(
-        node: import('parse5').Node,
-        location: import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation,
+        _node: import('parse5').Node,
+        _location: import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation,
     ): void {
         throw new Error('Method not implemented.');
     }

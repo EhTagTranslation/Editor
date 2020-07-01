@@ -6,9 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { createAppAuth, Types } from '@octokit/auth-app';
 import { AsyncReturnType } from 'type-fest';
 import * as Cache from 'node-cache';
-import { Sha1Value, Commit, Signature, RepoInfo } from 'shared/interfaces/ehtag';
+import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
 import { createHash } from 'crypto';
-import { RepoInfoProvider } from 'shared/database';
 export type AppInfo = Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
 

@@ -13,38 +13,22 @@ jobs:
               with:
                   node-version: '12'
             - name: Install
-              run: yarn install --no-lockfile --prefer-offline
+              uses: bahmutov/npm-install@v1
 
-            - name: Build tool
-              run: yarn build:tool
-            - name: Upload tool artifact
-              uses: actions/upload-artifact@v1.0.0
-              with:
-                  name: tool
-                  path: ./dist
-
-            - name: Build browser
-              run: yarn build:browser
-            - name: Upload browser artifact
-              uses: actions/upload-artifact@v1.0.0
-              with:
-                  name: browser
-                  path: ./dist/browser
-
-            - name: Build server
+            - name: Build
               run: yarn build:server
-            - name: Upload server artifact
+            - name: Upload artifact
               uses: actions/upload-artifact@v1.0.0
               with:
                   name: server
                   path: ./dist
 
-            - name: Prepare server deploy
+            - name: Prepare deploy
               run: |
                   node ./scripts/server.js
                   cd ./dist
-                  yarn install --no-lockfile --prefer-offline
-            - name: Deploy server to Azure webapp
+                  yarn install --prefer-offline
+            - name: Deploy to Azure webapp
               uses: azure/webapps-deploy@v1
               if: github.ref == 'refs/heads/master'
               with:
