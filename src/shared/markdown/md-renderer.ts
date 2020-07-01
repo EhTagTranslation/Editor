@@ -1,4 +1,4 @@
-import { Node, Tree, NodeType, NodeMap } from '../interfaces/ehtag.ast';
+import { Node, Tree, NodeType, NodeMap, ContainerNode } from '../interfaces/ehtag.ast';
 
 function encodeUrl(url: string): string {
     return url;
@@ -8,12 +8,22 @@ function encodeHtml(value: string): string {
     return value;
 }
 
-const renderers: { [T in NodeType]: (node: NodeMap[T]) => string } = {
+const renderers: { [T in NodeType]: (node: NodeMap[T], parent?: ContainerNode, index?: number) => string } = {
     paragraph(node) {
-        return renderList(node.content) + '\n\n';
+        return renderContainer(node) + '\n\n';
     },
-    text(node) {
-        return node.text.replace(/([_*])/gi, '\\$1');
+    text(node, parent, index) {
+        let escaped = node.text.replace(/([_*`])/gi, '\\$1');
+        if (
+            escaped.endsWith('!') &&
+            parent &&
+            index != null &&
+            parent.content[index + 1] &&
+            parent.content[index + 1].type === 'link'
+        ) {
+            escaped = escaped.slice(0, escaped.length - 1) + '\\!';
+        }
+        return escaped;
     },
     br() {
         return '\n';
@@ -32,7 +42,7 @@ const renderers: { [T in NodeType]: (node: NodeMap[T]) => string } = {
         return backtick + ref + backtick;
     },
     image(node) {
-        const content = renderList(node.content);
+        const content = renderContainer(node);
         if (node.nsfw) {
             const url = node.nsfw === 'R18' ? '#' : '##';
             return `![${content}](${url} "${encodeUrl(node.url)}")`;
@@ -43,7 +53,7 @@ const renderers: { [T in NodeType]: (node: NodeMap[T]) => string } = {
         }
     },
     link(node) {
-        const content = renderList(node.content);
+        const content = renderContainer(node);
         if (node.title) {
             return `[${content}](${encodeUrl(node.url)} "${encodeHtml(node.title)}")`;
         } else {
@@ -51,22 +61,32 @@ const renderers: { [T in NodeType]: (node: NodeMap[T]) => string } = {
         }
     },
     emphasis(node) {
-        const content = renderList(node.content);
+        const content = renderContainer(node);
         return `*${content}*`;
     },
     strong(node) {
-        const content = renderList(node.content);
+        const content = renderContainer(node);
         return `**${content}**`;
     },
 };
 
-function renderList(nodes: readonly Node[]): string {
-    return nodes.map(renderMd).join('');
+function renderNode(node: Node, parent?: ContainerNode, index?: number): string {
+    const renderer = renderers[node.type];
+    if (renderer) return renderer(node as never, parent, index);
+    return '';
+}
+
+function renderContainer(nodes: ContainerNode): string {
+    if (!nodes.content) return '';
+    return nodes.content.map((n, i) => renderNode(n, nodes, i)).join('');
 }
 
 export function renderMd(node: Node | Tree): string {
-    if (Array.isArray(node)) return renderList(node).trim();
-    const renderer = renderers[node.type];
-    if (renderer) return renderer(node as never);
-    return '';
+    if (Array.isArray(node)) {
+        return node
+            .map((n) => renderNode(n))
+            .join('')
+            .trim();
+    }
+    return renderNode(node);
 }
