@@ -1,7 +1,0 @@
-language: node_js
-node_js: lts/*
-branches:
-    only:
-        - master
-script: yarn build:server && yarn build:tool && yarn build:browser
-cache: yarn

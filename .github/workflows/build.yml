@@ -1,6 +1,6 @@
-name: server
+name: build
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
     build:
@@ -14,19 +14,37 @@ jobs:
                   node-version: '12'
             - name: Install
               run: yarn install --no-lockfile --prefer-offline
-            - name: Build
+
+            - name: Build tool
+              run: yarn build:tool
+            - name: Upload tool artifact
+              uses: actions/upload-artifact@v1.0.0
+              with:
+                  name: tool
+                  path: ./dist
+
+            - name: Build browser
+              run: yarn build:browser
+            - name: Upload browser artifact
+              uses: actions/upload-artifact@v1.0.0
+              with:
+                  name: browser
+                  path: ./dist/browser
+
+            - name: Build server
               run: yarn build:server
-            - name: Upload artifact
+            - name: Upload server artifact
               uses: actions/upload-artifact@v1.0.0
               with:
                   name: server
                   path: ./dist
-            - name: Prepare app
+
+            - name: Prepare server deploy
               run: |
                   node ./scripts/server.js
                   cd ./dist
                   yarn install --no-lockfile --prefer-offline
-            - name: 'Run Azure webapp deploy action using publish profile credentials'
+            - name: Deploy server to Azure webapp
               uses: azure/webapps-deploy@v1
               if: github.ref == 'refs/heads/master'
               with:

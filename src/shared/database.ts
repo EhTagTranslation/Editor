@@ -73,9 +73,8 @@ export class Database implements DatabaseView {
         await Promise.all(files.map((f) => fs.access(f)));
 
         const info =
-            repoInfoProvider ?? (await fs.pathExists(path.join(repoPath, '.git')))
-                ? new GitRepoInfoProvider(repoPath)
-                : undefined;
+            repoInfoProvider ??
+            ((await fs.pathExists(path.join(repoPath, '.git'))) ? new GitRepoInfoProvider(repoPath) : undefined);
         const db = new Database(repoPath, version, files, info);
         await db.load();
         return db;
