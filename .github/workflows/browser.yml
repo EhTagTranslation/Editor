@@ -1,4 +1,4 @@
-name: build
+name: browser
 
 on: [push, pull_request]
 
@@ -14,7 +14,8 @@ jobs:
                   node-version: '12'
             - name: Install
               uses: bahmutov/npm-install@v1
-
+              with:
+                  useLockFile: false
             - name: Build
               run: yarn build:browser
             - name: Upload artifact
