@@ -258,32 +258,17 @@ export class ListComponent implements OnInit {
         }
         this.usingRegex.next(regex.isRegex);
         if (regex.regex) {
-            const getScore: <K extends keyof RenderedETItem>(
-                t: RenderedETItem,
-                k: K,
-                weight: number,
-            ) => number = regex.isRegex
-                ? (t, k, weight) => {
-                      const str = t[k];
-                      if (str.search(regex.regex) !== -1) {
-                          return (weight * regex.regex.source.length) / str.length;
-                      } else {
-                          return 0;
-                      }
-                  }
-                : (t, k, weight) => {
-                      const str = t[k];
-                      if (str.includes(regex.string)) {
-                          const score = (weight * regex.string.length) / str.length;
-                          if (str.startsWith(regex.string)) {
-                              return score * 2;
-                          }
-                          return score;
-                      } else {
-                          return 0;
-                      }
-                  };
-            const scoredata = data
+            const getScore = <K extends keyof RenderedETItem>(t: RenderedETItem, k: K, weight: number): number => {
+                const str = t[k];
+                if (regex.regex.test(str)) {
+                    const score = (weight * regex.data.length) / str.length;
+                    if (regex.startRegex.test(str)) return score * 2;
+                    return score;
+                } else {
+                    return 0;
+                }
+            };
+            const scoreData = data
                 .map((v) => ({
                     score:
                         nsScore[v.namespace] *
@@ -294,8 +279,8 @@ export class ListComponent implements OnInit {
                     tag: v,
                 }))
                 .filter((sv) => sv.score > 0);
-            scoredata.sort((a, b) => b.score - a.score);
-            data = scoredata.map((sv) => sv.tag);
+            scoreData.sort((a, b) => b.score - a.score);
+            data = scoreData.map((sv) => sv.tag);
         }
         return data;
     }

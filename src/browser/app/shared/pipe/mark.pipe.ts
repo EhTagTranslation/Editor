@@ -11,20 +11,16 @@ interface NoSearchTerm {
     isRegex: undefined;
     regex?: undefined;
 }
-interface StringSearchTerm {
+
+interface SearchTerm {
     data: string;
-    isRegex: false;
-    string: string;
+    isRegex: boolean;
     regex: RegExp;
-}
-interface RegexSearchTerm {
-    data: string;
-    isRegex: true;
-    regex: RegExp;
+    startRegex: RegExp;
 }
 
-let regexFromSearchCache: NoSearchTerm | StringSearchTerm | RegexSearchTerm = { data: '', isRegex: undefined };
-export function regexFromSearch(search: string | null): NoSearchTerm | StringSearchTerm | RegexSearchTerm {
+let regexFromSearchCache: NoSearchTerm | SearchTerm = { data: '', isRegex: undefined };
+export function regexFromSearch(search: string | null): NoSearchTerm | SearchTerm {
     if (!search) {
         return {
             data: search ?? '',
@@ -36,20 +32,24 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
     }
     if (search.startsWith('/') && search.endsWith('/') && search.length > 2) {
         try {
+            const exp = search.substring(1, search.length - 1);
+            const startExp = exp.startsWith('^') ? exp : '^' + exp;
             return (regexFromSearchCache = {
                 data: search,
                 isRegex: true,
-                regex: new RegExp(search.substring(1, search.length - 1), 'g'),
+                regex: new RegExp(exp, 'ig'),
+                startRegex: new RegExp(startExp, 'ig'),
             });
         } catch {
             //
         }
     }
+    const escaped = escapeStringRegexp(search);
     return (regexFromSearchCache = {
         data: search,
         isRegex: false,
-        regex: new RegExp(escapeStringRegexp(search), 'g'),
-        string: search,
+        regex: new RegExp(escaped, 'ig'),
+        startRegex: new RegExp('^' + escaped, 'ig'),
     });
 }
 
