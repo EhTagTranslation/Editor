@@ -75,25 +75,35 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         });
     }
 
-    async pull(): Promise<void> {
+    async pull(): Promise<string[] | undefined> {
         const oldInfo = this.info;
         const headCommit = await this.octokit.getHead();
         const blob = { ...oldInfo.blob } as RepoInfo['blob'];
-        if (oldInfo.head.sha === headCommit.sha) return;
+        if (oldInfo.head.sha === headCommit.sha) {
+            this.logger.verbose(`Up to date. Sha: ${headCommit.sha}`);
+            return undefined;
+        }
 
-        const pullFile = async (filename: string): Promise<void> => {
+        const pullFile = async (filename: string): Promise<string> => {
             const file = await this.octokit.getFile(filename);
             await fs.writeFile(path.join(this.path, file.path), file.content);
             blob[file.path] = file.sha;
+            return file.path;
         };
 
+        let updatedFiles: string[];
         if (oldInfo.head.sha.length !== 40) {
-            await Promise.all(['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map((f) => pullFile(f)));
+            updatedFiles = await Promise.all(
+                ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map((f) => pullFile(f)),
+            );
+            this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
         } else {
             const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
-            await Promise.all(comparison.files.map((f) => pullFile(f.filename)));
+            updatedFiles = await Promise.all(comparison.files.map((f) => pullFile(f.filename)));
+            this.logger.verbose(`Update database. Updated files: ${updatedFiles.join(', ')}`);
         }
         this.info = { head: headCommit, blob };
+        return updatedFiles;
     }
 
     async commitAndPush(

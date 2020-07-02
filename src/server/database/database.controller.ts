@@ -224,8 +224,11 @@ export class DatabaseController extends InjectableBase {
         const head = await this.service.data.sha();
         if (payload.after === head) return 'Already up-to-date.';
         const start = Date.now();
-        await this.service.pull();
+        const files = await this.service.pull();
         const newHead = await this.service.data.sha();
-        return `Pulled from github in ${Date.now() - start}ms, updated from ${head} to ${newHead}.`;
+        return `Pulled from github in ${Date.now() - start}ms, updated from ${head} to ${newHead}.
+
+  Updated files:
+    ${(files ?? []).join('\n    ')}`;
     }
 }
