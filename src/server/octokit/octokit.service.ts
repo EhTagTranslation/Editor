@@ -7,7 +7,7 @@ import { createAppAuth, Types } from '@octokit/auth-app';
 import { AsyncReturnType } from 'type-fest';
 import * as Cache from 'node-cache';
 import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
-import { createHash } from 'crypto';
+
 export type AppInfo = Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
 
@@ -150,19 +150,18 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     async updateFile(
         path: string,
+        oldSha: Sha1Value,
         content: Buffer,
         message: string,
         author: Author,
     ): Promise<{ file: File; commit: Commit }> {
-        const checksum = createHash('sha1');
-        checksum.update(content);
         const res = await (await this.forRepo()).repos.createOrUpdateFileContents({
             owner: this.owner,
             repo: this.repo,
             path,
             message,
             content: content.toString('base64'),
-            sha: checksum.digest('hex'),
+            sha: oldSha,
             author,
         });
         const data = res.data;

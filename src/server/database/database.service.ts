@@ -8,6 +8,7 @@ import * as path from 'path';
 import { Database } from 'shared/database';
 import { OctokitService, UserInfo } from 'server/octokit/octokit.service';
 import { Sha1Value, NamespaceName, Commit } from 'shared/interfaces/ehtag';
+import { createHash } from 'crypto';
 
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 
@@ -83,9 +84,13 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     }
 
     async commitAndPush(ns: NamespaceName, user: UserInfo, message: string): Promise<void> {
+        const checksum = createHash('sha1');
+        checksum.update(await fs.readFile(this.data.data[ns].file));
+        const oldSha = checksum.digest('hex') as Sha1Value;
         await this.data.data[ns].save();
         const result = await this.octokit.updateFile(
             `database/${ns}.md`,
+            oldSha,
             await fs.readFile(this.data.data[ns].file),
             message,
             {
