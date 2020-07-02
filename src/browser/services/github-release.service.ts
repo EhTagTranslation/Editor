@@ -157,7 +157,6 @@ class DatabaseInMemory implements DatabaseView {
 
     private readonly cache = {} as { [T in TagType]: RepoData<T> | undefined };
     async render<T extends TagType>(type: T): Promise<RepoData<T>> {
-        console.time('render');
         const cached = this.cache[type] as RepoData<T> | undefined;
         if (cached) return Promise.resolve(cached);
 
@@ -249,11 +248,13 @@ export class GithubReleaseService {
     private async set(value: RepoData<'raw'>): Promise<void> {
         await Promise.delay(0);
         const data = new DatabaseInMemory(this.cache, value, this.get().revision + 1);
+        this.debug.log('release: rendering');
         await data.render('full');
         await data.render('ast');
         await data.render('html');
         await data.render('raw');
         await data.render('text');
+        this.debug.log('release: rendered');
         this.tagsData.next(data);
     }
     private get(): DatabaseView {
