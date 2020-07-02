@@ -9,5 +9,5 @@ function setenv(k, v) {
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = fs.readJSONSync('./package.json');
-setenv('PACKAGE_VERSION', packageJson.version)
-setenv('PACKAGE_NAME', packageJson.name)
+setenv('PACKAGE_VERSION', packageJson.version);
+setenv('PACKAGE_NAME', packageJson.name);
