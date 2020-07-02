@@ -59,10 +59,10 @@ export function regexFromSearch(search: string | null): NoSearchTerm | StringSea
 })
 export class MarkPipe implements PipeTransform {
     constructor(private readonly sanitizer: DomSanitizer, private readonly location: Location) {
-        this.loadingimg = this.location.prepareExternalUrl('/assets/loading.gif');
+        this.loadingImg = this.location.prepareExternalUrl('/assets/loading.gif');
     }
 
-    private loadingimg: string;
+    private loadingImg: string;
 
     transform(value: string | null, search: string, inputAsHtml?: boolean): string | SafeHtml {
         value = value ?? '';
@@ -89,25 +89,25 @@ export class MarkPipe implements PipeTransform {
                             }
                         } else if (node.nodeType === 1) {
                             // 元素节点
-                            const enode = node as Element;
-                            if (enode.tagName === 'A') {
-                                enode.setAttribute('ehlink', '');
-                                enode.setAttribute('target', '_blank');
-                                if (!enode.getAttribute('title')) {
-                                    enode.setAttribute('title', enode.getAttribute('href') ?? '');
+                            const element = node as Element;
+                            if (element.tagName === 'A') {
+                                element.setAttribute('ehlink', '');
+                                element.setAttribute('target', '_blank');
+                                if (!element.getAttribute('title')) {
+                                    element.setAttribute('title', element.getAttribute('href') ?? '');
                                 }
                             }
-                            if (enode.tagName === 'IMG') {
-                                enode.setAttribute('referrerPolicy', 'no-referrer');
-                                enode.setAttribute('ehimg', '');
-                                enode.setAttribute('class', 'lazyload');
-                                if (!enode.getAttribute('title')) {
-                                    enode.setAttribute('title', enode.getAttribute('src') ?? '');
+                            if (element.tagName === 'IMG') {
+                                element.setAttribute('referrerPolicy', 'no-referrer');
+                                element.setAttribute('ehimg', '');
+                                element.setAttribute('class', 'lazyload');
+                                if (!element.getAttribute('title')) {
+                                    element.setAttribute('title', element.getAttribute('src') ?? '');
                                 }
-                                enode.setAttribute('data-src', enode.getAttribute('src') ?? '');
-                                enode.setAttribute('src', this.loadingimg);
+                                element.setAttribute('data-src', element.getAttribute('src') ?? '');
+                                element.setAttribute('src', this.loadingImg);
                             }
-                            markNodes(enode);
+                            markNodes(element);
                         }
                     }
                 }

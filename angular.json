@@ -27,7 +27,8 @@
                             "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
                             "src/browser/styles.sass"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "statsJson": true
                     },
                     "configurations": {
                         "production": {

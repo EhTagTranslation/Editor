@@ -26,5 +26,16 @@
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
     "typescript.tsdk": "node_modules\\typescript\\lib",
-    "cSpell.words": ["fastify", "execa", "nestjs", "octokit"]
+    "cSpell.words": [
+        "devkit",
+        "execa",
+        "fastify",
+        "keyval",
+        "lazysizes",
+        "linkify",
+        "nestjs",
+        "octokit",
+        "pako",
+        "tslib"
+    ]
 }
