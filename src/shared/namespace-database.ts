@@ -1,5 +1,5 @@
-import * as fs from 'fs-extra';
-import * as readline from 'readline';
+import fs from 'fs-extra';
+import readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';

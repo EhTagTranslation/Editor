@@ -63,3 +63,4 @@ import 'zone.js/dist/zone-bluebird';
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+import 'lazysizes';

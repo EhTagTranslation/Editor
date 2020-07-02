@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import { Database } from '../shared/database';
 import { createRelease } from './create-release';
-import * as path from 'path';
+import path from 'path';
 import { program } from 'commander';
 
 const checkPath = (p: string): string => {

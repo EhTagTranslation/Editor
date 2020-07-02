@@ -1,7 +1,6 @@
-import 'lazysizes';
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Promise as Bluebird } from 'bluebird';
+import Bluebird from 'bluebird';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

@@ -22,6 +22,7 @@
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
+        "esModuleInterop": true,
 
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true

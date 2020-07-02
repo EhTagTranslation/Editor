@@ -5,7 +5,7 @@ import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { ConfigService } from '@nestjs/config';
 import { createAppAuth, Types } from '@octokit/auth-app';
 import { AsyncReturnType } from 'type-fest';
-import * as Cache from 'node-cache';
+import Cache from 'node-cache';
 import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
 
 export type AppInfo = Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>;

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Location } from '@angular/common';
-import * as escapeStringRegexp from 'escape-string-regexp';
+import escapeStringRegexp from 'escape-string-regexp';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 

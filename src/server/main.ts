@@ -6,7 +6,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
-import * as compress from 'fastify-compress';
+import compress from 'fastify-compress';
 
 Object.defineProperty(globalThis, 'Promise', { value: Promise, writable: false, enumerable: true });
 const logger = new Logger('Main', true);

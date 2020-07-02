@@ -1,8 +1,8 @@
 import { Database } from '../shared/database';
-import * as fs from 'fs-extra';
+import fs from 'fs-extra';
 import { gzip } from 'pako';
 import { TagType } from '../shared/interfaces/ehtag';
-import * as path from 'path';
+import path from 'path';
 import { promisify } from 'util';
 import pako from './pako';
 
