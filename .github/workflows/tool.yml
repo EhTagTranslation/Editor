@@ -43,4 +43,4 @@ jobs:
                   tag: v${{ env.PACKAGE_VERSION}}
                   commit: ${{ github.sha }}
                   artifacts: ./release.zip
-                  allowUpdates: yes
+                  allowUpdates: true
