@@ -16,6 +16,8 @@ jobs:
               uses: bahmutov/npm-install@v1
               with:
                   useLockFile: false
+            - name: Set env
+              run: node ./scripts/info.js
 
             - name: Build
               run: yarn build:server
@@ -26,6 +28,7 @@ jobs:
                   path: ./dist
 
             - name: Prepare deploy
+              if: github.ref == 'refs/heads/master'
               run: |
                   node ./scripts/server.js
                   cd ./dist

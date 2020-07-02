@@ -16,6 +16,8 @@ jobs:
               uses: bahmutov/npm-install@v1
               with:
                   useLockFile: false
+            - name: Set env
+              run: node ./scripts/info.js
 
             - name: Build
               run: yarn build:tool
@@ -24,3 +26,21 @@ jobs:
               with:
                   name: tool
                   path: ./dist
+
+            - name: Prepare release
+              if: github.ref == 'refs/heads/master'
+              run: |
+                  node ./scripts/tool.js
+                  cd ./dist
+                  yarn install --prefer-offline
+                  zip -r ../release.zip .
+            - name: Publish release
+              uses: ncipollo/release-action@v1
+              if: github.ref == 'refs/heads/master'
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  name: ${{ github.event.head_commit.message }}
+                  tag: v${{ env.PACKAGE_VERSION}}
+                  commit: ${{ github.sha }}
+                  artifacts: ./release.zip
+                  allowUpdates: yes

@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dist/tool/index.js",
+            "program": "${workspaceFolder}/dist/tool/main.js",
             "skipFiles": ["<node_internals>/**"]
         },
         {
