@@ -90,7 +90,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         if (oldInfo.head.sha.length !== 40) {
             await Promise.all(['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map((f) => pullFile(f)));
         } else {
-            const comparison = await this.octokit.compare(headCommit.sha, this.info.head.sha);
+            const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
             await Promise.all(comparison.files.map((f) => pullFile(f.filename)));
         }
         this.info = { head: headCommit, blob };

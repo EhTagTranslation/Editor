@@ -1,6 +1,21 @@
-\:host
+:host
   display: flex
   height: 100%
+
+#root
+  &.show-img-no-r18 ::ng-deep
+    img[ehimg][nsfw]
+      filter: blur(10px)
+      transform: scale(0.9)
+
+  &.show-img-no-r18g ::ng-deep
+    img[ehimg][nsfw="R18G"]
+      filter: blur(10px)
+      transform: scale(0.9)
+
+  &.show-img-none ::ng-deep
+    img[ehimg], img[ehimg] + br
+      display: none
 
 header
   font-size: 14px

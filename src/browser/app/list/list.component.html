@@ -1,4 +1,4 @@
-<div #root class="page-box">
+<div class="page-box" id="root" [ngClass]="'show-img-' + (showImg | async)">
     <header>
         <mat-form-field id="search">
             <mat-label> <mat-icon matPrefix>search</mat-icon>搜索 </mat-label>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
 import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
@@ -68,7 +68,6 @@ export class ListComponent implements OnInit {
         private readonly debug: DebugService,
         private readonly title: TitleService,
     ) {}
-    @ViewChild('root', { static: true }) root!: ElementRef<HTMLDivElement>;
 
     showImg!: Observable<ShowImgType>;
     search!: Observable<string>;
@@ -101,31 +100,13 @@ export class ListComponent implements OnInit {
 
     ngOnInit(): void {
         this.githubRelease.refresh();
-        const addStyle = document.createElement('style');
-        this.root.nativeElement.appendChild(addStyle);
         this.namespace = this.router.initParam('namespace', (ns) => (isNamespaceName(ns) ? ns : null));
         this.search = this.router.initQueryParam(
             'search',
             (s) => s ?? '',
             (s) => (this.title.title = s),
         );
-        this.showImg = this.router.initQueryParam(
-            'showImg',
-            (b) => (b ?? 'none') as ShowImgType,
-            (val) => {
-                if (val === 'all') {
-                    addStyle.innerHTML = '';
-                } else if (val === 'no-r18') {
-                    addStyle.innerHTML =
-                        'app-list table td .md-container img[ehimg][nsfw]{filter:blur(10px);transform: scale(0.9);}';
-                } else if (val === 'no-r18g') {
-                    addStyle.innerHTML =
-                        'app-list table td .md-container img[ehimg][nsfw="R18G"]{filter:blur(10px);transform: scale(0.9);}';
-                } else {
-                    addStyle.innerHTML = 'app-list table td .md-container img[ehimg]{display:none;}';
-                }
-            },
-        );
+        this.showImg = this.router.initQueryParam('showImg', (b) => (b ?? 'none') as ShowImgType);
         this.pageSize = this.router.initQueryParam('pageSize', (v) => parseInt(v ?? '10', 10));
         this.pageIndex = this.router.initQueryParam('pageIndex', (v) => parseInt(v ?? '0', 10));
         this.sortBy = this.router.initQueryParam('sortBy', (v) =>
