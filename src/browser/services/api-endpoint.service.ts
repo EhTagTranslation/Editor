@@ -15,6 +15,6 @@ export class ApiEndpointService {
         return this.makePath('https://api.github.com', path);
     }
     ehTagConnectorDb(path = ''): string {
-        return this.makePath('http://ehtt.azurewebsites.net/database', path);
+        return this.makePath('https://ehtt.azurewebsites.net/database', path);
     }
 }
