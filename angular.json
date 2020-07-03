@@ -29,7 +29,8 @@
                             "src/browser/styles.sass"
                         ],
                         "scripts": [],
-                        "statsJson": true
+                        "statsJson": true,
+                        "webWorkerTsConfig": "src/browser/tsconfig.worker.json"
                     },
                     "configurations": {
                         "production": {

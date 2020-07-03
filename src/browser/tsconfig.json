@@ -1,5 +1,5 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {},
-    "exclude": ["test.ts", "**/*.spec.ts"]
+    "exclude": ["test.ts", "**/*.spec.ts", "**/*.worker.ts"]
 }
