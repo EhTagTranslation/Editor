@@ -28,8 +28,8 @@ class Main {
             : 'origin';
         const tags = (await raw(['ls-remote', '--tags', '--sort=-creatordate']))
             .split('\n')
-            .filter((s) => !s.trim())
-            .map((s) => `v-${s.split('\t')[0]}`);
+            .filter((s) => s.trim())
+            .map((s) => s.split('\t')[1].split('/')[2]);
 
         console.log(`Found ${tags.length} tags`);
         const old_tags = tags.slice(this.KEEP_RELEASE);
