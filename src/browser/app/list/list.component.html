@@ -57,6 +57,7 @@
     <section>
         <div id="table-wrapper">
             <table
+                (copy)="copying($event)"
                 [style.display]="(loading | async) ? 'hidden' : ''"
                 mat-table
                 [dataSource]="pagedTags"

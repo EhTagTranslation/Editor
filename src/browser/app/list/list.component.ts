@@ -156,6 +156,15 @@ export class ListComponent implements OnInit {
             tap(() => this.loading.next(false)),
         );
     }
+    copying(ev: ClipboardEvent): void {
+        console.log(ev);
+        const data = getSelection()?.toString();
+        const cb = ev.clipboardData;
+        if (!cb || !data) return;
+        console.log(data);
+        cb.setData('Text', data.trim());
+        ev.preventDefault();
+    }
     pasting(ev: ClipboardEvent): void {
         if (!(ev.target instanceof HTMLInputElement)) {
             return;
