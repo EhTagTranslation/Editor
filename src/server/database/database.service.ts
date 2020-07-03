@@ -84,13 +84,20 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             return undefined;
         }
 
-        const pullFile = async (filename: string): Promise<string> => {
-            const file = await this.octokit.getFile(filename);
-            const filePath = path.join(this.path, file.path);
-            await fs.ensureDir(path.dirname(filePath));
-            await fs.writeFile(filePath, file.content);
-            blob[file.path] = file.sha;
-            return file.path;
+        const pullFile = async (filename: string, removed = false): Promise<string> => {
+            const filePath = path.join(this.path, filename);
+            if (removed) {
+                await fs.remove(filePath);
+                blob[filename] = undefined;
+            } else {
+                const file = await this.octokit.getFile(filename);
+                await fs.ensureDir(path.dirname(filePath));
+                await fs.writeFile(filePath, file.content);
+                blob[filename] = undefined;
+                filename = file.path;
+                blob[filename] = file.sha;
+            }
+            return filename;
         };
 
         let updatedFiles: string[];
@@ -101,7 +108,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
         } else {
             const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
-            updatedFiles = await Promise.all(comparison.files.map((f) => pullFile(f.filename)));
+            updatedFiles = await Promise.all(comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')));
             this.logger.verbose(`Update database. Updated files: ${updatedFiles.join(', ')}`);
         }
         this.info = { head: headCommit, blob };
