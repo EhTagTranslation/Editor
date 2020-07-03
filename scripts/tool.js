@@ -6,7 +6,7 @@ const removedPackageHeaders = ['@angular', 'angular', '@nestjs', 'fastify'];
 /** @type {import('type-fest').PackageJson} */
 const packageJson = fs.readJSONSync('./package.json');
 packageJson.scripts = {
-    start: 'node tool/main.js',
+    start: 'node ./index.js',
 };
 packageJson.devDependencies = undefined;
 for (const key in packageJson.dependencies) {
@@ -15,3 +15,4 @@ for (const key in packageJson.dependencies) {
     }
 }
 fs.writeJSONSync('./dist/package.json', packageJson);
+fs.writeFileSync('./dist/index.js', 'require("./tool")');
