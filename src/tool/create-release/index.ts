@@ -1,10 +1,12 @@
-import { Database } from '../shared/database';
+import { Database } from '../../shared/database';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
-import { TagType } from '../shared/interfaces/ehtag';
+import { TagType } from '../../shared/interfaces/ehtag';
 import path from 'path';
 import { promisify } from 'util';
 import pako from './pako';
+import { program } from 'commander';
+import { action } from 'tool/utils';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -28,19 +30,30 @@ async function save(data: unknown, type: TagType): Promise<void> {
     await logFile(`db.${type}.js`);
 }
 
-export async function createRelease(db: Database, target: string): Promise<void> {
-    target = path.resolve(target);
+async function createRelease(db: Database, destination: string): Promise<void> {
     const old = process.cwd();
     console.log('Building releases...');
     console.log(`  Source: ${db.repoPath}`);
-    console.log(`  Target: ${target}`);
-    await fs.ensureDir(target);
-    process.chdir(target);
+    console.log(`  Destination: ${destination}`);
+    action.isAction() ? action.startGroup('files') : console.log(``);
+    await fs.ensureDir(destination);
+    process.chdir(destination);
     await db.load();
     for (const k of ['full', 'raw', 'text', 'html', 'ast'] as const) {
         const data = await db.render(k);
         await save(data, k);
     }
+    action.isAction() ? action.endGroup() : console.log(``);
     await db.save();
     process.chdir(old);
 }
+
+program
+    .command('create-release [source] [destination]')
+    .description('Create database release assets.')
+    .action(async (source?: string, destination?: string) => {
+        source = path.resolve(source ?? '.');
+        destination = path.resolve(destination ?? path.join(source, 'publish'));
+        const db = await Database.create(source);
+        await createRelease(db, destination);
+    });

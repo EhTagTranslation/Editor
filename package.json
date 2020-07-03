@@ -6,7 +6,7 @@
         "build:server": "nest build",
         "start:tool": "yarn build:tool --watch",
         "build:tool": "tsc --project ./src/tool",
-        "tool": "node ./dist/tool/index.js",
+        "tool": "node ./dist/tool/main.js",
         "start:browser": "ng serve",
         "build:browser": "ng build --prod",
         "analyze:browser": "webpack-bundle-analyzer --mode=static --default-sizes=gzip  --report=dist/browser/report.html dist/browser/stats.json",
@@ -16,6 +16,8 @@
     },
     "private": true,
     "dependencies": {
+        "@actions/core": "^1.2.4",
+        "@actions/exec": "^1.0.4",
         "@angular/animations": "^10.0.2",
         "@angular/cdk": "^10.0.0",
         "@angular/common": "^10.0.1",
@@ -52,7 +54,6 @@
         "parse5": "^6.0.0",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^6.6.0",
-        "simple-git": "^2.11.0",
         "source-map-support": "^0.5.19",
         "tslib": "^2.0.0",
         "zone.js": "^0.10.3"

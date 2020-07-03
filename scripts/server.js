@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 
 const removedPackages = ['lazysizes', 'material-design-icons', 'zone.js'];
-const removedPackageHeaders = ['@angular/'];
+const removedPackageHeaders = ['@angular', 'angular', '@actions/'];
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = fs.readJSONSync('./package.json');

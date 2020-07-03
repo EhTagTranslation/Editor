@@ -2,6 +2,23 @@
 # yarn lockfile v1
 
 
+"@actions/core@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.npm.taobao.org/@actions/core/download/@actions/core-1.2.4.tgz#96179dbf9f8d951dd74b40a0dbd5c22555d186ab"
+  integrity sha1-lhedv5+NlR3XS0Cg29XCJVXRhqs=
+
+"@actions/exec@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npm.taobao.org/@actions/exec/download/@actions/exec-1.0.4.tgz#99d75310e62e59fc37d2ee6dcff6d4bffadd3a5d"
+  integrity sha1-mddTEOYuWfw30u5tz/bUv/rdOl0=
+  dependencies:
+    "@actions/io" "^1.0.1"
+
+"@actions/io@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.npm.taobao.org/@actions/io/download/@actions/io-1.0.2.tgz#2f614b6e69ce14d191180451eb38e6576a6e6b27"
+  integrity sha1-L2FLbmnOFNGRGARR6zjmV2puayc=
+
 "@angular-devkit/architect@0.1000.1":
   version "0.1000.1"
   resolved "https://registry.npm.taobao.org/@angular-devkit/architect/download/@angular-devkit/architect-0.1000.1.tgz?cache=0&sync_timestamp=1593648713474&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular-devkit%2Farchitect%2Fdownload%2F%40angular-devkit%2Farchitect-0.1000.1.tgz#6ca8529d888b3f5fc1f28863bb744855b67b811e"
@@ -1327,18 +1344,6 @@
     loader-utils "^1.4.0"
     merge-source-map "^1.1.0"
     schema-utils "^2.6.4"
-
-"@kwsites/file-exists@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.npm.taobao.org/@kwsites/file-exists/download/@kwsites/file-exists-1.1.1.tgz#ad1efcac13e1987d8dbaf235ef3be5b0d96faa99"
-  integrity sha1-rR78rBPhmH2NuvI17zvlsNlvqpk=
-  dependencies:
-    debug "^4.1.1"
-
-"@kwsites/promise-deferred@^1.0.1":
-  version "1.1.1"
-  resolved "https://registry.npm.taobao.org/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
-  integrity sha1-is5SWSVEJszvV/MXW8ZO1wle2Rk=
 
 "@nestjs/cli@^7.4.1":
   version "7.4.1"
@@ -9793,15 +9798,6 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"
   resolved "https://registry.npm.taobao.org/signal-exit/download/signal-exit-3.0.3.tgz?cache=0&sync_timestamp=1585253750175&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fsignal-exit%2Fdownload%2Fsignal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha1-oUEMLt2PB3sItOJTyOrPyvBXRhw=
-
-simple-git@^2.11.0:
-  version "2.11.0"
-  resolved "https://registry.npm.taobao.org/simple-git/download/simple-git-2.11.0.tgz#5bd99fe3465dcbcb82f0eb23ab3c1615cb947374"
-  integrity sha1-W9mf40Zdy8uC8OsjqzwWFcuUc3Q=
-  dependencies:
-    "@kwsites/file-exists" "^1.1.1"
-    "@kwsites/promise-deferred" "^1.0.1"
-    debug "^4.1.1"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
