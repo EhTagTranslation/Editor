@@ -48,7 +48,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     private _info?: RepoInfo;
 
     async onModuleInit(): Promise<void> {
-        await fs.mkdirp(path.join(this.path, 'database'));
+        await fs.ensureDir(this.path);
         if (!(await fs.pathExists(this.infoFile))) {
             this.info = {
                 head: {
@@ -86,7 +86,9 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
         const pullFile = async (filename: string): Promise<string> => {
             const file = await this.octokit.getFile(filename);
-            await fs.writeFile(path.join(this.path, file.path), file.content);
+            const filePath = path.join(this.path, file.path);
+            await fs.ensureDir(path.dirname(filePath));
+            await fs.writeFile(filePath, file.content);
             blob[file.path] = file.sha;
             return file.path;
         };

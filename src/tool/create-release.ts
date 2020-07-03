@@ -34,7 +34,7 @@ export async function createRelease(db: Database, target: string): Promise<void>
     console.log('Building releases...');
     console.log(`  Source: ${db.repoPath}`);
     console.log(`  Target: ${target}`);
-    await fs.mkdirp(target);
+    await fs.ensureDir(target);
     process.chdir(target);
     await db.load();
     for (const k of ['full', 'raw', 'text', 'html', 'ast'] as const) {
