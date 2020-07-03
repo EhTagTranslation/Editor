@@ -91,6 +91,13 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
                 blob[filename] = undefined;
             } else {
                 const file = await this.octokit.getFile(filename);
+                if (this.data && file.path.startsWith('database/')) {
+                    const ns = /^database\/(.+)\.md$/.exec(file.path)?.[1] as NamespaceName;
+                    if (NamespaceName.includes(ns)) {
+                        await this.data.data[ns].load(file.content);
+                        this.data.revision++;
+                    }
+                }
                 await fs.ensureDir(path.dirname(filePath));
                 await fs.writeFile(filePath, file.content);
                 blob[filename] = undefined;
@@ -125,7 +132,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             nv?: TagRecord;
         },
     ): Promise<void> {
-        await this.data.data[ns].save();
+        const content = await this.data.data[ns].save();
         let msg: string;
         const context = Context.create((message.ov ?? message.nv) as TagRecord);
         if (message.ov && message.nv) {
@@ -154,7 +161,7 @@ ${message.nv.stringify({ ...context, raw: message.nk })}
         const blob = { ...this.info.blob };
         const sha = blob[file];
         if (!sha) throw new Error(`Unknown blob sha of ${file}`);
-        const result = await this.octokit.updateFile(file, sha, await fs.readFile(this.data.data[ns].file), msg, {
+        const result = await this.octokit.updateFile(file, sha, content, msg, {
             name: user.login,
             email: userEmail(user),
         });

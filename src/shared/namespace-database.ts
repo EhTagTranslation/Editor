@@ -3,10 +3,10 @@ import readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { promisify } from 'util';
 import { Database } from './database';
 import { RawTag } from './validate';
 import { Context, NamespaceDatabaseView } from './interfaces/database';
+import { Readable, Stream, PassThrough } from 'stream';
 
 interface TagLine {
     raw?: RawTag;
@@ -21,10 +21,17 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     private rawMap = new Map<RawTag, TagLine>();
     private prefix = '';
     private suffix = '';
-    async load(): Promise<void> {
-        const reader = readline.createInterface({
-            input: fs.createReadStream(this.file, { encoding: 'utf-8' }),
-        });
+    /** 优先使用 data 中的数据，其次使用文件 */
+    async load(data?: Buffer): Promise<void> {
+        let input: NodeJS.ReadableStream;
+        if (data && data.length > 0) {
+            const bufferStream = new PassThrough();
+            bufferStream.end(data);
+            input = bufferStream;
+        } else {
+            input = fs.createReadStream(this.file);
+        }
+        const reader = readline.createInterface({ input });
         let state = 0;
         this.rawData = [];
         this.rawMap.clear();
@@ -113,7 +120,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
             key: this.namespace,
         };
     }
-    async save(): Promise<void> {
+    async save(): Promise<Buffer> {
         let content = '';
         const write = (v: string): void => {
             content += v;
@@ -140,9 +147,10 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
             write('\n');
         }
 
-        const writer = fs.createWriteStream(this.file, { encoding: 'utf-8' });
-        writer.write(content);
-        await promisify(writer.end.bind(writer))();
+        // 一次性写入，防止写一半爆炸导致数据丢失
+        const buffer = Buffer.from(content, 'utf-8');
+        await fs.writeFile(this.file, buffer);
+        return buffer;
     }
 
     info(): NamespaceInfo {
@@ -222,6 +230,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         if (!line) return undefined;
         this.rawMap.delete(raw);
         this.rawData.splice(this.rawData.indexOf(line), 1);
+        this.database.revision++;
         return line.record;
     }
 }
