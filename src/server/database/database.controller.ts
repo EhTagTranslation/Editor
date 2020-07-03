@@ -177,18 +177,19 @@ export class DatabaseController extends InjectableBase {
             namespace: dic,
             raw: p.raw,
         };
+        const newRec = dic.set(p.raw, tag);
         const oldRaw = oldRec.render('raw', context);
-        if (oldRaw.name === tag.name && oldRaw.intro === tag.intro && oldRaw.links === tag.links) {
+        const newRaw = newRec.render('raw', context);
+        if (oldRaw.name === newRaw.name && oldRaw.intro === newRaw.intro && oldRaw.links === newRaw.links) {
             return null;
         }
-        const rec = dic.set(p.raw, tag);
         await this.service.commitAndPush(p.namespace, user, {
             ok: p.raw,
             ov: oldRec,
             nk: p.raw,
-            nv: rec,
+            nv: newRec,
         });
-        return rec.render(format, {
+        return newRec.render(format, {
             database: this.service.data,
             namespace: dic,
             raw: p.raw,

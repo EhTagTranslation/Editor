@@ -1,12 +1,12 @@
-import { Database } from '../../shared/database';
+import { program } from 'commander';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
-import { TagType } from '../../shared/interfaces/ehtag';
 import path from 'path';
 import { promisify } from 'util';
+import { TagType } from '../../shared/interfaces/ehtag';
+import { Database } from '../../shared/database';
 import pako from './pako';
-import { program } from 'commander';
-import { action } from 'tool/utils';
+import { action } from '../utils';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
