@@ -4,7 +4,6 @@ import { ensureEnv, action } from './utils';
 import { program, Command } from 'commander';
 
 async function main(envName?: string): Promise<void> {
-    console.log(envName);
     const APP_ID = ensureEnv('APP_ID', Number.parseInt);
     const APP_KEY = ensureEnv('APP_KEY');
     const APP_INSTALLATION_ID = ensureEnv('APP_INSTALLATION_ID', Number.parseInt);

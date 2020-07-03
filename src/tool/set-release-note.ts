@@ -1,17 +1,12 @@
 import { program } from 'commander';
-import { action } from './utils';
-import readline from 'readline';
+import { action, ensureEnv } from './utils';
 
 program
     .command('set-release-note [compare] [mirror-sha]')
     .description('generate release note and export then to environment')
-    .action(async (compare?: string, mirrorSha?: string) => {
-        const lines = Array<string>();
-        for await (const line of readline.createInterface(process.stdin)) {
-            lines.push(line);
-        }
-        action.exportVariable('RELEASE_NAME', lines[0]);
-        let message = lines.join('\n');
+    .action((compare?: string, mirrorSha?: string) => {
+        let message = ensureEnv('COMMIT_MESSAGE');
+        action.exportVariable('RELEASE_NAME', message.split('\n', 1)[0]);
         if (compare)
             message += `\n\n上次发布以来的更改 https://github.com/EhTagTranslation/Database/compare/${compare}`;
         if (mirrorSha)
