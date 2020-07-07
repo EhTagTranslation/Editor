@@ -1,8 +1,9 @@
-import { program } from 'commander';
+import { program, Command } from 'commander';
 import { action, ensureEnv } from './utils';
+import { gitP } from 'simple-git';
 
-function compareInfo(compare: string): string {
-    return `上次发布以来的更改 https://github.com/${action.repository}/compare/${compare}`;
+function compareInfo(before: string, after: string): string {
+    return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;
 }
 
 function mirrorInfo(sha: string): string {
@@ -12,20 +13,21 @@ function mirrorInfo(sha: string): string {
 }
 
 program
-    .command('set-release-note [compare] [mirror-sha]')
-    .description('生成发布消并导出到环境变量', {
-        compare: '生成的范围，形如 [start_sha]...[end_sha]',
-        'mirror-sha': '镜像 commit 的 sha',
-    })
-    .action((compare?: string, mirrorSha?: string) => {
+    .command('set-release-note')
+    .description('生成发布消并导出到环境变量')
+    .option('--mirror-sha [sha]', '镜像 commit 的 sha')
+    .action(async (command: Command) => {
         let message = ensureEnv('COMMIT_MESSAGE');
         action.exportVariable('RELEASE_NAME', message.split('\n', 1)[0]);
         const info = { message } as Record<string, string>;
-        if (compare) {
-            message += `\n\n${compareInfo(compare)}`;
-            [info.before, info.after] = compare.split('...');
+        const git = gitP();
+        info.before = (await git.revparse([(await git.tags({ '--sort': '-creatordate' })).all[0]])).trim();
+        info.after = (await git.revparse(['HEAD'])).trim();
+        if (info.before && info.after) {
+            message += `\n\n${compareInfo(info.before, info.after)}`;
         }
-        if (mirrorSha) {
+        const { mirrorSha } = command.opts();
+        if (typeof mirrorSha == 'string') {
             message += `\n\n${mirrorInfo(mirrorSha)}`;
             info.mirror = mirrorSha;
         }
