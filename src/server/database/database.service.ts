@@ -134,7 +134,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     ): Promise<void> {
         const content = await this.data.data[ns].save();
         let msg: string;
-        const context = Context.create((message.ov ?? message.nv) as TagRecord);
+        const context = new Context((message.ov ?? message.nv) as TagRecord);
         if (message.ov && message.nv) {
             msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', context)}
 |        | 原始标签 | 名称 | 描述 | 外部链接 |

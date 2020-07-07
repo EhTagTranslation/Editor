@@ -114,7 +114,7 @@ export class EhTagConnectorService {
                     links: item.links,
                 };
                 const nsDb = t.data[namespace];
-                const rendered = TagRecord.unsafeCreate(payload, nsDb).render(format, Context.create(nsDb));
+                const rendered = new TagRecord(payload, nsDb).render(format, new Context(nsDb));
                 return rendered;
             }),
         );

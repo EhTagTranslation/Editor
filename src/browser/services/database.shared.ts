@@ -79,7 +79,7 @@ export class NamespaceDatabaseInMemory implements NamespaceDatabaseView {
             return this.storage as NamespaceData<T>;
         }
         const data = {} as NamespaceData<T>['data'];
-        const context = Context.create(this);
+        const context = new Context(this);
         for (const k in this.storage.data) {
             const key = k as RawTag;
             const tag = this.get(key);

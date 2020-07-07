@@ -167,7 +167,7 @@ export class EditorComponent implements OnInit {
                 }
                 const tag = nsDb.get(raw);
                 if (!tag) return undefined;
-                return tag.render('raw', Context.create(nsDb, raw));
+                return tag.render('raw', new Context(nsDb, raw));
             }),
         );
         this.original = {

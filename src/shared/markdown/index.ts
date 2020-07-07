@@ -1,49 +1,35 @@
 import { CellType, TagType } from '../interfaces/ehtag';
-import { parseFragment, serialize } from 'parse5';
+import { serialize } from 'parse5';
 import { renderText } from './text-renderer';
-import { parseTreeAdapter, serializeTreeAdapter, DocumentFragment } from './html-tree-adapter';
-import { normalizeAst } from './ast-normalizer';
+import { renderHtml } from './html-renderer';
 import { renderMd } from './md-renderer';
 import { parseMd } from './md-parser';
 import { Context } from '../interfaces/database';
+import { Tree } from '../interfaces/ehtag.ast';
 
 export interface ParseResult {
     raw: string;
-    doc: DocumentFragment;
+    ast: Tree;
     context: Context;
 }
 
-function parseImpl(src: string, context: Context): ParseResult {
-    const html = parseMd(src);
-    const doc = parseFragment(html, { treeAdapter: parseTreeAdapter }) as DocumentFragment;
-    const result = { doc, context, raw: src };
-    normalizeAst(result);
-    return result;
-}
-
-export function normalize(src: string, context: Context): string {
-    context.normalized = false;
-    const r = parseImpl(src, context);
-    return renderMd(r.doc.content);
-}
-
 export function parse(src: string, context: Context): ParseResult {
-    src = normalize(src, context);
-    context.normalized = true;
-    return parseImpl(src, context);
+    const ast = parseMd(src, context);
+    const result = { ast, context, raw: src };
+    return result;
 }
 
 export const render = <T extends TagType>(parsed: ParseResult, target: T): CellType<T> => {
     const t = target as TagType;
     switch (t) {
         case 'raw':
-            return parsed.raw as CellType<T>;
+            return renderMd(parsed.ast) as CellType<T>;
         case 'text':
-            return renderText(parsed.doc.content) as CellType<T>;
+            return renderText(parsed.ast) as CellType<T>;
         case 'html':
-            return serialize(parsed.doc, { treeAdapter: serializeTreeAdapter }) as CellType<T>;
+            return renderHtml(parsed.ast) as CellType<T>;
         case 'ast':
-            return parsed.doc.content as CellType<T>;
+            return parsed.ast as CellType<T>;
         case 'full':
             return {
                 raw: render(parsed, 'raw'),

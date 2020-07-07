@@ -157,11 +157,9 @@ export class ListComponent implements OnInit {
         );
     }
     copying(ev: ClipboardEvent): void {
-        console.log(ev);
         const data = getSelection()?.toString();
         const cb = ev.clipboardData;
         if (!cb || !data) return;
-        console.log(data);
         cb.setData('Text', data.trim());
         ev.preventDefault();
     }

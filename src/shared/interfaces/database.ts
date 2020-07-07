@@ -31,24 +31,16 @@ export interface DatabaseView {
     revision: number;
 }
 
-export interface Context {
+export class Context {
+    constructor(tag: TagRecord, raw?: RawTag);
+    constructor(namespace: NamespaceDatabaseView, raw?: RawTag);
+    constructor(root: TagRecord | NamespaceDatabaseView, raw?: RawTag) {
+        const namespace = root instanceof TagRecord ? root.namespace : root;
+        this.database = namespace.database;
+        this.namespace = namespace;
+        this.raw = raw;
+    }
     database: DatabaseView;
     namespace: NamespaceDatabaseView;
     raw?: RawTag;
-    normalized?: boolean;
 }
-
-class ContextStatic {
-    create(tag: TagRecord, raw?: RawTag): Context;
-    create(namespace: NamespaceDatabaseView, raw?: RawTag): Context;
-    create(root: TagRecord | NamespaceDatabaseView, raw?: RawTag): Context {
-        const namespace = root instanceof TagRecord ? root.namespace : root;
-        return {
-            database: namespace.database,
-            namespace,
-            raw,
-        };
-    }
-}
-
-export const Context = new ContextStatic();

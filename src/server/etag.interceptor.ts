@@ -7,8 +7,8 @@ import { InjectableBase } from './injectable-base';
 
 function getSha(etag: unknown): string | undefined {
     if (typeof etag != 'string') return undefined;
-    const match = /^\s*(W\/)?\s*"?(?<sha>[a-f0-9]{40})"?\s*$/i.exec(etag);
-    return match?.groups?.sha?.toLowerCase();
+    const match = /^\s*(W\/)?\s*"?([a-f0-9]{40})"?\s*$/i.exec(etag);
+    return match?.[2]?.toLowerCase();
 }
 
 @Injectable()

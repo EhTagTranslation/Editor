@@ -1,7 +1,7 @@
 import { Tag, TagType } from './interfaces/ehtag';
 import { Cell } from './cell';
 import { Context, NamespaceDatabaseView } from './interfaces/database';
-import { RawTag, isRawTag } from './validate';
+import { RawTag } from './validate';
 
 const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
@@ -41,10 +41,10 @@ export class TagRecord implements Tag<Cell> {
         };
     }
 
-    static parse(line: string, namespace: NamespaceDatabaseView): [RawTag | undefined, TagRecord] | null {
+    static parse(line: string, namespace: NamespaceDatabaseView): [RawTag | undefined, TagRecord] | undefined {
         const match = recordRegex.exec(line);
-        if (!match || !match.groups) return null;
-        const { name, intro, links } = match.groups;
+        if (!match || !match.groups) return undefined;
+        const { raw, name, intro, links } = match.groups;
         const record = new TagRecord(
             {
                 name: unescape(name),
@@ -53,16 +53,6 @@ export class TagRecord implements Tag<Cell> {
             },
             namespace,
         );
-        const raw = match.groups.raw.trim().toLowerCase();
-        return [isRawTag(raw) ? raw : undefined, record];
-    }
-
-    static unsafeCreate(data: Tag<'raw'>, namespace: NamespaceDatabaseView): TagRecord {
-        const tag = new TagRecord(data, namespace);
-        data = tag.render('raw', {
-            database: namespace.database,
-            namespace,
-        });
-        return new TagRecord(data, namespace);
+        return [RawTag(raw), record];
     }
 }

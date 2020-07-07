@@ -1,4 +1,4 @@
-import { TreeAdapter, Attribute } from 'parse5';
+import { TreeAdapter, Attribute, serialize, SerializerOptions } from 'parse5';
 import {
     BreakNode,
     ContainerNode,
@@ -22,7 +22,7 @@ import { renderText } from './text-renderer';
 const FRAGMENT_NODE = '#root';
 export interface DocumentFragment {
     type: typeof FRAGMENT_NODE;
-    content: Tree;
+    content: Node[];
 }
 
 const props = {
@@ -154,7 +154,10 @@ const ATTR_MAP: {
         if (node.nsfw) attr.push({ name: 'nsfw', value: node.nsfw });
         return attr;
     },
-    tagref: undefined,
+    tagref(node) {
+        if (node.tag) return [{ name: 'title', value: node.tag }];
+        else return [];
+    },
     br: undefined,
     paragraph: undefined,
     strong: undefined,
@@ -166,17 +169,17 @@ const TAG_NAME_MAP: {
     [T in NodeType | typeof TEMPLATE_NODE]: string | undefined;
 } = {
     [TEMPLATE_NODE]: 'template',
+    tagref: 'abbr',
     paragraph: 'p',
     link: 'a',
     image: 'img',
     strong: 'strong',
     emphasis: 'em',
-    tagref: 'code',
     br: 'br',
     text: undefined,
 };
 
-class ParseTreeAdapter implements TreeAdapter {
+class SerializeTreeAdapter implements TreeAdapter {
     constructor(
         private readonly _ELEMENT_MAP: typeof ELEMENT_MAP,
         private readonly _ATTR_MAP: typeof ATTR_MAP,
@@ -314,25 +317,11 @@ class ParseTreeAdapter implements TreeAdapter {
         templateElement.template = contentElement;
     }
 }
-
-const ATTR_MAP_S: {
-    [T in NodeType]: undefined | ((node: NodeMap[T]) => Attribute[]);
-} = {
-    ...ATTR_MAP,
-    tagref(node) {
-        if (node.tag) return [{ name: 'title', value: node.tag }];
-        else return [];
-    },
-};
-
-const TAG_NAME_MAP_S: {
-    [T in NodeType | typeof TEMPLATE_NODE]: string | undefined;
-} = {
-    ...TAG_NAME_MAP,
-    tagref: 'abbr',
-};
-
-class SerializeTreeAdapter extends ParseTreeAdapter {}
-
-export const parseTreeAdapter = new ParseTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP);
-export const serializeTreeAdapter = new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP_S, TAG_NAME_MAP_S);
+const options: SerializerOptions = { treeAdapter: new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP) };
+export function renderHtml(node: Node | Tree): string {
+    const frag: DocumentFragment = {
+        type: '#root',
+        content: Array.isArray(node) ? node : [node],
+    };
+    return serialize(frag, options);
+}

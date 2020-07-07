@@ -134,7 +134,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         write(this.prefix);
         write('\n');
 
-        const context = Context.create(this);
+        const context = new Context(this);
         for (const { raw, record } of this.rawData) {
             context.raw = raw;
             write(record.stringify(context));
@@ -164,7 +164,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     render<T extends TagType>(type: T): NamespaceData<T> {
         const info = this.info();
         const data: NamespaceData<T>['data'] = {};
-        const context = Context.create(this);
+        const context = new Context(this);
         for (const [raw, { record }] of this.rawMap) {
             context.raw = raw;
             data[raw] = record.render(type, context);
@@ -195,7 +195,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         if (newRaw && this.rawMap.has(newRaw))
             throw new Error(`'${newRaw}' is already defined in namespace ${this.namespace}`);
 
-        line.record = TagRecord.unsafeCreate(record, this);
+        line.record = new TagRecord(record, this);
         if (newRaw) {
             line.raw = newRaw;
             this.rawMap.delete(raw);
@@ -210,7 +210,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     add(raw: RawTag | undefined, record: Tag<'raw'>, pos?: 'before' | 'after', ref?: RawTag): TagRecord {
         if (raw && this.rawMap.has(raw)) throw new Error(`'${raw}' exists in namespace ${this.namespace}`);
 
-        const line = { raw, record: TagRecord.unsafeCreate(record, this) };
+        const line = { raw, record: new TagRecord(record, this) };
         if (pos) {
             if (!ref) throw new Error(`adding with position needs a ref tag`);
             const refLine = this.rawMap.get(ref);
