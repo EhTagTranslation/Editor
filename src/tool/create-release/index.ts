@@ -34,18 +34,20 @@ async function save(data: RepoData<unknown>, type: TagType): Promise<void> {
 }
 
 async function createRelease(db: Database, destination: string): Promise<void> {
-    const old = process.cwd();
     console.log('Building releases...');
     console.log(`  Source: ${db.repoPath}`);
     console.log(`  Destination: ${destination}`);
-    action.isAction() ? action.startGroup('files') : console.log(``);
-    await fs.ensureDir(destination);
-    process.chdir(destination);
+
     const types = ['full', 'raw', 'text', 'html', 'ast'] as const;
     const data = {} as Record<typeof types[number], RepoData<unknown>>;
     for (const k of types) {
         data[k] = await db.render(k);
     }
+
+    const old = process.cwd();
+    await fs.ensureDir(destination);
+    process.chdir(destination);
+    action.isAction() ? action.startGroup('files') : console.log(``);
     for (const k of types) {
         await save(data[k], k);
     }
