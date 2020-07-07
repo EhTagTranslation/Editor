@@ -15,7 +15,7 @@ import { GithubReleaseService } from 'browser/services/github-release.service';
 import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
 import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
-import { Context } from 'shared/interfaces/database';
+import { Context } from 'shared/markdown';
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}

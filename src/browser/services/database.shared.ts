@@ -8,7 +8,8 @@ import {
     RepoData,
     RepoInfo,
 } from 'shared/interfaces/ehtag';
-import { Context, DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
+import { DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
+import { Context } from 'shared/markdown';
 import { RawTag } from 'shared/validate';
 import { TagRecord } from 'shared/tag-record';
 
@@ -54,16 +55,16 @@ const info = {
 export class NamespaceDatabaseInMemory implements NamespaceDatabaseView {
     constructor(
         readonly database: DatabaseView,
-        readonly namespace: NamespaceName,
+        readonly name: NamespaceName,
         protected readonly storage?: NamespaceData<'raw'>,
     ) {}
 
     get frontMatters(): Readonly<FrontMatters> {
-        return { ...(this.storage?.frontMatters ?? fallback[this.namespace]), key: this.namespace };
+        return { ...(this.storage?.frontMatters ?? fallback[this.name]), key: this.name };
     }
     info(): NamespaceInfo {
         return {
-            namespace: this.namespace,
+            namespace: this.name,
             count: this.storage?.count ?? 0,
             frontMatters: this.frontMatters,
         };

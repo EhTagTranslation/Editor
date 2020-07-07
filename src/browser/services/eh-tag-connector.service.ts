@@ -8,7 +8,7 @@ import { TagType, Tag, NamespaceName } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
 import { TagRecord } from 'shared/tag-record';
-import { Context } from 'shared/interfaces/database';
+import { Context } from 'shared/markdown';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 

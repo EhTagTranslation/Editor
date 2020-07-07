@@ -13,7 +13,7 @@ import {
     StrongNode,
 } from '../interfaces/ehtag.ast';
 import Token from 'markdown-it/lib/token';
-import { Context } from '../interfaces/database';
+import { Context } from './context';
 import { isRawTag } from '../validate';
 
 const md = MarkdownIt('commonmark', {
@@ -123,28 +123,20 @@ function normalizeTagref(node: TagRefNode, context: Context): void {
     const tagDef = node.text.trim();
     const tag = tagDef.toLowerCase();
     if (!isRawTag(tag)) {
-        console.warn(
-            `Invalid tagref: '${tagDef}' of '${context.raw ?? ''}' in ${context.namespace.namespace} is not valid`,
-        );
+        context.logger.warn(context, `无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
         node.tag = '';
         node.text = tagDef;
         return;
     }
     const record = context.namespace.get(tag) ?? context.database.get(tag);
     if (!record) {
-        console.warn(
-            `Invalid tagref: '${tagDef}' of '${context.raw ?? ''}' in ${context.namespace.namespace} is not found`,
-        );
+        context.logger.warn(context, `无效标签引用：\`${node.text}\` 在数据库中不存在。`);
         node.tag = '';
         node.text = tagDef;
         return;
     }
     node.tag = tagDef;
-    const nContext = {
-        ...context,
-        namespace: record.namespace,
-        raw: tag,
-    };
+    const nContext = new Context(record, tag, context.logger);
     node.text = record.name.render('text', nContext);
 }
 

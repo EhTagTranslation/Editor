@@ -1,4 +1,4 @@
-import { program } from 'commander';
+import { program, Command } from 'commander';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
@@ -7,6 +7,7 @@ import { TagType } from '../../shared/interfaces/ehtag';
 import { Database } from '../../shared/database';
 import pako from './pako';
 import { action } from '../utils';
+import { Logger, Context } from '../../shared/markdown';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -38,22 +39,57 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     action.isAction() ? action.startGroup('files') : console.log(``);
     await fs.ensureDir(destination);
     process.chdir(destination);
-    await db.load();
     for (const k of ['full', 'raw', 'text', 'html', 'ast'] as const) {
         const data = await db.render(k);
         await save(data, k);
     }
     action.isAction() ? action.endGroup() : console.log(``);
-    await db.save();
     process.chdir(old);
+}
+
+class ActionLogger extends Logger {
+    readonly map: Record<keyof Logger, 'info' | 'warning' | 'error' | 'setFailed'> = {
+        info: 'info',
+        warn: 'warning',
+        error: 'error',
+    };
+    protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
+        action[this.map[logger]](`${context.namespace.name}:${context.raw ?? '<unknown raw>'}: ${message}`);
+    }
+
+    constructor(readonly failed: keyof Logger = 'error') {
+        super();
+        switch (failed) {
+            case 'info':
+                this.map.info = 'setFailed';
+            // fall through
+            case 'warn':
+                this.map.warn = 'setFailed';
+            // fall through
+            case 'error':
+                this.map.error = 'setFailed';
+        }
+    }
 }
 
 program
     .command('create-release [source] [destination]')
-    .description('Create database release assets.')
-    .action(async (source?: string, destination?: string) => {
+    .description('生成发布文件', {
+        source: 'REPO 的本地路径',
+        destination: '生成发布文件的路径',
+    })
+    .option('--strict', '启用严格检查')
+    .option('--no-rewrite', '不重新序列化数据库内容')
+    .action(async (source: string | undefined, destination: string | undefined, command: Command) => {
         source = path.resolve(source ?? '.');
         destination = path.resolve(destination ?? path.join(source, 'publish'));
         const db = await Database.create(source);
+        const { strict, rewrite } = command.opts();
+        if (action.isAction()) {
+            db.logger = new ActionLogger(strict ? 'warn' : 'error');
+        }
         await createRelease(db, destination);
+        if (rewrite) {
+            await db.save();
+        }
     });

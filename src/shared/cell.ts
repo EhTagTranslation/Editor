@@ -1,6 +1,6 @@
 import { CellType, TagType } from './interfaces/ehtag';
 import { parse, render } from './markdown';
-import { Context } from './interfaces/database';
+import { Context } from './markdown';
 import { Tree } from './interfaces/ehtag.ast';
 
 export class Cell {

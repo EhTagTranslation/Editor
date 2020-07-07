@@ -13,7 +13,10 @@ function mirrorInfo(sha: string): string {
 
 program
     .command('set-release-note [compare] [mirror-sha]')
-    .description('generate release note and export then to environment')
+    .description('生成发布消并导出到环境变量', {
+        compare: '生成的范围，形如 [start_sha]...[end_sha]',
+        'mirror-sha': '镜像 commit 的 sha',
+    })
     .action((compare?: string, mirrorSha?: string) => {
         let message = ensureEnv('COMMIT_MESSAGE');
         action.exportVariable('RELEASE_NAME', message.split('\n', 1)[0]);

@@ -6,6 +6,7 @@ import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfa
 import { TagRecord } from './tag-record';
 import { RawTag } from './validate';
 import { DatabaseView } from './interfaces/database';
+import { Logger } from './markdown';
 
 const SUPPORTED_REPO_VERSION = 5;
 
@@ -151,4 +152,6 @@ export class Database implements DatabaseView {
     }
 
     revision = 1;
+
+    logger = Logger.default;
 }

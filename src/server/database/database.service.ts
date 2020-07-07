@@ -10,7 +10,7 @@ import { OctokitService, UserInfo } from 'server/octokit/octokit.service';
 import { Sha1Value, NamespaceName, Commit } from 'shared/interfaces/ehtag';
 import { TagRecord } from 'shared/tag-record';
 import { RawTag } from 'shared/validate';
-import { Context } from 'shared/interfaces/database';
+import { Context } from 'shared/markdown';
 
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 

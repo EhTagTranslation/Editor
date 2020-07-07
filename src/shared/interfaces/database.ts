@@ -3,7 +3,7 @@ import { RawTag } from '../validate';
 import { TagRecord } from '../tag-record';
 
 export interface NamespaceDatabaseView {
-    readonly namespace: NamespaceName;
+    readonly name: NamespaceName;
     readonly database: DatabaseView;
     readonly frontMatters: Readonly<FrontMatters>;
 
@@ -29,18 +29,4 @@ export interface DatabaseView {
     get(raw: RawTag): TagRecord | undefined;
 
     revision: number;
-}
-
-export class Context {
-    constructor(tag: TagRecord, raw?: RawTag);
-    constructor(namespace: NamespaceDatabaseView, raw?: RawTag);
-    constructor(root: TagRecord | NamespaceDatabaseView, raw?: RawTag) {
-        const namespace = root instanceof TagRecord ? root.namespace : root;
-        this.database = namespace.database;
-        this.namespace = namespace;
-        this.raw = raw;
-    }
-    database: DatabaseView;
-    namespace: NamespaceDatabaseView;
-    raw?: RawTag;
 }

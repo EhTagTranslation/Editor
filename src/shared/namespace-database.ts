@@ -5,8 +5,9 @@ import { safeLoad, safeDump } from 'js-yaml';
 import { TagRecord } from './tag-record';
 import { Database } from './database';
 import { RawTag } from './validate';
-import { Context, NamespaceDatabaseView } from './interfaces/database';
-import { Readable, Stream, PassThrough } from 'stream';
+import { NamespaceDatabaseView } from './interfaces/database';
+import { Context } from './markdown';
+import { PassThrough } from 'stream';
 
 interface TagLine {
     raw?: RawTag;
@@ -14,7 +15,7 @@ interface TagLine {
 }
 
 export class NamespaceDatabase implements NamespaceDatabaseView {
-    constructor(readonly namespace: NamespaceName, readonly file: string, readonly database: Database) {}
+    constructor(readonly name: NamespaceName, readonly file: string, readonly database: Database) {}
 
     frontMatters!: FrontMatters;
     private rawData = new Array<TagLine>();
@@ -117,7 +118,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
             name: '',
             description: '',
             ...fmObj,
-            key: this.namespace,
+            key: this.name,
         };
     }
     async save(): Promise<Buffer> {
@@ -127,7 +128,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         };
 
         write('---\n');
-        this.frontMatters.key = this.namespace;
+        this.frontMatters.key = this.name;
         write(safeDump(this.frontMatters));
         write('---\n\n');
 
@@ -155,7 +156,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
 
     info(): NamespaceInfo {
         return {
-            namespace: this.namespace,
+            namespace: this.name,
             frontMatters: this.frontMatters,
             count: this.rawMap.size,
         };
@@ -191,9 +192,9 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
 
     set(raw: RawTag, record: Tag<'raw'>, newRaw?: RawTag): TagRecord {
         const line = this.rawMap.get(raw);
-        if (line == null) throw new Error(`'${raw}' not found in namespace ${this.namespace}`);
+        if (line == null) throw new Error(`'${raw}' not found in namespace ${this.name}`);
         if (newRaw && this.rawMap.has(newRaw))
-            throw new Error(`'${newRaw}' is already defined in namespace ${this.namespace}`);
+            throw new Error(`'${newRaw}' is already defined in namespace ${this.name}`);
 
         line.record = new TagRecord(record, this);
         if (newRaw) {
@@ -208,13 +209,13 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     add(raw: RawTag | undefined, record: Tag<'raw'>): TagRecord;
     add(raw: RawTag | undefined, record: Tag<'raw'>, pos: 'before' | 'after', ref: RawTag): TagRecord;
     add(raw: RawTag | undefined, record: Tag<'raw'>, pos?: 'before' | 'after', ref?: RawTag): TagRecord {
-        if (raw && this.rawMap.has(raw)) throw new Error(`'${raw}' exists in namespace ${this.namespace}`);
+        if (raw && this.rawMap.has(raw)) throw new Error(`'${raw}' exists in namespace ${this.name}`);
 
         const line = { raw, record: new TagRecord(record, this) };
         if (pos) {
             if (!ref) throw new Error(`adding with position needs a ref tag`);
             const refLine = this.rawMap.get(ref);
-            if (!refLine) throw new Error(`'${ref}' not found in namespace ${this.namespace}`);
+            if (!refLine) throw new Error(`'${ref}' not found in namespace ${this.name}`);
             const refIndex = this.rawData.indexOf(refLine) + (pos === 'after' ? 1 : 0);
             this.rawData.splice(refIndex, 0, line);
         } else {

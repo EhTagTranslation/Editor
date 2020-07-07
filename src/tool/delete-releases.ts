@@ -43,9 +43,10 @@ class Main {
 }
 program
     .command('delete-releases [repo]')
-    .option('--no-releases', 'keep github releases')
-    .option('--no-tags', 'keep git tags')
-    .option('--keep <n>', 'keep latest n releases')
+    .description('删除旧的发布和标签', { repo: 'REPO 的本地路径' })
+    .option('--no-releases', '保留 GitHub Releases')
+    .option('--no-tags', '保留 git 标签')
+    .option('--keep <n>', '保留最新的 n 个发布')
     .action(async (repo: string | undefined, command: Command) => {
         const opt = command.opts();
         const main = new Main(opt.keep ? Number.parseInt(opt.keep) : undefined, repo);

@@ -8,6 +8,7 @@ import { DatabaseService } from 'server/database/database.service';
 import { RawTag } from 'shared/validate';
 import { ApiOperation, ApiConsumes, ApiTags, ApiProduces, ApiOkResponse, ApiBody } from '@nestjs/swagger';
 import { TagParams, ParsedLine } from './tools.dto';
+import { Context } from 'shared/markdown';
 
 @ApiTags('Tools')
 @Controller('tools')
@@ -20,11 +21,8 @@ export class ToolsController extends InjectableBase {
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
     normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
-        return new TagRecord(tag, this.db.data.data.misc).render(format, {
-            database: this.db.data,
-            namespace: this.db.data.data.misc,
-            raw: 'raw' as RawTag,
-        });
+        const record = new TagRecord(tag, this.db.data.data.misc);
+        return record.render(format, new Context(record));
     }
 
     @Post('serialize/:raw')
@@ -42,11 +40,8 @@ export class ToolsController extends InjectableBase {
     })
     @HttpCode(HttpStatus.OK)
     serialize(@Param() p: TagParams, @Body() tag: LooseTagDto): string {
-        return new TagRecord(tag, this.db.data.data.misc).stringify({
-            database: this.db.data,
-            namespace: this.db.data.data.misc,
-            raw: p.raw.trim().toLowerCase() as RawTag,
-        });
+        const record = new TagRecord(tag, this.db.data.data.misc);
+        return record.stringify(new Context(record, RawTag(p.raw)));
     }
 
     @Post('parse')
@@ -61,11 +56,7 @@ export class ToolsController extends InjectableBase {
         if (!parsed) throw new BadRequestException('Invalid markdown table row');
         return {
             key: parsed[0],
-            value: parsed[1].render(format, {
-                database: this.db.data,
-                namespace: this.db.data.data.misc,
-                raw: parsed[0],
-            }),
+            value: parsed[1].render(format, new Context(parsed[1], parsed[0])),
         };
     }
 }

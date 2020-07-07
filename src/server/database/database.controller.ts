@@ -34,7 +34,7 @@ import { Format } from 'server/decorators/format.decorator';
 import { UserInfo } from 'server/octokit/octokit.service';
 import { User } from 'server/decorators/user.decorator';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from 'server/decorators/swagger.decoretor';
-import { RawTag } from 'shared/validate';
+import { Context } from 'shared/markdown';
 
 @Controller('database')
 @ApiTags('Database')
@@ -89,11 +89,7 @@ export class DatabaseController extends InjectableBase {
         const dic = this.service.data.data[p.namespace];
         const rec = dic.get(p.raw);
         if (!rec) throw new NotFoundException();
-        return rec.render(format, {
-            database: this.service.data,
-            namespace: dic,
-            raw: p.raw,
-        });
+        return rec.render(format, new Context(rec, p.raw));
     }
 
     @Post(':namespace/:raw')
@@ -121,11 +117,7 @@ export class DatabaseController extends InjectableBase {
             nk: p.raw,
             nv: rec,
         });
-        return rec.render(format, {
-            database: this.service.data,
-            namespace: dic,
-            raw: p.raw,
-        });
+        return rec.render(format, new Context(rec, p.raw));
     }
 
     @Post(':namespace/~comment')
@@ -151,11 +143,7 @@ export class DatabaseController extends InjectableBase {
         await this.service.commitAndPush(p.namespace, user, {
             nv: rec,
         });
-        return rec.render(format, {
-            database: this.service.data,
-            namespace: dic,
-            raw: '~comment' as RawTag,
-        });
+        return rec.render(format, new Context(rec));
     }
 
     @Put(':namespace/:raw')
@@ -172,11 +160,7 @@ export class DatabaseController extends InjectableBase {
         const dic = this.service.data.data[p.namespace];
         const oldRec = dic.get(p.raw);
         if (!oldRec) throw new NotFoundException();
-        const context = {
-            database: this.service.data,
-            namespace: dic,
-            raw: p.raw,
-        };
+        const context = new Context(oldRec, p.raw);
         const newRec = dic.set(p.raw, tag);
         const oldRaw = oldRec.render('raw', context);
         const newRaw = newRec.render('raw', context);
@@ -189,11 +173,7 @@ export class DatabaseController extends InjectableBase {
             nk: p.raw,
             nv: newRec,
         });
-        return newRec.render(format, {
-            database: this.service.data,
-            namespace: dic,
-            raw: p.raw,
-        });
+        return newRec.render(format, context);
     }
 
     @Delete(':namespace/:raw')

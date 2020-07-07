@@ -19,7 +19,7 @@
 
         "strict": true,
         "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
+        "noFallthroughCasesInSwitch": false,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "esModuleInterop": true,

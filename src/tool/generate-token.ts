@@ -30,7 +30,8 @@ async function main(envName?: string): Promise<void> {
 
 program
     .command('generate-token')
-    .option('--env <NAME>', 'name of environment variable that exports token to')
+    .description('生成 GitHub token')
+    .option('--env <NAME>', '生成的 token 导出到的环境变量名称')
     .action(async (command: Command) => {
         action.ensureAction();
         await main(command.opts().env);
