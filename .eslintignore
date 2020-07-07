@@ -1,6 +1,7 @@
 
 /dist
 /db
+/scripts
 /*.config.js
 .*.{js,ts}
 
