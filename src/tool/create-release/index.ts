@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
 import { promisify } from 'util';
-import { TagType } from '../../shared/interfaces/ehtag';
+import { TagType, RepoData } from '../../shared/interfaces/ehtag';
 import { Database } from '../../shared/database';
 import pako from './pako';
 import { action } from '../utils';
@@ -13,13 +13,15 @@ async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
 }
 
-async function save(data: unknown, type: TagType): Promise<void> {
+async function save(data: RepoData<unknown>, type: TagType): Promise<void> {
     const json = JSON.stringify(data);
     await fs.writeFile(`db.${type}.json`, json);
     await logFile(`db.${type}.json`);
+
     const gz = gzip(json);
     await fs.writeFile(`db.${type}.json.gz`, gz);
     await logFile(`db.${type}.json.gz`);
+
     const jsonp = fs.createWriteStream(`db.${type}.js`);
     const write = promisify(jsonp.write.bind(jsonp));
     await write(`(function(){var d={c:'load_ehtagtranslation_db_${type}',d:'`);
@@ -39,9 +41,13 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     action.isAction() ? action.startGroup('files') : console.log(``);
     await fs.ensureDir(destination);
     process.chdir(destination);
-    for (const k of ['full', 'raw', 'text', 'html', 'ast'] as const) {
-        const data = await db.render(k);
-        await save(data, k);
+    const types = ['full', 'raw', 'text', 'html', 'ast'] as const;
+    const data = {} as Record<typeof types[number], RepoData<unknown>>;
+    for (const k of types) {
+        data[k] = await db.render(k);
+    }
+    for (const k of types) {
+        await save(data[k], k);
     }
     action.isAction() ? action.endGroup() : console.log(``);
     process.chdir(old);
