@@ -3,8 +3,8 @@
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](https://dependabot.com)
 [![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
 [![vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=zeit)](https://github.com/EhTagTranslation/Editor/deployments)
-[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https%3A%2F%2Fehtt.now.sh%2F)](https://ehtt.now.sh/)
-[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https%3A%2F%2Fehtt.azurewebsites.net%2F)](https://ehtt.azurewebsites.net/)
+[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.now.sh)](https://ehtt.now.sh/)
+[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.azurewebsites.net/database)](https://ehtt.azurewebsites.net/)
 
 [数据库](../../../Database)编辑工具。
 
