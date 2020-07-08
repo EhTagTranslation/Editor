@@ -4869,20 +4869,20 @@ fast-safe-stringify@2.0.7, fast-safe-stringify@^2.0.7:
   resolved "https://registry.npm.taobao.org/fast-safe-stringify/download/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
   integrity sha1-EkqohYmSYfaK7bQqfAgN6dpgh0M=
 
-fastify-compress@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npm.taobao.org/fastify-compress/download/fastify-compress-2.0.1.tgz#aeff074a51608f1dcc9738c15791a662b3515bcb"
-  integrity sha1-rv8HSlFgjx3MlzjBV5GmYrNRW8s=
+fastify-compress@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/fastify-compress/-/fastify-compress-3.2.1.tgz#50ee3299e619e0f62c77150e5edaba0024f50d4c"
+  integrity sha512-Snf4UHW38492aOtM9Kao2VuiYhBDfcvoQE01De1dB57ZM7Lv6eAesC4MGAM3+CDnt2ZcK0MjYz402kDKJ1DeEg==
   dependencies:
     encoding-negotiator "^2.0.0"
-    fastify-plugin "^1.0.0"
-    into-stream "4.0.0"
+    fastify-plugin "^2.0.0"
+    into-stream "^5.1.1"
     is-deflate "^1.0.0"
-    is-gzip "^1.0.0"
+    is-gzip "^2.0.0"
     is-stream "^2.0.0"
     is-zip "^1.0.0"
     mime-db "^1.43.0"
-    minipass "^2.9.0"
+    minipass "^3.1.1"
     peek-stream "^1.1.0"
     pump "^3.0.0"
     pumpify "^2.0.1"
@@ -4905,7 +4905,7 @@ fastify-formbody@3.2.0:
     fastify-plugin "^1.6.1"
     qs "^6.9.4"
 
-fastify-plugin@^1.0.0, fastify-plugin@^1.6.0, fastify-plugin@^1.6.1:
+fastify-plugin@^1.6.0, fastify-plugin@^1.6.1:
   version "1.6.1"
   resolved "https://registry.npm.taobao.org/fastify-plugin/download/fastify-plugin-1.6.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffastify-plugin%2Fdownload%2Ffastify-plugin-1.6.1.tgz#122f5a5eeb630d55c301713145a9d188e6d5dd5b"
   integrity sha1-Ei9aXutjDVXDAXExRanRiObV3Vs=
@@ -5202,7 +5202,7 @@ fresh@0.5.2:
   resolved "https://registry.npm.taobao.org/fresh/download/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-from2@^2.1.0, from2@^2.1.1:
+from2@^2.1.0, from2@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/from2/download/from2-2.3.0.tgz#8bfb5502bde4a4d36cfdeea007fcca21d7e382af"
   integrity sha1-i/tVAr3kpNNs/e6gB/zKIdfjgq8=
@@ -5914,13 +5914,13 @@ interpret@^1.0.0:
   resolved "https://registry.npm.taobao.org/interpret/download/interpret-1.4.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Finterpret%2Fdownload%2Finterpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha1-Zlq4vE2iendKQFhOgS4+D6RbGh4=
 
-into-stream@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npm.taobao.org/into-stream/download/into-stream-4.0.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Finto-stream%2Fdownload%2Finto-stream-4.0.0.tgz#ef10ee2ffb6f78af34c93194bbdc36c35f7d8a9d"
-  integrity sha1-7xDuL/tveK80yTGUu9w2w199ip0=
+into-stream@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/into-stream/-/into-stream-5.1.1.tgz#f9a20a348a11f3c13face22763f2d02e127f4db8"
+  integrity sha512-krrAJ7McQxGGmvaYbB7Q1mcA+cRwg9Ij2RfWIeVesNBgVDZmzY/Fa4IpZUT3bmdRzMzdf/mzltCG2Dq99IZGBA==
   dependencies:
-    from2 "^2.1.1"
-    p-is-promise "^2.0.0"
+    from2 "^2.3.0"
+    p-is-promise "^3.0.0"
 
 invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
@@ -6124,10 +6124,10 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@~4.0.1:
   dependencies:
     is-extglob "^2.1.1"
 
-is-gzip@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npm.taobao.org/is-gzip/download/is-gzip-1.0.0.tgz#6ca8b07b99c77998025900e555ced8ed80879a83"
-  integrity sha1-bKiwe5nHeZgCWQDlVc7Y7YCHmoM=
+is-gzip@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/is-gzip/-/is-gzip-2.0.0.tgz#f4fed2bbd9f96bf2cb39e19262797fdb15aad933"
+  integrity sha512-jtO4Njg6q58zDo/Pu4027beSZ0VdsZlt8/5Moco6yAg+DIxb5BK/xUYqYG2+MD4+piKldXJNHxRkhEYI2fvrxA==
 
 is-interactive@^1.0.0:
   version "1.0.0"
@@ -8123,10 +8123,10 @@ p-finally@^1.0.0:
   resolved "https://registry.npm.taobao.org/p-finally/download/p-finally-1.0.0.tgz#3fbcfb15b899a44123b34b6dcc18b724336a2cae"
   integrity sha1-P7z7FbiZpEEjs0ttzBi3JDNqLK4=
 
-p-is-promise@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.npm.taobao.org/p-is-promise/download/p-is-promise-2.1.0.tgz#918cebaea248a62cf7ffab8e3bca8c5f882fc42e"
-  integrity sha1-kYzrrqJIpiz3/6uOO8qMX4gvxC4=
+p-is-promise@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-3.0.0.tgz#58e78c7dfe2e163cf2a04ff869e7c1dba64a5971"
+  integrity sha512-Wo8VsW4IRQSKVXsJCn7TomUaVtyfjVDn3nUP7kE967BQk0CwFpdbZs0X0uk5sW9mkBa9eNM7hCMaG93WUAwxYQ==
 
 p-limit@^2.0.0, p-limit@^2.2.0, p-limit@^2.3.0:
   version "2.3.0"
