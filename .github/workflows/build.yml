@@ -29,6 +29,8 @@ jobs:
               with:
                   name: tool
                   path: ./dist
+            - name: Test
+              run: yarn test:tool
 
             - name: Prepare release
               if: github.ref == 'refs/heads/master'
@@ -71,6 +73,8 @@ jobs:
               with:
                   name: server
                   path: ./dist
+            - name: Test
+              run: yarn test:server
 
             - name: Prepare deploy
               if: github.ref == 'refs/heads/master'
@@ -109,3 +113,5 @@ jobs:
               with:
                   name: browser
                   path: ./dist/browser
+            - name: Test
+              run: yarn test:browser
