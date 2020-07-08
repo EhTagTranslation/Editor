@@ -1,9 +1,7 @@
 # EhTag Editor
 
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](https://dependabot.com)
-[![tool](https://github.com/EhTagTranslation/Editor/workflows/tool/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Atool)
-[![browser](https://github.com/EhTagTranslation/Editor/workflows/browser/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Abrowser)
-[![server](https://github.com/EhTagTranslation/Editor/workflows/server/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Aserver)
+[![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
 
 [数据库](../../../Database)编辑工具。
 
