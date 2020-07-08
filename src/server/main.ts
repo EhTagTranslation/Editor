@@ -6,7 +6,6 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
-import compress from 'fastify-compress';
 
 Object.defineProperty(globalThis, 'Promise', { value: Promise, writable: false, enumerable: true });
 const logger = new Logger('Main', true);
@@ -17,7 +16,6 @@ const logger = new Logger('Main', true);
 async function bootstrap(): Promise<void> {
     logger.log(`App starting`);
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {});
-    app.register(compress, { encodings: ['gzip', 'deflate'] });
     app.enableCors({
         origin: true,
         credentials: false,
