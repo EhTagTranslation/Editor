@@ -1433,10 +1433,10 @@
   resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.0.5.tgz#0c3462de4125eea0e85e3a520f0de4e7e8dcfa40"
   integrity sha1-DDRi3kEl7qDoXjpSDw3k5+jc+kA=
 
-"@nestjs/platform-fastify@^7.3.1":
-  version "7.3.1"
-  resolved "https://registry.npm.taobao.org/@nestjs/platform-fastify/download/@nestjs/platform-fastify-7.3.1.tgz#fdb9b765c00d1a41f8a0e2700a23c52b9480550c"
-  integrity sha1-/bm3ZcANGkH4oOJwCiPFK5SAVQw=
+"@nestjs/platform-fastify@^7.3.2":
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-7.3.2.tgz#7b6ab2ce8bb50cee15d00cfd10196ea59863443a"
+  integrity sha512-KQT8JU2zVx/gOKSffJVuuPJ1ifRrMnfAQ3/sj8O2STybpl1UbglqTFmYb/lS7ynJzGg67GLOjunuorBXGTR3Gg==
   dependencies:
     fastify "2.15.1"
     fastify-cors "3.0.3"
