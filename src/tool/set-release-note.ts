@@ -1,6 +1,6 @@
 import { program, Command } from 'commander';
 import { action, ensureEnv } from './utils';
-import { gitP } from 'simple-git';
+import SimpleGit from 'simple-git';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;
@@ -20,7 +20,7 @@ program
         let message = ensureEnv('COMMIT_MESSAGE');
         action.exportVariable('RELEASE_NAME', message.split('\n', 1)[0]);
         const info = { message } as Record<string, string>;
-        const git = gitP();
+        const git = SimpleGit();
         info.before = (await git.revparse([(await git.tags({ '--sort': '-creatordate' })).all[0]])).trim();
         info.after = (await git.revparse(['HEAD'])).trim();
         if (info.before && info.after) {
