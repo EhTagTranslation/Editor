@@ -6,16 +6,12 @@ import { RawTag } from './validate';
 
 const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
-const unescapeRe1 = /<br\s*\/?>/g;
-const unescapeRe2 = /(?<!\\)((?:\\\\)*)\\\|/g;
 function unescape(value: string): string {
-    return value.replace(unescapeRe1, '\n').replace(unescapeRe2, '$1|');
+    return value.replace(/<br\s*\/?>/g, '\n');
 }
 
-const escapeRe1 = /(\r\n|\n)/g;
-const escapeRe2 = /(?<!\\)(\\\\)*\|/g;
 function escape(value: string): string {
-    return value.replace(escapeRe1, '<br>').replace(escapeRe2, '\\$&');
+    return value.replace(/(\r\n|\n)/g, '<br>').replace(/\|/g, '\\|');
 }
 
 export class TagRecord implements Tag<Cell> {

@@ -3,11 +3,11 @@ import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
 import { promisify } from 'util';
-import { TagType, RepoData } from '../../shared/interfaces/ehtag';
-import { Database } from '../../shared/database';
+import { TagType, RepoData } from '../../../shared/interfaces/ehtag';
+import { Database } from '../../../shared/database';
 import pako from './pako';
-import { action } from '../utils';
-import { Logger, Context } from '../../shared/markdown';
+import { action } from '../../utils';
+import { Logger, Context } from '../../../shared/markdown';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);

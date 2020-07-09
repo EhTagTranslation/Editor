@@ -61,17 +61,35 @@ class GitRepoInfoProvider implements RepoInfoProvider {
 
 export class Database implements DatabaseView {
     static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider): Promise<Database> {
-        repoPath = path.resolve(repoPath);
+        const resolvedPath = path.resolve(repoPath);
 
-        await fs.access(path.join(repoPath, 'version'));
-        const version = Number.parseFloat((await fs.readFile(path.join(repoPath, 'version'), 'utf-8')).trim());
+        const versionPath = path.join(resolvedPath, 'version');
+        const versionData = await fs.readFile(versionPath, 'utf-8').catch((err: unknown) => {
+            throw new Error(
+                `无法访问 "${path.join(repoPath, 'version')}"，"${repoPath}" 可能不是一个有效的数据库\n${String(err)}`,
+            );
+        });
+        const version = Number.parseFloat(versionData.trim());
         if (Number.isNaN(version) || version < SUPPORTED_REPO_VERSION || version >= SUPPORTED_REPO_VERSION + 1) {
-            throw new Error('version not supported');
+            throw new Error(`不支持的数据库版本 ${versionData}，当前支持版本 ${SUPPORTED_REPO_VERSION}`);
         }
 
-        await fs.access(path.join(repoPath, 'database'));
-        const files = NamespaceName.map((ns) => path.join(repoPath, 'database', `${ns}.md`));
-        await Promise.all(files.map((f) => fs.access(f)));
+        await fs.access(path.join(resolvedPath, 'database')).catch((err: unknown) => {
+            throw new Error(
+                `无法访问 "${path.join(repoPath, 'database')}"，"${repoPath}" 可能不是一个有效的数据库\n${String(err)}`,
+            );
+        });
+        const files = NamespaceName.map((ns) => [ns, path.join(resolvedPath, 'database', `${ns}.md`)] as const);
+        await Promise.all(
+            files.map(async ([ns, file]) => {
+                try {
+                    await fs.access(file);
+                } catch (e) {
+                    const p = path.join(repoPath, 'database', `${ns}.md`);
+                    throw new Error(`无法访问 "${p}"，"${repoPath}" 可能不是一个有效的数据库\n${String(e)}`);
+                }
+            }),
+        );
 
         const info =
             repoInfoProvider ??
@@ -84,13 +102,14 @@ export class Database implements DatabaseView {
     private constructor(
         readonly repoPath: string,
         readonly version: number,
-        files: readonly string[],
+        files: ReadonlyArray<readonly [NamespaceName, string]>,
         private readonly repoInfoProvider?: RepoInfoProvider,
     ) {
-        this.data = NamespaceName.reduce((obj, v, i) => {
-            obj[v] = new NamespaceDatabase(v, files[i], this);
-            return obj;
-        }, {} as { [key in NamespaceName]: NamespaceDatabase });
+        const data = {} as { [key in NamespaceName]: NamespaceDatabase };
+        for (const [ns, file] of files) {
+            data[ns] = new NamespaceDatabase(ns, file, this);
+        }
+        this.data = data;
     }
     readonly data: { readonly [key in NamespaceName]: NamespaceDatabase };
 

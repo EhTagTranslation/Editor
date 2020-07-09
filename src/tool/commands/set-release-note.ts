@@ -1,5 +1,5 @@
 import { program, Command } from 'commander';
-import { action, ensureEnv } from './utils';
+import { action, ensureEnv } from '../utils';
 import SimpleGit from 'simple-git';
 
 function compareInfo(before: string, after: string): string {

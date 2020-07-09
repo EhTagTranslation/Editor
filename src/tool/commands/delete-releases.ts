@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import path from 'path';
-import { action } from './utils';
+import { action } from '../utils';
 import Git from 'simple-git';
 import { program, Command } from 'commander';
 

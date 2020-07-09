@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { createAppAuth } from '@octokit/auth-app';
-import { ensureEnv, action } from './utils';
+import { ensureEnv, action } from '../utils';
 import { program, Command } from 'commander';
 
 async function main(envName?: string): Promise<void> {
