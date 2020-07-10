@@ -19,14 +19,6 @@
   resolved "https://registry.npm.taobao.org/@actions/io/download/@actions/io-1.0.2.tgz#2f614b6e69ce14d191180451eb38e6576a6e6b27"
   integrity sha1-L2FLbmnOFNGRGARR6zjmV2puayc=
 
-"@angular-devkit/architect@0.1000.1":
-  version "0.1000.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/architect/download/@angular-devkit/architect-0.1000.1.tgz?cache=0&sync_timestamp=1593648713474&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular-devkit%2Farchitect%2Fdownload%2F%40angular-devkit%2Farchitect-0.1000.1.tgz#6ca8529d888b3f5fc1f28863bb744855b67b811e"
-  integrity sha1-bKhSnYiLP1/B8ohju3RIVbZ7gR4=
-  dependencies:
-    "@angular-devkit/core" "10.0.1"
-    rxjs "6.5.5"
-
 "@angular-devkit/architect@0.1000.2":
   version "0.1000.2"
   resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.1000.2.tgz#ca62e25f0e845ff63c6a1ba942a45caf1d085218"
@@ -35,15 +27,15 @@
     "@angular-devkit/core" "10.0.2"
     rxjs "6.5.5"
 
-"@angular-devkit/build-angular@^0.1000.1":
-  version "0.1000.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/build-angular/download/@angular-devkit/build-angular-0.1000.1.tgz#8073c8826763b6e0d2e5f2dcb21d55be11ce6937"
-  integrity sha1-gHPIgmdjtuDS5fLcsh1VvhHOaTc=
+"@angular-devkit/build-angular@^0.1000.2":
+  version "0.1000.2"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/build-angular/-/build-angular-0.1000.2.tgz#b74b98c79e3ebefa6f4aa3996d7247b3f87cf56b"
+  integrity sha512-Cl7JaXkE1OMpagMwPPNGq7IGy50p2F3R0iZFi38imq661YqH/FFv0SdbMqmpAHaIvvr6E1HJt5ltoLNERQWFjg==
   dependencies:
-    "@angular-devkit/architect" "0.1000.1"
-    "@angular-devkit/build-optimizer" "0.1000.1"
-    "@angular-devkit/build-webpack" "0.1000.1"
-    "@angular-devkit/core" "10.0.1"
+    "@angular-devkit/architect" "0.1000.2"
+    "@angular-devkit/build-optimizer" "0.1000.2"
+    "@angular-devkit/build-webpack" "0.1000.2"
+    "@angular-devkit/core" "10.0.2"
     "@babel/core" "7.9.6"
     "@babel/generator" "7.9.6"
     "@babel/plugin-transform-runtime" "7.9.6"
@@ -51,7 +43,7 @@
     "@babel/runtime" "7.9.6"
     "@babel/template" "7.8.6"
     "@jsdevtools/coverage-istanbul-loader" "3.0.3"
-    "@ngtools/webpack" "10.0.1"
+    "@ngtools/webpack" "10.0.2"
     ajv "6.12.2"
     autoprefixer "9.8.0"
     babel-loader "8.1.0"
@@ -106,35 +98,24 @@
     webpack-subresource-integrity "1.4.1"
     worker-plugin "4.0.3"
 
-"@angular-devkit/build-optimizer@0.1000.1":
-  version "0.1000.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/build-optimizer/download/@angular-devkit/build-optimizer-0.1000.1.tgz?cache=0&sync_timestamp=1593648681669&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular-devkit%2Fbuild-optimizer%2Fdownload%2F%40angular-devkit%2Fbuild-optimizer-0.1000.1.tgz#2cb46c7b8fc4361d06244d50545b23e91e866c15"
-  integrity sha1-LLRse4/ENh0GJE1QVFsj6R6GbBU=
+"@angular-devkit/build-optimizer@0.1000.2":
+  version "0.1000.2"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/build-optimizer/-/build-optimizer-0.1000.2.tgz#06641c2b90aada53b025cf0970a2d3f6a2a962f6"
+  integrity sha512-wbrgJQw92+A7kFaG7U0F9MMzhVI32tcIdr26+SFXWGAeBaWIkBfMs/jfGLlEYESLqQQF5oMn7LJBwXu+nkPHvw==
   dependencies:
     loader-utils "2.0.0"
     source-map "0.7.3"
     tslib "2.0.0"
     webpack-sources "1.4.3"
 
-"@angular-devkit/build-webpack@0.1000.1":
-  version "0.1000.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/build-webpack/download/@angular-devkit/build-webpack-0.1000.1.tgz?cache=0&sync_timestamp=1593648718390&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular-devkit%2Fbuild-webpack%2Fdownload%2F%40angular-devkit%2Fbuild-webpack-0.1000.1.tgz#c0e8208dfa52ca1743955c6ae96fb1d7685103e1"
-  integrity sha1-wOggjfpSyhdDlVxq6W+x12hRA+E=
+"@angular-devkit/build-webpack@0.1000.2":
+  version "0.1000.2"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/build-webpack/-/build-webpack-0.1000.2.tgz#65f59faf9dfd8ec018e7321eaf2c16b5ea4259ec"
+  integrity sha512-x1fHnZFTwvAE3lB6XnlJmf0KNiiAsZKGdUuTXqzgsgh34A/aFOWtu0EB6cw6lvifMj1ioDT8Zjp8N89Lh5AtEA==
   dependencies:
-    "@angular-devkit/architect" "0.1000.1"
-    "@angular-devkit/core" "10.0.1"
+    "@angular-devkit/architect" "0.1000.2"
+    "@angular-devkit/core" "10.0.2"
     rxjs "6.5.5"
-
-"@angular-devkit/core@10.0.1":
-  version "10.0.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/core/download/@angular-devkit/core-10.0.1.tgz?cache=0&sync_timestamp=1593648683608&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular-devkit%2Fcore%2Fdownload%2F%40angular-devkit%2Fcore-10.0.1.tgz#acc1c6a088507e7340964c8cbf85e91781e86686"
-  integrity sha1-rMHGoIhQfnNAlkyMv4XpF4HoZoY=
-  dependencies:
-    ajv "6.12.2"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.5.5"
-    source-map "0.7.3"
 
 "@angular-devkit/core@10.0.2":
   version "10.0.2"
@@ -1489,12 +1470,12 @@
     optional "0.1.4"
     tslib "2.0.0"
 
-"@ngtools/webpack@10.0.1":
-  version "10.0.1"
-  resolved "https://registry.npm.taobao.org/@ngtools/webpack/download/@ngtools/webpack-10.0.1.tgz#f3d5143f268cc1c3c8d94de0e048b970c95e6a27"
-  integrity sha1-89UUPyaMwcPI2U3g4Ei5cMleaic=
+"@ngtools/webpack@10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-10.0.2.tgz#87f5c7ee2362cf6c8216f059d809c6537e8c28aa"
+  integrity sha512-Py8jkc6UIHtp5TKKAMkNiKhx0goL+d7RkQEBWIvO+9e5fBGIt0Npy3dBoJ9gRldaGIjLZWlHhGsgeaYbq5dlvA==
   dependencies:
-    "@angular-devkit/core" "10.0.1"
+    "@angular-devkit/core" "10.0.2"
     enhanced-resolve "4.1.1"
     rxjs "6.5.5"
     webpack-sources "1.4.3"
