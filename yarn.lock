@@ -1953,17 +1953,6 @@
     semver "^7.3.2"
     tsutils "^3.17.1"
 
-"@typescript-eslint/experimental-utils@3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/experimental-utils/download/@typescript-eslint/experimental-utils-3.6.0.tgz#0138152d66e3e53a6340f606793fb257bf2d76a1"
-  integrity sha1-ATgVLWbj5TpjQPYGeT+yV78tdqE=
-  dependencies:
-    "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/types" "3.6.0"
-    "@typescript-eslint/typescript-estree" "3.6.0"
-    eslint-scope "^5.0.0"
-    eslint-utils "^2.0.0"
-
 "@typescript-eslint/experimental-utils@3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-3.6.1.tgz#b5a2738ebbceb3fa90c5b07d50bb1225403c4a54"
@@ -1975,40 +1964,21 @@
     eslint-scope "^5.0.0"
     eslint-utils "^2.0.0"
 
-"@typescript-eslint/parser@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/parser/download/@typescript-eslint/parser-3.6.0.tgz?cache=0&sync_timestamp=1594189398632&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fparser%2Fdownload%2F%40typescript-eslint%2Fparser-3.6.0.tgz#79b5232e1a2d06f1fc745942b690cd87aca7b60e"
-  integrity sha1-ebUjLhotBvH8dFlCtpDNh6yntg4=
+"@typescript-eslint/parser@^3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-3.6.1.tgz#216e8adf4ee9c629f77c985476a2ea07fb80e1dc"
+  integrity sha512-SLihQU8RMe77YJ/jGTqOt0lMq7k3hlPVfp7v/cxMnXA9T0bQYoMDfTsNgHXpwSJM1Iq2aAJ8WqekxUwGv5F67Q==
   dependencies:
     "@types/eslint-visitor-keys" "^1.0.0"
-    "@typescript-eslint/experimental-utils" "3.6.0"
-    "@typescript-eslint/types" "3.6.0"
-    "@typescript-eslint/typescript-estree" "3.6.0"
+    "@typescript-eslint/experimental-utils" "3.6.1"
+    "@typescript-eslint/types" "3.6.1"
+    "@typescript-eslint/typescript-estree" "3.6.1"
     eslint-visitor-keys "^1.1.0"
-
-"@typescript-eslint/types@3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/types/download/@typescript-eslint/types-3.6.0.tgz#4bd6eee55d2f9d35a4b36c4804be1880bf68f7bc"
-  integrity sha1-S9bu5V0vnTWks2xIBL4YgL9o97w=
 
 "@typescript-eslint/types@3.6.1":
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-3.6.1.tgz#87600fe79a1874235d3cc1cf5c7e1a12eea69eee"
   integrity sha512-NPxd5yXG63gx57WDTW1rp0cF3XlNuuFFB5G+Kc48zZ+51ZnQn9yjDEsjTPQ+aWM+V+Z0I4kuTFKjKvgcT1F7xQ==
-
-"@typescript-eslint/typescript-estree@3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/typescript-estree/download/@typescript-eslint/typescript-estree-3.6.0.tgz#9b4cab43f1192b64ff51530815b8919f166ce177"
-  integrity sha1-m0yrQ/EZK2T/UVMIFbiRnxZs4Xc=
-  dependencies:
-    "@typescript-eslint/types" "3.6.0"
-    "@typescript-eslint/visitor-keys" "3.6.0"
-    debug "^4.1.1"
-    glob "^7.1.6"
-    is-glob "^4.0.1"
-    lodash "^4.17.15"
-    semver "^7.3.2"
-    tsutils "^3.17.1"
 
 "@typescript-eslint/typescript-estree@3.6.1":
   version "3.6.1"
@@ -2023,13 +1993,6 @@
     lodash "^4.17.15"
     semver "^7.3.2"
     tsutils "^3.17.1"
-
-"@typescript-eslint/visitor-keys@3.6.0":
-  version "3.6.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/visitor-keys/download/@typescript-eslint/visitor-keys-3.6.0.tgz?cache=0&sync_timestamp=1594188796434&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fvisitor-keys%2Fdownload%2F%40typescript-eslint%2Fvisitor-keys-3.6.0.tgz#44185eb0cc47651034faa95c5e2e8b314ecebb26"
-  integrity sha1-RBhesMxHZRA0+qlcXi6LMU7OuyY=
-  dependencies:
-    eslint-visitor-keys "^1.1.0"
 
 "@typescript-eslint/visitor-keys@3.6.1":
   version "3.6.1"
