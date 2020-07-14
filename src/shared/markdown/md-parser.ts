@@ -50,6 +50,11 @@ function normalizeUrl(
     nsfw?: ImageNode['nsfw'];
 } {
     url = md.normalizeLink(url);
+    // ehgt 图片使用 https://ehgt.org/ 域名，国内速度较快，且不需要里站 cookie
+    // Eg: https://ehgt.org/t/52/b4/52b4fd923618bd7ec49eb3ccbae43c979e769110-1060746-1280-1024-jpg_300.jpg
+    //            https://ehgt.org               /52 /b4 /52b4fd923618bd7ec49eb3ccbae43c979e769110-1060746-1280-1024-jpg _       300        .jpg
+    // http(s)://((ul.)ehgt.org(/t)|exhentai.org)|0-1|2-3|              完整哈希                  |size(B)| w  | h  |类型|    l/250/300     |jpg
+    //                                           |            原始图片信息哈希（sha1）            |    原始图片信息      |后两者只有封面图有|固定
     const eh = /^(http|https):\/\/(?<domain>ehgt\.org(\/t|)|exhentai\.org\/t|ul\.ehgt\.org(\/t|))\/(?<tail>.+)$/.exec(
         url,
     );
@@ -57,6 +62,8 @@ function normalizeUrl(
         url = 'https://ehgt.org/' + eh.groups.tail;
         return { url, nsfw: eh.groups.domain.includes('exhentai') ? 'R18' : undefined };
     }
+
+    // pixiv 图片使用反代
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
         url = 'https://i.pixiv.cat/' + px.groups.tail;

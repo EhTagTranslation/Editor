@@ -1,6 +1,7 @@
-import { program, Command } from 'commander';
-import { action, ensureEnv } from '../utils';
+import { action, ensureEnv } from '../../utils';
 import SimpleGit from 'simple-git';
+import { Command } from 'commander';
+import command from './command';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;
@@ -12,7 +13,7 @@ function mirrorInfo(sha: string): string {
     return `也可以从 [${link}](${url}) 获取`;
 }
 
-program
+command
     .command('set-release-note')
     .description('生成发布消并导出到环境变量')
     .option('--mirror-sha [sha]', '镜像 commit 的 sha')

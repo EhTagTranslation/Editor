@@ -1,8 +1,9 @@
 import { Octokit } from '@octokit/rest';
 import path from 'path';
-import { action } from '../utils';
+import { action } from '../../utils';
 import Git from 'simple-git';
-import { program, Command } from 'commander';
+import { Command } from 'commander';
+import command from './command';
 
 class Main {
     constructor(readonly KEEP_RELEASE = 3, readonly REPO_PATH = '.') {
@@ -41,7 +42,8 @@ class Main {
         }
     }
 }
-program
+
+command
     .command('delete-releases [repo]')
     .description('删除旧的发布和标签', { repo: 'REPO 的本地路径' })
     .option('--no-releases', '保留 GitHub Releases')
