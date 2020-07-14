@@ -1517,16 +1517,16 @@
     consola "^2.3.0"
     node-fetch "^2.3.0"
 
-"@octokit/auth-app@^2.4.7":
-  version "2.4.7"
-  resolved "https://registry.npm.taobao.org/@octokit/auth-app/download/@octokit/auth-app-2.4.7.tgz#a036755c2f801d1414a50fad304050e8cbf2898f"
-  integrity sha1-oDZ1XC+AHRQUpQ+tMEBQ6MvyiY8=
+"@octokit/auth-app@^2.4.8":
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-app/-/auth-app-2.4.8.tgz#10fc8cb0df82e1f25d6acf0671a580ea4498333e"
+  integrity sha512-gY2XgES9rpMlnukRrgY5CfK4NNitZHuJdOxQWqJFOW5i7tuZrrYmEH4jZG5jGTDKhwj9gD3K2FcrghZAlDkboQ==
   dependencies:
     "@octokit/request" "^5.3.0"
     "@octokit/request-error" "^2.0.0"
     "@octokit/types" "^5.0.0"
     "@types/lru-cache" "^5.1.0"
-    lru-cache "^5.1.1"
+    lru-cache "^6.0.0"
     universal-github-app-jwt "^1.0.1"
     universal-user-agent "^5.0.0"
 
@@ -7039,6 +7039,13 @@ lru-cache@^5.1.1:
   integrity sha1-HaJ+ZxAnGUdpXa9oSOhH8B2EuSA=
   dependencies:
     yallist "^3.0.2"
+
+lru-cache@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
+  integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
+  dependencies:
+    yallist "^4.0.0"
 
 lru-queue@0.1:
   version "0.1.0"
