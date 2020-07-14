@@ -1,9 +1,9 @@
-import { program } from 'commander';
-import { normalizeTag } from '../../shared/ehentai';
-import { RawTag } from '../../shared/validate';
-import { NamespaceName } from '../../shared/interfaces/ehtag';
+import { normalizeTag } from '../../../shared/ehentai';
+import { RawTag } from '../../../shared/validate';
+import { NamespaceName } from '../../../shared/interfaces/ehtag';
+import { command } from './command';
 
-program.command('check-tag  <[namespace:]tag>').action(async (tag: string) => {
+command.command('check <[namespace:]tag>').action(async (tag: string) => {
     tag = (tag ?? '').trim();
     let ns: string | undefined;
     if (tag.includes(':')) {

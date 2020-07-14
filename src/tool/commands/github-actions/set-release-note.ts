@@ -1,7 +1,6 @@
 import { action, ensureEnv } from '../../utils';
 import SimpleGit from 'simple-git';
-import { Command } from 'commander';
-import command from './command';
+import { command, Command } from './command';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;

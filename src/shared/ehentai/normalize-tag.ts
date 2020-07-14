@@ -31,7 +31,6 @@ export async function normalizeTag(
             [match] = ns.values();
         }
     }
-    console.log(tagCache, match);
     if (match == null) return undefined;
     if (match.master) {
         match = match.master;

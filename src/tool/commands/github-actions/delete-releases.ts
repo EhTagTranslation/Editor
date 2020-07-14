@@ -1,9 +1,8 @@
-import { Octokit } from '@octokit/rest';
 import path from 'path';
-import { action } from '../../utils';
 import Git from 'simple-git';
-import { Command } from 'commander';
-import command from './command';
+import { Octokit } from '@octokit/rest';
+import { action } from '../../utils';
+import { command, Command } from './command';
 
 class Main {
     constructor(readonly KEEP_RELEASE = 3, readonly REPO_PATH = '.') {

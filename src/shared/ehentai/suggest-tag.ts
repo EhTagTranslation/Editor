@@ -18,6 +18,15 @@ interface SlaveTag extends MasterTag {
 }
 export type Tag = MasterTag | SlaveTag;
 
+function store(tag: Tag): void {
+    const raw = tagCache.get(tag.raw);
+    if (raw) {
+        raw.set(tag.namespace, tag);
+    } else {
+        tagCache.set(tag.raw, new Map([[tag.namespace, tag]]));
+    }
+}
+
 function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     if (Array.isArray(response.tags)) return [];
     const tags = new Array<Tag>();
@@ -30,6 +39,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
             raw: tag.tn,
         };
         tags.push(current);
+        store(current);
         if ('mid' in tag) {
             const master: Tag = {
                 id: tag.mid,
@@ -37,17 +47,9 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
                 raw: tag.mtn,
             };
             current.master = master;
-            tags.push(master);
+            store(master);
         }
     }
-    tags.forEach((tag) => {
-        const raw = tagCache.get(tag.raw);
-        if (raw) {
-            raw.set(tag.namespace, tag);
-        } else {
-            tagCache.set(tag.raw, new Map([[tag.namespace, tag]]));
-        }
-    });
     return tags;
 }
 

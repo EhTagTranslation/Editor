@@ -1,8 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { createAppAuth } from '@octokit/auth-app';
 import { ensureEnv, action } from '../../utils';
-import { Command } from 'commander';
-import command from './command';
+import { command, Command } from './command';
 
 async function main(envName?: string): Promise<void> {
     const APP_ID = ensureEnv('APP_ID', Number.parseInt);
