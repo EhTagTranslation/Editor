@@ -7,7 +7,6 @@ command.command('check <[namespace:]tag>').action(async (tag: string) => {
     if (!result) {
         console.error('未找到相应标签');
         process.exit(1);
-    } else {
-        console.log(`${result[0]}:${result[1]}`);
     }
+    console.log(`${result[0]}:${result[1]}`);
 });
