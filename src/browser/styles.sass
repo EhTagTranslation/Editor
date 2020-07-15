@@ -1,32 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/theming'
-// Plus imports for other components in your app.
 
-$font-family: 'Roboto, "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif'
-
-$custom-typography: mat-typography-config($font-family: $font-family)
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat-core($custom-typography)
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($mat-deep-purple)
-$candy-app-accent:  mat-palette($mat-purple, A700, A600, A900)
-
-// The warn palette is optional (defaults to red).
-$candy-app-warn:    mat-palette($mat-red)
-
-// Create the theme object (a Sass map containing all of the palettes).
-$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn)
+@import './theme'
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($candy-app-theme)
+@include angular-material-theme($app-theme)
 
 @import '~material-design-icons/iconfont/material-icons.css'
 
@@ -41,12 +20,12 @@ body
   margin: 0
 
 a
-  color: mat-color(map-get($candy-app-theme, primary))
+  color: mat-color(map-get($app-theme, primary))
   text-decoration: none
   &[href^='http://'], &[href^='https://']
     text-decoration: underline
   &:hover
-    color: mat-color(map-get($candy-app-theme, accent))
+    color: mat-color(map-get($app-theme, accent))
 
 code
   background: rgba(128, 128, 64, 0.1)

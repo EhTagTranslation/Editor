@@ -1,3 +1,6 @@
+@import 'browser/theme'
+$label-color: mat-color($app-foreground, secondary-text)
+
 :host
   display: flex
   height: 100%
@@ -74,14 +77,24 @@ button, mat-card-subtitle
 
   .ns-intro
     display: block
-    color: rgba(0, 0, 0, 0.54)
+    color: $label-color
     overflow: hidden
     text-overflow: ellipsis
-mat-option
+mat-option .hint
+  display: flex
+  flex-direction: column
+  line-height: 1.5em
   .hint-slaved
     text-decoration: line-through
   .hint-namespace
-    color: gray
+    color: mat-color($app-primary, 700)
+  .hint-translation
+    .hint-namespace
+      color: mat-color($app-primary, 300)
+    font-size: 70%
+    line-height: 100%
+    float: right
+    color: $label-color
 
 @media not all and (max-width: 720px)
   #root

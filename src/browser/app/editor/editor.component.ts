@@ -18,6 +18,44 @@ import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
 import { Context } from 'shared/markdown';
 import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
 
+class TagSuggestOption {
+    constructor(
+        readonly suggest: TagSuggest,
+        private readonly services: {
+            release: GithubReleaseService;
+            router: RouteService;
+        },
+    ) {}
+
+    readonly master = this.suggest.master ?? this.suggest;
+    readonly isSlaved = !!this.suggest.master;
+    translation(): Observable<Tag<'text'> | undefined> {
+        return this.services.release.tags.pipe(
+            map((v) => {
+                const { namespace: ns, raw } = this.master;
+                const tag = v.data[ns].get(raw);
+                if (!tag) return undefined;
+                return tag.render('text', new Context(tag, raw));
+            }),
+        );
+    }
+    toString(): string {
+        return this.master.raw;
+    }
+    navigate(): void {
+        this.translation().subscribe((v) => {
+            if (v) {
+                this.services.router.navigate(['./edit', this.master.namespace, this.master.raw], {}, false);
+            } else {
+                this.services.router.navigateParam({
+                    namespace: this.master.namespace,
+                    raw: this.master.raw,
+                });
+            }
+        });
+    }
+}
+
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
 
@@ -60,13 +98,13 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 export class EditorComponent implements OnInit {
     constructor(
         private readonly ehTagConnector: EhTagConnectorService,
-        public readonly github: GithubOauthService,
+        readonly github: GithubOauthService,
         readonly debug: DebugService,
-        public readonly release: GithubReleaseService,
-        private readonly router: RouteService,
+        readonly release: GithubReleaseService,
+        readonly router: RouteService,
         private readonly title: TitleService,
         private readonly snackBar: MatSnackBar,
-        public readonly dbRepo: DbRepoService,
+        readonly dbRepo: DbRepoService,
     ) {}
     tagForm = new FormGroup({
         raw: new FormControl('', [
@@ -145,7 +183,7 @@ export class EditorComponent implements OnInit {
 
     submitting = new BehaviorSubject<boolean>(false);
 
-    tagSuggests!: Observable<TagSuggest[]>;
+    tagSuggests!: Observable<TagSuggestOption[]>;
 
     narrowPreviewing = false;
 
@@ -220,22 +258,7 @@ export class EditorComponent implements OnInit {
                 filter(([raw]) => raw === RawTag(this.forms.raw.value ?? undefined)),
                 tap((v) => console.log(v)),
                 map(([, suggestions]) => {
-                    const router = this.router;
-                    const tagMethods: ThisType<TagSuggest> = {
-                        toString: function () {
-                            return this.master?.raw ?? this.raw;
-                        },
-                        navigate: function () {
-                            router.navigateParam({
-                                namespace: this.master?.namespace ?? this.namespace,
-                                raw: this.master?.raw ?? this.raw,
-                            });
-                        },
-                    };
-                    suggestions.forEach((s) => {
-                        Object.setPrototypeOf(s, tagMethods);
-                    });
-                    return suggestions;
+                    return suggestions.map((s) => new TagSuggestOption(s, this));
                 }),
             ),
         );
