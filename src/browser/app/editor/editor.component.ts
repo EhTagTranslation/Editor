@@ -251,7 +251,7 @@ export class EditorComponent implements OnInit {
         this.tagSuggests = merge(
             tagSuggestSource.pipe(map(() => [])),
             tagSuggestSource.pipe(
-                debounceTime(250),
+                debounceTime(100),
                 filter((raw): raw is RawTag => raw != null),
                 mergeMap((raw) => suggestTag(undefined, raw).then((sug) => [raw, sug] as const)),
                 filter(([raw]) => raw === RawTag(this.forms.raw.value ?? undefined)),
