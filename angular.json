@@ -24,10 +24,11 @@
                         "tsConfig": "src/browser/tsconfig.json",
                         "aot": true,
                         "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
-                        "styles": [
-                            "./node_modules/@angular/material/prebuilt-themes/purple-green.css",
-                            "src/browser/styles.sass"
-                        ],
+                        "styles": ["src/browser/styles/index.sass"],
+                        "stylePreprocessorOptions": {
+                            "includePaths": ["src/browser/styles"]
+                        },
+                        "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios"],
                         "scripts": [],
                         "statsJson": true,
                         "webWorkerTsConfig": "src/browser/tsconfig.worker.json"

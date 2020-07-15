@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import './theme'
+@import 'theme'
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($app-typography)
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -13,7 +18,7 @@
 
 
 html
-  font-family: #{$font-family}
+  font-family: #{$app-font-family}
   min-width: 320px
   overflow: hidden
 body
