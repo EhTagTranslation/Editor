@@ -125,7 +125,28 @@
                         [placeholder]="(getNamespace(value('namespace')) | async).example?.raw"
                         formControlName="raw"
                         required
-                    />
+                        [matAutocomplete]="tagSuggest"
+                    /><mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
+                        <mat-option *ngFor="let option of tagSuggests | async" [value]="option">
+                            <span class="hint-tag" [class]="[option.master ? 'hint-slaved' : 'hint-master']">
+                                <span class="hint-namespace">{{ option.namespace }}: </span>
+                                <span
+                                    class="hint-raw"
+                                    [innerHTML]="option.raw | mark: value('raw').trim():false"
+                                ></span>
+                            </span>
+                            <span *ngIf="option.master">
+                                ➜
+                                <span class="hint-tag hint-master">
+                                    <span class="hint-namespace">{{ option.master!.namespace }}:</span>
+                                    <span
+                                        class="hint-raw"
+                                        [innerHTML]="option.master!.raw | mark: value('raw').trim():false"
+                                    ></span
+                                ></span>
+                            </span>
+                        </mat-option>
+                    </mat-autocomplete>
                     <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
                     <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
                     <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母 </mat-error>

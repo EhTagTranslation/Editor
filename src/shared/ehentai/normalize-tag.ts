@@ -6,6 +6,7 @@ export async function normalizeTag(
     ns: NamespaceName | undefined,
     raw: RawTag,
 ): Promise<[NamespaceName, RawTag] | undefined> {
+    // short tags will not returned by suggest api
     if (raw.length <= 2) return [ns as NamespaceName, raw];
 
     const nsMap = tagCache.get(raw);

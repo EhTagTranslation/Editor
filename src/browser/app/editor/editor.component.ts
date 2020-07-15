@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
 import { RouteService } from 'browser/services/route.service';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, merge } from 'rxjs';
 import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, throttleTime, mergeMap, filter, shareReplay } from 'rxjs/operators';
+import { map, tap, mergeMap, filter, shareReplay, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TitleService } from 'browser/services/title.service';
 import { GithubOauthService } from 'browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -16,6 +16,7 @@ import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
 import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
 import { Context } from 'shared/markdown';
+import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
@@ -60,7 +61,7 @@ export class EditorComponent implements OnInit {
     constructor(
         private readonly ehTagConnector: EhTagConnectorService,
         public readonly github: GithubOauthService,
-        private readonly debug: DebugService,
+        readonly debug: DebugService,
         public readonly release: GithubReleaseService,
         private readonly router: RouteService,
         private readonly title: TitleService,
@@ -119,10 +120,7 @@ export class EditorComponent implements OnInit {
         this.forms.links,
     ]).pipe(
         filter(([namespace]) => isNamespaceName(namespace)),
-        throttleTime(100, undefined, {
-            leading: false,
-            trailing: true,
-        }),
+        debounceTime(100),
         mergeMap(([namespace, raw, name, intro, links]) => {
             return this.ehTagConnector
                 .normalizeTag(
@@ -146,6 +144,8 @@ export class EditorComponent implements OnInit {
     );
 
     submitting = new BehaviorSubject<boolean>(false);
+
+    tagSuggests!: Observable<TagSuggest[]>;
 
     narrowPreviewing = false;
 
@@ -206,6 +206,39 @@ export class EditorComponent implements OnInit {
                 }
             });
         }
+        this.tagSuggests = merge(
+            this.forms.raw.pipe(
+                map((raw) => RawTag(raw ?? undefined) as RawTag),
+                distinctUntilChanged(),
+                map(() => []),
+            ),
+            this.forms.raw.pipe(
+                debounceTime(250),
+                map((raw) => RawTag(raw ?? undefined)),
+                filter((raw): raw is RawTag => raw != null),
+                mergeMap((raw) => suggestTag(undefined, raw).then((sug) => [raw, sug] as const)),
+                filter(([raw]) => raw === RawTag(this.forms.raw.value ?? undefined)),
+                tap((v) => console.log(v)),
+                map(([, suggestions]) => {
+                    const router = this.router;
+                    const tagMethods: ThisType<TagSuggest> = {
+                        toString: function () {
+                            return this.master?.raw ?? this.raw;
+                        },
+                        navigate: function () {
+                            router.navigateParam({
+                                namespace: this.master?.namespace ?? this.namespace,
+                                raw: this.master?.raw ?? this.raw,
+                            });
+                        },
+                    };
+                    suggestions.forEach((s) => {
+                        Object.setPrototypeOf(s, tagMethods);
+                    });
+                    return suggestions;
+                }),
+            ),
+        );
 
         function mapCurrentCanEdit<T>(creating: boolean, original: T, inputs: T | null): T | null {
             if (creating) {
