@@ -7,8 +7,8 @@ overrides:
   - files:
       - '*.js'
       - '*.ts'
-      - '*.jsx'
-      - '*.tsx'
-      - '*.vue'
     options:
       tabWidth: 4
+  - files: 'src/browser/**/*.html'
+    options:
+      parser: angular
