@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1000.2",
-    "@angular/cli": "^10.0.2",
+    "@angular/cli": "^10.0.3",
     "@angular/compiler-cli": "^10.0.3",
     "@angular/language-service": "^10.0.4",
     "@nestjs/cli": "^7.4.1",
