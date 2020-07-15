@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "scss"
         }
       },
       "root": "",
@@ -24,7 +24,7 @@
             "tsConfig": "src/browser/tsconfig.json",
             "aot": true,
             "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
-            "styles": ["src/browser/styles/index.sass"],
+            "styles": ["src/browser/styles/index.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/browser/styles"]
             },

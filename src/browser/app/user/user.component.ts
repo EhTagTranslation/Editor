@@ -7,7 +7,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
-    styleUrls: ['./user.component.sass'],
+    styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
     constructor(private readonly github: GithubOauthService, private readonly release: GithubReleaseService) {}

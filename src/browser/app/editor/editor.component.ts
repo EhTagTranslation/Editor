@@ -85,7 +85,7 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
-    styleUrls: ['./editor.component.sass'],
+    styleUrls: ['./editor.component.scss'],
     animations: [
         trigger('slide', [
             state('left', style({ transform: 'translateX(0)' })),

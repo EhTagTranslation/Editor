@@ -1,0 +1,131 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "theme";
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core($app-typography);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($app-theme);
+
+@import "~material-design-icons/iconfont/material-icons.css";
+
+@import "iconfont.css";
+
+html {
+  font-family: #{$app-font-family};
+  min-width: 320px;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: mat-color(map-get($app-theme, primary));
+  text-decoration: none;
+
+  &[href^='http://'], &[href^='https://'] {
+    text-decoration: underline;
+  }
+
+  &:hover {
+    color: mat-color(map-get($app-theme, accent));
+  }
+}
+
+code {
+  background: rgba(128, 128, 64, 0.1);
+  border-radius: 4px;
+  font-family: Consolas, Courier New, Courier, monospace;
+  font-size: calc(100% - 2px);
+  padding: 2px 4px;
+}
+
+.page-box {
+  @extend .mat-elevation-z8;
+
+  margin: 32px 24px 12px;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  @media (max-width: 720px) {
+    margin: 0 4px 4px;
+  }
+}
+
+.md-container {
+  img[ehimg] {
+    border: transparent solid;
+    max-width: 300px;
+    max-height: 200px;
+
+    &[nsfw] {
+      border: yellow solid;
+    }
+
+    &[nsfw='R18G'] {
+      border: red solid;
+    }
+  }
+
+  p {
+    line-height: 1.25em;
+    margin: 0.5em 0;
+  }
+
+  abbr {
+    margin: 0 2px;
+
+    &::after {
+      font-size: 70%;
+    }
+
+    &:not([title]) {
+      text-decoration: red wavy underline;
+
+      &::after {
+        content: " (无效的标签引用) ";
+      }
+    }
+
+    &[title] {
+      text-decoration: dotted underline;
+
+      &::after {
+        content: " (" attr(title) ") ";
+      }
+    }
+  }
+}
+
+td .md-container p {
+  margin: 6px 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.hide {
+  display: none !important;
+}
+
+.lazyload {
+  opacity: 0;
+}
+
+.lazyloading {
+  opacity: 1;
+  transition: opacity 300ms;
+}

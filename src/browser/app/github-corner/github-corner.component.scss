@@ -1,0 +1,60 @@
+:host {
+  width: 48px;
+};
+
+$size: 80px;
+
+svg {
+  position: absolute;
+  top: 0;
+  border: 0;
+  right: 0;
+  width: $size;
+  height: $size;
+  pointer-events: none;
+
+  #tribox {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
+
+#octo-arm {
+  animation: octocat-wave 560ms ease-in-out infinite;
+  animation-play-state: paused;
+
+  &.octo-arm-wawe {
+    animation-play-state: running;
+  }
+}
+
+@media (max-width: 599px) {
+  #octo-arm {
+    animation-play-state: running;
+  }
+
+  :host {
+    width: 40px;
+  };
+
+  $size: 64px;
+
+  svg {
+    height: $size;
+    width: $size;
+  }
+}
+
+@keyframes octocat-wave {
+  0%, 100% {
+    transform: rotate(0);
+  }
+
+  20%, 60% {
+    transform: rotate(-25deg);
+  }
+
+  40%, 80% {
+    transform: rotate(10deg);
+  }
+}
