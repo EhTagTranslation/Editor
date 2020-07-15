@@ -1,83 +1,83 @@
 {
-    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
-    "newProjectRoot": "projects",
-    "projects": {
-        "eh-tag-editor": {
-            "projectType": "application",
-            "schematics": {
-                "@schematics/angular:component": {
-                    "style": "sass"
-                }
-            },
-            "root": "",
-            "sourceRoot": "src/browser",
-            "prefix": "app",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
-                    "options": {
-                        "outputPath": "dist/browser",
-                        "index": "src/browser/index.html",
-                        "main": "src/browser/main.ts",
-                        "polyfills": "src/browser/polyfills.ts",
-                        "tsConfig": "src/browser/tsconfig.json",
-                        "aot": true,
-                        "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
-                        "styles": ["src/browser/styles/index.sass"],
-                        "stylePreprocessorOptions": {
-                            "includePaths": ["src/browser/styles"]
-                        },
-                        "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios"],
-                        "scripts": [],
-                        "statsJson": true,
-                        "webWorkerTsConfig": "src/browser/tsconfig.worker.json"
-                    },
-                    "configurations": {
-                        "production": {
-                            "fileReplacements": [
-                                {
-                                    "replace": "src/browser/environments/environment.ts",
-                                    "with": "src/browser/environments/environment.prod.ts"
-                                }
-                            ],
-                            "optimization": true,
-                            "outputHashing": "all",
-                            "sourceMap": true,
-                            "extractCss": true,
-                            "extractLicenses": true,
-                            "buildOptimizer": true,
-                            "budgets": [
-                                {
-                                    "type": "initial",
-                                    "maximumWarning": "2mb",
-                                    "maximumError": "5mb"
-                                },
-                                {
-                                    "type": "anyComponentStyle",
-                                    "maximumWarning": "6kb",
-                                    "maximumError": "10kb"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
-                    "options": {
-                        "browserTarget": "eh-tag-editor:build"
-                    },
-                    "configurations": {
-                        "production": {
-                            "browserTarget": "eh-tag-editor:build:production"
-                        }
-                    }
-                }
-            }
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "eh-tag-editor": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "sass"
         }
-    },
-    "defaultProject": "eh-tag-editor",
-    "cli": {
-        "analytics": false
+      },
+      "root": "",
+      "sourceRoot": "src/browser",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/browser",
+            "index": "src/browser/index.html",
+            "main": "src/browser/main.ts",
+            "polyfills": "src/browser/polyfills.ts",
+            "tsConfig": "src/browser/tsconfig.json",
+            "aot": true,
+            "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
+            "styles": ["src/browser/styles/index.sass"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/browser/styles"]
+            },
+            "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios"],
+            "scripts": [],
+            "statsJson": true,
+            "webWorkerTsConfig": "src/browser/tsconfig.worker.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/browser/environments/environment.ts",
+                  "with": "src/browser/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "extractLicenses": true,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "eh-tag-editor:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "eh-tag-editor:build:production"
+            }
+          }
+        }
+      }
     }
+  },
+  "defaultProject": "eh-tag-editor",
+  "cli": {
+    "analytics": false
+  }
 }

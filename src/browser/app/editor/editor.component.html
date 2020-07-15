@@ -1,297 +1,261 @@
 <div class="page-box">
-    <header>
-        <span class="mat-headline">
-            {{ (create | async) ? '创建标签' : '修改标签' }}
-        </span>
-        <a mat-icon-button matTooltip="查看参与翻译指南" [href]="dbRepo.resolve('wiki/参与翻译')" target="_blank">
-            <mat-icon>help</mat-icon>
-        </a>
-        <a
-            *ngIf="!(create | async)"
-            mat-icon-button
-            matTooltip="以此为模板新建标签"
-            [routerLink]="['/edit', forms.namespace | async, '*new']"
-            [queryParams]="{
-                raw: value('raw'),
-                name: value('name'),
-                intro: value('intro'),
-                links: value('links')
-            }"
-        >
-            <mat-icon>content_copy</mat-icon>
-        </a>
-    </header>
-    <section [@slide]="narrowPreviewing ? 'right' : 'left'">
-        <div id="form-container">
-            <form [formGroup]="tagForm" autocomplete="off">
-                <mat-form-field>
-                    <mat-label>命名空间</mat-label>
-                    <mat-select formControlName="namespace" required>
-                        <mat-select-trigger class="ns-option">
-                            <span class="ns-name">{{ (getNamespace(value('namespace')) | async).name }}</span
-                            ><span class="ns-raw">{{ value('namespace') }}</span>
-                        </mat-select-trigger>
-                        <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
-                            <span class="ns-name">{{ (getNamespace(ns) | async).name }}</span
-                            ><span class="ns-raw">{{ ns }}</span>
-                            <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async).description }}</span>
-                        </mat-option>
-                    </mat-select>
-                    <mat-hint>
-                        <ng-template [ngIf]="enabled('namespace')" [ngIfElse]="nsDisabled"
-                            >标签所在的命名空间</ng-template
-                        >
-                        <ng-template #nsDisabled>
-                            <ng-template [ngIf]="isEditableNs | async" [ngIfElse]="nsNotAllowed">
-                                修改标签时无法更改此项
-                            </ng-template>
-                            <ng-template #nsNotAllowed>
-                                该命名空间的标签暂不支持从此处修改，请<a
-                                    [href]="dbRepo.issue(value('raw'), value('namespace'), create | async)"
-                                    target="_blank"
-                                    >提交 ISSUE 讨论</a
-                                >或<a
-                                    [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')"
-                                    target="_blank"
-                                    >通过 PR 修改</a
-                                >
-                            </ng-template>
-                        </ng-template>
-                    </mat-hint>
-                    <mat-error *ngIf="hasError('namespace', 'editableNs')"
-                        >该命名空间的标签暂不支持从此处修改，请<a
-                            [href]="dbRepo.issue(value('raw'), value('namespace'), create | async)"
-                            target="_blank"
-                            >提交 ISSUE 讨论</a
-                        >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
-                            >通过 PR 修改</a
-                        >
-                    </mat-error>
-                </mat-form-field>
-                <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
-                    <span>填写指南</span>
-                    <p
-                        *ngFor="let item of (getNamespace(value('namespace')) | async).rules"
-                        [innerHTML]="item | linkify"
-                    ></p>
-                </mat-hint>
-                <mat-form-field>
-                    <button
-                        *ngIf="forms.raw | async"
-                        mat-icon-button
-                        matSuffix
-                        matTooltip="搜索"
-                        [matMenuTriggerFor]="searchMenu"
-                    >
-                        <mat-icon>search</mat-icon>
-                        <mat-menu #searchMenu="matMenu" xPosition="before">
-                            <ng-template matMenuContent>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://e-hentai.org/?f_search=%mns%22%raw$%22')"
-                                >
-                                    <span>在表站搜索标签</span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://exhentai.org/?f_search=%mns%22%raw$%22')"
-                                >
-                                    <span>在里站搜索标签</span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://ehwiki.org/index.php?search=%raw')"
-                                >
-                                    <span>在 EHWiki 搜索标签</span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%raw')"
-                                >
-                                    <span>在维基百科搜索标签</span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://zh.moegirl.org/index.php?search=%raw')"
-                                >
-                                    <span>在萌娘百科搜索标签</span>
-                                </button>
-                            </ng-template>
-                        </mat-menu>
-                    </button>
-                    <mat-label>原始标签</mat-label>
-                    <input
-                        matInput
-                        [placeholder]="(getNamespace(value('namespace')) | async).example?.raw"
-                        formControlName="raw"
-                        required
-                        [matAutocomplete]="tagSuggest"
-                    /><mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
-                        <mat-option *ngFor="let option of tagSuggests | async" [value]="option">
-                            <div class="hint">
-                                <span class="hint-original">
-                                    <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
-                                        <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
-                                        <span
-                                            class="hint-raw"
-                                            [innerHTML]="option.suggest.raw | mark: value('raw').trim():false"
-                                        ></span>
-                                    </span>
-                                    <span *ngIf="option.isSlaved">
-                                        ➜
-                                        <span class="hint-tag hint-master">
-                                            <span class="hint-namespace">{{ option.master.namespace }}:</span>
-                                            <span
-                                                class="hint-raw"
-                                                [innerHTML]="option.master.raw | mark: value('raw').trim():false"
-                                            ></span
-                                        ></span>
-                                    </span>
-                                </span>
-                                <span *ngIf="option.translation() | async" class="hint-translation">
-                                    <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async).name }}</span
-                                    >：<span [innerHTML]="(option.translation() | async)?.name"></span>
-                                </span>
-                            </div>
-                        </mat-option>
-                    </mat-autocomplete>
-                    <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
-                    <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
-                    <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母 </mat-error>
-                    <mat-error *ngIf="hasError('raw', 'pattern', ['minlength', 'required'])">
-                        不能以空格开始或结束</mat-error
-                    >
-                    <mat-error *ngIf="hasError('raw', 'raw', ['pattern', 'minlength', 'required'])">
-                        只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error
-                    >
-                </mat-form-field>
-                <mat-form-field class="markdown">
-                    <button
-                        *ngIf="forms.name | async"
-                        mat-icon-button
-                        matSuffix
-                        matTooltip="搜索"
-                        [matMenuTriggerFor]="searchMenu"
-                    >
-                        <mat-icon>search</mat-icon>
-                        <mat-menu #searchMenu="matMenu" xPosition="before">
-                            <ng-template matMenuContent>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%name')"
-                                >
-                                    <span>在维基百科搜索名称</span>
-                                </button>
-                                <button
-                                    mat-menu-item
-                                    (click)="searchExternal('https://zh.moegirl.org/index.php?search=%name')"
-                                >
-                                    <span>在萌娘百科搜索名称</span>
-                                </button>
-                            </ng-template>
-                        </mat-menu>
-                    </button>
-                    <mat-label>名称</mat-label>
-                    <input
-                        matInput
-                        [placeholder]="(getNamespace(value('namespace')) | async).example?.name"
-                        formControlName="name"
-                        required
-                    />
-                    <mat-hint>输入标签的中文翻译</mat-hint>
-                    <mat-error *ngIf="hasError('name', ['pattern', 'required'])">必须填写</mat-error>
-                </mat-form-field>
-                <mat-form-field class="markdown">
-                    <mat-label>描述</mat-label>
-                    <textarea
-                        matInput
-                        [placeholder]="(getNamespace(value('namespace')) | async).example?.intro"
-                        formControlName="intro"
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="2"
-                        cdkAutosizeMaxRows="10"
-                    ></textarea>
-                    <mat-hint>输入标签的描述</mat-hint>
-                </mat-form-field>
-                <mat-form-field class="markdown">
-                    <mat-label>外部链接</mat-label>
-                    <textarea
-                        matInput
-                        [placeholder]="(getNamespace(value('namespace')) | async).example?.links"
-                        formControlName="links"
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="2"
-                        cdkAutosizeMaxRows="10"
-                    ></textarea>
-                    <mat-hint
-                        >输入标签的相关链接，如指向{{
-                            ((inputs.namespace | async) || (original.namespace | async)) === 'artist'
-                                ? '画师的微博、pixiv、Twitter 或个人主页'
-                                : ((inputs.namespace | async) || (original.namespace | async)) === 'group'
-                                ? '社团或公司的官方网站'
-                                : ((inputs.namespace | async) || (original.namespace | async)) === 'parody'
-                                ? '作品的维基或萌百页面'
-                                : ((inputs.namespace | async) || (original.namespace | async)) === 'character'
-                                ? '角色的百科页面'
-                                : ' EhWiki 页面或萌百词条'
-                        }}的链接</mat-hint
-                    >
-                </mat-form-field>
-            </form>
-        </div>
-        <div id="preview-container">
-            <div id="preview-row1">
-                <mat-card>
-                    <mat-card-subtitle>原始标签</mat-card-subtitle>
-                    <mat-card-content style="white-space: pre-wrap;" [innerHtml]="(rendered | async)?.raw || ''">
-                    </mat-card-content>
-                </mat-card>
-                <mat-card>
-                    <mat-card-subtitle>名称 </mat-card-subtitle>
-                    <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.name | mark: '':true">
-                    </mat-card-content>
-                </mat-card>
-            </div>
-            <mat-card>
-                <mat-card-subtitle>描述 </mat-card-subtitle>
-                <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.intro | mark: '':true">
-                </mat-card-content>
-            </mat-card>
-            <mat-card>
-                <mat-card-subtitle>外部链接 </mat-card-subtitle>
-                <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.links | mark: '':true">
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </section>
-    <footer>
-        <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">
-            重置
-        </button>
-        <button class="narrow" mat-raised-button (click)="narrowPreviewing = !narrowPreviewing">
-            {{ narrowPreviewing ? '编辑' : '预览' }}
-        </button>
-        <button
-            mat-raised-button
-            [disabled]="tagForm.invalid || !(isEditableNs | async) || tagForm.pristine || !(github.tokenChange | async)"
-            [matTooltip]="
-                !(github.tokenChange | async)
-                    ? '请先登录'
-                    : tagForm.invalid || !(isEditableNs | async)
-                    ? '请检查填写的内容'
-                    : tagForm.pristine
-                    ? '没有更改'
-                    : ''
-            "
-            (click)="submit()"
-            (focus)="preSubmit()"
-            (mouseenter)="preSubmit()"
-            color="accent"
-        >
-            <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
-            <ng-template #submittingspinner>
-                <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+  <header>
+    <span class="mat-headline">
+      {{ (create | async) ? '创建标签' : '修改标签' }}
+    </span>
+    <a mat-icon-button matTooltip="查看参与翻译指南" [href]="dbRepo.resolve('wiki/参与翻译')" target="_blank">
+      <mat-icon>help</mat-icon>
+    </a>
+    <a
+      *ngIf="!(create | async)"
+      mat-icon-button
+      matTooltip="以此为模板新建标签"
+      [routerLink]="['/edit', forms.namespace | async, '*new']"
+      [queryParams]="{
+        raw: value('raw'),
+        name: value('name'),
+        intro: value('intro'),
+        links: value('links')
+      }"
+    >
+      <mat-icon>content_copy</mat-icon>
+    </a>
+  </header>
+  <section [@slide]="narrowPreviewing ? 'right' : 'left'">
+    <div id="form-container">
+      <form [formGroup]="tagForm" autocomplete="off">
+        <mat-form-field>
+          <mat-label>命名空间</mat-label>
+          <mat-select formControlName="namespace" required>
+            <mat-select-trigger class="ns-option">
+              <span class="ns-name">{{ (getNamespace(value('namespace')) | async).name }}</span
+              ><span class="ns-raw">{{ value('namespace') }}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
+              <span class="ns-name">{{ (getNamespace(ns) | async).name }}</span
+              ><span class="ns-raw">{{ ns }}</span>
+              <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async).description }}</span>
+            </mat-option>
+          </mat-select>
+          <mat-hint>
+            <ng-template [ngIf]="enabled('namespace')" [ngIfElse]="nsDisabled">标签所在的命名空间</ng-template>
+            <ng-template #nsDisabled>
+              <ng-template [ngIf]="isEditableNs | async" [ngIfElse]="nsNotAllowed">
+                修改标签时无法更改此项
+              </ng-template>
+              <ng-template #nsNotAllowed>
+                该命名空间的标签暂不支持从此处修改，请<a
+                  [href]="dbRepo.issue(value('raw'), value('namespace'), create | async)"
+                  target="_blank"
+                  >提交 ISSUE 讨论</a
+                >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+                  >通过 PR 修改</a
+                >
+              </ng-template>
             </ng-template>
-        </button>
-    </footer>
+          </mat-hint>
+          <mat-error *ngIf="hasError('namespace', 'editableNs')"
+            >该命名空间的标签暂不支持从此处修改，请<a
+              [href]="dbRepo.issue(value('raw'), value('namespace'), create | async)"
+              target="_blank"
+              >提交 ISSUE 讨论</a
+            >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+              >通过 PR 修改</a
+            >
+          </mat-error>
+        </mat-form-field>
+        <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
+          <span>填写指南</span>
+          <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules" [innerHTML]="item | linkify"></p>
+        </mat-hint>
+        <mat-form-field>
+          <button
+            *ngIf="forms.raw | async"
+            mat-icon-button
+            matSuffix
+            matTooltip="搜索"
+            [matMenuTriggerFor]="searchMenu"
+          >
+            <mat-icon>search</mat-icon>
+            <mat-menu #searchMenu="matMenu" xPosition="before">
+              <ng-template matMenuContent>
+                <button mat-menu-item (click)="searchExternal('https://e-hentai.org/?f_search=%mns%22%raw$%22')">
+                  <span>在表站搜索标签</span>
+                </button>
+                <button mat-menu-item (click)="searchExternal('https://exhentai.org/?f_search=%mns%22%raw$%22')">
+                  <span>在里站搜索标签</span>
+                </button>
+                <button mat-menu-item (click)="searchExternal('https://ehwiki.org/index.php?search=%raw')">
+                  <span>在 EHWiki 搜索标签</span>
+                </button>
+                <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%raw')">
+                  <span>在维基百科搜索标签</span>
+                </button>
+                <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org/index.php?search=%raw')">
+                  <span>在萌娘百科搜索标签</span>
+                </button>
+              </ng-template>
+            </mat-menu>
+          </button>
+          <mat-label>原始标签</mat-label>
+          <input
+            matInput
+            [placeholder]="(getNamespace(value('namespace')) | async).example?.raw"
+            formControlName="raw"
+            required
+            [matAutocomplete]="tagSuggest"
+          /><mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
+            <mat-option *ngFor="let option of tagSuggests | async" [value]="option">
+              <div class="hint">
+                <span class="hint-original">
+                  <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
+                    <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
+                    <span class="hint-raw" [innerHTML]="option.suggest.raw | mark: value('raw').trim():false"></span>
+                  </span>
+                  <span *ngIf="option.isSlaved">
+                    ➜
+                    <span class="hint-tag hint-master">
+                      <span class="hint-namespace">{{ option.master.namespace }}:</span>
+                      <span class="hint-raw" [innerHTML]="option.master.raw | mark: value('raw').trim():false"></span
+                    ></span>
+                  </span>
+                </span>
+                <span *ngIf="option.translation() | async" class="hint-translation">
+                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async).name }}</span
+                  >：<span [innerHTML]="(option.translation() | async)?.name"></span>
+                </span>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+          <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
+          <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
+          <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母 </mat-error>
+          <mat-error *ngIf="hasError('raw', 'pattern', ['minlength', 'required'])"> 不能以空格开始或结束</mat-error>
+          <mat-error *ngIf="hasError('raw', 'raw', ['pattern', 'minlength', 'required'])">
+            只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="markdown">
+          <button
+            *ngIf="forms.name | async"
+            mat-icon-button
+            matSuffix
+            matTooltip="搜索"
+            [matMenuTriggerFor]="searchMenu"
+          >
+            <mat-icon>search</mat-icon>
+            <mat-menu #searchMenu="matMenu" xPosition="before">
+              <ng-template matMenuContent>
+                <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%name')">
+                  <span>在维基百科搜索名称</span>
+                </button>
+                <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org/index.php?search=%name')">
+                  <span>在萌娘百科搜索名称</span>
+                </button>
+              </ng-template>
+            </mat-menu>
+          </button>
+          <mat-label>名称</mat-label>
+          <input
+            matInput
+            [placeholder]="(getNamespace(value('namespace')) | async).example?.name"
+            formControlName="name"
+            required
+          />
+          <mat-hint>输入标签的中文翻译</mat-hint>
+          <mat-error *ngIf="hasError('name', ['pattern', 'required'])">必须填写</mat-error>
+        </mat-form-field>
+        <mat-form-field class="markdown">
+          <mat-label>描述</mat-label>
+          <textarea
+            matInput
+            [placeholder]="(getNamespace(value('namespace')) | async).example?.intro"
+            formControlName="intro"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="10"
+          ></textarea>
+          <mat-hint>输入标签的描述</mat-hint>
+        </mat-form-field>
+        <mat-form-field class="markdown">
+          <mat-label>外部链接</mat-label>
+          <textarea
+            matInput
+            [placeholder]="(getNamespace(value('namespace')) | async).example?.links"
+            formControlName="links"
+            cdkTextareaAutosize
+            cdkAutosizeMinRows="2"
+            cdkAutosizeMaxRows="10"
+          ></textarea>
+          <mat-hint
+            >输入标签的相关链接，如指向{{
+              ((inputs.namespace | async) || (original.namespace | async)) === 'artist'
+                ? '画师的微博、pixiv、Twitter 或个人主页'
+                : ((inputs.namespace | async) || (original.namespace | async)) === 'group'
+                ? '社团或公司的官方网站'
+                : ((inputs.namespace | async) || (original.namespace | async)) === 'parody'
+                ? '作品的维基或萌百页面'
+                : ((inputs.namespace | async) || (original.namespace | async)) === 'character'
+                ? '角色的百科页面'
+                : ' EhWiki 页面或萌百词条'
+            }}的链接</mat-hint
+          >
+        </mat-form-field>
+      </form>
+    </div>
+    <div id="preview-container">
+      <div id="preview-row1">
+        <mat-card>
+          <mat-card-subtitle>原始标签</mat-card-subtitle>
+          <mat-card-content style="white-space: pre-wrap;" [innerHtml]="(rendered | async)?.raw || ''">
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-subtitle>名称 </mat-card-subtitle>
+          <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.name | mark: '':true">
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <mat-card>
+        <mat-card-subtitle>描述 </mat-card-subtitle>
+        <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.intro | mark: '':true">
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-subtitle>外部链接 </mat-card-subtitle>
+        <mat-card-content class="md-container" [innerHtml]="(rendered | async)?.links | mark: '':true">
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+  <footer>
+    <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">
+      重置
+    </button>
+    <button class="narrow" mat-raised-button (click)="narrowPreviewing = !narrowPreviewing">
+      {{ narrowPreviewing ? '编辑' : '预览' }}
+    </button>
+    <button
+      mat-raised-button
+      [disabled]="tagForm.invalid || !(isEditableNs | async) || tagForm.pristine || !(github.tokenChange | async)"
+      [matTooltip]="
+        !(github.tokenChange | async)
+          ? '请先登录'
+          : tagForm.invalid || !(isEditableNs | async)
+          ? '请检查填写的内容'
+          : tagForm.pristine
+          ? '没有更改'
+          : ''
+      "
+      (click)="submit()"
+      (focus)="preSubmit()"
+      (mouseenter)="preSubmit()"
+      color="accent"
+    >
+      <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
+      <ng-template #submittingspinner>
+        <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+      </ng-template>
+    </button>
+  </footer>
 </div>

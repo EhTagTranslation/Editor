@@ -1,30 +1,30 @@
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-        "baseUrl": "./",
-        "rootDir": "./",
-        "outDir": "../dist/out-tsc",
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "rootDir": "./",
+    "outDir": "../dist/out-tsc",
 
-        "sourceMap": true,
-        "inlineSources": true,
-        "removeComments": true,
-        "declaration": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "removeComments": true,
+    "declaration": false,
 
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "importHelpers": true,
-        "target": "es6",
-        "typeRoots": ["node_modules/@types"],
-        "types": ["node", "bluebird-global"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es6",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node", "bluebird-global"],
 
-        "strict": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": false,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
 
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
-    }
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  }
 }

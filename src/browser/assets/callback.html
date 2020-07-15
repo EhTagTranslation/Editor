@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <script>
-            var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
-            window.opener.postMessage(code, location.origin);
-            window.close();
-        </script>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
+      window.opener.postMessage(code, location.origin);
+      window.close();
+    </script>
+  </head>
 </html>

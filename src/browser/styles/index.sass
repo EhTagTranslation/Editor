@@ -16,7 +16,6 @@
 
 @import 'iconfont.css'
 
-
 html
   font-family: #{$app-font-family}
   min-width: 320px
@@ -73,21 +72,18 @@ code
       &::after
         content: ' (' attr(title) ') '
 td .md-container p
+  margin: 6px 0
   &:first-child
     margin-top: 0
   &:last-child
     margin-bottom: 0
-  margin: 6px 0
-
-.no-user-select
-  user-select: none
 
 .hide
   display: none !important
 
-.lazyload 
+.lazyload
   opacity: 0
 
-.lazyloading 
+.lazyloading
   opacity: 1
   transition: opacity 300ms

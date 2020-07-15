@@ -1,158 +1,154 @@
 <div class="page-box" id="root" [ngClass]="'show-img-' + (showImg | async)">
-    <header>
-        <mat-form-field id="search">
-            <mat-label> <mat-icon matPrefix>search</mat-icon>搜索 </mat-label>
-            <input
-                [ngModel]="search | async"
-                (ngModelChange)="navigateParam({ search: $event, pageIndex: 0 })"
-                matInput
-                placeholder="string or /regex/"
-                type="search"
-                autocomplete="off"
-                (paste)="pasting($event)"
-            />
-            <span
-                *ngIf="(usingRegex | async) && (search | async)"
-                matSuffix
-                class="mat-hint"
-                matTooltip="正在使用正则表达式进行匹配"
-                matTooltipPosition="above"
-                >.*</span
+  <header>
+    <mat-form-field id="search">
+      <mat-label> <mat-icon matPrefix>search</mat-icon>搜索 </mat-label>
+      <input
+        [ngModel]="search | async"
+        (ngModelChange)="navigateParam({ search: $event, pageIndex: 0 })"
+        matInput
+        placeholder="string or /regex/"
+        type="search"
+        autocomplete="off"
+        (paste)="pasting($event)"
+      />
+      <span
+        *ngIf="(usingRegex | async) && (search | async)"
+        matSuffix
+        class="mat-hint"
+        matTooltip="正在使用正则表达式进行匹配"
+        matTooltipPosition="above"
+        >.*</span
+      >
+      <span
+        *ngIf="!(usingRegex | async) && (search | async)"
+        matSuffix
+        class="mat-hint"
+        matTooltip="正在使用普通文本进行匹配"
+        matTooltipPosition="above"
+        >ab</span
+      >
+      <span *ngIf="!(search | async)" matSuffix class="mat-hint"></span>
+    </mat-form-field>
+    <mat-chip-list class="filter-list">
+      <mat-chip *ngIf="namespace | async" [removable]="true" [selectable]="false" (removed)="setNs()">
+        命名空间：{{ namespace | async }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+    <span style="flex: 1 1 auto;"></span>
+    <mat-form-field style="width: 100px;">
+      <mat-label>图片显示</mat-label>
+      <mat-select [ngModel]="showImg | async" (ngModelChange)="navigateParam({ showImg: $event })">
+        <mat-option value="all">全部显示</mat-option>
+        <mat-option value="no-r18g">模糊 R18G</mat-option>
+        <mat-option value="no-r18">模糊 R18</mat-option>
+        <mat-option value="none">全部隐藏</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-paginator
+      [length]="(filteredTags | async)?.length"
+      [pageIndex]="pageIndex | async"
+      [pageSize]="pageSize | async"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      (page)="navigateParam({ pageIndex: $event.pageIndex, pageSize: $event.pageSize })"
+    >
+    </mat-paginator>
+  </header>
+  <section>
+    <div id="table-wrapper">
+      <table
+        (copy)="copying($event)"
+        [style.display]="(loading | async) ? 'hidden' : ''"
+        mat-table
+        [dataSource]="pagedTags"
+        aria-label="Elements"
+        matSort
+        [matSortActive]="sortBy | async"
+        [matSortDirection]="sortDirection | async"
+        (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })"
+      >
+        <ng-container matColumnDef="namespace">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">命名空间</th>
+          <td mat-cell *matCellDef="let row">
+            <div>
+              <a (click)="setNs(row.namespace)" [routerLink]="['/list', row.namespace]">{{ row.namespace }}</a>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="raw">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">原始标签</th>
+          <td mat-cell *matCellDef="let row">
+            <div>
+              <a
+                *ngIf="row.namespace === 'rows'; else notRow"
+                (click)="setNs(row.raw)"
+                [routerLink]="['/list', row.raw]"
+                [innerHTML]="row.raw | mark: (search | async)"
+              ></a>
+              <ng-template #notRow><span [innerHTML]="row.raw | mark: (search | async)"></span></ng-template>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">名称</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="md-container" [innerHTML]="row.renderedName | mark: (search | async):true"></div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="intro">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">描述</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="md-container" [innerHTML]="row.renderedIntro | mark: (search | async):true"></div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="links">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">外部链接</th>
+          <td mat-cell *matCellDef="let row">
+            <div class="md-container" [innerHTML]="row.renderedLinks | mark: (search | async):true"></div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="handle" sticky>
+          <th mat-header-cell *matHeaderCellDef style="width: 40px;">
+            <button
+              matTooltip="新增"
+              matTooltipPosition="right"
+              matTooltipShowDelay="500"
+              mat-icon-button
+              class="mat-accent"
+              [routerLink]="['/edit', (namespace | async) || 'aritst', '*new']"
             >
-            <span
-                *ngIf="!(usingRegex | async) && (search | async)"
-                matSuffix
-                class="mat-hint"
-                matTooltip="正在使用普通文本进行匹配"
-                matTooltipPosition="above"
-                >ab</span
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              [matTooltip]="
+                editableNs.indexOf(row.namespace) < 0
+                  ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改'
+                  : '编辑'
+              "
+              matTooltipPosition="right"
+              matTooltipShowDelay="500"
+              mat-icon-button
+              class="mat-accent"
+              [routerLink]="['/edit', row.namespace, row.raw]"
             >
-            <span *ngIf="!(search | async)" matSuffix class="mat-hint"></span>
-        </mat-form-field>
-        <mat-chip-list class="filter-list">
-            <mat-chip *ngIf="namespace | async" [removable]="true" [selectable]="false" (removed)="setNs()">
-                命名空间：{{ namespace | async }}
-                <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-        </mat-chip-list>
-        <span style="flex: 1 1 auto;"></span>
-        <mat-form-field style="width: 100px;">
-            <mat-label>图片显示</mat-label>
-            <mat-select [ngModel]="showImg | async" (ngModelChange)="navigateParam({ showImg: $event })">
-                <mat-option value="all">全部显示</mat-option>
-                <mat-option value="no-r18g">模糊 R18G</mat-option>
-                <mat-option value="no-r18">模糊 R18</mat-option>
-                <mat-option value="none">全部隐藏</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-paginator
-            [length]="(filteredTags | async)?.length"
-            [pageIndex]="pageIndex | async"
-            [pageSize]="pageSize | async"
-            [pageSizeOptions]="[10, 25, 50, 100]"
-            (page)="navigateParam({ pageIndex: $event.pageIndex, pageSize: $event.pageSize })"
-        >
-        </mat-paginator>
-    </header>
-    <section>
-        <div id="table-wrapper">
-            <table
-                (copy)="copying($event)"
-                [style.display]="(loading | async) ? 'hidden' : ''"
-                mat-table
-                [dataSource]="pagedTags"
-                aria-label="Elements"
-                matSort
-                [matSortActive]="sortBy | async"
-                [matSortDirection]="sortDirection | async"
-                (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })"
-            >
-                <ng-container matColumnDef="namespace">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">命名空间</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div>
-                            <a (click)="setNs(row.namespace)" [routerLink]="['/list', row.namespace]">{{
-                                row.namespace
-                            }}</a>
-                        </div>
-                    </td>
-                </ng-container>
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-                <ng-container matColumnDef="raw">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">原始标签</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div>
-                            <a
-                                *ngIf="row.namespace === 'rows'; else notRow"
-                                (click)="setNs(row.raw)"
-                                [routerLink]="['/list', row.raw]"
-                                [innerHTML]="row.raw | mark: (search | async)"
-                            ></a>
-                            <ng-template #notRow
-                                ><span [innerHTML]="row.raw | mark: (search | async)"></span
-                            ></ng-template>
-                        </div>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">名称</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div class="md-container" [innerHTML]="row.renderedName | mark: (search | async):true"></div>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="intro">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">描述</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div class="md-container" [innerHTML]="row.renderedIntro | mark: (search | async):true"></div>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="links">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">外部链接</th>
-                    <td mat-cell *matCellDef="let row">
-                        <div class="md-container" [innerHTML]="row.renderedLinks | mark: (search | async):true"></div>
-                    </td>
-                </ng-container>
-
-                <ng-container matColumnDef="handle" sticky>
-                    <th mat-header-cell *matHeaderCellDef style="width: 40px;">
-                        <button
-                            matTooltip="新增"
-                            matTooltipPosition="right"
-                            matTooltipShowDelay="500"
-                            mat-icon-button
-                            class="mat-accent"
-                            [routerLink]="['/edit', (namespace | async) || 'aritst', '*new']"
-                        >
-                            <mat-icon>add_circle</mat-icon>
-                        </button>
-                    </th>
-                    <td mat-cell *matCellDef="let row">
-                        <button
-                            [matTooltip]="
-                                editableNs.indexOf(row.namespace) < 0
-                                    ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改'
-                                    : '编辑'
-                            "
-                            matTooltipPosition="right"
-                            matTooltipShowDelay="500"
-                            mat-icon-button
-                            class="mat-accent"
-                            [routerLink]="['/edit', row.namespace, row.raw]"
-                        >
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns | async"></tr>
-            </table>
-        </div>
-        <div class="spinner" *ngIf="loading | async">
-            <mat-spinner></mat-spinner>
-        </div>
-    </section>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns | async"></tr>
+      </table>
+    </div>
+    <div class="spinner" *ngIf="loading | async">
+      <mat-spinner></mat-spinner>
+    </div>
+  </section>
 </div>
