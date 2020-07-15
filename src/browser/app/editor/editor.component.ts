@@ -244,19 +244,17 @@ export class EditorComponent implements OnInit {
                 }
             });
         }
+        const tagSuggestSource = this.forms.raw.pipe(
+            map((raw) => RawTag(raw ?? undefined)),
+            distinctUntilChanged(),
+        );
         this.tagSuggests = merge(
-            this.forms.raw.pipe(
-                map((raw) => RawTag(raw ?? undefined) as RawTag),
-                distinctUntilChanged(),
-                map(() => []),
-            ),
-            this.forms.raw.pipe(
+            tagSuggestSource.pipe(map(() => [])),
+            tagSuggestSource.pipe(
                 debounceTime(250),
-                map((raw) => RawTag(raw ?? undefined)),
                 filter((raw): raw is RawTag => raw != null),
                 mergeMap((raw) => suggestTag(undefined, raw).then((sug) => [raw, sug] as const)),
                 filter(([raw]) => raw === RawTag(this.forms.raw.value ?? undefined)),
-                tap((v) => console.log(v)),
                 map(([, suggestions]) => {
                     return suggestions.map((s) => new TagSuggestOption(s, this));
                 }),

@@ -2,6 +2,7 @@ import { RawTag } from '../validate';
 import { postApi, TagSuggestRequest, ResponseOf } from './api';
 import { NamespaceName } from '../interfaces/ehtag';
 
+const suggestCache = new Map<string, Tag[]>();
 export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();
 
 interface MasterTag {
@@ -56,6 +57,8 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
 export async function suggestTag(ns: NamespaceName | undefined, raw: RawTag): Promise<Tag[]> {
     try {
         const text = `${ns != null ? ns + ':' : ''}${raw.slice(0, 50)}`;
+        const cache = suggestCache.get(text);
+        if (cache) return cache;
         const response = await postApi<TagSuggestRequest>({
             method: 'tagsuggest',
             text,
@@ -64,6 +67,7 @@ export async function suggestTag(ns: NamespaceName | undefined, raw: RawTag): Pr
         if (result.length === 0 && raw.includes('.')) {
             return await suggestTag(ns, raw.slice(0, raw.indexOf('.') - 1) as RawTag);
         }
+        suggestCache.set(text, result);
         return result;
     } catch (err) {
         console.error(err);
