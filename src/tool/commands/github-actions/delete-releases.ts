@@ -3,6 +3,7 @@ import Git from 'simple-git';
 import { Octokit } from '@octokit/rest';
 import { action } from '../../utils';
 import { command, Command } from './command';
+import { lsRemoteTags } from './utils';
 
 class Main {
     constructor(readonly KEEP_RELEASE = 3, readonly REPO_PATH = '.') {
@@ -22,22 +23,17 @@ class Main {
 
     async deleteTag(): Promise<void> {
         const git = Git(this.REPO_PATH);
-        const raw = git.raw.bind(git);
         const remote = action.isAction()
             ? `https://${action.actor}:${action.token}@github.com/${action.repository}.git`
             : 'origin';
-        const tags = (await raw(['ls-remote', '--tags', '--sort=-creatordate']))
-            .split('\n')
-            .filter((s) => s.trim())
-            .map((s) => s.split('\t')[1].split('/')[2]);
+        const tags = await lsRemoteTags(git);
 
         console.log(`Found ${tags.length} tags`);
         const old_tags = tags.slice(this.KEEP_RELEASE);
 
         if (old_tags.length > 0) {
             console.log(`Deleting ${old_tags.length} tags`);
-            await raw(['push', remote, '--delete', ...old_tags]);
-            await raw(['tag', '--delete', ...old_tags]);
+            await git.raw('push', remote, '--delete', ...old_tags.map((t) => t.tag));
         }
     }
 }

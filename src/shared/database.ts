@@ -1,63 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
-import simpleGit from 'simple-git';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
 import { TagRecord } from './tag-record';
 import { RawTag } from './validate';
 import { DatabaseView } from './interfaces/database';
 import { Logger } from './markdown';
+import { GitRepoInfoProvider, RepoInfoProvider } from './repo-info-provider';
 
 const SUPPORTED_REPO_VERSION = 5;
-
-export interface RepoInfoProvider {
-    head(): Promise<RepoInfo['head']> | RepoInfo['head'];
-
-    repo(): Promise<RepoInfo['repo']> | RepoInfo['repo'];
-}
-
-class GitRepoInfoProvider implements RepoInfoProvider {
-    constructor(readonly repoPath: string) {}
-    private readonly git = simpleGit({ baseDir: this.repoPath });
-    async head(): Promise<RepoInfo['head']> {
-        if (!this.git) throw new Error('This is not a git repo');
-        const commit = (
-            await this.git.log({
-                '--max-count': '1',
-                format: {
-                    sha: '%H',
-                    message: '%B',
-                    'author.name': '%an',
-                    'author.email': '%ae',
-                    'author.when': '%aI',
-                    'committer.name': '%cn',
-                    'committer.email': '%ce',
-                    'committer.when': '%cI',
-                },
-            })
-        ).latest;
-        return {
-            sha: commit.sha as Sha1Value,
-            message: commit.message,
-            author: {
-                name: commit['author.name'],
-                email: commit['author.email'],
-                when: new Date(commit['author.when']),
-            },
-            committer: {
-                name: commit['committer.name'],
-                email: commit['committer.email'],
-                when: new Date(commit['committer.when']),
-            },
-        };
-    }
-
-    async repo(): Promise<RepoInfo['repo']> {
-        const remote = await this.git.getRemotes(true);
-        return remote[0].refs.fetch;
-    }
-}
-
 export class Database implements DatabaseView {
     static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider, logger?: Logger): Promise<Database> {
         const resolvedPath = path.resolve(repoPath);

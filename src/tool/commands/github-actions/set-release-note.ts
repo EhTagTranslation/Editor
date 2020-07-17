@@ -1,6 +1,9 @@
-import { action, ensureEnv } from '../../utils';
+import { action } from '../../utils';
 import SimpleGit from 'simple-git';
 import { command, Command } from './command';
+import { GitRepoInfoProvider } from '../../../shared/repo-info-provider';
+import { Sha1Value } from '../../../shared/interfaces/ehtag';
+import { lsRemoteTags } from './utils';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;
@@ -15,14 +18,15 @@ function mirrorInfo(sha: string): string {
 command
     .command('set-release-note')
     .description('生成发布消并导出到环境变量')
-    .option('--mirror-sha [sha]', '镜像 commit 的 sha')
+    .option('--mirror-sha <sha>', '镜像 commit 的 sha')
     .action(async (command: Command) => {
-        let message = ensureEnv('COMMIT_MESSAGE');
-        action.exportVariable('RELEASE_NAME', message.split('\n', 1)[0]);
+        const head = await new GitRepoInfoProvider(process.cwd()).head();
+        let message = head.message;
+        action.exportVariable('RELEASE_NAME', head.message.split('\n', 1)[0]);
         const info = { message } as Record<string, string>;
         const git = SimpleGit();
-        info.before = (await git.revparse([(await git.tags({ '--sort': '-creatordate' })).all[0]])).trim();
-        info.after = (await git.revparse(['HEAD'])).trim();
+        info.before = (await lsRemoteTags(git))[0]?.sha ?? Sha1Value.empty;
+        info.after = head.sha;
         if (info.before && info.after) {
             message += `\n\n${compareInfo(info.before, info.after)}`;
         }
