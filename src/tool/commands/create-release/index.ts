@@ -64,8 +64,8 @@ class ActionLogger extends Logger {
     protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
         const l = context.line ? `,line=${context.line}` : '';
         const f = `file=database/${context.namespace.name}.md`;
-        const r = context.raw ?? '<unknown raw>';
-        console.log(`::${this.map[logger]} ${f}${l}::${r}: ${message}`);
+        const m = Logger.buildMessage(logger, context, message);
+        console.log(`::${this.map[logger]} ${f}${l}::${m}`);
         if (this.setFailed[logger]) {
             process.exitCode = action.ExitCode.Failure;
         }
