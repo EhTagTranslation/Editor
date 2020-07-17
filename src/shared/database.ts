@@ -23,8 +23,7 @@ class GitRepoInfoProvider implements RepoInfoProvider {
         if (!this.git) throw new Error('This is not a git repo');
         const commit = (
             await this.git.log({
-                from: 'HEAD^',
-                to: 'HEAD',
+                '--max-count': '1',
                 format: {
                     sha: '%H',
                     message: '%B',
