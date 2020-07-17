@@ -1517,10 +1517,10 @@
     consola "^2.3.0"
     node-fetch "^2.3.0"
 
-"@octokit/auth-app@^2.4.9":
-  version "2.4.9"
-  resolved "https://registry.yarnpkg.com/@octokit/auth-app/-/auth-app-2.4.9.tgz#d8e897f0fe8b40e265b683cfb4a4eeb74cca14ff"
-  integrity sha512-AEAdJ4uDCiT9PV4FTLTvqq49X68Wbs5MMxLt/Npz4xPBjgQSUzaxhe3auNojJ1A82h4RgOdM5EsvUJeeJcdWoA==
+"@octokit/auth-app@^2.4.10":
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-app/-/auth-app-2.4.10.tgz#8e58a5e665513f5e5a4e9a8645f4ac74fbd55f47"
+  integrity sha512-0MmbzxNsUyWW4/dQ/gKe6D+QJNFa/QA8TD9VdxO+f0F00c1RTxT8FtH1Gd0BCq/+4e0uaJy58RjC5Rqe9f8D2g==
   dependencies:
     "@octokit/request" "^5.3.0"
     "@octokit/request-error" "^2.0.0"
@@ -1528,7 +1528,7 @@
     "@types/lru-cache" "^5.1.0"
     lru-cache "^6.0.0"
     universal-github-app-jwt "^1.0.1"
-    universal-user-agent "^5.0.0"
+    universal-user-agent "^6.0.0"
 
 "@octokit/auth-token@^2.4.0":
   version "2.4.2"
@@ -10816,6 +10816,11 @@ universal-user-agent@^5.0.0:
   integrity sha1-oxgqp1gGm/DnmVJXDKdX3jV5wdk=
   dependencies:
     os-name "^3.1.0"
+
+universal-user-agent@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/universal-user-agent/-/universal-user-agent-6.0.0.tgz#3381f8503b251c0d9cd21bc1de939ec9df5480ee"
+  integrity sha512-isyNax3wXoKaulPDZWHQqbmIx1k2tb9fb3GGDBRxCscfYV2Ch7WxPArBsFEG8s/safwXTT7H4QGhaIkTp9447w==
 
 universalify@^0.1.0:
   version "0.1.2"
