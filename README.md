@@ -1,10 +1,10 @@
 # EhTag Editor
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](https://dependabot.com)
-[![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
-[![vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=zeit)](https://github.com/EhTagTranslation/Editor/deployments)
-[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.now.sh)](https://ehtt.now.sh/)
-[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.azurewebsites.net/database)](https://ehtt.azurewebsites.net/)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](//dependabot.com)
+[![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](//github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
+[![vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=vercel)](//github.com/EhTagTranslation/Editor/deployments)
+[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.now.sh)](//ehtt.now.sh/)
+[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.azurewebsites.net/database)](//ehtt.azurewebsites.net/)
 
 [数据库](../../../Database)编辑工具。
 
