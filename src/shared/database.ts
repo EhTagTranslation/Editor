@@ -59,7 +59,7 @@ class GitRepoInfoProvider implements RepoInfoProvider {
 }
 
 export class Database implements DatabaseView {
-    static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider): Promise<Database> {
+    static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider, logger?: Logger): Promise<Database> {
         const resolvedPath = path.resolve(repoPath);
 
         const versionPath = path.join(resolvedPath, 'version');
@@ -94,6 +94,7 @@ export class Database implements DatabaseView {
             repoInfoProvider ??
             ((await fs.pathExists(path.join(repoPath, '.git'))) ? new GitRepoInfoProvider(repoPath) : undefined);
         const db = new Database(repoPath, version, files, info);
+        if (logger) db.logger = logger;
         await db.load();
         return db;
     }

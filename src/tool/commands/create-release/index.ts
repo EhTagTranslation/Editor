@@ -56,26 +56,37 @@ async function createRelease(db: Database, destination: string): Promise<void> {
 }
 
 class ActionLogger extends Logger {
-    readonly map: Record<keyof Logger, 'info' | 'warning' | 'error' | 'setFailed'> = {
+    readonly map: Record<keyof Logger, 'info' | 'warning' | 'error'> = {
         info: 'info',
         warn: 'warning',
         error: 'error',
     };
     protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
-        action[this.map[logger]](`${context.namespace.name}:${context.raw ?? '<unknown raw>'}: ${message}`);
+        const l = context.line ? `,line=${context.line}` : '';
+        const f = `file=database/${context.namespace.name}.md`;
+        const r = context.raw ?? '<unknown raw>';
+        console.log(`::${this.map[logger]} ${f}${l}::${r}: ${message}`);
+        if (this.setFailed[logger]) {
+            process.exitCode = action.ExitCode.Failure;
+        }
     }
+    readonly setFailed: Record<keyof Logger, boolean> = {
+        info: false,
+        warn: false,
+        error: true,
+    };
 
     constructor(readonly failed: keyof Logger = 'error') {
         super();
         switch (failed) {
             case 'info':
-                this.map.info = 'setFailed';
+                this.setFailed.info = true;
             // fall through
             case 'warn':
-                this.map.warn = 'setFailed';
+                this.setFailed.warn = true;
             // fall through
             case 'error':
-                this.map.error = 'setFailed';
+                this.setFailed.error = true;
         }
     }
 }
@@ -91,11 +102,12 @@ program
     .action(async (source: string | undefined, destination: string | undefined, command: Command) => {
         source = path.resolve(source ?? '.');
         destination = path.resolve(destination ?? path.join(source, 'publish'));
-        const db = await Database.create(source);
         const { strict, rewrite } = command.opts();
-        if (action.isAction()) {
-            db.logger = new ActionLogger(strict ? 'warn' : 'error');
-        }
+        const db = await Database.create(
+            source,
+            undefined,
+            action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : undefined,
+        );
         await createRelease(db, destination);
         if (rewrite) {
             await db.save();

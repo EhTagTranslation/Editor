@@ -130,14 +130,14 @@ function normalizeTagref(node: TagRefNode, context: Context): void {
     const tagDef = node.text.trim();
     const tag = tagDef.toLowerCase();
     if (!isRawTag(tag)) {
-        context.logger.warn(context, `无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
+        context.warn(`无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
         node.tag = '';
         node.text = tagDef;
         return;
     }
     const record = context.namespace.get(tag) ?? context.database.get(tag);
     if (!record) {
-        context.logger.warn(context, `无效标签引用：\`${node.text}\` 在数据库中不存在。`);
+        context.warn(`无效标签引用：\`${node.text}\` 在数据库中不存在。`);
         node.tag = '';
         node.text = tagDef;
         return;

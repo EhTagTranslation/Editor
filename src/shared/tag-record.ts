@@ -27,7 +27,14 @@ export class TagRecord implements Tag<Cell> {
     stringify(context: Context): string {
         const raw = context.raw?.trim().toLowerCase() ?? '';
         const render = (cell: Cell): string => escape(cell.render('raw', context));
-        return `| ${raw} | ${render(this.name)} | ${render(this.intro)} | ${render(this.links)} |`;
+        const name = render(this.name);
+        if (raw && !RawTag(raw)) {
+            context.warn('无效的原始标签');
+        }
+        if (raw && !name) {
+            context.error('名称为空');
+        }
+        return `| ${raw} | ${name} | ${render(this.intro)} | ${render(this.links)} |`;
     }
 
     render<T extends TagType>(type: T, context: Context): Tag<T> {
