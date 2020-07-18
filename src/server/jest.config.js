@@ -1,8 +1,10 @@
 const path = require('path')
 
+/** @typedef {import('ts-jest')} */
+/** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
     moduleFileExtensions: ['js', 'json', 'ts'],
-    rootDir: '.',
+    rootDir: __dirname,
     testEnvironment: 'node',
     testRegex: '(test|\\.spec)\\.ts$',
     transform: {
