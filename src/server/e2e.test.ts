@@ -3,6 +3,7 @@ import supertest from 'supertest';
 import { AppModule } from './app/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastify from 'fastify';
+import { setupSwagger, enableCors } from './setup';
 
 jest.setTimeout(30_000);
 
@@ -15,6 +16,8 @@ describe('AppController (e2e)', () => {
         }).compile();
 
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+        enableCors(app);
+        setupSwagger(app);
         await app.init();
         const adapter = app.getHttpAdapter() as FastifyAdapter;
         await adapter.getInstance<fastify.FastifyInstance>().ready();
