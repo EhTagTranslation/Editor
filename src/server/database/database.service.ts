@@ -28,7 +28,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
-        this.repo = this.config.get('DB_REPO', '');
+        this.repo = this.config.get('DB_REPO', 'EhTagTranslation/Database');
         this.infoFile = path.join(this.path, '.info');
     }
 

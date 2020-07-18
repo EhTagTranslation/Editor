@@ -1,8 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": [ "node", "bluebird-global", "jest" ]
-  },
-  "include": ["test.ts", "**/*.spec.ts"],
-  "exclude": []
+    "types": ["node", "bluebird-global", "jest", "jest-to-match-shape-of"]
+  }
 }

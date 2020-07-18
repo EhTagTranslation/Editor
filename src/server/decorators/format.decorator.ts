@@ -27,6 +27,7 @@ function getFromQuery(format: string): TagType {
 
 function getFromHeader(accept: string): TagType {
     const match = /application\/(?<type>full|html|ast|raw|text)\+json/i.exec(accept);
+    console.log(accept);
     if (match?.groups) return match.groups.type.toLowerCase() as TagType;
     return 'full';
 }

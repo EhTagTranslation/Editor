@@ -1,5 +1,4 @@
-import 'source-map-support/register';
-import { Promise } from 'bluebird';
+import './common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -7,9 +6,7 @@ import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 
-Object.defineProperty(globalThis, 'Promise', { value: Promise, writable: false, enumerable: true });
 const logger = new Logger('Main', true);
-
 /**
  * 启动服务
  */

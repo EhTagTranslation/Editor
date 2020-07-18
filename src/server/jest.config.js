@@ -2,11 +2,16 @@ const path = require('path')
 
 /** @typedef {import('ts-jest')} */
 /** @type {import('@jest/types').Config.InitialOptions} */
-module.exports = {
+const config= {
     moduleFileExtensions: ['js', 'json', 'ts'],
-    rootDir: __dirname,
+    rootDir: path.resolve(__dirname, '..'),
+    setupFilesAfterEnv:[ "<rootDir>/server/setup-jest.ts"],
+    moduleNameMapper: {
+        "^shared/.*$": "<rootDir>/$0",
+        "^server/.*$": "<rootDir>/$0",
+    },
     testEnvironment: 'node',
-    testRegex: '(test|\\.spec)\\.ts$',
+    testRegex: '(\\.test|\\.spec)\\.ts$',
     transform: {
         '^.+\\.(t|j)s$': 'ts-jest',
     },
@@ -16,3 +21,4 @@ module.exports = {
         },
     },
 };
+module.exports = config;

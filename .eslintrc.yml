@@ -4,6 +4,7 @@ parserOptions:
   project:
     - src/tsconfig.json
     - src/*/tsconfig.json
+    - src/*/tsconfig.*.json
 plugins:
   - '@typescript-eslint'
   - prettier
