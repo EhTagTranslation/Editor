@@ -80,6 +80,8 @@ jobs:
           APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
           APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
           APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
+          DB_PATH: db
+          DB_REPO: EhTagTranslation/Database
         run: yarn test:server
 
       - name: Prepare deploy
