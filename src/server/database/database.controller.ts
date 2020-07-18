@@ -18,7 +18,7 @@ import {
 } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
-import { EtagInterceptor } from 'server/etag.interceptor';
+import { EtagInterceptor } from 'server/app/etag.interceptor';
 import { NamespaceInfo, TagType } from 'shared/interfaces/ehtag';
 import {
     ApiTags,

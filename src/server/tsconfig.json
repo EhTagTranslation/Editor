@@ -3,7 +3,9 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "CommonJS",
-    "outDir": "../../dist"
+    "outDir": "../../dist",
+    "lib": ["ES2018"],
+    "types": ["node", "bluebird-global"]
   },
   "exclude": ["test.ts", "**/*.spec.ts"]
 }

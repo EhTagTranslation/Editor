@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor, HttpStatus } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { Observable } from 'rxjs';
-import { InjectableBase } from './injectable-base';
+import { InjectableBase } from '../injectable-base';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
