@@ -26,7 +26,6 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
             from(
                 this.database.data.sha().then((sha) => {
                     res.header('ETag', `"${sha}"`);
-                    res.header('Vary', 'Origin, Accept, Accept-Encoding');
                 }),
             );
 

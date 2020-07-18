@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext, BadRequestException } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, BadRequestException, Header } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
@@ -57,6 +57,7 @@ export const Format = createParamDecorator<void, ExecutionContext, TagType>(
                         'application/html+json',
                         'application/text+json',
                     ),
+                    Header('Vary', 'Origin, Accept, Accept-Encoding'),
                 ],
                 target,
                 key,
