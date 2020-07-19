@@ -1,4 +1,5 @@
-import 'source-map-support/register';
+import '../shared/init';
+
 import './commands/create-release';
 import './commands/parse';
 import './commands/tag';
