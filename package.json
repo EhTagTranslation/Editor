@@ -43,7 +43,7 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "cli-color": "^2.0.0",
-    "commander": "^5.1.0",
+    "commander": "^6.0.0",
     "escape-string-regexp": "^4.0.0",
     "fastify-swagger": "^2",
     "fs-extra": "^9.0.1",
