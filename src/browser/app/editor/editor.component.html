@@ -28,13 +28,13 @@
           <mat-label>命名空间</mat-label>
           <mat-select formControlName="namespace" required>
             <mat-select-trigger class="ns-option">
-              <span class="ns-name">{{ (getNamespace(value('namespace')) | async).name }}</span
+              <span class="ns-name">{{ (getNamespace(value('namespace')) | async)?.name }}</span
               ><span class="ns-raw">{{ value('namespace') }}</span>
             </mat-select-trigger>
             <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
-              <span class="ns-name">{{ (getNamespace(ns) | async).name }}</span
+              <span class="ns-name">{{ (getNamespace(ns) | async)?.name }}</span
               ><span class="ns-raw">{{ ns }}</span>
-              <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async).description }}</span>
+              <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async)?.description }}</span>
             </mat-option>
           </mat-select>
           <mat-hint>
@@ -45,7 +45,7 @@
               </ng-template>
               <ng-template #nsNotAllowed>
                 该命名空间的标签暂不支持从此处修改，请<a
-                  [href]="dbRepo.issue(value('raw'), value('namespace'), create | async)"
+                  [href]="dbRepo.issue(value('raw'), value('namespace'), (create | async) || undefined)"
                   target="_blank"
                   >提交 ISSUE 讨论</a
                 >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
@@ -64,9 +64,9 @@
             >
           </mat-error>
         </mat-form-field>
-        <mat-hint *ngIf="(getNamespace(value('namespace')) | async).rules != null">
+        <mat-hint *ngIf="(getNamespace(value('namespace')) | async)?.rules != null">
           <span>填写指南</span>
-          <p *ngFor="let item of (getNamespace(value('namespace')) | async).rules" [innerHTML]="item | linkify"></p>
+          <p *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules" [innerHTML]="item | linkify"></p>
         </mat-hint>
         <mat-form-field>
           <button
@@ -100,7 +100,7 @@
           <mat-label>原始标签</mat-label>
           <input
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async).example?.raw"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.raw"
             formControlName="raw"
             required
             [matAutocomplete]="tagSuggest"
@@ -121,7 +121,7 @@
                   </span>
                 </span>
                 <span *ngIf="option.translation() | async" class="hint-translation">
-                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async).name }}</span
+                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
                   >：<span [innerHTML]="(option.translation() | async)?.name"></span>
                 </span>
               </div>
@@ -158,7 +158,7 @@
           <mat-label>名称</mat-label>
           <input
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async).example?.name"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.name"
             formControlName="name"
             required
           />
@@ -169,7 +169,7 @@
           <mat-label>描述</mat-label>
           <textarea
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async).example?.intro"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.intro"
             formControlName="intro"
             cdkTextareaAutosize
             cdkAutosizeMinRows="2"
@@ -181,7 +181,7 @@
           <mat-label>外部链接</mat-label>
           <textarea
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async).example?.links"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.links"
             formControlName="links"
             cdkTextareaAutosize
             cdkAutosizeMinRows="2"

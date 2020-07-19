@@ -1,5 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {},
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "strictTemplates": true
+  },
   "exclude": ["test.ts", "**/*.spec.ts", "**/*.worker.ts"]
 }

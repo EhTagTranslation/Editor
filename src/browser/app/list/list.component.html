@@ -63,8 +63,8 @@
         [dataSource]="pagedTags"
         aria-label="Elements"
         matSort
-        [matSortActive]="sortBy | async"
-        [matSortDirection]="sortDirection | async"
+        [matSortActive]="(sortBy | async) || ''"
+        [matSortDirection]="(sortDirection | async) || ''"
         (matSortChange)="navigateParam({ sortBy: $event.active, sortDirection: $event.direction })"
       >
         <ng-container matColumnDef="namespace">
@@ -143,8 +143,8 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns | async; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns | async"></tr>
+        <tr mat-header-row *matHeaderRowDef="(displayedColumns | async) || []; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: (displayedColumns | async) || []"></tr>
       </table>
     </div>
     <div class="spinner" *ngIf="loading | async">

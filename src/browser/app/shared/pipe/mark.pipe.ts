@@ -19,13 +19,11 @@ interface SearchTerm {
     startRegex: RegExp;
 }
 
-let regexFromSearchCache: NoSearchTerm | SearchTerm = { data: '', isRegex: undefined };
-export function regexFromSearch(search: string | null): NoSearchTerm | SearchTerm {
+const noSearchTerm: NoSearchTerm = { data: '', isRegex: undefined };
+let regexFromSearchCache: NoSearchTerm | SearchTerm = noSearchTerm;
+export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTerm {
     if (!search) {
-        return {
-            data: search ?? '',
-            isRegex: undefined,
-        };
+        return noSearchTerm;
     }
     if (search === regexFromSearchCache.data) {
         return regexFromSearchCache;
@@ -64,57 +62,78 @@ export class MarkPipe implements PipeTransform {
 
     private loadingImg: string;
 
-    transform(value: string | null, search: string, inputAsHtml?: boolean): string | SafeHtml {
-        value = value ?? '';
+    private markTextNode(node: Text, regexp: RegExp | undefined | null): void {
+        // 文本节点
+        const parent = node.parentElement;
+        if (!parent) return;
+        if (!regexp) return;
+        const text = node.textContent ?? '';
+        const normalText = text.split(regexp);
+        if (normalText.length === 1) return;
+        // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+        const markedText = text.match(regexp);
+        if (!markedText) return;
+
+        let html = '';
+        for (let i = 0; i < normalText.length; i++) {
+            html += escapeHtml(normalText[i]);
+            if (markedText[i]) {
+                html += `<mark>${escapeHtml(markedText[i])}</mark>`;
+            }
+        }
+        const spanNode = document.createElement('span');
+        spanNode.innerHTML = html;
+        parent.replaceChild(spanNode, node);
+    }
+
+    private markElementNode(element: Element, regexp: RegExp | undefined | null): void {
+        // 元素节点
+        if (element.tagName === 'A') {
+            element.setAttribute('ehlink', '');
+            element.setAttribute('target', '_blank');
+            if (!element.getAttribute('title')) {
+                element.setAttribute('title', element.getAttribute('href') ?? '');
+            }
+        } else if (element.tagName === 'IMG') {
+            element.setAttribute('referrerPolicy', 'no-referrer');
+            element.setAttribute('ehimg', '');
+            element.setAttribute('class', 'lazyload');
+            if (!element.getAttribute('title')) {
+                element.setAttribute('title', element.getAttribute('src') ?? '');
+            }
+            element.setAttribute('data-src', element.getAttribute('src') ?? '');
+            element.setAttribute('src', this.loadingImg);
+        }
+        this.markNodes(element, regexp);
+    }
+
+    private markNodes(elem: Element | undefined | null, regexp: RegExp | undefined | null): void {
+        if (!elem) return;
+
+        const nodes = elem.childNodes;
+        for (let i = nodes.length; i--; ) {
+            const node = nodes[i];
+            switch (node.nodeType) {
+                case node.TEXT_NODE:
+                    this.markTextNode(node as Text, regexp);
+                    break;
+                case node.ELEMENT_NODE:
+                    this.markElementNode(node as Element, regexp);
+                    break;
+            }
+        }
+    }
+
+    transform(value?: string | null, search?: string | null, inputAsHtml?: boolean | null): string | SafeHtml {
+        if (!value) return value ?? '';
         if (!search && !inputAsHtml) {
             return value;
         }
-        const regexp = regexFromSearch(search).regex;
+        const regexp = search ? regexFromSearch(search).regex : undefined;
         if (inputAsHtml) {
-            const markNodes = (elem: Element): void => {
-                if (elem) {
-                    const nodes = elem.childNodes;
-                    for (let i = nodes.length; i--; ) {
-                        const node = nodes[i];
-                        if (node.nodeType === 3) {
-                            // 文本节点
-                            if (regexp) {
-                                const text = escapeHtml(node.textContent ?? '');
-                                const newText = text.replace(regexp, '<mark>$&</mark>');
-                                if (text !== newText && node.parentElement) {
-                                    const spanNode = document.createElement('span');
-                                    spanNode.innerHTML = newText;
-                                    node.parentElement.replaceChild(spanNode, node);
-                                }
-                            }
-                        } else if (node.nodeType === 1) {
-                            // 元素节点
-                            const element = node as Element;
-                            if (element.tagName === 'A') {
-                                element.setAttribute('ehlink', '');
-                                element.setAttribute('target', '_blank');
-                                if (!element.getAttribute('title')) {
-                                    element.setAttribute('title', element.getAttribute('href') ?? '');
-                                }
-                            }
-                            if (element.tagName === 'IMG') {
-                                element.setAttribute('referrerPolicy', 'no-referrer');
-                                element.setAttribute('ehimg', '');
-                                element.setAttribute('class', 'lazyload');
-                                if (!element.getAttribute('title')) {
-                                    element.setAttribute('title', element.getAttribute('src') ?? '');
-                                }
-                                element.setAttribute('data-src', element.getAttribute('src') ?? '');
-                                element.setAttribute('src', this.loadingImg);
-                            }
-                            markNodes(element);
-                        }
-                    }
-                }
-            };
             const dom = parser.parseFromString(value, 'text/html') as HTMLDocument;
             const root = dom.body as Element;
-            markNodes(root);
+            this.markNodes(root, regexp);
             return this.sanitizer.bypassSecurityTrustHtml(root.innerHTML);
         } else {
             return regexp ? value.replace(regexp, '<mark>$&</mark>') : value;
