@@ -91,7 +91,7 @@ jobs:
           cd ./dist
           yarn install --prefer-offline
       - name: Deploy to Azure webapp
-        uses: azure/webapps-deploy@v1
+        uses: azure/webapps-deploy@v2.1.2
         if: github.ref == 'refs/heads/master'
         with:
           app-name: ehtt
