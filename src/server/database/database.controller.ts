@@ -5,7 +5,6 @@ import {
     NotFoundException,
     Head,
     Param,
-    HttpCode,
     HttpStatus,
     Post,
     ConflictException,
@@ -15,6 +14,7 @@ import {
     Query,
     BadRequestException,
     Headers,
+    Res,
 } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
@@ -28,6 +28,7 @@ import {
     ApiConflictResponse,
     ApiExcludeEndpoint,
 } from '@nestjs/swagger';
+import { FastifyReply } from 'fastify';
 import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
 import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto';
 import { Format } from 'server/decorators/format.decorator';
@@ -57,7 +58,6 @@ export class DatabaseController extends InjectableBase {
         description: '如只需获取 `ETag` 信息（即最新一次提交的 sha1），可以使用 `HEAD` 请求。',
     })
     @ApiIfNoneMatchHeader()
-    @HttpCode(HttpStatus.NO_CONTENT)
     headInfo(): void {
         return;
     }
@@ -74,11 +74,9 @@ export class DatabaseController extends InjectableBase {
     @ApiIfNoneMatchHeader()
     @ApiNoContentResponse({ description: '条目存在' })
     @ApiNotFoundResponse({ description: '条目不存在' })
-    @HttpCode(HttpStatus.NO_CONTENT)
     headTag(@Param() p: TagParams): void {
         const dic = this.service.data.data[p.namespace];
         if (!dic.has(p.raw)) throw new NotFoundException();
-        return;
     }
 
     @Get(':namespace/:raw')
@@ -156,6 +154,7 @@ export class DatabaseController extends InjectableBase {
         @Format() format: TagType,
         @Body() tag: TagDto,
         @User() user: UserInfo,
+        @Res() res: FastifyReply<unknown>,
     ): Promise<TagResponseDto | null> {
         const dic = this.service.data.data[p.namespace];
         const oldRec = dic.get(p.raw);
@@ -165,6 +164,7 @@ export class DatabaseController extends InjectableBase {
         const oldRaw = oldRec.render('raw', context);
         const newRaw = newRec.render('raw', context);
         if (oldRaw.name === newRaw.name && oldRaw.intro === newRaw.intro && oldRaw.links === newRaw.links) {
+            res.status(HttpStatus.NO_CONTENT).send();
             return null;
         }
         await this.service.commitAndPush(p.namespace, user, {
@@ -180,11 +180,10 @@ export class DatabaseController extends InjectableBase {
     @ApiOperation({ summary: '删除条目' })
     @ApiIfMatchHeader()
     @ApiNotFoundResponse({ description: '条目不存在' })
-    @HttpCode(HttpStatus.NO_CONTENT)
     async deleteTag(@Param() p: TagParams, @User() user: UserInfo): Promise<void> {
         const dic = this.service.data.data[p.namespace];
-        const rec = dic.get(p.raw);
-        if (!dic.delete(p.raw)) throw new NotFoundException();
+        const rec = dic.delete(p.raw);
+        if (!rec) throw new NotFoundException();
         await this.service.commitAndPush(p.namespace, user, {
             ok: p.raw,
             ov: rec,

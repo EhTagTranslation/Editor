@@ -6,7 +6,6 @@ import { ToolsModule } from '../tools/tools.module';
 import { LoggerInterceptor } from './logger.interceptor';
 import { OctokitModule } from '../octokit/octokit.module';
 import { GithubIdentityGuard } from './github-identity.guard';
-import { NoContentInterceptor } from './no-content.interceptor';
 import { DebugFilter } from './debug.filter';
 
 @Module({
@@ -22,10 +21,6 @@ import { DebugFilter } from './debug.filter';
         {
             provide: APP_INTERCEPTOR,
             useClass: LoggerInterceptor,
-        },
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: NoContentInterceptor,
         },
         {
             provide: APP_GUARD,

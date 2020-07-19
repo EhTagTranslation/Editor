@@ -4,6 +4,7 @@ import { AppModule } from './app/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastify from 'fastify';
 import { setupSwagger, enableCors } from './setup';
+import { HttpStatus } from '@nestjs/common';
 
 jest.setTimeout(30_000);
 
@@ -26,7 +27,7 @@ describe('AppController (e2e)', () => {
     it('HEAD /database', async () => {
         const _ = await supertest(app.getHttpServer())
             .head('/database')
-            .expect(204)
+            .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
             .expect((undefined as unknown) as string);
     });
@@ -34,19 +35,19 @@ describe('AppController (e2e)', () => {
     it('HEAD /database ETag: [ETag]', async () => {
         const _ = await supertest(app.getHttpServer())
             .head('/database')
-            .expect(204)
+            .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
             .expect((undefined as unknown) as string);
         const _2 = await supertest(app.getHttpServer())
             .head('/database')
             .set('If-None-Match', (_.header as Record<string, string>).etag)
-            .expect(304);
+            .expect(HttpStatus.NOT_MODIFIED);
     });
 
     it('GET /database', async () => {
         const _ = await supertest(app.getHttpServer())
             .get('/database')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'));
         expect(_.body).toMatchShapeOf({
             repo: 'https://github.com/EhTagTranslation/Database.git',
@@ -83,7 +84,7 @@ describe('AppController (e2e)', () => {
     it('GET /database/rows', async () => {
         const _ = await supertest(app.getHttpServer())
             .get('/database/rows')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'));
         expect(_.body).toMatchShapeOf({
             namespace: 'rows',
@@ -95,7 +96,7 @@ describe('AppController (e2e)', () => {
     it('HEAD /database/rows/female', async () => {
         const _ = await supertest(app.getHttpServer())
             .head('/database/rows/female')
-            .expect(204)
+            .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
             .expect((undefined as unknown) as string);
     });
@@ -103,7 +104,7 @@ describe('AppController (e2e)', () => {
     it('GET /database/rows/female?format=text.json', async () => {
         const _ = await supertest(app.getHttpServer())
             .get('/database/rows/female?format=text.json')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect('vary', 'Origin, Accept, Accept-Encoding')
             .expect((res) => expect(res.header).toHaveProperty('etag'));
         expect(_.body).toMatchShapeOf({
@@ -117,7 +118,7 @@ describe('AppController (e2e)', () => {
         const _ = await supertest(app.getHttpServer())
             .get('/database/rows/female')
             .set('accept', 'application/raw+json')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect('vary', 'Origin, Accept, Accept-Encoding')
             .expect((res) => expect(res.header).toHaveProperty('etag'));
         expect(_.body).toMatchShapeOf({
@@ -130,7 +131,7 @@ describe('AppController (e2e)', () => {
     it('GET /database/rows/female', async () => {
         const _ = await supertest(app.getHttpServer())
             .get('/database/rows/female')
-            .expect(200)
+            .expect(HttpStatus.OK)
             .expect('vary', 'Origin, Accept, Accept-Encoding')
             .expect((res) => expect(res.header).toHaveProperty('etag'));
 
