@@ -284,10 +284,10 @@
   resolved "https://registry.npm.taobao.org/@angular/language-service/download/@angular/language-service-10.0.4.tgz#fe61e5a82c494a3aaabcca4997aff94fa891d12e"
   integrity sha1-/mHlqCxJSjqqvMpJl6/5T6iR0S4=
 
-"@angular/material@^10.0.2":
-  version "10.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/material/download/@angular/material-10.0.2.tgz#a240d6324c29508f716e1b61d005b0f8aca0bb47"
-  integrity sha1-okDWMkwpUI9xbhth0AWw+Kygu0c=
+"@angular/material@^10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-10.1.0.tgz#f36f4c2a7b7199178e449c6b759a89203ac2c194"
+  integrity sha512-zHJxMHYAyfJbhXGhsWUFTABBBQVzWNexuJGWh19MQx0jQn7aLek5nYQ0oLG00+ArISVAg/XMOtnbdRaemFWVzw==
   dependencies:
     tslib "^2.0.0"
 
