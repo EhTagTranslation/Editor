@@ -197,10 +197,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/cdk@^10.0.2":
-  version "10.0.2"
-  resolved "https://registry.npm.taobao.org/@angular/cdk/download/@angular/cdk-10.0.2.tgz#9d2770fc4ed6ccdaf1088cc8c68bcb9d28cb4c9c"
-  integrity sha1-nSdw/E7WzNrxCIzIxovLnSjLTJw=
+"@angular/cdk@^10.1.0":
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-10.1.0.tgz#e01a48db1ff23b82ac718ed5b6d73139ad7911f8"
+  integrity sha512-zSZcpsfhRWdNAzNXnKZIlaX1uAWY+8W2zV7ktQNJoNypo9X02rY0YtmPBzlPjT0ITjM4EqohZ07nfd+5bLUw4A==
   dependencies:
     tslib "^2.0.0"
   optionalDependencies:
