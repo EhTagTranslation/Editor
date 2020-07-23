@@ -23,7 +23,7 @@
     "@actions/exec": "^1.0.4",
     "@angular/animations": "^10.0.4",
     "@angular/cdk": "^10.1.0",
-    "@angular/common": "^10.0.4",
+    "@angular/common": "^10.0.5",
     "@angular/compiler": "^10.0.4",
     "@angular/core": "^10.0.4",
     "@angular/forms": "^10.0.4",
