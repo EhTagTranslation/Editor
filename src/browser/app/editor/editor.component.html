@@ -104,7 +104,8 @@
             formControlName="raw"
             required
             [matAutocomplete]="tagSuggest"
-          /><mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
+          />
+          <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
             <mat-option *ngFor="let option of tagSuggests | async" [value]="option">
               <div class="hint">
                 <span class="hint-original">
@@ -115,9 +116,9 @@
                   <span *ngIf="option.isSlaved">
                     ➜
                     <span class="hint-tag hint-master">
-                      <span class="hint-namespace">{{ option.master.namespace }}:</span>
-                      <span class="hint-raw" [innerHTML]="option.master.raw | mark: value('raw').trim():false"></span
-                    ></span>
+                      <span class="hint-namespace">{{ option.master.namespace }}: </span>
+                      <span class="hint-raw" [innerHTML]="option.master.raw | mark: value('raw').trim():false"></span>
+                    </span>
                   </span>
                 </span>
                 <span *ngIf="option.translation() | async" class="hint-translation">
