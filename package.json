@@ -58,7 +58,7 @@
     "parse5": "^6.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.0",
-    "simple-git": "^2.14.0",
+    "simple-git": "^2.15.0",
     "source-map-support": "^0.5.19",
     "tslib": "^2.0.0",
     "zone.js": "^0.10.3"
