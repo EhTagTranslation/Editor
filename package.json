@@ -37,7 +37,7 @@
     "@nestjs/platform-fastify": "^7.3.2",
     "@nestjs/swagger": "^4.5.12",
     "@octokit/auth-app": "^2.4.10",
-    "@octokit/rest": "^18.0.1",
+    "@octokit/rest": "^18.0.3",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
     "class-transformer": "^0.2.3",
