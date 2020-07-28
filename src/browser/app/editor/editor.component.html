@@ -106,11 +106,11 @@
             [matAutocomplete]="tagSuggest"
           />
           <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
-            <mat-option *ngIf="(tagSuggests | async).loading; else elseBlock" disabled>
+            <mat-option *ngIf="(tagSuggests | async)?.loading; else elseBlock" disabled>
               <mat-spinner diameter="20"></mat-spinner>
             </mat-option>
             <ng-template #elseBlock>
-              <mat-option *ngFor="let option of (tagSuggests | async).suggestion" [value]="option">
+              <mat-option *ngFor="let option of (tagSuggests | async)?.suggestion" [value]="option">
                 <div class="hint">
                   <span class="hint-original">
                     <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
