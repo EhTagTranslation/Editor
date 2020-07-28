@@ -213,14 +213,13 @@ class AstBuilder {
     private buildInline(token: Token, parent: ContainerNode): void {
         if (!token.children) throw new Error('Invalid inline token');
         if (token.children.length === 0) return;
-        const end = this.buildInlineTokens(token.children, 0, parent);
+        const end = this.buildInlineTokens(token.children, 0, parent, 0);
         if (token.children.length !== end) {
             this.expectEnd(token.children[end]);
         }
     }
 
-    private buildInlineTokens(tokens: Token[], start: number, parent: ContainerNode): number {
-        const level = tokens[start].level;
+    private buildInlineTokens(tokens: Token[], start: number, parent: ContainerNode, level: number): number {
         while (start < tokens.length && tokens[start].level >= level) {
             const content = tokens[start];
             switch (content.type) {
@@ -231,7 +230,7 @@ class AstBuilder {
                         title: content.attrGet('title') ?? '',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, link);
+                    start = this.buildInlineTokens(tokens, start + 1, link, content.level + 1);
                     this.expectToken(tokens[start], 'link_close');
                     normalizeLink(link);
                     start++;
@@ -243,7 +242,7 @@ class AstBuilder {
                         type: 'emphasis',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, em);
+                    start = this.buildInlineTokens(tokens, start + 1, em, content.level + 1);
                     this.expectToken(tokens[start], 'em_close');
                     start++;
                     parent.content.push(em);
@@ -254,7 +253,7 @@ class AstBuilder {
                         type: 'strong',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, strong);
+                    start = this.buildInlineTokens(tokens, start + 1, strong, content.level + 1);
                     this.expectToken(tokens[start], 'strong_close');
                     start++;
                     parent.content.push(strong);
