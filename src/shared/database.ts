@@ -1,6 +1,5 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { URL } from 'url';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
 import { TagRecord } from './tag-record';

@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-import { URL } from 'url';
 import {
     Tree,
     ParaNode,
@@ -98,8 +97,8 @@ function normalizeLink(node: LinkNode): void {
                         break;
                     }
                 }
-            } catch {
-                //
+            } catch (ex) {
+                console.log(ex);
             }
         }
     }

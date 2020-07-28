@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "theme";
+@import 'theme';
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -12,9 +12,9 @@
 // that you are using.
 @include angular-material-theme($app-theme);
 
-@import "~material-design-icons/iconfont/material-icons.css";
+@import '~material-design-icons/iconfont/material-icons.css';
 
-@import "iconfont.css";
+@import 'iconfont.css';
 
 html {
   font-family: #{$app-font-family};
@@ -30,7 +30,8 @@ a {
   color: mat-color(map-get($app-theme, primary));
   text-decoration: none;
 
-  &[href^='http://'], &[href^='https://'] {
+  &[href^='http://'], &[href^='https://']
+  {
     text-decoration: underline;
   }
 
@@ -91,7 +92,7 @@ code {
       text-decoration: red wavy underline;
 
       &::after {
-        content: " (无效的标签引用) ";
+        content: ' (无效的标签引用) ';
       }
     }
 
@@ -99,7 +100,7 @@ code {
       text-decoration: dotted underline;
 
       &::after {
-        content: " (" attr(title) ") ";
+        content: ' (' attr(title) ') ';
       }
     }
   }

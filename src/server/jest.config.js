@@ -1,14 +1,14 @@
-const path = require('path')
+const path = require('path');
 
 /** @typedef {import('ts-jest')} */
 /** @type {import('@jest/types').Config.InitialOptions} */
-const config= {
+const config = {
     moduleFileExtensions: ['js', 'json', 'ts'],
     rootDir: path.resolve(__dirname, '..'),
-    setupFilesAfterEnv:[ "<rootDir>/server/setup-jest.ts"],
+    setupFilesAfterEnv: ['<rootDir>/server/setup-jest.ts'],
     moduleNameMapper: {
-        "^shared/.*$": "<rootDir>/$0",
-        "^server/.*$": "<rootDir>/$0",
+        '^shared/.*$': '<rootDir>/$0',
+        '^server/.*$': '<rootDir>/$0',
     },
     testEnvironment: 'node',
     testRegex: '(\\.test|\\.spec)\\.ts$',
