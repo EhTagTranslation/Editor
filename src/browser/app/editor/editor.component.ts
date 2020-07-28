@@ -106,6 +106,7 @@ export class EditorComponent implements OnInit {
         private readonly snackBar: MatSnackBar,
         readonly dbRepo: DbRepoService,
     ) {}
+
     tagForm = new FormGroup({
         raw: new FormControl('', [
             // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -258,32 +259,42 @@ export class EditorComponent implements OnInit {
         );
         this.tagSuggests = merge(
             tagSuggestSource.pipe(
-                tap((v) => this.tagSuggestTerm.next(v)),
-                map(() => ({
-                    suggestion: [],
-                    loading: true,
-                })),
+                tap((raw) => this.tagSuggestTerm.next(raw)),
+                map((raw) => {
+                    if (!raw)
+                        return {
+                            suggestion: [],
+                            loading: false,
+                        };
+                    return {
+                        suggestion: [],
+                        loading: true,
+                    };
+                }),
             ),
             tagSuggestSource.pipe(
                 debounceTime(100),
-                mergeMap(async (raw) => {
-                    const tag = parseTag(raw ?? '');
-                    const ns = tag.ns ?? this.forms.namespace.value ?? undefined;
-                    const suggestion = await suggestTag(ns, tag.raw);
-                    if (suggestion.length < 10 && ns != null) {
-                        (await suggestTag(undefined, tag.raw)).forEach((s) => {
-                            if (suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id)) {
-                                suggestion.push(s);
-                            }
-                        });
-                    }
-                    return [raw, suggestion] as const;
-                }),
+                mergeMap(
+                    async (raw): Promise<[string, TagSuggest[]]> => {
+                        if (!raw) return [raw, []];
+                        const tag = parseTag(raw ?? '');
+                        const ns = tag.ns ?? this.forms.namespace.value ?? undefined;
+                        const suggestion = await suggestTag(ns, tag.raw);
+                        if (suggestion.length < 10 && ns != null) {
+                            (await suggestTag(undefined, tag.raw)).forEach((s) => {
+                                if (suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id)) {
+                                    suggestion.push(s);
+                                }
+                            });
+                        }
+                        return [raw, suggestion];
+                    },
+                ),
                 filter(([raw]) => raw === this.tagSuggestTerm.value),
                 map(([, suggestions]) => {
                     return {
                         suggestion: suggestions.map((s) => new TagSuggestOption(s, this)),
-                        loading: true,
+                        loading: false,
                     };
                 }),
             ),

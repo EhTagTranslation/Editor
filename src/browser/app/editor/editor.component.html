@@ -74,6 +74,8 @@
             mat-icon-button
             matSuffix
             matTooltip="搜索"
+            (menuOpened)="tagSuggestTrigger.autocompleteDisabled = true"
+            (menuClosed)="tagSuggestTrigger.autocompleteDisabled = false"
             [matMenuTriggerFor]="searchMenu"
           >
             <mat-icon>search</mat-icon>
@@ -104,12 +106,13 @@
             formControlName="raw"
             required
             [matAutocomplete]="tagSuggest"
+            #tagSuggestTrigger="matAutocompleteTrigger"
           />
           <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
-            <mat-option *ngIf="(tagSuggests | async)?.loading; else elseBlock" disabled>
+            <mat-option *ngIf="(tagSuggests | async)?.loading; else completions" disabled>
               <mat-spinner diameter="20"></mat-spinner>
             </mat-option>
-            <ng-template #elseBlock>
+            <ng-template #completions>
               <mat-option *ngFor="let option of (tagSuggests | async)?.suggestion" [value]="option">
                 <div class="hint">
                   <span class="hint-original">
