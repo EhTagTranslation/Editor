@@ -54,9 +54,10 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     return tags;
 }
 
-export async function suggestTag(ns: NamespaceName | undefined, raw: RawTag): Promise<Tag[]> {
+export async function suggestTag(ns: NamespaceName | undefined, raw: string): Promise<Tag[]> {
     try {
-        const text = `${ns != null ? ns + ':' : ''}${raw.slice(0, 50)}`;
+        raw = raw.trim().toLowerCase();
+        const text = `${ns != null ? ns[0] + ':' : ''}${raw.slice(0, 50)}`;
         const cache = suggestCache.get(text);
         if (cache) return cache;
         const response = await postApi<TagSuggestRequest>({

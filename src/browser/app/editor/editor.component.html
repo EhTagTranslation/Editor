@@ -106,27 +106,38 @@
             [matAutocomplete]="tagSuggest"
           />
           <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
-            <mat-option *ngFor="let option of tagSuggests | async" [value]="option">
-              <div class="hint">
-                <span class="hint-original">
-                  <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
-                    <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
-                    <span class="hint-raw" [innerHTML]="option.suggest.raw | mark: value('raw').trim():false"></span>
-                  </span>
-                  <span *ngIf="option.isSlaved">
-                    ➜
-                    <span class="hint-tag hint-master">
-                      <span class="hint-namespace">{{ option.master.namespace }}: </span>
-                      <span class="hint-raw" [innerHTML]="option.master.raw | mark: value('raw').trim():false"></span>
+            <mat-option *ngIf="(tagSuggests | async).loading; else elseBlock" disabled>
+              <mat-spinner diameter="20"></mat-spinner>
+            </mat-option>
+            <ng-template #elseBlock>
+              <mat-option *ngFor="let option of (tagSuggests | async).suggestion" [value]="option">
+                <div class="hint">
+                  <span class="hint-original">
+                    <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
+                      <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
+                      <span
+                        class="hint-raw"
+                        [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async):false"
+                      ></span>
+                    </span>
+                    <span *ngIf="option.isSlaved">
+                      ➜
+                      <span class="hint-tag hint-master">
+                        <span class="hint-namespace">{{ option.master.namespace }}: </span>
+                        <span
+                          class="hint-raw"
+                          [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async):false"
+                        ></span>
+                      </span>
                     </span>
                   </span>
-                </span>
-                <span *ngIf="option.translation() | async" class="hint-translation">
-                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
-                  >：<span [innerHTML]="(option.translation() | async)?.name"></span>
-                </span>
-              </div>
-            </mat-option>
+                  <span *ngIf="option.translation() | async" class="hint-translation">
+                    <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
+                    >：<span [innerHTML]="(option.translation() | async)?.name"></span>
+                  </span>
+                </div>
+              </mat-option>
+            </ng-template>
           </mat-autocomplete>
           <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
           <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>

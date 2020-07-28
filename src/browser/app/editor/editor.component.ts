@@ -16,7 +16,7 @@ import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
 import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
 import { Context } from 'shared/markdown';
-import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
+import { suggestTag, Tag as TagSuggest, parseTag } from 'shared/ehentai';
 
 class TagSuggestOption {
     constructor(
@@ -183,7 +183,11 @@ export class EditorComponent implements OnInit {
 
     submitting = new BehaviorSubject<boolean>(false);
 
-    tagSuggests!: Observable<TagSuggestOption[]>;
+    tagSuggests!: Observable<{
+        suggestion: TagSuggestOption[];
+        loading: boolean;
+    }>;
+    tagSuggestTerm = new BehaviorSubject<string>('');
 
     narrowPreviewing = false;
 
@@ -245,18 +249,42 @@ export class EditorComponent implements OnInit {
             });
         }
         const tagSuggestSource = this.forms.raw.pipe(
-            map((raw) => RawTag(raw ?? undefined)),
+            map((raw) => {
+                raw = (raw ?? '').trim().toLowerCase();
+                raw = raw.split(/\s+/gi).join(' ');
+                return raw;
+            }),
             distinctUntilChanged(),
         );
         this.tagSuggests = merge(
-            tagSuggestSource.pipe(map(() => [])),
+            tagSuggestSource.pipe(
+                tap((v) => this.tagSuggestTerm.next(v)),
+                map(() => ({
+                    suggestion: [],
+                    loading: true,
+                })),
+            ),
             tagSuggestSource.pipe(
                 debounceTime(100),
-                filter((raw): raw is RawTag => raw != null),
-                mergeMap((raw) => suggestTag(undefined, raw).then((sug) => [raw, sug] as const)),
-                filter(([raw]) => raw === RawTag(this.forms.raw.value ?? undefined)),
+                mergeMap(async (raw) => {
+                    const tag = parseTag(raw ?? '');
+                    const ns = tag.ns ?? this.forms.namespace.value ?? undefined;
+                    const suggestion = await suggestTag(ns, tag.raw);
+                    if (suggestion.length < 10 && ns != null) {
+                        (await suggestTag(undefined, tag.raw)).forEach((s) => {
+                            if (suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id)) {
+                                suggestion.push(s);
+                            }
+                        });
+                    }
+                    return [raw, suggestion] as const;
+                }),
+                filter(([raw]) => raw === this.tagSuggestTerm.value),
                 map(([, suggestions]) => {
-                    return suggestions.map((s) => new TagSuggestOption(s, this));
+                    return {
+                        suggestion: suggestions.map((s) => new TagSuggestOption(s, this)),
+                        loading: true,
+                    };
                 }),
             ),
         );
