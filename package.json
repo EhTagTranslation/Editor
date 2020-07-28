@@ -55,7 +55,7 @@
     "material-design-icons": "^3.0.1",
     "node-cache": "^5.1.2",
     "pako": "^1.0.11",
-    "parse5": "^6.0.0",
+    "parse5": "^6.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.0",
     "simple-git": "^2.15.0",
