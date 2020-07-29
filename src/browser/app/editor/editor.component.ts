@@ -249,18 +249,28 @@ export class EditorComponent implements OnInit {
                 }
             });
         }
-        const tagSuggestSource = this.forms.raw.pipe(
-            map((raw) => {
-                raw = (raw ?? '').trim().toLowerCase();
-                raw = raw.split(/\s+/gi).join(' ');
-                return raw;
+        const tagSuggestSource = combineLatest([
+            this.forms.raw.pipe(
+                map((raw) => {
+                    raw = (raw ?? '').trim().toLowerCase();
+                    raw = raw.split(/\s+/gi).join(' ');
+                    return raw;
+                }),
+                distinctUntilChanged(),
+            ),
+            this.forms.namespace.pipe(distinctUntilChanged()),
+        ]).pipe(
+            map(([raw, ns]) => {
+                const { ns: rns, raw: tag } = parseTag(raw);
+                ns = rns ?? ns;
+                return [ns, tag] as const;
             }),
-            distinctUntilChanged(),
+            distinctUntilChanged(([xns, xt], [yns, yt]) => xns === yns && xt === yt),
         );
         this.tagSuggests = merge(
             tagSuggestSource.pipe(
-                tap((raw) => this.tagSuggestTerm.next(raw)),
-                map((raw) => {
+                tap(([_, raw]) => this.tagSuggestTerm.next(raw)),
+                map(([_, raw]) => {
                     if (!raw)
                         return {
                             suggestion: [],
@@ -275,17 +285,24 @@ export class EditorComponent implements OnInit {
             tagSuggestSource.pipe(
                 debounceTime(100),
                 mergeMap(
-                    async (raw): Promise<[string, TagSuggest[]]> => {
+                    async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
                         if (!raw) return [raw, []];
-                        const tag = parseTag(raw ?? '');
-                        const ns = tag.ns ?? this.forms.namespace.value ?? undefined;
-                        const suggestion = await suggestTag(ns, tag.raw);
-                        if (suggestion.length < 10 && ns != null) {
-                            (await suggestTag(undefined, tag.raw)).forEach((s) => {
-                                if (suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id)) {
-                                    suggestion.push(s);
-                                }
-                            });
+                        const suggestion = await suggestTag(undefined, raw);
+                        suggestion.sort((a, b) => {
+                            const aNs = a.master?.namespace ?? a.namespace;
+                            const bNs = b.master?.namespace ?? b.namespace;
+                            if (aNs === bNs) return 0;
+                            if (aNs === ns) return -1;
+                            if (bNs === ns) return 1;
+                            return 0;
+                        });
+                        if (suggestion.length >= 10 && ns != null) {
+                            const nsSuggestion = await suggestTag(ns, raw);
+                            suggestion.unshift(
+                                ...nsSuggestion.filter((s) =>
+                                    suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
+                                ),
+                            );
                         }
                         return [raw, suggestion];
                     },
