@@ -19,10 +19,10 @@ describe('AppController (e2e)', () => {
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
         enableCors(app);
         setupSwagger(app);
-        // await app.init();
-        // const adapter = (app.getHttpAdapter() as unknown) as FastifyAdapter;
-        // console.log(adapter);
-        // await adapter.getInstance<fastify.FastifyInstance>().ready();
+        await app.init();
+        const adapter = (app.getHttpAdapter() as unknown) as FastifyAdapter;
+        console.log(adapter);
+        await adapter.getInstance<fastify.FastifyInstance>().ready();
     });
 
     it('HEAD /database', async () => {
