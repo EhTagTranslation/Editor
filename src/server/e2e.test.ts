@@ -16,7 +16,7 @@ describe('AppController (e2e)', () => {
             imports: [AppModule],
         }).compile();
 
-        app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+        app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter(), {});
         enableCors(app);
         setupSwagger(app);
         await app.init();
