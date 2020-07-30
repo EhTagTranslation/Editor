@@ -1415,10 +1415,10 @@
     lodash.set "4.3.2"
     uuid "8.1.0"
 
-"@nestjs/core@^7.3.2":
-  version "7.3.2"
-  resolved "https://registry.npm.taobao.org/@nestjs/core/download/@nestjs/core-7.3.2.tgz#64b4eebcfcf7beb909504b1a74fc89fc6ecc7e26"
-  integrity sha1-ZLTuvPz3vrkJUEsadPyJ/G7MfiY=
+"@nestjs/core@^7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.4.1.tgz#2d4dd2a3e8c77b6c553c5b67f8551d060c940c18"
+  integrity sha512-CeiWa6qsYg1m+fZ+TwFq17t2O7zHKaOjP52WM/fSeSoe7zCqLwR8ua1eVkUeqWbxZqGVE4SbGpUUIKxnZOIvgQ==
   dependencies:
     "@nuxtjs/opencollective" "0.2.2"
     fast-safe-stringify "2.0.7"
@@ -1426,7 +1426,7 @@
     object-hash "2.0.3"
     path-to-regexp "3.2.0"
     tslib "2.0.0"
-    uuid "8.2.0"
+    uuid "8.3.0"
 
 "@nestjs/mapped-types@0.0.5":
   version "0.0.5"
@@ -11020,15 +11020,15 @@ uuid@8.2.0:
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.2.0.tgz?cache=0&sync_timestamp=1595885054555&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
   integrity sha1-yxDdaxGOLa2n0M2XMLp0F8k9kg4=
 
+uuid@8.3.0, uuid@^8.2.0:
+  version "8.3.0"
+  resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.3.0.tgz?cache=0&sync_timestamp=1595885054555&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
+  integrity sha1-q3OAhcoi3JqMknJeRZsdUH311uo=
+
 uuid@^3.0.0, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-3.4.0.tgz?cache=0&sync_timestamp=1595885054555&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha1-sj5DWK+oogL+ehAK8fX4g/AgB+4=
-
-uuid@^8.2.0:
-  version "8.3.0"
-  resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.3.0.tgz?cache=0&sync_timestamp=1595885054555&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
-  integrity sha1-q3OAhcoi3JqMknJeRZsdUH311uo=
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
