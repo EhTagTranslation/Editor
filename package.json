@@ -40,7 +40,7 @@
     "@octokit/rest": "^18.0.3",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "cli-color": "^2.0.0",
     "commander": "^6.0.0",
