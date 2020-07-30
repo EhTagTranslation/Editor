@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
 import { AppModule } from './app/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import fastify from 'fastify';
+import * as fastify from 'fastify';
 import { setupSwagger, enableCors } from './setup';
 import { HttpStatus } from '@nestjs/common';
 
@@ -19,9 +19,10 @@ describe('AppController (e2e)', () => {
         app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
         enableCors(app);
         setupSwagger(app);
-        await app.init();
-        const adapter = app.getHttpAdapter() as FastifyAdapter;
-        await adapter.getInstance<fastify.FastifyInstance>().ready();
+        // await app.init();
+        // const adapter = (app.getHttpAdapter() as unknown) as FastifyAdapter;
+        // console.log(adapter);
+        // await adapter.getInstance<fastify.FastifyInstance>().ready();
     });
 
     it('HEAD /database', async () => {

@@ -20,7 +20,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
     intercept(context: ExecutionContext, next: CallHandler<unknown>): Observable<unknown> {
         const httpContext = context.switchToHttp();
         const req = httpContext.getRequest<FastifyRequest>();
-        const res = httpContext.getResponse<FastifyReply<unknown>>();
+        const res = httpContext.getResponse<FastifyReply>();
 
         const setEtag = (): Observable<void> =>
             from(
@@ -31,8 +31,8 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
 
         return from(this.database.data.sha()).pipe(
             map((sha) => {
-                if (!req.req.method) return;
-                switch (req.req.method.toUpperCase()) {
+                if (!req.method) return;
+                switch (req.method.toUpperCase()) {
                     default:
                     case 'GET':
                     case 'HEAD': {

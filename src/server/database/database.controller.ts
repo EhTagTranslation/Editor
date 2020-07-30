@@ -154,7 +154,7 @@ export class DatabaseController extends InjectableBase {
         @Format() format: TagType,
         @Body() tag: TagDto,
         @User() user: UserInfo,
-        @Res() res: FastifyReply<unknown>,
+        @Res() res: FastifyReply,
     ): Promise<TagResponseDto | null> {
         const dic = this.service.data.data[p.namespace];
         const oldRec = dic.get(p.raw);
