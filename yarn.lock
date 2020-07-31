@@ -190,10 +190,10 @@
     ora "4.0.3"
     rxjs "6.5.4"
 
-"@angular/animations@^10.0.6":
-  version "10.0.6"
-  resolved "https://registry.npm.taobao.org/@angular/animations/download/@angular/animations-10.0.6.tgz?cache=0&sync_timestamp=1595988578775&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40angular%2Fanimations%2Fdownload%2F%40angular%2Fanimations-10.0.6.tgz#ab1d7dd5c7a76da2528a705f5186733763eee545"
-  integrity sha1-qx191cenbaJSinBfUYZzN2Pu5UU=
+"@angular/animations@^10.0.7":
+  version "10.0.7"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-10.0.7.tgz#1896b76bee50abb5a199b335d447f9fcb195ab1b"
+  integrity sha512-lTF7wuhx16fc3WahmqcYE3Q6sHB5sUQZ6m4dKg38wuf49Hr9x8uQpOMypnOAp9qfKG06ZZ2arRs53JeHpzkMPw==
   dependencies:
     tslib "^2.0.0"
 
