@@ -4,7 +4,7 @@
 [![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](//github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
 [![vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=vercel)](//github.com/EhTagTranslation/Editor/deployments)
 [![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.now.sh)](//ehtt.now.sh/)
-[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.azurewebsites.net/database)](//ehtt.azurewebsites.net/)
+[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.herokuapp.com/database)](//ehtt.herokuapp.com/)
 
 [数据库](../../../Database)编辑工具。
 
@@ -22,9 +22,9 @@
 
 ### 后端
 
-代码位于 [server](./src/server)，使用 Nest.js 开发，使用 Azure App Service 部署于 <https://ehtt.azurewebsites.net>。
+代码位于 [server](./src/server)，使用 Nest.js 开发，使用 Heroku 部署于 <https://ehtt.herokuapp.com>。
 
-使用方法参见 [API 列表](https://ehtt.azurewebsites.net/static/index.html)。
+使用方法参见 [API 列表](https://ehtt.herokuapp.com/static/index.html)。
 
 ### 工具
 

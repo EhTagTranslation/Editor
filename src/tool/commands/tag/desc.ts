@@ -5,7 +5,7 @@ import { Tag } from '../../../shared/interfaces/ehtag';
 
 command
     .command('desc <[namespace:]tag>')
-    .description('查询数据库中响应标签信息')
+    .description('查询数据库中标签信息')
     .action(async (tag: string) => {
         const [namespace, raw] = parseTag(tag);
         const result = await normalizeTag(namespace, raw);
@@ -15,7 +15,7 @@ command
         }
         try {
             const info = await axios.get<Tag<'raw'>>(
-                `https://ehtt.azurewebsites.net/database/${result[0]}/${result[1]}?format=raw.json`,
+                `https://ehtt.herokuapp.com/database/${result[0]}/${result[1]}?format=raw.json`,
             );
             console.log(`原始标签：${result[0]}:${result[1]}`);
             console.log(`    名称：${info.data.name}`);

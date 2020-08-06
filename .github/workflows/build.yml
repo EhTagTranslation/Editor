@@ -84,20 +84,6 @@ jobs:
           DB_REPO: EhTagTranslation/Database
         run: yarn test:server
 
-      - name: Prepare deploy
-        if: github.ref == 'refs/heads/master'
-        run: |
-          node ./scripts/server.js
-          cd ./dist
-          yarn install --prefer-offline
-      - name: Deploy to Azure webapp
-        uses: azure/webapps-deploy@v2.1.2
-        if: github.ref == 'refs/heads/master'
-        with:
-          app-name: ehtt
-          publish-profile: ${{ secrets.AzureWebAppPublishProfile }}
-          package: ./dist
-
   browser:
     runs-on: ubuntu-latest
 
