@@ -57,10 +57,10 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     private createOctokit(options?: OctokitOptions): Octokit {
         return new Octokit({
             log: {
-                // debug: (...args: unknown[]) => this.logger.debug(args),
-                info: (arg: unknown) => this.logger.log(arg),
-                warn: (arg: unknown) => this.logger.warn(arg),
-                error: (arg: unknown) => this.logger.error(arg),
+                debug: (message: string) => this.logger.debug(message),
+                info: (message: string) => this.logger.log(message),
+                warn: (message: string) => this.logger.warn(message),
+                error: (message: string) => this.logger.error(message),
             },
             userAgent: 'EhTagTranslation Nest',
             ...options,
