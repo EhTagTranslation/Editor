@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 export function setupSwagger(app: INestApplication): void {
     const options = new DocumentBuilder()
         .setTitle('Eh Tag Translation Server')
-        .addBearerAuth(undefined, 'GitHub Token')
+        .addBearerAuth(undefined, 'GitHub-Token')
         .setDescription('连接到 EhTagTranslation 数据库的 RESTful API。')
         .setVersion('1.0')
         .addTag('Database', 'EhTagTranslation 数据库内容的增改删查。')
