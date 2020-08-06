@@ -1534,10 +1534,10 @@
     consola "^2.3.0"
     node-fetch "^2.3.0"
 
-"@octokit/auth-app@^2.4.10":
-  version "2.4.10"
-  resolved "https://registry.npm.taobao.org/@octokit/auth-app/download/@octokit/auth-app-2.4.10.tgz#8e58a5e665513f5e5a4e9a8645f4ac74fbd55f47"
-  integrity sha1-jlil5mVRP15aTpqGRfSsdPvVX0c=
+"@octokit/auth-app@^2.4.12":
+  version "2.4.12"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-app/-/auth-app-2.4.12.tgz#e797e4903478d0ccdf2f83fc0bf02bf30a2be84b"
+  integrity sha512-rHiP+rYl/spluF+3wmQtScSC6nzED8ZSi3W6Rcuvcd78fQSuahzS6MnAIP9Rll08M3bWe7kmuQLpdRzhUTjhrg==
   dependencies:
     "@octokit/request" "^5.3.0"
     "@octokit/request-error" "^2.0.0"
