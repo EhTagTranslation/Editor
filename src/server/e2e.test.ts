@@ -21,7 +21,6 @@ describe('AppController (e2e)', () => {
         setupSwagger(app);
         await app.init();
         const adapter = (app.getHttpAdapter() as unknown) as FastifyAdapter;
-        console.log(adapter);
         await adapter.getInstance<fastify.FastifyInstance>().ready();
     });
 
@@ -157,6 +156,52 @@ describe('AppController (e2e)', () => {
                 //  ast: [],
             },
         });
+    });
+
+    it('GET /database/~badge', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/database/~badge')
+            .set('accept', 'application/raw+json')
+            .expect(HttpStatus.OK);
+        expect(_.body).toMatchShapeOf({
+            schemaVersion: 1,
+            label: 'database',
+            message: 'c141fb41',
+            isError: false,
+        });
+    });
+
+    it('GET /database/all/~badge', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/database/all/~badge')
+            .set('accept', 'application/raw+json')
+            .expect(HttpStatus.OK);
+        expect(_.body).toMatchShapeOf({
+            schemaVersion: 1,
+            label: 'all records',
+            message: '9883',
+            isError: false,
+        });
+    });
+
+    it('GET /database/female/~badge', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/database/female/~badge')
+            .set('accept', 'application/raw+json')
+            .expect(HttpStatus.OK);
+        expect(_.body).toMatchShapeOf({
+            schemaVersion: 1,
+            label: 'female',
+            message: '523',
+            isError: false,
+        });
+    });
+
+    it('GET /auth/:token', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/auth/token')
+            .set('accept', 'application/raw+json')
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     afterAll(async () => {
