@@ -1546,6 +1546,18 @@
     universal-github-app-jwt "^1.0.1"
     universal-user-agent "^6.0.0"
 
+"@octokit/auth-oauth-app@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npm.taobao.org/@octokit/auth-oauth-app/download/@octokit/auth-oauth-app-3.0.5.tgz#ef5425e3bf8facf3df0db0bf39fd15e068c53e77"
+  integrity sha1-71Ql47+PrPPfDbC/Of0V4GjFPnc=
+  dependencies:
+    "@octokit/request" "^5.3.0"
+    "@octokit/request-error" "^2.0.0"
+    "@octokit/types" "^5.0.0"
+    "@types/btoa-lite" "^1.0.0"
+    btoa-lite "^1.0.0"
+    universal-user-agent "^6.0.0"
+
 "@octokit/auth-token@^2.4.0":
   version "2.4.2"
   resolved "https://registry.npm.taobao.org/@octokit/auth-token/download/@octokit/auth-token-2.4.2.tgz#10d0ae979b100fa6b72fa0e8e63e27e6d0dbff8a"
@@ -1737,6 +1749,11 @@
   version "3.5.32"
   resolved "https://registry.npm.taobao.org/@types/bluebird/download/@types/bluebird-3.5.32.tgz#381e7b59e39f010d20bbf7e044e48f5caf1ab620"
   integrity sha1-OB57WeOfAQ0gu/fgROSPXK8atiA=
+
+"@types/btoa-lite@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/@types/btoa-lite/download/@types/btoa-lite-1.0.0.tgz#e190a5a548e0b348adb0df9ac7fa5f1151c7cca4"
+  integrity sha1-4ZClpUjgs0itsN+ax/pfEVHHzKQ=
 
 "@types/cli-color@^2.0.0":
   version "2.0.0"
@@ -2937,6 +2954,11 @@ bser@2.1.1:
   integrity sha1-5nh9og7OnQeZhTPP2d5vXDj0vAU=
   dependencies:
     node-int64 "^0.4.0"
+
+btoa-lite@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/btoa-lite/download/btoa-lite-1.0.0.tgz#337766da15801210fdd956c22e9c6891ab9d0337"
+  integrity sha1-M3dm2hWAEhD92VbCLpxokaudAzc=
 
 buffer-equal-constant-time@1.0.1:
   version "1.0.1"

@@ -4,6 +4,7 @@ import { Octokit } from '@octokit/rest';
 import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { ConfigService } from '@nestjs/config';
 import { createAppAuth, Types } from '@octokit/auth-app';
+import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
 import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
@@ -72,6 +73,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     private readonly APP_CLIENT_ID: string = this.config.get('APP_CLIENT_ID', '');
     private readonly APP_CLIENT_SECRET: string = this.config.get('APP_CLIENT_SECRET', '');
 
+    private readonly EDITOR_CLIENT_ID: string = this.config.get('EDITOR_CLIENT_ID', '');
+    private readonly EDITOR_CLIENT_SECRET: string = this.config.get('EDITOR_CLIENT_SECRET', '');
+
     readonly forApp = this.createOctokit({
         authStrategy: createAppAuth,
         auth: {
@@ -81,6 +85,11 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             clientSecret: this.APP_CLIENT_SECRET,
             installationId: this.APP_INSTALLATION_ID,
         } as Types['StrategyOptions'],
+    });
+
+    readonly forOauth = createOAuthAppAuth({
+        clientId: this.EDITOR_CLIENT_ID,
+        clientSecret: this.EDITOR_CLIENT_SECRET,
     });
 
     private _forRepo?: Octokit;

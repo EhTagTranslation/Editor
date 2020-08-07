@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <script>
       var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
-      window.opener.postMessage(code, location.origin);
+      var state = location.search.match(/[\?&]state=(\w+)($|&)/)[1];
+      window.opener.postMessage({code: code, state: state}, location.origin);
       window.close();
     </script>
   </head>

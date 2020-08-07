@@ -74,11 +74,11 @@ export class GithubOauthService {
         if (this.token) {
             return of(false);
         }
+        const myState = Math.random().toString();
         const callback = new URL(this.location.prepareExternalUrl('/assets/callback.html'), window.location.href);
+        const redirectUri = encodeURIComponent(callback.href);
         const authWindow = window.open(
-            `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&redirect_uri=${encodeURIComponent(
-                callback.href,
-            )}`,
+            `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=&state=${myState}&redirect_uri=${redirectUri}`,
             windowName,
             'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720',
         );
@@ -95,12 +95,12 @@ export class GithubOauthService {
             }, 500);
         });
 
-        const promise = new Promise<string>((res, rej) => {
+        const promise = new Promise<Record<string, string>>((res, rej) => {
             const onMessage = (ev: MessageEvent): void => {
                 if (ev.source !== authWindow) {
                     return;
                 }
-                res(ev.data as string);
+                res(ev.data as Record<string, string>);
                 window.removeEventListener('message', onMessage);
             };
             void authChecker.then(() => {
@@ -109,11 +109,12 @@ export class GithubOauthService {
             });
             window.addEventListener('message', onMessage);
         })
-            .then((code) =>
-                this.httpClient
-                    .get<TokenData>(`https://ehtageditor.azurewebsites.net/authenticate/${code}`)
-                    .toPromise(),
-            )
+            .then(({ code, state }) => {
+                if (state !== myState) throw new Error('Wrong state');
+                return this.httpClient
+                    .get<TokenData>(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`)
+                    .toPromise();
+            })
             .catch((error: unknown) => ({ token: null, error }))
             .then((token) => {
                 if (!token.token || token.error) {

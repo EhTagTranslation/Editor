@@ -7,9 +7,10 @@ import { LoggerInterceptor } from './logger.interceptor';
 import { OctokitModule } from '../octokit/octokit.module';
 import { GithubIdentityGuard } from './github-identity.guard';
 import { DebugFilter } from './debug.filter';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, ToolsModule, OctokitModule],
+    imports: [ConfigModule.forRoot({ isGlobal: true }), DatabaseModule, ToolsModule, OctokitModule, AuthModule],
     providers: [
         {
             provide: APP_PIPE,
