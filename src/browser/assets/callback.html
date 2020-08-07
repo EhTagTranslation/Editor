@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      var code = location.search.match(/[\?&]code=(\w+)($|&)/)[1];
-      var state = location.search.match(/[\?&]state=(\w+)($|&)/)[1];
-      window.opener.postMessage({code: code, state: state}, location.origin);
+      var code = (/[?&]code=([^\s&]+)($|&)/.exec(location.search) || [])[1];
+      var state = (/[?&]state=([^\s&]+)($|&)/.exec(location.search) || [])[1];
+      window.opener.postMessage({ code: code, state: state }, location.origin);
       window.close();
     </script>
   </head>
