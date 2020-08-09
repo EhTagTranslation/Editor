@@ -9,8 +9,10 @@ export class LoggerInterceptor extends InjectableBase implements NestInterceptor
     intercept(context: ExecutionContext, next: CallHandler<unknown>): Observable<unknown> {
         const httpContext = context.switchToHttp();
         const req = httpContext.getRequest<FastifyRequest>();
+        const id = String(req.headers['x-request-id'] ?? req.id);
         const start = Date.now();
-        const message = `[${String(req.id)}] ${req.method} ${req.url}`;
+        const message = `[${id}] ${req.method} ${req.url}`;
+        this.logger.verbose(message);
         return next.handle().pipe(
             tap(
                 () => {
