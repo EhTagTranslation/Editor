@@ -12,7 +12,7 @@ export class LoggerInterceptor extends InjectableBase implements NestInterceptor
         const id = String(req.headers['x-request-id'] ?? req.id);
         const start = Date.now();
         const message = `[${id}] ${req.method} ${req.url}`;
-        this.logger.verbose(message);
+        this.logger.verbose(`RECV ${message}`);
         return next.handle().pipe(
             tap(
                 () => {
@@ -22,9 +22,9 @@ export class LoggerInterceptor extends InjectableBase implements NestInterceptor
                 (e) => {
                     const elapsed = Date.now() - start;
                     if (e instanceof HttpException) {
-                        this.logger.warn(`${message} ERROR - ${elapsed}ms ${e.getStatus()}`);
+                        this.logger.warn(`SENT ${message} ERROR - ${elapsed}ms ${e.getStatus()}`);
                     } else {
-                        this.logger.error(`${message} ERROR - ${elapsed}ms ${String(e)}`);
+                        this.logger.error(`SENT ${message} ERROR - ${elapsed}ms ${String(e)}`);
                     }
                 },
             ),
