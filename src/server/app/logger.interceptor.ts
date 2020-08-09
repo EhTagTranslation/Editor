@@ -17,7 +17,7 @@ export class LoggerInterceptor extends InjectableBase implements NestInterceptor
             tap(
                 () => {
                     const elapsed = Date.now() - start;
-                    this.logger.verbose(`${message} OK - ${elapsed}ms`);
+                    this.logger.verbose(`SENT ${message} OK - ${elapsed}ms`);
                 },
                 (e) => {
                     const elapsed = Date.now() - start;
