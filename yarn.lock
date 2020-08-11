@@ -1857,10 +1857,10 @@
   resolved "https://registry.npm.taobao.org/@types/lru-cache/download/@types/lru-cache-5.1.0.tgz#57f228f2b80c046b4a1bd5cac031f81f207f4f03"
   integrity sha1-V/Io8rgMBGtKG9XKwDH4HyB/TwM=
 
-"@types/markdown-it@^10.0.1":
-  version "10.0.1"
-  resolved "https://registry.npm.taobao.org/@types/markdown-it/download/@types/markdown-it-10.0.1.tgz#94e252ab689c8e9ceb9aff2946e0a458390105eb"
-  integrity sha1-lOJSq2icjpzrmv8pRuCkWDkBBes=
+"@types/markdown-it@^10.0.2":
+  version "10.0.2"
+  resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-10.0.2.tgz#f93334b9c7821ddb19865dfd91ecf688094c2626"
+  integrity sha512-FGKiVW1UgeIEAChYAuHcfCd0W4LsMEyrSyTVaZiuJhwR4BwSVUD8JKnzmWAMK2FHNLZSPGUaEkpa/dkZj2uq1w==
   dependencies:
     "@types/linkify-it" "*"
     "@types/mdurl" "*"
