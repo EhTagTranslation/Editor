@@ -11660,7 +11660,9 @@ yn@3.1.1:
   resolved "https://registry.npm.taobao.org/yn/download/yn-3.1.1.tgz#1e87401a09d767c1d5eab26a6e4c185182d2eb50"
   integrity sha1-HodAGgnXZ8HV6rJqbkwYUYLS61A=
 
-zone.js@^0.10.3:
-  version "0.10.3"
-  resolved "https://registry.npm.taobao.org/zone.js/download/zone.js-0.10.3.tgz#3e5e4da03c607c9dcd92e37dd35687a14a140c16"
-  integrity sha1-Pl5NoDxgfJ3NkuN901aHoUoUDBY=
+zone.js@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.npm.taobao.org/zone.js/download/zone.js-0.11.1.tgz#0301d00d26febb2722f074c46aac4a948698ce39"
+  integrity sha1-AwHQDSb+uyci8HTEaqxKlIaYzjk=
+  dependencies:
+    tslib "^2.0.0"
