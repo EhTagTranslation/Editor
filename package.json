@@ -20,7 +20,7 @@
   },
   "private": true,
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.5",
     "@actions/exec": "^1.0.4",
     "@nestjs/common": "^7.4.2",
     "@nestjs/config": "^0.5.0",
