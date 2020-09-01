@@ -1458,10 +1458,10 @@
   resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.1.0.tgz#248435b4af4305bf6d1214d228c84926be56125a"
   integrity sha1-JIQ1tK9DBb9tEhTSKMhJJr5WElo=
 
-"@nestjs/platform-fastify@^7.4.3":
-  version "7.4.3"
-  resolved "https://registry.npm.taobao.org/@nestjs/platform-fastify/download/@nestjs/platform-fastify-7.4.3.tgz#45bc7ea6c845905e2f55cd7cf1467548603a75a9"
-  integrity sha1-Rbx+pshFkF4vVc188UZ1SGA6dak=
+"@nestjs/platform-fastify@^7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-7.4.4.tgz#b5b24576d17a04c9845890f21d9827161e9dd7e0"
+  integrity sha512-R350qpat4aQY1KV27yWWgMa0UZV/5vsPlp/LoNERZjKYjTkhDCbsVhfFxmTJhXRpEbU69P+XW/EDlLa7kiQj0Q==
   dependencies:
     fastify "3.3.0"
     fastify-cors "4.1.0"
@@ -7051,20 +7051,10 @@ license-webpack-plugin@2.2.0:
     "@types/webpack-sources" "^0.1.5"
     webpack-sources "^1.2.0"
 
-light-my-request@4.0.2:
+light-my-request@4.0.2, light-my-request@^4.0.0:
   version "4.0.2"
   resolved "https://registry.npm.taobao.org/light-my-request/download/light-my-request-4.0.2.tgz#e80ebbbac512f0f45b9e54cb274b8f121248b924"
   integrity sha1-6A67usUS8PRbnlTLJ0uPEhJIuSQ=
-  dependencies:
-    ajv "^6.12.2"
-    cookie "^0.4.0"
-    readable-stream "^3.6.0"
-    set-cookie-parser "^2.4.1"
-
-light-my-request@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.npm.taobao.org/light-my-request/download/light-my-request-4.0.1.tgz#7e18f2c3f8535123c329b1ae78a5d6750424a096"
-  integrity sha1-fhjyw/hTUSPDKbGueKXWdQQkoJY=
   dependencies:
     ajv "^6.12.2"
     cookie "^0.4.0"
@@ -10836,12 +10826,12 @@ tsconfig-paths@3.9.0, tsconfig-paths@^3.4.0, tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@2.0.0, tslib@>=1.9.0, tslib@^2.0.0:
+tslib@2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
   integrity sha1-GNE/wtzgQFHiDwdMyDh/2Aic5PM=
 
-tslib@2.0.1, tslib@^2.0.1:
+tslib@2.0.1, tslib@>=1.9.0, tslib@^2.0.0, tslib@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.1.tgz?cache=0&sync_timestamp=1596753467801&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha1-QQ6w0RPltjVkkO7HSWA3JbAhtD4=
