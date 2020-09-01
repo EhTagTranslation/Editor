@@ -1418,10 +1418,10 @@
     webpack "4.44.1"
     webpack-node-externals "2.5.1"
 
-"@nestjs/common@^7.4.3":
-  version "7.4.3"
-  resolved "https://registry.npm.taobao.org/@nestjs/common/download/@nestjs/common-7.4.3.tgz?cache=0&sync_timestamp=1598603456266&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40nestjs%2Fcommon%2Fdownload%2F%40nestjs%2Fcommon-7.4.3.tgz#cd202a5ff03cb4cf8c576f6cc0b17f57b9cedbd1"
-  integrity sha1-zSAqX/A8tM+MV29swLF/V7nO29E=
+"@nestjs/common@^7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-7.4.4.tgz#400011464792e446949e9cb719bdf7ede31da725"
+  integrity sha512-Cj94FJrnLcAU4URJrRmnsHRODZPJpX+EKKJ/Or9qvL9ULQwRWYmFcGQYaJ0nVV0hSBjn/jaAV1Cgqw74uk21KA==
   dependencies:
     axios "0.20.0"
     cli-color "2.0.0"
@@ -10836,12 +10836,12 @@ tsconfig-paths@3.9.0, tsconfig-paths@^3.4.0, tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@2.0.0, tslib@>=1.9.0, tslib@^2.0.0:
+tslib@2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.0.tgz#18d13fc2dce04051e20f074cc8387fd8089ce4f3"
   integrity sha1-GNE/wtzgQFHiDwdMyDh/2Aic5PM=
 
-tslib@2.0.1, tslib@^2.0.1:
+tslib@2.0.1, tslib@>=1.9.0, tslib@^2.0.0, tslib@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.1.tgz?cache=0&sync_timestamp=1596753467801&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftslib%2Fdownload%2Ftslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha1-QQ6w0RPltjVkkO7HSWA3JbAhtD4=
