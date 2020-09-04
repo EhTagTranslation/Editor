@@ -102,7 +102,7 @@
           <mat-label>原始标签</mat-label>
           <input
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.raw"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.raw || ''"
             formControlName="raw"
             required
             [matAutocomplete]="tagSuggest"
@@ -173,7 +173,7 @@
           <mat-label>名称</mat-label>
           <input
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.name"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.name || ''"
             formControlName="name"
             required
           />
@@ -184,7 +184,7 @@
           <mat-label>描述</mat-label>
           <textarea
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.intro"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.intro || ''"
             formControlName="intro"
             cdkTextareaAutosize
             cdkAutosizeMinRows="2"
@@ -196,7 +196,7 @@
           <mat-label>外部链接</mat-label>
           <textarea
             matInput
-            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.links"
+            [placeholder]="(getNamespace(value('namespace')) | async)?.example?.links || ''"
             formControlName="links"
             cdkTextareaAutosize
             cdkAutosizeMinRows="2"
