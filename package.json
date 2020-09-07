@@ -48,7 +48,7 @@
     "pako": "^1.0.11",
     "parse5": "^6.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.6.2",
+    "rxjs": "^6.6.3",
     "simple-git": "^2.20.1",
     "source-map-support": "^0.5.19",
     "tslib": "^2.0.1"
