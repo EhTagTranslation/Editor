@@ -1653,12 +1653,12 @@
   resolved "https://registry.npm.taobao.org/@octokit/plugin-request-log/download/@octokit/plugin-request-log-1.0.0.tgz#eef87a431300f6148c39a7f75f8cfeb218b2547e"
   integrity sha1-7vh6QxMA9hSMOaf3X4z+shiyVH4=
 
-"@octokit/plugin-rest-endpoint-methods@4.1.3":
-  version "4.1.3"
-  resolved "https://registry.npm.taobao.org/@octokit/plugin-rest-endpoint-methods/download/@octokit/plugin-rest-endpoint-methods-4.1.3.tgz#44d9af35cd9fef63c7a4cf3b0e6b681886cc8d34"
-  integrity sha1-RNmvNc2f72PHpM87DmtoGIbMjTQ=
+"@octokit/plugin-rest-endpoint-methods@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-4.2.0.tgz#c5a0691b3aba5d8b4ef5dffd6af3649608f167ba"
+  integrity sha512-1/qn1q1C1hGz6W/iEDm9DoyNoG/xdFDt78E3eZ5hHeUfJTLJgyAMdj9chL/cNBHjcjd+FH5aO1x0VCqR2RE0mw==
   dependencies:
-    "@octokit/types" "^5.1.1"
+    "@octokit/types" "^5.5.0"
     deprecation "^2.3.1"
 
 "@octokit/request-error@^2.0.0":
@@ -1684,20 +1684,27 @@
     once "^1.4.0"
     universal-user-agent "^6.0.0"
 
-"@octokit/rest@^18.0.4":
-  version "18.0.4"
-  resolved "https://registry.npm.taobao.org/@octokit/rest/download/@octokit/rest-18.0.4.tgz?cache=0&sync_timestamp=1598494061801&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40octokit%2Frest%2Fdownload%2F%40octokit%2Frest-18.0.4.tgz#3c7e7dba671ae2097c24086581a2dc2fdb039be0"
-  integrity sha1-PH59umca4gl8JAhlgaLcL9sDm+A=
+"@octokit/rest@^18.0.6":
+  version "18.0.6"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.0.6.tgz#76c274f1a68f40741a131768ef483f041e7b98b6"
+  integrity sha512-ES4lZBKPJMX/yUoQjAZiyFjei9pJ4lTTfb9k7OtYoUzKPDLl/M8jiHqt6qeSauyU4eZGLw0sgP1WiQl9FYeM5w==
   dependencies:
     "@octokit/core" "^3.0.0"
     "@octokit/plugin-paginate-rest" "^2.2.0"
     "@octokit/plugin-request-log" "^1.0.0"
-    "@octokit/plugin-rest-endpoint-methods" "4.1.3"
+    "@octokit/plugin-rest-endpoint-methods" "4.2.0"
 
-"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.1.1", "@octokit/types@^5.2.0":
+"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.2.0":
   version "5.2.1"
   resolved "https://registry.npm.taobao.org/@octokit/types/download/@octokit/types-5.2.1.tgz#c212f03b0492faf215fa2ae506d5ec18038c2a36"
   integrity sha1-whLwOwSS+vIV+irlBtXsGAOMKjY=
+  dependencies:
+    "@types/node" ">= 8"
+
+"@octokit/types@^5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-5.5.0.tgz#e5f06e8db21246ca102aa28444cdb13ae17a139b"
+  integrity sha512-UZ1pErDue6bZNjYOotCNveTXArOMZQFG6hKJfOnGnulVCMcVVi7YIIuuR4WfBhjo7zgpmzn/BkPDnUXtNx+PcQ==
   dependencies:
     "@types/node" ">= 8"
 
