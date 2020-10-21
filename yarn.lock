@@ -1955,15 +1955,10 @@
   resolved "https://registry.npm.taobao.org/@types/minimatch/download/@types/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
 
-"@types/node@*", "@types/node@>= 8":
-  version "14.0.27"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.0.27.tgz?cache=0&sync_timestamp=1596674473562&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.0.27.tgz#a151873af5a5e851b51b3b065c9e63390a9e0eb1"
-  integrity sha1-oVGHOvWl6FG1GzsGXJ5jOQqeDrE=
-
-"@types/node@^14.11.11":
-  version "14.11.11"
-  resolved "https://registry.npm.taobao.org/@types/node/download/@types/node-14.11.11.tgz?cache=0&sync_timestamp=1603175260739&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.11.11.tgz#359ea52236b5ccc04a71d4001c8467178a9d3699"
-  integrity sha1-NZ6lIja1zMBKcdQAHIRnF4qdNpk=
+"@types/node@*", "@types/node@>= 8", "@types/node@^14.14.0":
+  version "14.14.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.0.tgz#f1091b6ad5de18e8e91bdbd43ec63f13de372538"
+  integrity sha512-BfbIHP9IapdupGhq/hc+jT5dyiBVZ2DdeC5WwJWQWDb0GijQlzUFAeIQn/2GtvZcd2HVUU7An8felIICFTC2qg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
