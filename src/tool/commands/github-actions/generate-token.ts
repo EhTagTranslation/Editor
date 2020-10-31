@@ -13,7 +13,7 @@ async function main(envName?: string): Promise<void> {
     const octokit = new Octokit({
         authStrategy: createAppAuth,
         auth: {
-            id: APP_ID,
+            appId: APP_ID,
             privateKey: APP_KEY,
             installationId: APP_INSTALLATION_ID,
             clientId: APP_CLIENT_ID,
