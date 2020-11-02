@@ -1619,10 +1619,10 @@
     universal-github-app-jwt "^1.0.1"
     universal-user-agent "^6.0.0"
 
-"@octokit/auth-oauth-app@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.npm.taobao.org/@octokit/auth-oauth-app/download/@octokit/auth-oauth-app-3.0.5.tgz#ef5425e3bf8facf3df0db0bf39fd15e068c53e77"
-  integrity sha1-71Ql47+PrPPfDbC/Of0V4GjFPnc=
+"@octokit/auth-oauth-app@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-oauth-app/-/auth-oauth-app-3.0.6.tgz#a3b7b86b12ccc344b1624bad586712cec767919d"
+  integrity sha512-FUwDqNb/kJ+oqB3QTiuuD5Tu7TdE9V6Vsq9RyjGUTxmqhFkNVMavulGPgmQH3kIb5qKkhf9kPcdfWmrZNwTFDg==
   dependencies:
     "@octokit/request" "^5.3.0"
     "@octokit/request-error" "^2.0.0"
@@ -1721,14 +1721,7 @@
     "@octokit/plugin-request-log" "^1.0.0"
     "@octokit/plugin-rest-endpoint-methods" "4.2.0"
 
-"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.2.0":
-  version "5.2.1"
-  resolved "https://registry.npm.taobao.org/@octokit/types/download/@octokit/types-5.2.1.tgz#c212f03b0492faf215fa2ae506d5ec18038c2a36"
-  integrity sha1-whLwOwSS+vIV+irlBtXsGAOMKjY=
-  dependencies:
-    "@types/node" ">= 8"
-
-"@octokit/types@^5.5.0":
+"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.2.0", "@octokit/types@^5.5.0":
   version "5.5.0"
   resolved "https://registry.npm.taobao.org/@octokit/types/download/@octokit/types-5.5.0.tgz#e5f06e8db21246ca102aa28444cdb13ae17a139b"
   integrity sha1-5fBujbISRsoQKqKERM2xOuF6E5s=
@@ -3014,7 +3007,7 @@ browserify-des@^1.0.0:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-browserify-rsa@^4.0.0, browserify-rsa@^4.0.1:
+browserify-rsa@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/browserify-rsa/download/browserify-rsa-4.0.1.tgz#21e0abfaf6f2029cf2fafb133567a701d4135524"
   integrity sha1-IeCr+vbyApzy+vsTNWenAdQTVSQ=
@@ -8432,7 +8425,7 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-asn1@^5.0.0, parse-asn1@^5.1.5:
+parse-asn1@^5.1.5:
   version "5.1.5"
   resolved "https://registry.npm.taobao.org/parse-asn1/download/parse-asn1-5.1.5.tgz#003271343da58dc94cace494faef3d2147ecea0e"
   integrity sha1-ADJxND2ljclMrOSU+u89IUfs6g4=
