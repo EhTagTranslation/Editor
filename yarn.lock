@@ -1711,10 +1711,10 @@
     once "^1.4.0"
     universal-user-agent "^6.0.0"
 
-"@octokit/rest@^18.0.7":
-  version "18.0.7"
-  resolved "https://registry.npm.taobao.org/@octokit/rest/download/@octokit/rest-18.0.7.tgz#236514417084334bc0ef62416a19f6030db3d907"
-  integrity sha1-I2UUQXCEM0vA72JBahn2Aw2z2Qc=
+"@octokit/rest@^18.0.8":
+  version "18.0.8"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-18.0.8.tgz#c49792e4f02fea6510216d1cecc98075add7db53"
+  integrity sha512-crYqQWFS/75o+FSE2Ejpt0Tk9FgkQ4aGvToptqbnvlfViE/C4hVAtmn/X0emQ8Q3wg1tYXYNIcuG1XXSOEeARg==
   dependencies:
     "@octokit/core" "^3.0.0"
     "@octokit/plugin-paginate-rest" "^2.2.0"
@@ -3014,7 +3014,7 @@ browserify-des@^1.0.0:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-browserify-rsa@^4.0.0, browserify-rsa@^4.0.1:
+browserify-rsa@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/browserify-rsa/download/browserify-rsa-4.0.1.tgz#21e0abfaf6f2029cf2fafb133567a701d4135524"
   integrity sha1-IeCr+vbyApzy+vsTNWenAdQTVSQ=
@@ -8432,7 +8432,7 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-asn1@^5.0.0, parse-asn1@^5.1.5:
+parse-asn1@^5.1.5:
   version "5.1.5"
   resolved "https://registry.npm.taobao.org/parse-asn1/download/parse-asn1-5.1.5.tgz#003271343da58dc94cace494faef3d2147ecea0e"
   integrity sha1-ADJxND2ljclMrOSU+u89IUfs6g4=
