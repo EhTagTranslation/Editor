@@ -27,7 +27,7 @@
     "@nestjs/core": "^7.4.4",
     "@nestjs/platform-fastify": "^7.4.4",
     "@nestjs/swagger": "^4.6.1",
-    "@octokit/auth-app": "^2.10.0",
+    "@octokit/auth-app": "^2.10.1",
     "@octokit/auth-oauth-app": "^3.0.5",
     "@octokit/rest": "^18.0.7",
     "axios": "^0.21.0",

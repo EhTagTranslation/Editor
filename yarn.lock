@@ -1605,10 +1605,10 @@
     consola "^2.3.0"
     node-fetch "^2.3.0"
 
-"@octokit/auth-app@^2.10.0":
-  version "2.10.0"
-  resolved "https://registry.npm.taobao.org/@octokit/auth-app/download/@octokit/auth-app-2.10.0.tgz#ad79369fca1cc3035859f797310d5e81cc6e49c4"
-  integrity sha1-rXk2n8ocwwNYWfeXMQ1egcxuScQ=
+"@octokit/auth-app@^2.10.1":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-app/-/auth-app-2.10.1.tgz#187fe2432e6089f919fff8f5574dd2154c673962"
+  integrity sha512-WQAbhPtr+cuMcMCt0cu9NgY0XjEEEqeR3/A5hJK3KNdYglxRRf3+uKwNxcK9B3SgpS8Igi6UvatTmGow88w+cA==
   dependencies:
     "@octokit/request" "^5.3.0"
     "@octokit/request-error" "^2.0.0"
@@ -1721,14 +1721,7 @@
     "@octokit/plugin-request-log" "^1.0.0"
     "@octokit/plugin-rest-endpoint-methods" "4.2.0"
 
-"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.2.0":
-  version "5.2.1"
-  resolved "https://registry.npm.taobao.org/@octokit/types/download/@octokit/types-5.2.1.tgz#c212f03b0492faf215fa2ae506d5ec18038c2a36"
-  integrity sha1-whLwOwSS+vIV+irlBtXsGAOMKjY=
-  dependencies:
-    "@types/node" ">= 8"
-
-"@octokit/types@^5.5.0":
+"@octokit/types@^5.0.0", "@octokit/types@^5.0.1", "@octokit/types@^5.2.0", "@octokit/types@^5.5.0":
   version "5.5.0"
   resolved "https://registry.npm.taobao.org/@octokit/types/download/@octokit/types-5.5.0.tgz#e5f06e8db21246ca102aa28444cdb13ae17a139b"
   integrity sha1-5fBujbISRsoQKqKERM2xOuF6E5s=
@@ -3014,7 +3007,7 @@ browserify-des@^1.0.0:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-browserify-rsa@^4.0.0, browserify-rsa@^4.0.1:
+browserify-rsa@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/browserify-rsa/download/browserify-rsa-4.0.1.tgz#21e0abfaf6f2029cf2fafb133567a701d4135524"
   integrity sha1-IeCr+vbyApzy+vsTNWenAdQTVSQ=
@@ -8432,7 +8425,7 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-asn1@^5.0.0, parse-asn1@^5.1.5:
+parse-asn1@^5.1.5:
   version "5.1.5"
   resolved "https://registry.npm.taobao.org/parse-asn1/download/parse-asn1-5.1.5.tgz#003271343da58dc94cace494faef3d2147ecea0e"
   integrity sha1-ADJxND2ljclMrOSU+u89IUfs6g4=
