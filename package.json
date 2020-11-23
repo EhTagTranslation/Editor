@@ -23,7 +23,7 @@
     "@actions/core": "^1.2.6",
     "@actions/exec": "^1.0.4",
     "@nestjs/common": "^7.5.4",
-    "@nestjs/config": "^0.6.0",
+    "@nestjs/config": "^0.6.1",
     "@nestjs/core": "^7.5.4",
     "@nestjs/platform-fastify": "^7.5.4",
     "@nestjs/swagger": "^4.7.5",
