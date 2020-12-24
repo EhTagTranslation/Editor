@@ -23,7 +23,7 @@ async function save(data: RepoData<unknown>, type: TagType): Promise<void> {
     await logFile(`db.${type}.json.gz`);
 
     const jsonp = fs.createWriteStream(`db.${type}.js`);
-    const write = promisify<unknown, void>(jsonp.write.bind(jsonp));
+    const write = promisify(jsonp.write.bind(jsonp));
     await write(`(function(){var d={c:'load_ehtagtranslation_db_${type}',d:'`);
     await write(Buffer.from(gz).toString('base64'));
     await write(`'};`);
