@@ -12,7 +12,7 @@
 // that you are using.
 @include angular-material-theme($app-theme);
 
-@import '~material-design-icons/iconfont/material-icons.css';
+@import url(https://unpkg.com/material-design-icons/iconfont/material-icons.css);
 
 @import 'iconfont.css';
 

@@ -17,5 +17,17 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["devkit", "execa", "fastify", "keyval", "lazysizes", "linkify", "nestjs", "octokit", "pako", "tslib"]
+  "cSpell.words": [
+    "devkit",
+    "execa",
+    "fastify",
+    "keyval",
+    "lazysizes",
+    "linkify",
+    "nestjs",
+    "octokit",
+    "pako",
+    "tslib"
+  ],
+  "vsicons.presets.angular": true
 }

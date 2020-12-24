@@ -23,11 +23,11 @@ export interface File {
     sha: Sha1Value;
 }
 
-function makeSignature({ name, email, date }: Author & { date: string }): Signature {
+function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string }): Signature {
     return {
-        name,
-        email,
-        when: new Date(date),
+        name: name ?? '',
+        email: email ?? '',
+        when: date ? new Date(date) : new Date(0),
     };
 }
 type ApiData<T1 extends keyof Octokit, T2 extends keyof Octokit[T1]> = Octokit[T1][T2] extends () => Promise<{
@@ -51,7 +51,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         this.getAppToken().catch((err: unknown) => this.logger.error(err));
         this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => Object.freeze(appInfoRes.data));
         this._botUserInfo = this._appInfo
-            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug}[bot]` }))
+            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }))
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
     }
 
@@ -148,7 +148,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             path,
         });
         const data = res.data;
-        if (Array.isArray(data) || data.type !== 'file') throw new Error(`${path} is not a file.`);
+        if (Array.isArray(data) || data.type !== 'file' || !('encoding' in data)) {
+            throw new Error(`${path} is not a file.`);
+        }
         if (data.encoding !== 'base64') throw new Error(`Unsupported encoding ${data.encoding}.`);
         return {
             path: data.path,
@@ -199,8 +201,8 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         return {
             sha: commit.sha as Sha1Value,
             message: commit.commit.message,
-            author: makeSignature(commit.commit.author),
-            committer: makeSignature(commit.commit.committer),
+            author: makeSignature({ ...commit.commit.author }),
+            committer: makeSignature({ ...commit.commit.committer }),
         };
     }
 

@@ -27,6 +27,7 @@ export class GitRepoInfoProvider implements RepoInfoProvider {
                 },
             })
         ).latest;
+        if (!commit) throw new Error('Invalid git log');
         return {
             sha: commit.sha as Sha1Value,
             message: commit.message,
