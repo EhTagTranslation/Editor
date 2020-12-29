@@ -122,17 +122,6 @@
     "@angular-devkit/core" "11.0.5"
     rxjs "6.6.3"
 
-"@angular-devkit/core@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/core/download/@angular-devkit/core-11.0.1.tgz#7125b07ac7d66a8fdaaf612a3b757817d23b8107"
-  integrity sha1-cSWwesfWao/ar2EqO3V4F9I7gQc=
-  dependencies:
-    ajv "6.12.6"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.3"
-    source-map "0.7.3"
-
 "@angular-devkit/core@11.0.3":
   version "11.0.3"
   resolved "https://registry.npm.taobao.org/@angular-devkit/core/download/@angular-devkit/core-11.0.3.tgz#2acc7c90f1597b87455e0a5f93ebb1cd01b873aa"
@@ -167,15 +156,6 @@
     inquirer "7.3.3"
     minimist "1.2.5"
     symbol-observable "2.0.3"
-
-"@angular-devkit/schematics@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.npm.taobao.org/@angular-devkit/schematics/download/@angular-devkit/schematics-11.0.1.tgz#d0826cde52a2c015b24a7c6f3b4df31665eb67ed"
-  integrity sha1-0IJs3lKiwBWySnxvO03zFmXrZ+0=
-  dependencies:
-    "@angular-devkit/core" "11.0.1"
-    ora "5.1.0"
-    rxjs "6.6.3"
 
 "@angular-devkit/schematics@11.0.3":
   version "11.0.3"
@@ -1532,13 +1512,13 @@
     path-to-regexp "3.2.0"
     tslib "2.0.3"
 
-"@nestjs/schematics@^7.1.0", "@nestjs/schematics@~7.2.2":
-  version "7.2.5"
-  resolved "https://registry.npm.taobao.org/@nestjs/schematics/download/@nestjs/schematics-7.2.5.tgz#60945ee12136dde78cf01c706413e7676e4bf494"
-  integrity sha1-YJRe4SE23eeM8BxwZBPnZ25L9JQ=
+"@nestjs/schematics@^7.1.0", "@nestjs/schematics@~7.2.6":
+  version "7.2.6"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-7.2.6.tgz#cc2c029927550f9b551947053849ebff66c99803"
+  integrity sha512-4geGO9pjYG4Sc4Qi+pkUVIbaxPEeySHi/z17po8nP9uaPPo8AUKP9rXjNL+mhMrXqFlB/hhN6xBBYtMyL5pB2Q==
   dependencies:
-    "@angular-devkit/core" "11.0.1"
-    "@angular-devkit/schematics" "11.0.1"
+    "@angular-devkit/core" "11.0.5"
+    "@angular-devkit/schematics" "11.0.5"
     fs-extra "9.0.1"
     pluralize "8.0.0"
 
