@@ -40,7 +40,7 @@
     "fastify-swagger": "~3.5.0",
     "fs-extra": "~9.0.1",
     "idb-keyval": "~3.2.0",
-    "js-yaml": "~3.14.0",
+    "js-yaml": "~4.0.0",
     "lazysizes": "~5.3.0",
     "linkify-it": "~3.0.2",
     "markdown-it": "~12.0.2",
