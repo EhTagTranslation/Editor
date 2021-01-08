@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import readline from 'readline';
 import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
-import { safeLoad, safeDump } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import { TagRecord } from './tag-record';
 import { Database } from './database';
 import { RawTag } from './validate';
@@ -125,7 +125,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         this.suffix = suffix.trim();
         let fmObj: Partial<FrontMatters> | undefined;
         if (frontMatters) {
-            fmObj = safeLoad(frontMatters) as typeof fmObj;
+            fmObj = load(frontMatters) as typeof fmObj;
         }
         this.frontMatters = {
             name: '',
@@ -154,7 +154,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         write('---\n');
         lineno++;
         this.frontMatters.key = this.name;
-        const fm = safeDump(this.frontMatters);
+        const fm = dump(this.frontMatters);
         write(fm);
         lineno += this.countLines(fm);
         write('---\n\n');

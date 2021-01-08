@@ -1,4 +1,4 @@
-import { TreeAdapter, Attribute, serialize, SerializerOptions } from 'parse5';
+import { Attribute, serialize, SerializerOptions, TypedTreeAdapter } from 'parse5';
 import {
     BreakNode,
     ContainerNode,
@@ -77,6 +77,19 @@ interface NodeMapEx extends NodeMap {
     [COMMENT_NODE]: __CommentNode;
     [FRAGMENT_NODE]: DocumentFragment;
     [TEMPLATE_NODE]: __Template;
+}
+
+interface TreeAdapterTypeMap {
+    attribute: Attribute;
+    childNode: Node;
+    commentNode: __CommentNode;
+    document: __Document;
+    documentFragment: DocumentFragment;
+    documentType: import('parse5').DocumentType;
+    element: Node;
+    node: Node;
+    parentNode: Node;
+    textNode: TextNode;
 }
 
 const ELEMENT_MAP: Record<string, (attrs: Attribute[]) => Node> = {
@@ -179,7 +192,7 @@ const TAG_NAME_MAP: {
     text: undefined,
 };
 
-class SerializeTreeAdapter implements TreeAdapter {
+class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
     constructor(
         private readonly _ELEMENT_MAP: typeof ELEMENT_MAP,
         private readonly _ATTR_MAP: typeof ATTR_MAP,
@@ -267,8 +280,8 @@ class SerializeTreeAdapter implements TreeAdapter {
     getTextNodeContent(textNode: TextNode): string {
         return textNode.text;
     }
-    getTemplateContent(templateElement: __Template): DocumentFragment {
-        return templateElement.template;
+    getTemplateContent(templateElement: Node): DocumentFragment {
+        return ((templateElement as unknown) as __Template).template;
     }
     insertBefore(parentNode: ContainerNode, newNode: InlineNode, referenceNode: InlineNode): void {
         const i = parentNode.content.indexOf(referenceNode);
@@ -285,39 +298,41 @@ class SerializeTreeAdapter implements TreeAdapter {
     insertTextBefore(parentNode: ContainerNode, text: string, referenceNode: InlineNode): void {
         this.insertBefore(parentNode, { type: 'text', text } as TextNode, referenceNode);
     }
-    isCommentNode(node: Node): boolean {
-        return (node.type as string) === COMMENT_NODE;
+    isCommentNode(node: Node | __CommentNode): node is __CommentNode {
+        return node.type === COMMENT_NODE;
     }
-    isDocumentTypeNode(_node: Node): boolean {
+    isDocumentTypeNode(_node: Node | import('parse5').DocumentType): _node is import('parse5').DocumentType {
         return false;
     }
-    isElementNode(node: Node): boolean {
+    isElementNode(node: Node): node is Node {
         if (node.type === 'text') return false;
         if (NodeType.includes(node.type)) return true;
         const t = node.type as string;
         if (t === DOCUMENT_NODE || t === FRAGMENT_NODE || t === TEMPLATE_NODE) return true;
         return false;
     }
-    isTextNode(node: Node): boolean {
+    isTextNode(node: Node): node is TextNode {
         return node.type === 'text';
     }
-    setDocumentMode(_document: import('parse5').Document, _mode: import('parse5').DocumentMode): void {
+    setDocumentMode(_document: __Document, _mode: import('parse5').DocumentMode): void {
         throw new Error('Method not implemented.');
     }
-    setDocumentType(_document: import('parse5').Document, _name: string, _publicId: string, _systemId: string): void {
+    setDocumentType(_document: __Document, _name: string, _publicId: string, _systemId: string): void {
         throw new Error('Method not implemented.');
     }
     setNodeSourceCodeLocation(
-        _node: import('parse5').Node,
+        _node: Node,
         _location: import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation,
     ): void {
         throw new Error('Method not implemented.');
     }
-    setTemplateContent(templateElement: __Template, contentElement: DocumentFragment): void {
-        templateElement.template = contentElement;
+    setTemplateContent(templateElement: __Template | Node, contentElement: DocumentFragment): void {
+        (templateElement as __Template).template = contentElement;
     }
 }
-const options: SerializerOptions = { treeAdapter: new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP) };
+const options: SerializerOptions<SerializeTreeAdapter> = {
+    treeAdapter: new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP),
+};
 export function renderHtml(node: Node | Tree): string {
     const frag: DocumentFragment = {
         type: '#root',
