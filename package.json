@@ -45,7 +45,7 @@
     "linkify-it": "~3.0.2",
     "markdown-it": "~12.0.2",
     "node-cache": "~5.1.2",
-    "pako": "~2.0.2",
+    "pako": "~2.0.3",
     "parse5": "~6.0.0",
     "reflect-metadata": "~0.1.13",
     "rxjs": "~6.6.3",
