@@ -2067,11 +2067,6 @@
   dependencies:
     source-map "^0.6.1"
 
-"@types/validator@13.0.0":
-  version "13.0.0"
-  resolved "https://registry.npm.taobao.org/@types/validator/download/@types/validator-13.0.0.tgz?cache=0&sync_timestamp=1608907739911&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fvalidator%2Fdownload%2F%40types%2Fvalidator-13.0.0.tgz#365f1bf936aeaddd0856fc41aa1d6f82d88ee5b3"
-  integrity sha1-Nl8b+Taurd0IVvxBqh1vgtiO5bM=
-
 "@types/webpack-sources@*":
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/@types/webpack-sources/download/@types/webpack-sources-2.1.0.tgz#8882b0bd62d1e0ce62f183d0d01b72e6e82e8c10"
@@ -3390,15 +3385,13 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-class-validator@~0.12.2:
-  version "0.12.2"
-  resolved "https://registry.npm.taobao.org/class-validator/download/class-validator-0.12.2.tgz#2ceb72f88873e9c714cf5f9c278cbc71f6f6c8ef"
-  integrity sha1-LOty+Ihz6ccUz1+cJ4y8cfb2yO8=
+class-validator@~0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.13.0.tgz#87770a90e4f9ac1a928631ae58dc6920299052ff"
+  integrity sha512-PNu14GiCXGqVKrCa7VJbDkA3wgB7ORdVwiK+DexcV0Dbk3UKLeHuD2Pn/BbhiFCcIf7GqChapnpZKaGFfdfVCQ==
   dependencies:
-    "@types/validator" "13.0.0"
-    google-libphonenumber "^3.2.8"
-    tslib ">=1.9.0"
-    validator "13.0.0"
+    libphonenumber-js "^1.7.57"
+    validator "^13.1.1"
 
 clean-stack@^2.0.0:
   version "2.2.0"
@@ -5545,11 +5538,6 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-google-libphonenumber@^3.2.8:
-  version "3.2.15"
-  resolved "https://registry.npm.taobao.org/google-libphonenumber/download/google-libphonenumber-3.2.15.tgz#3a01dc554dbf83c754f249c16df3605e5d154bb9"
-  integrity sha1-OgHcVU2/g8dU8knBbfNgXl0VS7k=
-
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4:
   version "4.2.4"
   resolved "https://registry.npm.taobao.org/graceful-fs/download/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
@@ -7114,6 +7102,11 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
+
+libphonenumber-js@^1.7.57:
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.9.7.tgz#51c0a2b600f8d40ff7a65947fe2c1ff7f85268c1"
+  integrity sha512-mDY7fCe6dXd1ZUvYr3Q0ZaoqZ1DVXDSjcqa3AMGyudEd0Tyf8PoHkQ+9NucIBy9C/wFITPwL3Ef9SA148q20Cw==
 
 license-webpack-plugin@2.3.1:
   version "2.3.1"
@@ -10850,15 +10843,15 @@ tslib@2.0.3:
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
   integrity sha1-jgdBrEX8DCJuWKF7/D5kubxsphw=
 
-tslib@>=1.9.0, tslib@^2.0.0, tslib@~2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
-  integrity sha1-2mCGDxwuyqVwOrfTm8Bba/mIuXo=
-
 tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npm.taobao.org/tslib/download/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha1-zy04vcNKE0vK8QkcQfZhni9nLQA=
+
+tslib@^2.0.0, tslib@~2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/tslib/download/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
+  integrity sha1-2mCGDxwuyqVwOrfTm8Bba/mIuXo=
 
 tsutils@^3.17.1:
   version "3.19.0"
@@ -11191,10 +11184,10 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-validator@13.0.0:
-  version "13.0.0"
-  resolved "https://registry.npm.taobao.org/validator/download/validator-13.0.0.tgz#0fb6c6bb5218ea23d368a8347e6d0f5a70e3bcab"
-  integrity sha1-D7bGu1IY6iPTaKg0fm0PWnDjvKs=
+validator@^13.1.1:
+  version "13.5.2"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.5.2.tgz#c97ae63ed4224999fb6f42c91eaca9567fe69a46"
+  integrity sha512-mD45p0rvHVBlY2Zuy3F3ESIe1h5X58GPfAtslBjY7EtTqGquZTj+VX/J4RnHWN8FKq0C9WRVt1oWAcytWRuYLQ==
 
 vary@^1.1.2, vary@~1.1.2:
   version "1.1.2"
