@@ -5852,10 +5852,10 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
   dependencies:
     postcss "^7.0.14"
 
-idb-keyval@~3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npm.taobao.org/idb-keyval/download/idb-keyval-3.2.0.tgz#cbbf354deb5684b6cdc84376294fc05932845bd6"
-  integrity sha1-y781TetWhLbNyEN2KU/AWTKEW9Y=
+idb-keyval@~5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-5.0.2.tgz#243cf2b7db1bee2a8a41b78c14a18a85db0e1646"
+  integrity sha512-1DYjY/nX2U9pkTkwFoAmKcK1ZWmkNgO32Oon9tp/9+HURizxUQ4fZRxMJZs093SldP7q6dotVj03kIkiqOILyA==
 
 ieee754@^1.1.4:
   version "1.2.1"
