@@ -2,8 +2,9 @@ import path from 'path';
 import Git from 'simple-git';
 import { Octokit } from '@octokit/rest';
 import { action } from '../../utils';
-import { command, Command } from './command';
+import { command } from './command';
 import { lsRemoteTags } from './utils';
+import { OptionValues } from 'commander';
 
 class Main {
     constructor(readonly KEEP_RELEASE = 3, readonly REPO_PATH = '.') {
@@ -44,9 +45,8 @@ command
     .option('--no-releases', '保留 GitHub Releases')
     .option('--no-tags', '保留 git 标签')
     .option('--keep <n>', '保留最新的 n 个发布')
-    .action(async (repo: string | undefined, command: Command) => {
-        const opt = command.opts();
-        const main = new Main(opt.keep ? Number.parseInt(opt.keep) : undefined, repo);
-        if (opt.releases) await main.deleteRelease();
-        if (opt.tags) await main.deleteTag();
+    .action(async (repo: string | undefined, options: OptionValues) => {
+        const main = new Main(options.keep ? Number.parseInt(options.keep) : undefined, repo);
+        if (options.releases) await main.deleteRelease();
+        if (options.tags) await main.deleteTag();
     });

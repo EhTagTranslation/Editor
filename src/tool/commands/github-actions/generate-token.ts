@@ -1,7 +1,8 @@
 import { Octokit } from '@octokit/rest';
 import { createAppAuth } from '@octokit/auth-app';
 import { ensureEnv, action } from '../../utils';
-import { command, Command } from './command';
+import { command } from './command';
+import { OptionValues } from 'commander';
 
 async function main(envName?: string): Promise<void> {
     const APP_ID = ensureEnv('APP_ID', Number.parseInt);
@@ -32,7 +33,7 @@ command
     .command('generate-token')
     .description('生成 GitHub token')
     .option('--env <NAME>', '生成的 token 导出到的环境变量名称')
-    .action(async (command: Command) => {
+    .action(async (options: OptionValues) => {
         action.ensureAction();
-        await main(command.opts().env);
+        await main(options.env);
     });

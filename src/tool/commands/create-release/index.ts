@@ -1,4 +1,4 @@
-import { program, Command } from 'commander';
+import { program, OptionValues } from 'commander';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
@@ -23,7 +23,11 @@ async function save(data: RepoData<unknown>, type: TagType): Promise<void> {
     await logFile(`db.${type}.json.gz`);
 
     const jsonp = fs.createWriteStream(`db.${type}.js`);
-    const write = promisify(jsonp.write.bind(jsonp));
+    const write = (data: string): Promise<void> => {
+        return new Promise<void>((resolve, reject) => {
+            jsonp.write(data, (error) => (error ? reject(error) : resolve()));
+        });
+    };
     await write(`(function(){var d={c:'load_ehtagtranslation_db_${type}',d:'`);
     await write(Buffer.from(gz).toString('base64'));
     await write(`'};`);
@@ -99,10 +103,10 @@ program
     })
     .option('--strict', '启用严格检查')
     .option('--no-rewrite', '不重新序列化数据库内容')
-    .action(async (source: string | undefined, destination: string | undefined, command: Command) => {
+    .action(async (source: string | undefined, destination: string | undefined, options: OptionValues) => {
         source = path.resolve(source ?? '.');
         destination = path.resolve(destination ?? path.join(source, 'publish'));
-        const { strict, rewrite } = command.opts();
+        const { strict, rewrite } = options;
         const db = await Database.create(
             source,
             undefined,
