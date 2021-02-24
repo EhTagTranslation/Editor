@@ -1456,10 +1456,10 @@
     lodash.set "4.3.2"
     uuid "8.3.2"
 
-"@nestjs/core@~7.6.7":
-  version "7.6.7"
-  resolved "https://registry.npm.taobao.org/@nestjs/core/download/@nestjs/core-7.6.7.tgz#972e94dae31ebc726df3fad4c181ad6b578ebdb5"
-  integrity sha1-ly6U2uMevHJt8/rUwYGta1eOvbU=
+"@nestjs/core@~7.6.13":
+  version "7.6.13"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-7.6.13.tgz#b7518dceb436e6ed2c1fad2cff86ddf69b143e73"
+  integrity sha512-8oY8yZSgri2DngqmvBMtwYw1GIAaXbUXS7Y0mp/iSZ6jP7CQqYCybdcMPneunrt5PG8rtJsq6n+4JNRvxXrVmA==
   dependencies:
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.0.7"
