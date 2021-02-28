@@ -79,7 +79,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     readonly forApp = this.createOctokit({
         authStrategy: createAppAuth,
         auth: {
-            id: this.APP_ID,
+            appId: this.APP_ID,
             privateKey: this.APP_KEY,
             clientId: this.APP_CLIENT_ID,
             clientSecret: this.APP_CLIENT_SECRET,
