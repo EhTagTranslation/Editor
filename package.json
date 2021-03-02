@@ -39,7 +39,7 @@
     "escape-string-regexp": "~4.0.0",
     "fastify-swagger": "~4.3.1",
     "fs-extra": "~9.1.0",
-    "idb-keyval": "~5.0.2",
+    "idb-keyval": "~5.0.4",
     "js-yaml": "~4.0.0",
     "lazysizes": "~5.3.0",
     "linkify-it": "~3.0.2",
