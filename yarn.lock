@@ -3894,7 +3894,7 @@ constants-browserify@^1.0.0:
   resolved "https://registry.npm.taobao.org/constants-browserify/download/constants-browserify-1.0.0.tgz#c20b96d8c617748aaf1c16021760cd27fcb8cb75"
   integrity sha1-wguW2MYXdIqvHBYCF2DNJ/y4y3U=
 
-content-disposition@0.5.3:
+content-disposition@0.5.3, content-disposition@^0.5.3:
   version "0.5.3"
   resolved "https://registry.npm.taobao.org/content-disposition/download/content-disposition-0.5.3.tgz#e130caf7e7279087c5616c2007d0485698984fbd"
   integrity sha1-4TDK9+cnkIfFYWwgB9BIVpiYT70=
@@ -5317,23 +5317,24 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.npm.taobao.org/fastify-plugin/download/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha1-zxuMgJjjtafIww5q6waQM3DAVMo=
 
-fastify-static@^3.3.0:
-  version "3.4.0"
-  resolved "https://registry.npm.taobao.org/fastify-static/download/fastify-static-3.4.0.tgz#812f7af416ef2e998c7d6c19ae3dd7afc8d7ca58"
-  integrity sha1-gS969BbvLpmMfWwZrj3Xr8jXylg=
+fastify-static@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/fastify-static/-/fastify-static-4.0.1.tgz#28947728b2b4c9360eeea8a92ae7b36a0e38b273"
+  integrity sha512-Mjt0My8Gf/nzJqIDai9rz3HsxH4RAJeMGMIPmf40lGMFKAv4SbRiKJ2cmteXoKHrFGPeGxwMq0gXfixwueV8wA==
   dependencies:
+    content-disposition "^0.5.3"
     fastify-plugin "^3.0.0"
     glob "^7.1.4"
     readable-stream "^3.4.0"
     send "^0.17.1"
 
-fastify-swagger@~4.3.1:
-  version "4.3.1"
-  resolved "https://registry.npm.taobao.org/fastify-swagger/download/fastify-swagger-4.3.1.tgz#e0ff12a61c7c867544608bb40bb4e989fd418113"
-  integrity sha1-4P8Sphx8hnVEYIu0C7Tpif1BgRM=
+fastify-swagger@~4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-4.4.0.tgz#805067d045920633c2dafb2bc5fb0655b58778b7"
+  integrity sha512-SWcE/6Mc0KUDy7FBl8DJXvsAGo6NZlQNEMxWguWXa9R2lSBzP+gNRxd9SkMitL0oGOcfgafsPZPd0+Ke8kYQoQ==
   dependencies:
     fastify-plugin "^3.0.0"
-    fastify-static "^3.3.0"
+    fastify-static "^4.0.0"
     js-yaml "^4.0.0"
     json-schema-resolver "^1.2.0"
     openapi-types "^7.2.3"
