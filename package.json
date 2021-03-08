@@ -29,7 +29,7 @@
     "@nestjs/swagger": "~4.7.15",
     "@octokit/auth-app": "~3.0.0",
     "@octokit/auth-oauth-app": "~3.0.8",
-    "@octokit/rest": "~18.3.1",
+    "@octokit/rest": "~18.3.4",
     "axios": "~0.21.0",
     "bluebird": "~3.7.2",
     "class-transformer": "~0.4.0",
