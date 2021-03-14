@@ -30,7 +30,7 @@ function store(tag: Tag): void {
 
 function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     if (Array.isArray(response.tags)) return [];
-    const tags = new Array<Tag>();
+    const tags: Tag[] = [];
     for (const key in response.tags) {
         const tag = response.tags[key];
         tag.id = Number.parseInt(key);
@@ -57,7 +57,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
 export async function suggestTag(ns: NamespaceName | undefined, raw: string): Promise<Tag[]> {
     try {
         raw = raw.trim().toLowerCase();
-        const text = `${ns != null ? ns[0] + ':' : ''}${raw.slice(0, 50)}`;
+        const text = `${ns != null ? ns + ':' : ''}${raw.slice(0, 50)}`;
         const cache = suggestCache.get(text);
         if (cache) return cache;
         const response = await postApi<TagSuggestRequest>({

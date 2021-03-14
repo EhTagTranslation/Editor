@@ -3,11 +3,13 @@ import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
 import { promisify } from 'util';
-import { TagType, RepoData } from '../../../shared/interfaces/ehtag';
+import { TagType, RepoData, NamespaceName } from '../../../shared/interfaces/ehtag';
 import { Database } from '../../../shared/database';
 import pako from './pako';
 import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
+import { normalizeTag } from '../../../shared/ehentai';
+import { RawTag } from '../../../shared/validate';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -59,6 +61,28 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     process.chdir(old);
 }
 
+async function runSourceCheck(db: Database): Promise<void> {
+    console.log('Checking tags from source...\n');
+    for (const k in db.data) {
+        const ns = k as NamespaceName;
+        if (ns === 'rows') continue;
+        const nsDb = db.data[ns];
+        const tags = nsDb.render('raw').data;
+        for (const t in tags) {
+            const tag = t as RawTag;
+            const record = nsDb.get(tag);
+            if (!record) throw new Error();
+            const normTag = await normalizeTag(ns, tag);
+            if (normTag == null) {
+                db.logger.warn(new Context(record, tag), 'Tag not found');
+            } else if (normTag[1] !== tag) {
+                db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
+            }
+        }
+    }
+    console.log(' ');
+}
+
 class ActionLogger extends Logger {
     readonly map: Record<keyof Logger, 'info' | 'warning' | 'error'> = {
         info: 'info',
@@ -102,16 +126,20 @@ program
         destination: '生成发布文件的路径',
     })
     .option('--strict', '启用严格检查')
+    .option('--source-check', '检查 TAG 数据库，提示不存在的和重命名的标签')
     .option('--no-rewrite', '不重新序列化数据库内容')
     .action(async (source: string | undefined, destination: string | undefined, options: OptionValues) => {
         source = path.resolve(source ?? '.');
         destination = path.resolve(destination ?? path.join(source, 'publish'));
-        const { strict, rewrite } = options;
+        const { strict, rewrite, sourceCheck } = options;
         const db = await Database.create(
             source,
             undefined,
             action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : undefined,
         );
+        if (sourceCheck) {
+            await runSourceCheck(db);
+        }
         await createRelease(db, destination);
         if (rewrite) {
             await db.save();

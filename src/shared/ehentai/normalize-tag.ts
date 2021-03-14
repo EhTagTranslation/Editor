@@ -1,7 +1,10 @@
-import { RawTag } from '../validate';
-import { NamespaceName } from '../interfaces/ehtag';
+import type { RawTag } from '../validate';
+import type { NamespaceName } from '../interfaces/ehtag';
 import { tagCache, Tag, suggestTag } from './suggest-tag';
 
+/**
+ * 从 E 站标签数据库查找该标签是否存在，并找到对应主标签
+ */
 export async function normalizeTag(
     ns: NamespaceName | undefined,
     raw: RawTag,
@@ -27,9 +30,9 @@ export async function normalizeTag(
         }
     }
     if (match == null) {
-        const ns = tagCache.get(raw);
-        if (ns && ns.size === 1) {
-            [match] = ns.values();
+        const nsMap = tagCache.get(raw);
+        if (nsMap && nsMap.size === 1) {
+            [match] = nsMap.values();
         }
     }
     if (match == null) return undefined;

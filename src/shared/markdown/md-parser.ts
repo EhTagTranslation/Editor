@@ -74,6 +74,7 @@ function normalizeUrl(
 
 const knownHosts = new Map<string, string>([
     ['moegirl.org', '萌娘百科'],
+    ['moegirl.org.cn', '萌娘百科'],
     ['wikipedia.org', '维基百科'],
     ['pixiv.net', 'pixiv'],
     ['instagram.com', 'Instagram'],

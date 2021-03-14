@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { NamespaceName } from '../interfaces/ehtag';
 import { RawTag } from '../validate';
 
@@ -48,22 +48,36 @@ const config =
               },
           };
 
-export async function postApi<T extends ApiRequest<string, unknown>>(payload: T): Promise<ResponseOf<T>> {
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestConfig, retry: number): Promise<R> {
     try {
-        const response = await axios.request<ResponseOf<T>>({
-            ...config,
-            method: 'POST',
-            data: payload,
-        });
-        const data = response.data;
-        if ('error' in data) {
-            let err = (data as { error: string }).error;
-            if (typeof err != 'string') err = JSON.stringify(err);
-            throw new Error(err);
-        }
-        return data;
+        return axios.request<T, R>(config);
     } catch (err) {
-        console.error(err);
+        if (retry <= 0) {
+            throw err;
+        }
+        const axiosError = err as AxiosError;
+        if (axiosError.isAxiosError && (axiosError.response == null || axiosError.response.status >= 500)) {
+            await delay(1000);
+            return request<T, R>(config, retry - 1);
+        }
         throw err;
     }
+}
+
+export async function postApi<T extends ApiRequest<string, unknown>>(payload: T): Promise<ResponseOf<T>> {
+    const req: AxiosRequestConfig = {
+        ...config,
+        method: 'POST',
+        data: payload,
+    };
+    const response = await request<ResponseOf<T>>(req, 3);
+    const data = response.data;
+    if ('error' in data) {
+        let err = (data as { error: string }).error;
+        if (typeof err != 'string') err = JSON.stringify(err);
+        throw new Error(err);
+    }
+    return data;
 }
