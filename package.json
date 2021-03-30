@@ -82,7 +82,7 @@
     "@types/parse5": "~6.0.0",
     "@types/source-map-support": "~0.5.3",
     "@types/supertest": "~2.0.10",
-    "@typescript-eslint/eslint-plugin": "~4.17.0",
+    "@typescript-eslint/eslint-plugin": "~4.20.0",
     "@typescript-eslint/parser": "~4.17.0",
     "eslint": "~7.22.0",
     "eslint-config-prettier": "~8.1.0",
