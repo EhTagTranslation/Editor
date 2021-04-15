@@ -5323,16 +5323,16 @@ fastify-static@^4.0.0:
     readable-stream "^3.4.0"
     send "^0.17.1"
 
-fastify-swagger@~4.4.1:
-  version "4.4.1"
-  resolved "https://registry.npm.taobao.org/fastify-swagger/download/fastify-swagger-4.4.1.tgz#17decf0852cf024b313448fcd1b754a890f86e7e"
-  integrity sha1-F97PCFLPAksxNEj80bdUqJD4bn4=
+fastify-swagger@~4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-4.6.0.tgz#fe7e143815675f0b05e40acb05e22194e645605a"
+  integrity sha512-a5l72jzWH77eTPmkxjJMX6GtmVIv0H3chcqIHxRJ7HaxAf7zQRHBlG9kMPYGpeLX08o9kmVKBLTXCl4pcqPMZw==
   dependencies:
     fastify-plugin "^3.0.0"
     fastify-static "^4.0.0"
     js-yaml "^4.0.0"
     json-schema-resolver "^1.2.0"
-    openapi-types "^7.2.3"
+    openapi-types "^8.0.0"
 
 fastify-warning@^0.2.0:
   version "0.2.0"
@@ -8491,10 +8491,10 @@ open@7.4.0:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openapi-types@^7.2.3:
-  version "7.2.3"
-  resolved "https://registry.npm.taobao.org/openapi-types/download/openapi-types-7.2.3.tgz#83829911a3410a022f0e0cf2b0b2e67232ccf96e"
-  integrity sha1-g4KZEaNBCgIvDgzysLLmcjLM+W4=
+openapi-types@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-8.0.0.tgz#7e1979538798d31a3c3bfed667e5e9295402f9bc"
+  integrity sha512-dcHYyCDOAy4QQTrur5Sn1L3lPVspB7rd04Rw/Q7AsMvfV797IiWgmKziFCbq8VhnBoREU/SPPSBDxtK9Biwa1g==
 
 opener@^1.5.2:
   version "1.5.2"
