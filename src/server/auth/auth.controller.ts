@@ -23,7 +23,7 @@ export class AuthController extends InjectableBase {
         }
         try {
             const url = new URL(origin);
-            if (!url.hostname.endsWith('ehtt.now.sh')) throw new BadRequestException();
+            if (!url.hostname.endsWith('ehtt.vercel.app')) throw new BadRequestException();
         } catch {
             throw new BadRequestException();
         }
