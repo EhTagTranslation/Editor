@@ -115,7 +115,13 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
         } else {
             const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
-            updatedFiles = await Promise.all(comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')));
+            if (comparison.files && comparison.files.length > 0) {
+                updatedFiles = await Promise.all(
+                    comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')),
+                );
+            } else {
+                updatedFiles = [];
+            }
             this.logger.verbose(`Update database. Updated files: ${updatedFiles.join(', ')}`);
         }
         this.info = { head: headCommit, blob };
