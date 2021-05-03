@@ -19,7 +19,7 @@ import {
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
 import { EtagInterceptor } from 'server/app/etag.interceptor';
-import { NamespaceInfo, TagType } from 'shared/interfaces/ehtag';
+import { TagType } from 'shared/interfaces/ehtag';
 import {
     ApiTags,
     ApiOperation,
@@ -28,7 +28,7 @@ import {
     ApiConflictResponse,
     ApiExcludeEndpoint,
 } from '@nestjs/swagger';
-import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
+import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } from 'server/dtos/repo-info.dto';
 import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto';
 import { Format } from 'server/decorators/format.decorator';
 import { UserInfo } from 'server/octokit/octokit.service';
@@ -64,7 +64,7 @@ export class DatabaseController extends InjectableBase {
     @Get(':namespace')
     @ApiOperation({ summary: '查询某一分类的信息' })
     @ApiIfNoneMatchHeader()
-    getNs(@Param() p: NsParams): NamespaceInfo {
+    getNs(@Param() p: NsParams): NamespaceInfoDto {
         return this.service.data.data[p.namespace].info();
     }
 
