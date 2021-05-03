@@ -252,7 +252,9 @@
       [matTooltip]="
         !(github.tokenChange | async)
           ? '请先登录'
-          : tagForm.invalid || !(isEditableNs | async)
+          : !(isEditableNs | async)
+          ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改'
+          : tagForm.invalid
           ? '请检查填写的内容'
           : tagForm.pristine
           ? '没有更改'
