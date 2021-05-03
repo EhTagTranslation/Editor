@@ -13,9 +13,8 @@ $label-color: mat-color($app-foreground, secondary-text);
 
   header,
   footer {
-    > * {
-      user-select: none;
-    }
+    display: flex;
+    user-select: none;
   }
 
   header {

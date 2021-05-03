@@ -222,7 +222,7 @@
       <div id="preview-row1">
         <mat-card>
           <mat-card-subtitle>原始标签</mat-card-subtitle>
-          <mat-card-content style="white-space: pre-wrap;" [innerHtml]="(rendered | async)?.raw || ''">
+          <mat-card-content style="white-space: pre-wrap" [innerHtml]="(rendered | async)?.raw || ''">
           </mat-card-content>
         </mat-card>
         <mat-card>
@@ -244,15 +244,11 @@
     </div>
   </section>
   <footer>
-    <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">
-      重置
-    </button>
+    <button mat-raised-button (click)="(narrowPreviewing = false) || reset()">重置</button>
     <button class="narrow" mat-raised-button (click)="narrowPreviewing = !narrowPreviewing">
       {{ narrowPreviewing ? '编辑' : '预览' }}
     </button>
-    <button
-      mat-raised-button
-      [disabled]="tagForm.invalid || !(isEditableNs | async) || tagForm.pristine || !(github.tokenChange | async)"
+    <div
       [matTooltip]="
         !(github.tokenChange | async)
           ? '请先登录'
@@ -262,15 +258,20 @@
           ? '没有更改'
           : ''
       "
-      (click)="submit()"
-      (focus)="preSubmit()"
       (mouseenter)="preSubmit()"
-      color="accent"
     >
-      <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
-      <ng-template #submittingspinner>
-        <mat-spinner class="loading" [diameter]="24"></mat-spinner>
-      </ng-template>
-    </button>
+      <button
+        mat-raised-button
+        [disabled]="tagForm.invalid || !(isEditableNs | async) || tagForm.pristine || !(github.tokenChange | async)"
+        (click)="submit()"
+        (focus)="preSubmit()"
+        color="accent"
+      >
+        <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
+        <ng-template #submittingspinner>
+          <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+        </ng-template>
+      </button>
+    </div>
   </footer>
 </div>
