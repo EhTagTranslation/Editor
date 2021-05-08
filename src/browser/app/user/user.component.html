@@ -1,24 +1,24 @@
 <button class="user-button" mat-button *ngIf="user && !loading" [matMenuTriggerFor]="userMenu">
-    <img [src]="user?.avatar_url" />
-    <span>{{ user?.name }}</span>
+  <img [src]="user?.avatar_url" />
+  <span>{{ user?.name }}</span>
 </button>
 <button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">
-    <span class="iconfont" style="font-size: 1.8em;">&#xe709; </span> 登录
+  <span class="iconfont" style="font-size: 1.8em;">&#xe709; </span> 登录
 </button>
 <button class="user-button" mat-button *ngIf="loading">
-    <mat-spinner id="loading" [diameter]="32"></mat-spinner>
-    正在登录
+  <mat-spinner id="loading" [diameter]="32"></mat-spinner>
+  正在登录
 </button>
 
 <mat-menu #userMenu="matMenu" xPosition="before">
-    <ng-template matMenuContent>
-        <button mat-menu-item (click)="reviewSettings()">
-            <mat-icon>settings</mat-icon>
-            <span>管理链接</span>
-        </button>
-        <button mat-menu-item (click)="logOut()">
-            <mat-icon>power_settings_new</mat-icon>
-            <span>退出登录</span>
-        </button>
-    </ng-template>
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="reviewSettings()">
+      <mat-icon>settings</mat-icon>
+      <span>管理链接</span>
+    </button>
+    <button mat-menu-item (click)="logOut()">
+      <mat-icon>power_settings_new</mat-icon>
+      <span>退出登录</span>
+    </button>
+  </ng-template>
 </mat-menu>

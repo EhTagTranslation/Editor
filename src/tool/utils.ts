@@ -1,4 +1,4 @@
-import { Sha1Value } from 'shared/interfaces/ehtag';
+import { Sha1Value } from '../shared/interfaces/ehtag';
 import * as actionsCore from '@actions/core';
 import * as actionsExec from '@actions/exec';
 

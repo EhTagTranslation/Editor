@@ -78,7 +78,7 @@ export class NamespaceDataDto extends NamespaceInfoDto implements NamespaceData<
                     `![黑猫](https://ehgt.org/1b/04/1b04021da892517c44f0729afb44168bd32c1c90-1985827-2521-3600-jpg_l.jpg)\n` +
                     `网名黑猫。SNS社群“宅女集合”的成员之一，桐乃在线下会认识的宅友。`,
                 links:
-                    `[萌娘百科](https://zh.moegirl.org/zh-hans/五更琉璃) ` +
+                    `[萌娘百科](https://zh.moegirl.org.cn/zh-hans/五更琉璃) ` +
                     `[Fandom](https://oreimo.fandom.com/zh/wiki/五更琉璃)`,
             },
         } as { [raw: string]: Tag<unknown> },

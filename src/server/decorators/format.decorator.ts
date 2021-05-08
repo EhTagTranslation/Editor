@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext, BadRequestException } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, BadRequestException, Header } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
@@ -34,7 +34,7 @@ function getFromHeader(accept: string): TagType {
 export const Format = createParamDecorator<void, ExecutionContext, TagType>(
     (_: void, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest<FastifyRequest>();
-        const format = request.query.format as unknown;
+        const format = (request.query as Record<string, string>).format as unknown;
         if (format && typeof format == 'string') return getFromQuery(format);
         const accept = request.headers.accept as unknown;
         if (accept && typeof accept == 'string') return getFromHeader(accept);
@@ -57,6 +57,7 @@ export const Format = createParamDecorator<void, ExecutionContext, TagType>(
                         'application/html+json',
                         'application/text+json',
                     ),
+                    Header('Vary', 'Origin, Accept, Accept-Encoding'),
                 ],
                 target,
                 key,

@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 
-const removedPackages = ['lazysizes', 'material-design-icons', 'zone.js'];
+const removedPackages = ['lazysizes', 'zone.js'];
 const removedPackageHeaders = ['@angular', 'angular', '@nestjs', 'fastify'];
 
 /** @type {import('type-fest').PackageJson} */

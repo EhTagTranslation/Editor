@@ -80,50 +80,6 @@ export class GithubReleaseService {
     private get(): DatabaseView {
         return this.tagsData.value;
     }
-    private jsonpLoad(release: GithubRelease): Promise<RepoData<'raw'>> {
-        const asset = release.assets.find((i) => i.name === `db.raw.js`);
-        if (!asset) {
-            throw new Error('Github release asset not found!');
-        }
-        const callbackName = 'load_ehtagtranslation_db_raw';
-        if (callbackName in globalThis) {
-            throw new Error(`Callback ${callbackName} has registered.`);
-        }
-        return new Promise<RepoData<'raw'>>((resolve, reject) => {
-            let timeoutGuard: ReturnType<typeof setTimeout> | undefined = undefined;
-
-            const script = document.createElement('script');
-            script.setAttribute('src', asset.browser_download_url);
-
-            const close = (): void => {
-                document.head.removeChild(script);
-                timeoutGuard && clearTimeout(timeoutGuard);
-                timeoutGuard = undefined;
-                Reflect.deleteProperty(globalThis, callbackName);
-            };
-
-            timeoutGuard = setTimeout(() => {
-                reject(new Error(`Get ${asset.name} timeout`));
-                close();
-            }, 60_000);
-
-            if (
-                !Reflect.defineProperty(globalThis, callbackName, {
-                    value: (data: RepoData<'raw'>) => {
-                        resolve(data);
-                        close();
-                    },
-                    writable: false,
-                    configurable: true,
-                })
-            ) {
-                reject(new Error(`Failed to register callback ${callbackName}.`));
-                close();
-                return;
-            }
-            document.head.appendChild(script);
-        });
-    }
 
     private async fillCache(): Promise<void> {
         try {

@@ -2,7 +2,6 @@ import type { TagRecord } from '../tag-record';
 import type { RawTag } from '../validate';
 import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database';
 import type { Database } from '../database';
-import { NamespaceName } from 'shared/interfaces/ehtag';
 
 export abstract class Logger {
     info(context: Context, message: string): void {
@@ -16,9 +15,15 @@ export abstract class Logger {
     }
     protected abstract log(logger: keyof Logger, context: Context, message: string): void;
 
+    static buildMessage(logger: keyof Logger, context: Context, message: string): string {
+        const l = context.line ? `L${context.line}:` : '';
+        const r = context.raw ?? '<unknown raw>';
+        return `${context.namespace.name}:${l}${r}: ${message}`;
+    }
+
     static default: Logger = new (class DefaultLogger extends Logger {
         protected log(logger: keyof Logger, context: Context, message: string): void {
-            console[logger](`${context.namespace.name}:${context.raw ?? '<unknown raw>'}: ${message}`);
+            console[logger](Logger.buildMessage(logger, context, message));
         }
     })();
 }
@@ -37,11 +42,24 @@ export class Context {
             this.tag = tag;
         }
         this.database = this.namespace.database;
-        this.logger = logger ?? (this.database as Database).logger ?? Logger.default;
+        this.logger = logger;
     }
     database: DatabaseView;
     namespace: NamespaceDatabaseView;
     raw?: RawTag;
     tag?: TagRecord;
-    logger: Logger;
+    line?: number;
+    logger?: Logger;
+    private get _logger(): Logger {
+        return this.logger ?? (this.database as Database)?.logger ?? Logger.default;
+    }
+    info(message: string): void {
+        this._logger.info(this, message);
+    }
+    warn(message: string): void {
+        this._logger.warn(this, message);
+    }
+    error(message: string): void {
+        this._logger.error(this, message);
+    }
 }

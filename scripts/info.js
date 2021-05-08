@@ -1,10 +1,7 @@
 const fs = require('fs-extra');
-
-function setenv(k, v) {
-    console.log(`::set-env name=${k}::${v}`);
-}
+const { exportVariable } = require('@actions/core');
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = fs.readJSONSync('./package.json');
-setenv('PACKAGE_VERSION', packageJson.version);
-setenv('PACKAGE_NAME', packageJson.name);
+exportVariable('PACKAGE_VERSION', packageJson.version);
+exportVariable('PACKAGE_NAME', packageJson.name);

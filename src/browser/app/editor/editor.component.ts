@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
 import { RouteService } from 'browser/services/route.service';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, merge } from 'rxjs';
 import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
-import { map, tap, throttleTime, mergeMap, filter, shareReplay } from 'rxjs/operators';
+import { map, tap, mergeMap, filter, shareReplay, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TitleService } from 'browser/services/title.service';
 import { GithubOauthService } from 'browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -16,6 +16,45 @@ import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
 import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
 import { Context } from 'shared/markdown';
+import { suggestTag, Tag as TagSuggest, parseTag } from 'shared/ehentai';
+
+class TagSuggestOption {
+    constructor(
+        readonly suggest: TagSuggest,
+        private readonly services: {
+            release: GithubReleaseService;
+            router: RouteService;
+        },
+    ) {}
+
+    readonly master = this.suggest.master ?? this.suggest;
+    readonly isSlaved = !!this.suggest.master;
+    translation(): Observable<Tag<'text'> | undefined> {
+        return this.services.release.tags.pipe(
+            map((v) => {
+                const { namespace: ns, raw } = this.master;
+                const tag = v.data[ns].get(raw);
+                if (!tag) return undefined;
+                return tag.render('text', new Context(tag, raw));
+            }),
+        );
+    }
+    toString(): string {
+        return this.master.raw;
+    }
+    navigate(): void {
+        this.translation().subscribe((v) => {
+            if (v) {
+                this.services.router.navigate(['./edit', this.master.namespace, this.master.raw], {}, false);
+            } else {
+                this.services.router.navigateParam({
+                    namespace: this.master.namespace,
+                    raw: this.master.raw,
+                });
+            }
+        });
+    }
+}
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
@@ -46,7 +85,7 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
-    styleUrls: ['./editor.component.sass'],
+    styleUrls: ['./editor.component.scss'],
     animations: [
         trigger('slide', [
             state('left', style({ transform: 'translateX(0)' })),
@@ -59,14 +98,15 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
 export class EditorComponent implements OnInit {
     constructor(
         private readonly ehTagConnector: EhTagConnectorService,
-        public readonly github: GithubOauthService,
-        private readonly debug: DebugService,
-        public readonly release: GithubReleaseService,
-        private readonly router: RouteService,
+        readonly github: GithubOauthService,
+        readonly debug: DebugService,
+        readonly release: GithubReleaseService,
+        readonly router: RouteService,
         private readonly title: TitleService,
         private readonly snackBar: MatSnackBar,
-        public readonly dbRepo: DbRepoService,
+        readonly dbRepo: DbRepoService,
     ) {}
+
     tagForm = new FormGroup({
         raw: new FormControl('', [
             // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -119,10 +159,7 @@ export class EditorComponent implements OnInit {
         this.forms.links,
     ]).pipe(
         filter(([namespace]) => isNamespaceName(namespace)),
-        throttleTime(100, undefined, {
-            leading: false,
-            trailing: true,
-        }),
+        debounceTime(100),
         mergeMap(([namespace, raw, name, intro, links]) => {
             return this.ehTagConnector
                 .normalizeTag(
@@ -146,6 +183,12 @@ export class EditorComponent implements OnInit {
     );
 
     submitting = new BehaviorSubject<boolean>(false);
+
+    tagSuggests!: Observable<{
+        suggestion: TagSuggestOption[];
+        loading: boolean;
+    }>;
+    tagSuggestTerm = new BehaviorSubject<string>('');
 
     narrowPreviewing = false;
 
@@ -206,6 +249,73 @@ export class EditorComponent implements OnInit {
                 }
             });
         }
+        const tagSuggestSource = combineLatest([
+            this.forms.raw.pipe(
+                map((raw) => {
+                    raw = (raw ?? '').trim().toLowerCase();
+                    raw = raw.split(/\s+/gi).join(' ');
+                    return raw;
+                }),
+                distinctUntilChanged(),
+            ),
+            this.forms.namespace.pipe(distinctUntilChanged()),
+        ]).pipe(
+            map(([raw, ns]) => {
+                const { ns: rns, raw: tag } = parseTag(raw);
+                ns = rns ?? ns;
+                return [ns, tag] as const;
+            }),
+            distinctUntilChanged(([xns, xt], [yns, yt]) => xns === yns && xt === yt),
+        );
+        this.tagSuggests = merge(
+            tagSuggestSource.pipe(
+                tap(([_, raw]) => this.tagSuggestTerm.next(raw)),
+                map(([_, raw]) => {
+                    if (!raw)
+                        return {
+                            suggestion: [],
+                            loading: false,
+                        };
+                    return {
+                        suggestion: [],
+                        loading: true,
+                    };
+                }),
+            ),
+            tagSuggestSource.pipe(
+                debounceTime(100),
+                mergeMap(
+                    async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
+                        if (!raw) return [raw, []];
+                        const suggestion = await suggestTag(undefined, raw);
+                        suggestion.sort((a, b) => {
+                            const aNs = a.master?.namespace ?? a.namespace;
+                            const bNs = b.master?.namespace ?? b.namespace;
+                            if (aNs === bNs) return 0;
+                            if (aNs === ns) return -1;
+                            if (bNs === ns) return 1;
+                            return 0;
+                        });
+                        if (suggestion.length >= 10 && ns != null) {
+                            const nsSuggestion = await suggestTag(ns, raw);
+                            suggestion.unshift(
+                                ...nsSuggestion.filter((s) =>
+                                    suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
+                                ),
+                            );
+                        }
+                        return [raw, suggestion];
+                    },
+                ),
+                filter(([raw]) => raw === this.tagSuggestTerm.value),
+                map(([, suggestions]) => {
+                    return {
+                        suggestion: suggestions.map((s) => new TagSuggestOption(s, this)),
+                        loading: false,
+                    };
+                }),
+            ),
+        );
 
         function mapCurrentCanEdit<T>(creating: boolean, original: T, inputs: T | null): T | null {
             if (creating) {

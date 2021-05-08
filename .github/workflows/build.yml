@@ -1,117 +1,112 @@
 name: build
 
 on:
-    pull_request:
-    push:
-        branches: [master]
+  pull_request:
+  push:
+    branches-ignore:
+      - gh-pages
 
 jobs:
-    tool:
-        runs-on: ubuntu-latest
+  tool:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v1
-            - name: Setup Node.js
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '12'
-            - name: Install
-              uses: bahmutov/npm-install@v1
-              with:
-                  useLockFile: false
-            - name: Set env
-              run: node ./scripts/info.js
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12'
+      - name: Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+      - name: Set env
+        run: node ./scripts/info.js
 
-            - name: Build
-              run: yarn build:tool
-            - name: Upload artifact
-              uses: actions/upload-artifact@v1.0.0
-              with:
-                  name: tool
-                  path: ./dist
-            - name: Test
-              run: yarn test:tool
+      - name: Build
+        run: yarn build:tool
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tool
+          path: ./dist
+      - name: Test
+        run: yarn test:tool
 
-            - name: Prepare release
-              if: github.ref == 'refs/heads/master'
-              run: |
-                  node ./scripts/tool.js
-                  cd ./dist
-                  yarn install --prefer-offline
-                  zip -r ../release.zip .
-            - name: Publish release
-              uses: ncipollo/release-action@v1
-              if: github.ref == 'refs/heads/master'
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  name: ${{ github.event.head_commit.message }}
-                  tag: v${{ env.PACKAGE_VERSION}}
-                  commit: ${{ github.sha }}
-                  artifacts: ./release.zip
-                  allowUpdates: true
+      - name: Prepare release
+        if: github.ref == 'refs/heads/master'
+        run: |
+          node ./scripts/tool.js
+          cd ./dist
+          yarn install --prefer-offline
+          zip -r ../release.zip .
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        if: github.ref == 'refs/heads/master'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ github.event.head_commit.message }}
+          tag: v${{ env.PACKAGE_VERSION}}
+          commit: ${{ github.sha }}
+          artifacts: ./release.zip
+          allowUpdates: true
 
-    server:
-        runs-on: ubuntu-latest
+  server:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v1
-            - name: Setup Node.js
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '12'
-            - name: Install
-              uses: bahmutov/npm-install@v1
-              with:
-                  useLockFile: false
-            - name: Set env
-              run: node ./scripts/info.js
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12'
+      - name: Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+      - name: Set env
+        run: node ./scripts/info.js
 
-            - name: Build
-              run: yarn build:server
-            - name: Upload artifact
-              uses: actions/upload-artifact@v1.0.0
-              with:
-                  name: server
-                  path: ./dist
-            - name: Test
-              run: yarn test:server
+      - name: Build
+        run: yarn build:server
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: server
+          path: ./dist
+      - name: Test
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          APP_KEY: ${{ secrets.APP_KEY }}
+          APP_INSTALLATION_ID: ${{ secrets.APP_INSTALLATION_ID }}
+          APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
+          APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
+          DB_PATH: db
+          DB_REPO: EhTagTranslation/Database
+        run: yarn test:server
 
-            - name: Prepare deploy
-              if: github.ref == 'refs/heads/master'
-              run: |
-                  node ./scripts/server.js
-                  cd ./dist
-                  yarn install --prefer-offline
-            - name: Deploy to Azure webapp
-              uses: azure/webapps-deploy@v1
-              if: github.ref == 'refs/heads/master'
-              with:
-                  app-name: ehtt
-                  publish-profile: ${{ secrets.AzureWebAppPublishProfile }}
-                  package: ./dist
+  browser:
+    runs-on: ubuntu-latest
 
-    browser:
-        runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12'
+      - name: Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+      - name: Set env
+        run: node ./scripts/info.js
 
-        steps:
-            - uses: actions/checkout@v1
-            - name: Setup Node.js
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '12'
-            - name: Install
-              uses: bahmutov/npm-install@v1
-              with:
-                  useLockFile: false
-            - name: Set env
-              run: node ./scripts/info.js
-
-            - name: Build
-              run: yarn build:browser
-            - name: Upload artifact
-              uses: actions/upload-artifact@v1.0.0
-              with:
-                  name: browser
-                  path: ./dist/browser
-            - name: Test
-              run: yarn test:browser
+      - name: Build
+        run: yarn build:browser
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: browser
+          path: ./dist/browser
+      - name: Test
+        run: yarn test:browser

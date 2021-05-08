@@ -1,10 +1,11 @@
 # EhTag Editor
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](https://dependabot.com)
-[![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](https://github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
-[![vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=zeit)](https://github.com/EhTagTranslation/Editor/deployments)
-[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.now.sh)](https://ehtt.now.sh/)
-[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.azurewebsites.net/database)](https://ehtt.azurewebsites.net/)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](//dependabot.com)
+[![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](//github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
+[![Vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=vercel)](//github.com/EhTagTranslation/Editor/deployments?environment=Production#activity-log)
+[![Heroku](https://img.shields.io/github/deployments/EhTagTranslation/Editor/ehtt?label=Heroku&logo=Heroku)](//github.com/EhTagTranslation/Editor/deployments?environment=ehtt#activity-log)
+[![frontend](https://img.shields.io/website?label=frontend&logo=angular&url=https://ehtt.vercel.app)](//ehtt.vercel.app/)
+[![backend](https://img.shields.io/website?label=backend&logo=nestjs&url=https://ehtt.herokuapp.com/database)](//ehtt.herokuapp.com/)
 
 [数据库](../../../Database)编辑工具。
 
@@ -16,15 +17,15 @@
 
 ### 前端
 
-代码位于 [browser](./src/browser)，使用 Angular 开发，使用 Vercel 部署于 <https://ehtt.now.sh>。
+代码位于 [browser](./src/browser)，使用 Angular 开发，使用 Vercel 部署于 <https://ehtt.vercel.app>。
 
 使用方法参见[使用说明](../../wiki)。
 
 ### 后端
 
-代码位于 [server](./src/server)，使用 Nest.js 开发，使用 Azure App Service 部署于 <https://ehtt.azurewebsites.net>。
+代码位于 [server](./src/server)，使用 Nest.js 开发，使用 Heroku 部署于 <https://ehtt.herokuapp.com>。
 
-使用方法参见 [API 列表](https://ehtt.azurewebsites.net/static/index.html)。
+使用方法参见 [API 列表](https://ehtt.herokuapp.com/static/index.html)。
 
 ### 工具
 

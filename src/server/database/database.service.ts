@@ -28,7 +28,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
-        this.repo = this.config.get('DB_REPO', '');
+        this.repo = this.config.get('DB_REPO', '/');
         this.infoFile = path.join(this.path, '.info');
     }
 
@@ -115,7 +115,13 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
         } else {
             const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
-            updatedFiles = await Promise.all(comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')));
+            if (comparison.files && comparison.files.length > 0) {
+                updatedFiles = await Promise.all(
+                    comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')),
+                );
+            } else {
+                updatedFiles = [];
+            }
             this.logger.verbose(`Update database. Updated files: ${updatedFiles.join(', ')}`);
         }
         this.info = { head: headCommit, blob };
@@ -134,25 +140,26 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     ): Promise<void> {
         const content = await this.data.data[ns].save();
         let msg: string;
-        const context = new Context((message.ov ?? message.nv) as TagRecord);
+        const oldContext = new Context((message.ov ?? message.nv) as TagRecord, message.ok);
+        const newContext = new Context((message.nv ?? message.ov) as TagRecord, message.nk);
         if (message.ov && message.nv) {
-            msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', context)}
+            msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
 |        | 原始标签 | 名称 | 描述 | 外部链接 |
 | ------ | -------- | ---- | ---- | -------- |
-| 修改前 ${message.ov.stringify({ ...context, raw: message.ok })}
-| 修改后 ${message.nv.stringify({ ...context, raw: message.nk })}
+| 修改前 ${message.ov.stringify(oldContext)}
+| 修改后 ${message.nv.stringify(newContext)}
             `;
         } else if (message.ov) {
-            msg = `删除 ${ns}:${message.ok ?? '(注释)'} - ${message.ov.name.render('text', context)}
+            msg = `删除 ${ns}:${message.ok ?? '(注释)'} - ${message.ov.name.render('text', oldContext)}
 | 原始标签 | 名称 | 描述 | 外部链接 |
 | -------- | ---- | ---- | -------- |
-${message.ov.stringify({ ...context, raw: message.ok })}
+${message.ov.stringify(oldContext)}
 `;
         } else if (message.nv) {
-            msg = `添加 ${ns}:${message.nk ?? '(注释)'} - ${message.nv.name.render('text', context)}
+            msg = `添加 ${ns}:${message.nk ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
 | 原始标签 | 名称 | 描述 | 外部链接 |
 | -------- | ---- | ---- | -------- |
-${message.nv.stringify({ ...context, raw: message.nk })}
+${message.nv.stringify(newContext)}
 `;
         } else {
             throw new Error('Invalid message');

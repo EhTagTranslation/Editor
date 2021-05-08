@@ -4,6 +4,7 @@ import { Octokit } from '@octokit/rest';
 import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { ConfigService } from '@nestjs/config';
 import { createAppAuth, Types } from '@octokit/auth-app';
+import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
 import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
@@ -22,11 +23,11 @@ export interface File {
     sha: Sha1Value;
 }
 
-function makeSignature({ name, email, date }: Author & { date: string }): Signature {
+function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string }): Signature {
     return {
-        name,
-        email,
-        when: new Date(date),
+        name: name ?? '',
+        email: email ?? '',
+        when: date ? new Date(date) : new Date(0),
     };
 }
 type ApiData<T1 extends keyof Octokit, T2 extends keyof Octokit[T1]> = Octokit[T1][T2] extends () => Promise<{
@@ -50,17 +51,17 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         this.getAppToken().catch((err: unknown) => this.logger.error(err));
         this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => Object.freeze(appInfoRes.data));
         this._botUserInfo = this._appInfo
-            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug}[bot]` }))
+            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }))
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
     }
 
     private createOctokit(options?: OctokitOptions): Octokit {
         return new Octokit({
             log: {
-                // debug: (...args: unknown[]) => this.logger.debug(args),
-                info: (arg: unknown) => this.logger.log(arg),
-                warn: (arg: unknown) => this.logger.warn(arg),
-                error: (arg: unknown) => this.logger.error(arg),
+                debug: (message: string) => this.logger.debug(message),
+                info: (message: string) => this.logger.log(message),
+                warn: (message: string) => this.logger.warn(message),
+                error: (message: string) => this.logger.error(message),
             },
             userAgent: 'EhTagTranslation Nest',
             ...options,
@@ -72,15 +73,23 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     private readonly APP_CLIENT_ID: string = this.config.get('APP_CLIENT_ID', '');
     private readonly APP_CLIENT_SECRET: string = this.config.get('APP_CLIENT_SECRET', '');
 
+    private readonly EDITOR_CLIENT_ID: string = this.config.get('EDITOR_CLIENT_ID', '');
+    private readonly EDITOR_CLIENT_SECRET: string = this.config.get('EDITOR_CLIENT_SECRET', '');
+
     readonly forApp = this.createOctokit({
         authStrategy: createAppAuth,
         auth: {
-            id: this.APP_ID,
+            appId: this.APP_ID,
             privateKey: this.APP_KEY,
             clientId: this.APP_CLIENT_ID,
             clientSecret: this.APP_CLIENT_SECRET,
             installationId: this.APP_INSTALLATION_ID,
         } as Types['StrategyOptions'],
+    });
+
+    readonly forOauth = createOAuthAppAuth({
+        clientId: this.EDITOR_CLIENT_ID,
+        clientSecret: this.EDITOR_CLIENT_SECRET,
     });
 
     private _forRepo?: Octokit;
@@ -139,7 +148,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             path,
         });
         const data = res.data;
-        if (Array.isArray(data) || data.type !== 'file') throw new Error(`${path} is not a file.`);
+        if (Array.isArray(data) || data.type !== 'file' || !('encoding' in data)) {
+            throw new Error(`${path} is not a file.`);
+        }
         if (data.encoding !== 'base64') throw new Error(`Unsupported encoding ${data.encoding}.`);
         return {
             path: data.path,
@@ -190,8 +201,8 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         return {
             sha: commit.sha as Sha1Value,
             message: commit.commit.message,
-            author: makeSignature(commit.commit.author),
-            committer: makeSignature(commit.commit.committer),
+            author: makeSignature({ ...commit.commit.author }),
+            committer: makeSignature({ ...commit.commit.committer }),
         };
     }
 

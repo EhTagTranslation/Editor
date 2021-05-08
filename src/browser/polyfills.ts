@@ -55,10 +55,9 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'core-js';
 
 import 'zone.js'; // Included with Angular CLI.
-import 'zone.js/dist/zone-bluebird';
+import 'zone.js/plugins/zone-bluebird';
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

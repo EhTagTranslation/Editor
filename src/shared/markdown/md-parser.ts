@@ -50,6 +50,11 @@ function normalizeUrl(
     nsfw?: ImageNode['nsfw'];
 } {
     url = md.normalizeLink(url);
+    // ehgt 图片使用 https://ehgt.org/ 域名，国内速度较快，且不需要里站 cookie
+    // Eg: https://ehgt.org/t/52/b4/52b4fd923618bd7ec49eb3ccbae43c979e769110-1060746-1280-1024-jpg_300.jpg
+    //            https://ehgt.org               /52 /b4 /52b4fd923618bd7ec49eb3ccbae43c979e769110-1060746-1280-1024-jpg _       300        .jpg
+    // http(s)://((ul.)ehgt.org(/t)|exhentai.org)|0-1|2-3|              完整哈希                  |size(B)| w  | h  |类型|    l/250/300     |jpg
+    //                                           |            原始图片信息哈希（sha1）            |    原始图片信息      |后两者只有封面图有|固定
     const eh = /^(http|https):\/\/(?<domain>ehgt\.org(\/t|)|exhentai\.org\/t|ul\.ehgt\.org(\/t|))\/(?<tail>.+)$/.exec(
         url,
     );
@@ -57,6 +62,8 @@ function normalizeUrl(
         url = 'https://ehgt.org/' + eh.groups.tail;
         return { url, nsfw: eh.groups.domain.includes('exhentai') ? 'R18' : undefined };
     }
+
+    // pixiv 图片使用反代
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
         url = 'https://i.pixiv.cat/' + px.groups.tail;
@@ -67,6 +74,7 @@ function normalizeUrl(
 
 const knownHosts = new Map<string, string>([
     ['moegirl.org', '萌娘百科'],
+    ['moegirl.org.cn', '萌娘百科'],
     ['wikipedia.org', '维基百科'],
     ['pixiv.net', 'pixiv'],
     ['instagram.com', 'Instagram'],
@@ -90,8 +98,8 @@ function normalizeLink(node: LinkNode): void {
                         break;
                     }
                 }
-            } catch {
-                //
+            } catch (ex) {
+                console.log(ex);
             }
         }
     }
@@ -123,14 +131,14 @@ function normalizeTagref(node: TagRefNode, context: Context): void {
     const tagDef = node.text.trim();
     const tag = tagDef.toLowerCase();
     if (!isRawTag(tag)) {
-        context.logger.warn(context, `无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
+        context.warn(`无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
         node.tag = '';
         node.text = tagDef;
         return;
     }
     const record = context.namespace.get(tag) ?? context.database.get(tag);
     if (!record) {
-        context.logger.warn(context, `无效标签引用：\`${node.text}\` 在数据库中不存在。`);
+        context.warn(`无效标签引用：\`${node.text}\` 在数据库中不存在。`);
         node.tag = '';
         node.text = tagDef;
         return;
@@ -205,14 +213,13 @@ class AstBuilder {
     private buildInline(token: Token, parent: ContainerNode): void {
         if (!token.children) throw new Error('Invalid inline token');
         if (token.children.length === 0) return;
-        const end = this.buildInlineTokens(token.children, 0, parent);
+        const end = this.buildInlineTokens(token.children, 0, parent, 0);
         if (token.children.length !== end) {
             this.expectEnd(token.children[end]);
         }
     }
 
-    private buildInlineTokens(tokens: Token[], start: number, parent: ContainerNode): number {
-        const level = tokens[start].level;
+    private buildInlineTokens(tokens: Token[], start: number, parent: ContainerNode, level: number): number {
         while (start < tokens.length && tokens[start].level >= level) {
             const content = tokens[start];
             switch (content.type) {
@@ -223,7 +230,7 @@ class AstBuilder {
                         title: content.attrGet('title') ?? '',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, link);
+                    start = this.buildInlineTokens(tokens, start + 1, link, content.level + 1);
                     this.expectToken(tokens[start], 'link_close');
                     normalizeLink(link);
                     start++;
@@ -235,7 +242,7 @@ class AstBuilder {
                         type: 'emphasis',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, em);
+                    start = this.buildInlineTokens(tokens, start + 1, em, content.level + 1);
                     this.expectToken(tokens[start], 'em_close');
                     start++;
                     parent.content.push(em);
@@ -246,7 +253,7 @@ class AstBuilder {
                         type: 'strong',
                         content: [],
                     };
-                    start = this.buildInlineTokens(tokens, start + 1, strong);
+                    start = this.buildInlineTokens(tokens, start + 1, strong, content.level + 1);
                     this.expectToken(tokens[start], 'strong_close');
                     start++;
                     parent.content.push(strong);

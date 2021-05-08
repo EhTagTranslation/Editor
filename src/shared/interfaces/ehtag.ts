@@ -3,6 +3,24 @@ import { Opaque } from 'type-fest';
 
 export type Sha1Value = Opaque<string, Commit>;
 
+export const Sha1Value = Object.freeze(
+    Object.assign(
+        (value: string): Sha1Value | undefined => {
+            if (typeof value != 'string') return undefined;
+            if (value.length < 40) return undefined;
+            value = value.trim().toLowerCase();
+            if (value.length !== 40) return undefined;
+            return value as Sha1Value;
+        },
+        {
+            empty: '0'.repeat(40) as Sha1Value,
+            validate(value: string): value is Sha1Value {
+                return typeof value == 'string' && value.length === 40 && value.trim().length === 40;
+            },
+        },
+    ),
+);
+
 export interface Signature {
     name: string;
     email: string;

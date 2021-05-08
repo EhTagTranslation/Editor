@@ -1,0 +1,108 @@
+:host {
+  display: flex;
+  height: 100%;
+}
+
+#root {
+  &.show-img-no-r18 ::ng-deep {
+    img[ehimg][nsfw] {
+      filter: blur(10px);
+      transform: scale(0.9);
+    }
+  }
+
+  &.show-img-no-r18g ::ng-deep {
+    img[ehimg][nsfw='R18G'] {
+      filter: blur(10px);
+      transform: scale(0.9);
+    }
+  }
+
+  &.show-img-none ::ng-deep {
+    img[ehimg],
+    img[ehimg] + br {
+      display: none;
+    }
+  }
+}
+
+header {
+  font-size: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16px 16px 0;
+
+  > * {
+    user-select: none;
+  }
+
+  > mat-form-field {
+    margin: 0 8px;
+  }
+
+  > mat-chip-list {
+    margin: 6px 8px;
+  }
+
+  #search {
+    .mat-hint {
+      display: inline-block;
+      width: 20px;
+      text-align: right;
+    }
+  }
+}
+
+section {
+  flex: auto;
+  position: relative;
+
+  #table-wrapper {
+    position: absolute;
+    overflow: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    table {
+      width: 100%;
+      min-width: 640px;
+
+      th {
+        > * {
+          user-select: none;
+        }
+
+        &.text {
+          min-width: 80px;
+        }
+      }
+
+      .mat-header-cell:not(:last-child),
+      .mat-cell:not(:last-child) {
+        padding-right: 8px;
+      }
+
+      tr {
+        user-select: text;
+      }
+
+      td > div {
+        margin: 4px 0;
+      }
+    }
+  }
+
+  div.spinner {
+    user-select: none;
+    padding: 120px;
+    position: sticky;
+    left: 0;
+    pointer-events: none;
+
+    mat-spinner {
+      margin: auto;
+    }
+  }
+}
