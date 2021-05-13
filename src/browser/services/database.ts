@@ -43,5 +43,7 @@ export class DatabaseInMemory extends DatabaseInMemoryBase {
     }
 
     private static readonly worker =
-        typeof Worker !== 'undefined' ? new Worker('./database.worker', { type: 'module' }) : undefined;
+        typeof Worker !== 'undefined'
+            ? new Worker(new URL('./database.worker', import.meta.url), { type: 'module' })
+            : undefined;
 }
