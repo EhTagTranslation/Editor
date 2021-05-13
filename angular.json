@@ -38,7 +38,7 @@
             }
           },
           "options": {
-            "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios"],
+            "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios", "validator"],
             "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
             "buildOptimizer": false,
             "extractLicenses": false,
