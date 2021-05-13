@@ -11,7 +11,7 @@
     "test:tool": "yarn tool --help",
     "tool": "node ./dist/tool",
     "start:browser": "ng serve",
-    "build:browser": "ng build --prod",
+    "build:browser": "ng build --configuration production",
     "test:browser": "echo no test",
     "analyze:browser": "webpack-bundle-analyzer --mode=static --default-sizes=gzip --report=dist/browser/report.html dist/browser/stats.json",
     "clean": "rimraf dist",
