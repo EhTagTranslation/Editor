@@ -286,12 +286,12 @@
   resolved "https://registry.nlark.com/@angular/language-service/download/@angular/language-service-12.0.0.tgz#b404961f60d944ea013833b282c144b3228f439d"
   integrity sha1-tASWH2DZROoBODOygsFEsyKPQ50=
 
-"@angular/material@~11.2.12":
-  version "11.2.12"
-  resolved "https://registry.nlark.com/@angular/material/download/@angular/material-11.2.12.tgz#625778113075bddb92f13ab03a8a513178f2b5a8"
-  integrity sha1-Yld4ETB1vduS8TqwOopRMXjytag=
+"@angular/material@~12.0.0":
+  version "12.0.0"
+  resolved "https://registry.nlark.com/@angular/material/download/@angular/material-12.0.0.tgz#07eb6ad3c661ae3ab8e65df803eae47fd149735f"
+  integrity sha1-B+tq08Zhrjq45l34A+rkf9FJc18=
   dependencies:
-    tslib "^2.0.0"
+    tslib "^2.1.0"
 
 "@angular/platform-browser-dynamic@~12.0.0":
   version "12.0.0"

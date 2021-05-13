@@ -1,6 +1,7 @@
+@use '~@angular/material' as mat;
 @import 'theme';
 
-$label-color: mat-color($app-foreground, secondary-text);
+$label-color: mat.get-color-from-palette($app-foreground, secondary-text);
 
 :host {
   display: flex;
@@ -146,12 +147,12 @@ mat-option .hint {
   }
 
   .hint-namespace {
-    color: mat-color($app-primary, 700);
+    color: mat.get-color-from-palette($app-primary, 700);
   }
 
   .hint-translation {
     .hint-namespace {
-      color: mat-color($app-primary, 300);
+      color: mat.get-color-from-palette($app-primary, 300);
     }
 
     font-size: 70%;
