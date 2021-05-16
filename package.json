@@ -1,6 +1,6 @@
 {
   "name": "eh-tag-editor",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
