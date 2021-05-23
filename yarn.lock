@@ -27,6 +27,14 @@
     "@angular-devkit/core" "12.0.0"
     rxjs "6.6.7"
 
+"@angular-devkit/architect@0.1200.1":
+  version "0.1200.1"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.1200.1.tgz#1fd64f6302029a97b0f0547d803878780b73b4dd"
+  integrity sha512-SuAHmJJuIlnGuKeyIhUV+g2ajeuFeEY2Tccm0XhbWxLxuYlddwyHN3TdqaFGSbarQuijvVnXnkDjn5cTUJ+nXQ==
+  dependencies:
+    "@angular-devkit/core" "12.0.1"
+    rxjs "6.6.7"
+
 "@angular-devkit/build-angular@~12.0.0":
   version "12.0.0"
   resolved "https://registry.nlark.com/@angular-devkit/build-angular/download/@angular-devkit/build-angular-12.0.0.tgz#135a943e62bee3e5d49745f6d7e10d276c80ae19"
@@ -151,6 +159,18 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
+"@angular-devkit/core@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-12.0.1.tgz#e1b1cbd18605ee752d0e44bc1096ad30de86c5bc"
+  integrity sha512-y0+pK7XfQyf962oKR5LmVkfuPEnwntpmVmneqt+q8Q/ZDHm9Tzh0PGyXKxhHjlWbq7btbWPiYkB4ELDtmfn92Q==
+  dependencies:
+    ajv "8.2.0"
+    ajv-formats "2.0.2"
+    fast-json-stable-stringify "2.1.0"
+    magic-string "0.25.7"
+    rxjs "6.6.7"
+    source-map "0.7.3"
+
 "@angular-devkit/schematics-cli@0.1102.6":
   version "0.1102.6"
   resolved "https://registry.nlark.com/@angular-devkit/schematics-cli/download/@angular-devkit/schematics-cli-0.1102.6.tgz#51b9012913be94b6e8063a2f8839f7e4b652057b"
@@ -182,12 +202,12 @@
     ora "5.3.0"
     rxjs "6.6.3"
 
-"@angular-devkit/schematics@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.nlark.com/@angular-devkit/schematics/download/@angular-devkit/schematics-12.0.0.tgz#d46fa41d8968b64b6234f828fc16a227630fe621"
-  integrity sha1-1G+kHYlotktiNPgo/BaiJ2MP5iE=
+"@angular-devkit/schematics@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-12.0.1.tgz#58c7e0d585f9b20093f34870cf1e3599863dc503"
+  integrity sha512-ko44lDx4n+NHdyU+/yH5pAnxPa+uaqyt9VwdkVCekQvML94dWtvRZejcyuEgPZf+gqkpBQs3VxK0Tm/azabVZg==
   dependencies:
-    "@angular-devkit/core" "12.0.0"
+    "@angular-devkit/core" "12.0.1"
     ora "5.4.0"
     rxjs "6.6.7"
 
@@ -207,15 +227,15 @@
   optionalDependencies:
     parse5 "^5.0.0"
 
-"@angular/cli@~12.0.0":
-  version "12.0.0"
-  resolved "https://registry.nlark.com/@angular/cli/download/@angular/cli-12.0.0.tgz#59ccb66f0ceb5230ee120dafb5fda70602bd0ff1"
-  integrity sha1-Wcy2bwzrUjDuEg2vtf2nBgK9D/E=
+"@angular/cli@~12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-12.0.1.tgz#703870b4aeaf6ba2005564b6c5c177b8a24b2c82"
+  integrity sha512-XWAyo5BmCBoGpHC1S2DmLOW13fUBIYGgWlpzMhUIwG6Z9LkGDW1tzrRpt74GpWJkUjQ1vDKm8npDRpnarWk4tA==
   dependencies:
-    "@angular-devkit/architect" "0.1200.0"
-    "@angular-devkit/core" "12.0.0"
-    "@angular-devkit/schematics" "12.0.0"
-    "@schematics/angular" "12.0.0"
+    "@angular-devkit/architect" "0.1200.1"
+    "@angular-devkit/core" "12.0.1"
+    "@angular-devkit/schematics" "12.0.1"
+    "@schematics/angular" "12.0.1"
     "@yarnpkg/lockfile" "1.1.0"
     ansi-colors "4.1.1"
     debug "4.3.1"
@@ -224,7 +244,7 @@
     jsonc-parser "3.0.0"
     npm-package-arg "8.1.2"
     npm-pick-manifest "6.1.1"
-    open "8.0.7"
+    open "8.0.2"
     ora "5.4.0"
     pacote "11.3.2"
     resolve "1.20.0"
@@ -1843,13 +1863,13 @@
   resolved "https://registry.npm.taobao.org/@polka/url/download/@polka/url-1.0.0-next.12.tgz#431ec342a7195622f86688bbda82e3166ce8cb28"
   integrity sha1-Qx7DQqcZViL4Zoi72oLjFmzoyyg=
 
-"@schematics/angular@12.0.0":
-  version "12.0.0"
-  resolved "https://registry.nlark.com/@schematics/angular/download/@schematics/angular-12.0.0.tgz#519c8d2bfb548c2678d7b3589548a7ff37e0dcf0"
-  integrity sha1-UZyNK/tUjCZ417NYlUin/zfg3PA=
+"@schematics/angular@12.0.1":
+  version "12.0.1"
+  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-12.0.1.tgz#0a816d3b65f6a6e0b0afc9932e7c27b81e3a0d94"
+  integrity sha512-kCkdrCCHoa01aZrSBRLK/sZCG5Xvnyd6/srRhVaP61vu9YQ0g/Z786CTFYbo9ujoJGewPkN0O1sbNYKldcLi4w==
   dependencies:
-    "@angular-devkit/core" "12.0.0"
-    "@angular-devkit/schematics" "12.0.0"
+    "@angular-devkit/core" "12.0.1"
+    "@angular-devkit/schematics" "12.0.1"
     jsonc-parser "3.0.0"
 
 "@schematics/schematics@0.1102.6":
@@ -7671,6 +7691,15 @@ onetime@^5.1.0:
   integrity sha1-0Oluu1awdHbfHdnEgG5SN5hcpF4=
   dependencies:
     mimic-fn "^2.1.0"
+
+open@8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/open/-/open-8.0.2.tgz#8c3e95cce93ba2fc8d99968ee8bfefecdb50b84f"
+  integrity sha512-NV5QmWJrTaNBLHABJyrb+nd5dXI5zfea/suWawBhkHzAbVhLLiJdrqMgxMypGK9Eznp2Ltoh7SAVkQ3XAucX7Q==
+  dependencies:
+    define-lazy-prop "^2.0.0"
+    is-docker "^2.1.1"
+    is-wsl "^2.2.0"
 
 open@8.0.7:
   version "8.0.7"
