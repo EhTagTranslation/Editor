@@ -142,7 +142,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async getFile(path: string): Promise<File> {
-        const res = await (await this.forRepo()).repos.getContent({
+        const res = await (
+            await this.forRepo()
+        ).repos.getContent({
             owner: this.owner,
             repo: this.repo,
             path,
@@ -166,7 +168,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         message: string,
         author: Author,
     ): Promise<{ file: File; commit: Commit }> {
-        const res = await (await this.forRepo()).repos.createOrUpdateFileContents({
+        const res = await (
+            await this.forRepo()
+        ).repos.createOrUpdateFileContents({
             owner: this.owner,
             repo: this.repo,
             path,
@@ -192,7 +196,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async getHead(): Promise<Commit> {
-        const res = await (await this.forRepo()).repos.getBranch({
+        const res = await (
+            await this.forRepo()
+        ).repos.getBranch({
             owner: this.owner,
             repo: this.repo,
             branch: 'master',
@@ -207,7 +213,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async compare(base: Sha1Value, head: Sha1Value): Promise<ApiData<'repos', 'compareCommits'>> {
-        const res = await (await this.forRepo()).repos.compareCommits({
+        const res = await (
+            await this.forRepo()
+        ).repos.compareCommits({
             owner: this.owner,
             repo: this.repo,
             base,

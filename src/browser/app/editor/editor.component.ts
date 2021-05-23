@@ -284,29 +284,27 @@ export class EditorComponent implements OnInit {
             ),
             tagSuggestSource.pipe(
                 debounceTime(100),
-                mergeMap(
-                    async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
-                        if (!raw) return [raw, []];
-                        const suggestion = await suggestTag(undefined, raw);
-                        suggestion.sort((a, b) => {
-                            const aNs = a.master?.namespace ?? a.namespace;
-                            const bNs = b.master?.namespace ?? b.namespace;
-                            if (aNs === bNs) return 0;
-                            if (aNs === ns) return -1;
-                            if (bNs === ns) return 1;
-                            return 0;
-                        });
-                        if (suggestion.length >= 10 && ns != null) {
-                            const nsSuggestion = await suggestTag(ns, raw);
-                            suggestion.unshift(
-                                ...nsSuggestion.filter((s) =>
-                                    suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
-                                ),
-                            );
-                        }
-                        return [raw, suggestion];
-                    },
-                ),
+                mergeMap(async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
+                    if (!raw) return [raw, []];
+                    const suggestion = await suggestTag(undefined, raw);
+                    suggestion.sort((a, b) => {
+                        const aNs = a.master?.namespace ?? a.namespace;
+                        const bNs = b.master?.namespace ?? b.namespace;
+                        if (aNs === bNs) return 0;
+                        if (aNs === ns) return -1;
+                        if (bNs === ns) return 1;
+                        return 0;
+                    });
+                    if (suggestion.length >= 10 && ns != null) {
+                        const nsSuggestion = await suggestTag(ns, raw);
+                        suggestion.unshift(
+                            ...nsSuggestion.filter((s) =>
+                                suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
+                            ),
+                        );
+                    }
+                    return [raw, suggestion];
+                }),
                 filter(([raw]) => raw === this.tagSuggestTerm.value),
                 map(([, suggestions]) => {
                     return {

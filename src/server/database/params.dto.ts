@@ -8,7 +8,7 @@ export class NsParams {
         enum: NamespaceName,
         enumName: 'NamespaceName',
     })
-    @IsIn((NamespaceName as unknown) as unknown[])
+    @IsIn(NamespaceName)
     namespace!: NamespaceName;
 }
 

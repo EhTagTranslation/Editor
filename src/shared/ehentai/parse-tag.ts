@@ -40,9 +40,7 @@ export function parseNamespace(ns: string | null | undefined): NamespaceName {
     return 'misc';
 }
 
-export function parseTag(
-    tag: string,
-):
+export function parseTag(tag: string):
     | {
           valid: true;
           ns: NamespaceName | undefined;

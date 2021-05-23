@@ -43,9 +43,7 @@ md.normalizeLink = md.normalizeLinkText = (url) => {
     return url;
 };
 
-function normalizeUrl(
-    url: string,
-): {
+function normalizeUrl(url: string): {
     url: string;
     nsfw?: ImageNode['nsfw'];
 } {

@@ -4,7 +4,8 @@ import { NamespaceDatabaseView } from './interfaces/database';
 import { Context } from './markdown';
 import { RawTag } from './validate';
 
-const recordRegex = /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
+const recordRegex =
+    /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;
 
 function unescape(value: string): string {
     return value.replace(/<br\s*\/?>/g, '\n');

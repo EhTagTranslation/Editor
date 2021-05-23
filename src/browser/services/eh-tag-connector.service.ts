@@ -63,7 +63,7 @@ export class EhTagConnectorService {
     addTag<T extends TagType = 'raw'>(
         key: ETKey,
         value: Tag<'raw'>,
-        format: T = ('raw' as TagType) as T,
+        format: T = 'raw' as TagType as T,
     ): Observable<Tag<T> | null> {
         const endpoint = this.getEndpoint(key, format);
         const payload: Tag<'raw'> = {
