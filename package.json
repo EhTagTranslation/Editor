@@ -4,7 +4,7 @@
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
-    "test:server": "jest --config ./src/server/jest.config.js --forceExit --coverage",
+    "test:server": "jest --config ./src/server/jest.config.js --coverage",
     "heroku-postbuild": "yarn build:server && node scripts/server.js && yarn test:server",
     "start:tool": "yarn build:tool --watch",
     "build:tool": "tsc --project ./src/tool",

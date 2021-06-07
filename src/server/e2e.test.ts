@@ -24,6 +24,10 @@ describe('AppController (e2e)', () => {
         await adapter.getInstance<fastify.FastifyInstance>().ready();
     });
 
+    afterAll(async () => {
+        await app.close();
+    });
+
     it('HEAD /database', async () => {
         const _ = await supertest(app.getHttpServer())
             .head('/database')
@@ -258,9 +262,5 @@ describe('AppController (e2e)', () => {
                 links: '萌娘百科',
             },
         });
-    });
-
-    afterAll(async () => {
-        await app.close();
     });
 });
