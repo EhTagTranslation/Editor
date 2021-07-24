@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { setupSwagger, enableCors } from './setup';
 
-const logger = new Logger('Main', true);
+const logger = new Logger('Main', { timestamp: true });
 /**
  * 启动服务
  */
@@ -17,7 +17,8 @@ async function bootstrap(): Promise<void> {
     enableCors(app);
     setupSwagger(app);
 
-    const port = Number.parseInt(app.get(ConfigService).get('PORT', '3000'));
+    const config = app.get(ConfigService);
+    const port = Number.parseInt(config.get<string>('PORT', '3000'));
     await app.listen(port, '0.0.0.0');
     const url = await app.getUrl();
     Logger.log(`App start listening on ${url}`, 'Main');

@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GithubUser } from '../interfaces/github';
 import { ApiEndpointService } from './api-endpoint.service';
 import { Location } from '@angular/common';
-import { of, from, throwError, Observable } from 'rxjs';
+import { of, from, throwError, Observable, lastValueFrom } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService } from './local-storage.service';
 
@@ -83,7 +83,7 @@ export class GithubOauthService {
             'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=640,height=720',
         );
         if (!authWindow) {
-            return throwError(new Error('Failed to open new window.'));
+            return throwError(() => new Error('Failed to open new window.'));
         }
 
         const authChecker = new Promise<void>((res) => {
@@ -111,9 +111,9 @@ export class GithubOauthService {
         })
             .then(({ code, state }) => {
                 if (state !== myState) throw new Error('Wrong state');
-                return this.httpClient
-                    .get<TokenData>(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`)
-                    .toPromise();
+                return lastValueFrom(
+                    this.httpClient.get<TokenData>(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`),
+                );
             })
             .catch((error: unknown) => ({ token: null, error }))
             .then((token) => {

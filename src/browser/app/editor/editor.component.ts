@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
 import { RouteService } from 'browser/services/route.service';
-import { Observable, BehaviorSubject, combineLatest, merge } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom } from 'rxjs';
 import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -475,9 +475,9 @@ export class EditorComponent implements OnInit {
                 raw: this.value('raw'),
             };
 
-            const result = (await this.ehTagConnector.hasTag(key).toPromise())
-                ? await this.ehTagConnector.modifyTag(key, payload).toPromise()
-                : await this.ehTagConnector.addTag(key, payload).toPromise();
+            const result = (await lastValueFrom(this.ehTagConnector.hasTag(key)))
+                ? await lastValueFrom(this.ehTagConnector.modifyTag(key, payload))
+                : await lastValueFrom(this.ehTagConnector.addTag(key, payload));
             this.router.navigate(['/edit', key.namespace, key.raw], result ?? payload, true);
             this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
             this.tagForm.markAsPristine();

@@ -9,7 +9,7 @@ import { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
 import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
 
-export type AppInfo = Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>;
+export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
 
 export interface Author {
@@ -23,7 +23,7 @@ export interface File {
     sha: Sha1Value;
 }
 
-function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string }): Signature {
+function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string } = {}): Signature {
     return {
         name: name ?? '',
         email: email ?? '',
@@ -49,7 +49,10 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     onModuleInit(): void {
         this.getAppToken().catch((err: unknown) => this.logger.error(err));
-        this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => Object.freeze(appInfoRes.data));
+        this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => {
+            if (appInfoRes.data) return Object.freeze(appInfoRes.data);
+            else throw new Error(`Failed to get app info`);
+        });
         this._botUserInfo = this._appInfo
             .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }))
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
@@ -182,12 +185,12 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         const data = res.data;
         return {
             file: {
-                path: data.content.path,
+                path: data.content?.path ?? path,
                 content,
-                sha: data.content.sha as Sha1Value,
+                sha: data.content?.sha as Sha1Value,
             },
             commit: {
-                message: data.commit.message,
+                message: data.commit.message ?? '',
                 sha: data.commit.sha as Sha1Value,
                 author: makeSignature(data.commit.author),
                 committer: makeSignature(data.commit.committer),
