@@ -3,7 +3,7 @@ import { InjectableBase } from 'server/injectable-base';
 import { Octokit } from '@octokit/rest';
 import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { ConfigService } from '@nestjs/config';
-import { createAppAuth, Types } from '@octokit/auth-app';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
@@ -87,7 +87,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             clientId: this.APP_CLIENT_ID,
             clientSecret: this.APP_CLIENT_SECRET,
             installationId: this.APP_INSTALLATION_ID,
-        } as Types['StrategyOptions'],
+        } as StrategyOptions,
     });
 
     readonly forOauth = createOAuthAppAuth({

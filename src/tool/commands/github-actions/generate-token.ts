@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { createAppAuth } from '@octokit/auth-app';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { ensureEnv, action } from '../../utils';
 import { command } from './command';
 import { OptionValues } from 'commander';
@@ -19,7 +19,7 @@ async function main(envName?: string): Promise<void> {
             installationId: APP_INSTALLATION_ID,
             clientId: APP_CLIENT_ID,
             clientSecret: APP_CLIENT_SECRET,
-        },
+        } as StrategyOptions,
     });
     const tokenRes = await octokit.apps.createInstallationAccessToken({
         installation_id: APP_INSTALLATION_ID,
