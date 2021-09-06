@@ -30,7 +30,7 @@
     "@octokit/auth-app": "~3.6.0",
     "@octokit/auth-oauth-app": "~4.3.0",
     "@octokit/rest": "~18.10.0",
-    "axios": "~0.21.2",
+    "axios": "~0.21.4",
     "bluebird": "~3.7.2",
     "class-transformer": "~0.4.0",
     "class-validator": "~0.13.1",
