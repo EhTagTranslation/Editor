@@ -35,5 +35,5 @@ command
     .option('--env <NAME>', '生成的 token 导出到的环境变量名称')
     .action(async (options: OptionValues) => {
         action.ensureAction();
-        await main(options.env);
+        await main(options['env']);
     });

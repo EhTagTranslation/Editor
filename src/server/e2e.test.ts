@@ -44,7 +44,7 @@ describe('AppController (e2e)', () => {
             .expect(undefined as unknown as string);
         const _2 = await supertest(app.getHttpServer())
             .head('/database')
-            .set('If-None-Match', (_.header as Record<string, string>).etag)
+            .set('If-None-Match', (_.header as Record<string, string>)['etag'])
             .expect(HttpStatus.NOT_MODIFIED);
     });
 

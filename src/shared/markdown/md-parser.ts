@@ -58,14 +58,14 @@ function normalizeUrl(url: string): {
         url,
     );
     if (eh?.groups) {
-        url = 'https://ehgt.org/' + eh.groups.tail;
-        return { url, nsfw: eh.groups.domain.includes('exhentai') ? 'R18' : undefined };
+        url = 'https://ehgt.org/' + eh.groups['tail'];
+        return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
     // pixiv 图片使用反代
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
-        url = 'https://i.pixiv.cat/' + px.groups.tail;
+        url = 'https://i.pixiv.cat/' + px.groups['tail'];
         return { url };
     }
     return { url };

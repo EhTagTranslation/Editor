@@ -36,7 +36,7 @@ class GithubAction {
     }
 
     isAction(): boolean {
-        return !!process.env.GITHUB_ACTIONS;
+        return !!process.env['GITHUB_ACTIONS'];
     }
     ensureAction(): void {
         if (!this.isAction()) throw new Error(`Must run in github action.`);

@@ -23,6 +23,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "importsNotUsedAsValues": "error",
+    "noPropertyAccessFromIndexSignature": true,
 
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
