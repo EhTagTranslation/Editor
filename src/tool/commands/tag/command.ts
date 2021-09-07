@@ -1,7 +1,7 @@
 import { program } from 'commander';
-import { NamespaceName } from '../../../shared/interfaces/ehtag';
-import { RawTag } from '../../../shared/validate';
-import { parseTag as parseTagRaw } from '../../../shared/ehentai';
+import type { NamespaceName } from '../../../shared/interfaces/ehtag';
+import type { RawTag } from '../../../shared/raw-tag';
+import { parseTag as parseTagRaw } from '../../../shared/tag';
 export { Command } from 'commander';
 
 export const command = program.command('tag').description('用于处理标签的相关工具');

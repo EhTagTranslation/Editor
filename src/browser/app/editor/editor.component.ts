@@ -14,9 +14,10 @@ import { Tag, NamespaceName, FrontMatters } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from 'browser/services/github-release.service';
 import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
-import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
+import { RawTag, isRawTag, isNamespaceName } from 'shared/raw-tag';
 import { Context } from 'shared/markdown';
-import { suggestTag, Tag as TagSuggest, parseTag } from 'shared/ehentai';
+import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
+import { parseTag } from 'shared/tag';
 
 class TagSuggestOption {
     constructor(

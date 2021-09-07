@@ -1,5 +1,5 @@
-import * as Ast from './ehtag.ast';
-import { Opaque } from 'type-fest';
+import type * as Ast from './ehtag.ast';
+import type { Opaque } from 'type-fest';
 
 export type Sha1Value = Opaque<string, Commit>;
 

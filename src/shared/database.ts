@@ -2,9 +2,9 @@ import fs from 'fs-extra';
 import path from 'path';
 import { NamespaceDatabase } from './namespace-database';
 import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
-import { TagRecord } from './tag-record';
-import { RawTag } from './validate';
-import { DatabaseView } from './interfaces/database';
+import type { TagRecord } from './tag-record';
+import type { RawTag } from './raw-tag';
+import type { DatabaseView } from './interfaces/database';
 import { Logger } from './markdown';
 import { GitRepoInfoProvider, RepoInfoProvider } from './repo-info-provider';
 

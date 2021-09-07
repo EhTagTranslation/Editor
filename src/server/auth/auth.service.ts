@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectableBase } from '../injectable-base';
 import { OctokitService } from '../octokit/octokit.service';
-import { OAuthAppUserAuthentication, WebFlowAuthOptions } from '@octokit/auth-oauth-app/dist-types/types';
+import type { OAuthAppUserAuthentication, WebFlowAuthOptions } from '@octokit/auth-oauth-app/dist-types/types';
 export { OAuthAppUserAuthentication as Authentication };
 
 @Injectable()

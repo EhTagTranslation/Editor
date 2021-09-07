@@ -1,4 +1,4 @@
-import type { RawTag } from '../validate';
+import type { RawTag } from '../raw-tag';
 import type { NamespaceName } from '../interfaces/ehtag';
 import { tagCache, Tag, suggestTag } from './suggest-tag';
 

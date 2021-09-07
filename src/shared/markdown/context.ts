@@ -1,5 +1,5 @@
 import type { TagRecord } from '../tag-record';
-import type { RawTag } from '../validate';
+import type { RawTag } from '../raw-tag';
 import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database';
 import type { Database } from '../database';
 

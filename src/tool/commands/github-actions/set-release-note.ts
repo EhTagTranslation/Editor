@@ -4,7 +4,7 @@ import { command } from './command';
 import { GitRepoInfoProvider } from '../../../shared/repo-info-provider';
 import { Sha1Value } from '../../../shared/interfaces/ehtag';
 import { lsRemoteTags } from './utils';
-import { OptionValues } from 'commander';
+import type { OptionValues } from 'commander';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;

@@ -1,8 +1,8 @@
-import { Tag, TagType } from './interfaces/ehtag';
+import type { Tag, TagType } from './interfaces/ehtag';
 import { Cell } from './cell';
-import { NamespaceDatabaseView } from './interfaces/database';
-import { Context } from './markdown';
-import { RawTag } from './validate';
+import type { NamespaceDatabaseView } from './interfaces/database';
+import type { Context } from './markdown';
+import { RawTag } from './raw-tag';
 
 const recordRegex =
     /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;

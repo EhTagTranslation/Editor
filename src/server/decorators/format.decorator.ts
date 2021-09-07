@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext, BadRequestException, Header } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
-import { TagType } from 'shared/interfaces/ehtag';
+import type { TagType } from 'shared/interfaces/ehtag';
 
 function getFromQuery(format: string): TagType {
     format = format.trim().toLowerCase();

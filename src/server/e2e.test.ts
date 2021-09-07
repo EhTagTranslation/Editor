@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
 import { AppModule } from './app/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import * as fastify from 'fastify';
+import type * as fastify from 'fastify';
 import { setupSwagger, enableCors } from './setup';
 import { HttpStatus } from '@nestjs/common';
 

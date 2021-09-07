@@ -3,13 +3,13 @@ import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
 import { promisify } from 'util';
-import { TagType, RepoData, NamespaceName } from '../../../shared/interfaces/ehtag';
+import type { TagType, RepoData, NamespaceName } from '../../../shared/interfaces/ehtag';
 import { Database } from '../../../shared/database';
 import pako from './pako';
 import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
 import { normalizeTag } from '../../../shared/ehentai';
-import { RawTag } from '../../../shared/validate';
+import type { RawTag } from '../../../shared/raw-tag';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -120,11 +120,9 @@ class ActionLogger extends Logger {
 }
 
 program
-    .command('create-release [source] [destination]')
-    .description('生成发布文件', {
-        source: 'REPO 的本地路径',
-        destination: '生成发布文件的路径',
-    })
+    .command('create-release')
+    .argument('[source]', 'REPO 的本地路径')
+    .argument('[destination]', '生成发布文件的路径')
     .option('--strict', '启用严格检查')
     .option('--source-check', '检查 TAG 数据库，提示不存在的和重命名的标签')
     .option('--no-rewrite', '不重新序列化数据库内容')

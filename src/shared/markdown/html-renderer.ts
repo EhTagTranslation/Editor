@@ -18,6 +18,7 @@ import {
     isNodeType,
 } from '../interfaces/ehtag.ast';
 import { renderText } from './text-renderer';
+import { tagAbbr } from '../tag';
 
 const FRAGMENT_NODE = '#root';
 export interface DocumentFragment {
@@ -168,8 +169,19 @@ const ATTR_MAP: {
         return attr;
     },
     tagref(node) {
-        if (node.tag) return [{ name: 'title', value: node.tag }];
-        else return [];
+        const attrs = [];
+        if (node.tag) {
+            if (node.explicitNs) {
+                attrs.push({ name: 'title', value: tagAbbr(node.tag, node.ns) });
+            } else {
+                attrs.push({ name: 'title', value: node.tag });
+            }
+
+            if (node.ns) {
+                attrs.push({ name: 'ns', value: node.ns });
+            }
+        }
+        return attrs;
     },
     br: undefined,
     paragraph: undefined,

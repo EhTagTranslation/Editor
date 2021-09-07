@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor, HttpException, HttpStatus } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 import { Observable, from, throwError, of } from 'rxjs';
 import { map, mergeMap, delayWhen, catchError } from 'rxjs/operators';
 import { InjectableBase } from '../injectable-base';
@@ -25,7 +25,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
         const setEtag = (): Observable<void> =>
             from(
                 this.database.data.sha().then((sha) => {
-                    res.header('ETag', `"${sha}"`);
+                    void res.header('ETag', `"${sha}"`);
                 }),
             );
 
@@ -39,7 +39,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
                         const match = req.headers['if-none-match'] as unknown;
                         if (!match) return;
                         if (sha !== getSha(match)) return;
-                        res.status(HttpStatus.NOT_MODIFIED).send();
+                        void res.status(HttpStatus.NOT_MODIFIED).send();
                         this.logger.verbose('Sent 304');
                         return true;
                     }
@@ -78,7 +78,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
                 if (err instanceof HttpException && err.getStatus() === HttpStatus.NOT_FOUND) {
                     return setEtag().pipe(mergeMap(() => throwError(err)));
                 }
-                return throwError(err);
+                return throwError(() => err);
             }),
             delayWhen(setEtag),
         );

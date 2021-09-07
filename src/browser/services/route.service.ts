@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Params, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
+import type { Observable } from 'rxjs';
 import { map, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
 
 @Injectable({

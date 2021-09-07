@@ -8,9 +8,9 @@ import {
     RepoData,
     RepoInfo,
 } from 'shared/interfaces/ehtag';
-import { DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
+import type { DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
 import { Context } from 'shared/markdown';
-import { RawTag } from 'shared/validate';
+import type { RawTag } from 'shared/raw-tag';
 import { TagRecord } from 'shared/tag-record';
 
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {

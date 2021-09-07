@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import { InjectableBase } from '../injectable-base';
 import { OctokitService } from '../octokit/octokit.service';
 
@@ -11,8 +11,7 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const http = context.switchToHttp();
         const request = http.getRequest<FastifyRequest>();
-        let token = (request.headers['authorization'] ??
-            (request.query as Record<string, string>).access_token) as string;
+        let token = request.headers['authorization'] ?? (request.query as Record<string, string>)['access_token'];
         if (!token) return true;
         if (typeof token != 'string') throw new UnauthorizedException('Invalid token.');
         token = token.trim();

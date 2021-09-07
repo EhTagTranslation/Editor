@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { NamespaceName } from '../interfaces/ehtag';
-import { RawTag } from '../validate';
+import type { NamespaceName } from '../interfaces/ehtag';
+import type { RawTag } from '../raw-tag';
 
 const responseType = Symbol();
 
