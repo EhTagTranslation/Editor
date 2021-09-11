@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
 import readline from 'readline';
-import { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
+import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { load, dump } from 'js-yaml';
 import { TagRecord } from './tag-record';
-import { Database } from './database';
-import { RawTag } from './validate';
-import { NamespaceDatabaseView } from './interfaces/database';
+import type { Database } from './database';
+import type { RawTag } from './raw-tag';
+import type { NamespaceDatabaseView } from './interfaces/database';
 import { Context } from './markdown';
 import { PassThrough } from 'stream';
 

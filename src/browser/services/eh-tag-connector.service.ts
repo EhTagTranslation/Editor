@@ -2,9 +2,9 @@ import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, OperatorFunction } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { ETKey } from '../interfaces/ehtranslation';
+import type { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
-import { TagType, Tag, NamespaceName } from 'shared/interfaces/ehtag';
+import type { TagType, Tag, NamespaceName } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
 import { TagRecord } from 'shared/tag-record';
@@ -63,7 +63,7 @@ export class EhTagConnectorService {
     addTag<T extends TagType = 'raw'>(
         key: ETKey,
         value: Tag<'raw'>,
-        format: T = ('raw' as TagType) as T,
+        format: T = 'raw' as TagType as T,
     ): Observable<Tag<T> | null> {
         const endpoint = this.getEndpoint(key, format);
         const payload: Tag<'raw'> = {

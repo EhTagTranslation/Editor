@@ -1,21 +1,21 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { ConfigService } from '@nestjs/config';
-import { Octokit } from '@octokit/rest';
-import { AsyncReturnType } from 'type-fest';
+import type { Octokit } from '@octokit/rest';
+import type { AsyncReturnType } from 'type-fest';
 import fs from 'fs-extra';
 import path from 'path';
 import { Database } from 'shared/database';
 import { OctokitService, UserInfo } from 'server/octokit/octokit.service';
 import { Sha1Value, NamespaceName, Commit } from 'shared/interfaces/ehtag';
-import { TagRecord } from 'shared/tag-record';
-import { RawTag } from 'shared/validate';
+import type { TagRecord } from 'shared/tag-record';
+import type { RawTag } from 'shared/raw-tag';
 import { Context } from 'shared/markdown';
 
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 
 function userEmail(user: User): string {
-    return `${user.id}+${user.login}@users.noreply.github.com`;
+    return `${Number(user.id)}+${String(user.login)}@users.noreply.github.com`;
 }
 
 interface RepoInfo {
@@ -169,7 +169,7 @@ ${message.nv.stringify(newContext)}
         const sha = blob[file];
         if (!sha) throw new Error(`Unknown blob sha of ${file}`);
         const result = await this.octokit.updateFile(file, sha, content, msg, {
-            name: user.login,
+            name: String(user.login),
             email: userEmail(user),
         });
         blob[file] = result.file.sha;

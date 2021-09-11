@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TagResponseDto } from 'server/dtos/repo-info.dto';
+import type { TagResponseDto } from 'server/dtos/repo-info.dto';
 import { IsString } from 'class-validator';
 
 export class TagParams {

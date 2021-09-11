@@ -19,7 +19,7 @@ import {
 import { InjectableBase } from 'server/injectable-base';
 import { DatabaseService } from './database.service';
 import { EtagInterceptor } from 'server/app/etag.interceptor';
-import { TagType } from 'shared/interfaces/ehtag';
+import type { TagType } from 'shared/interfaces/ehtag';
 import {
     ApiTags,
     ApiOperation,
@@ -31,7 +31,7 @@ import {
 import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } from 'server/dtos/repo-info.dto';
 import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto';
 import { Format } from 'server/decorators/format.decorator';
-import { UserInfo } from 'server/octokit/octokit.service';
+import type { UserInfo } from 'server/octokit/octokit.service';
 import { User } from 'server/decorators/user.decorator';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from 'server/decorators/swagger.decoretor';
 import { Context } from 'shared/markdown';

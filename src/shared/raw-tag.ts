@@ -1,9 +1,11 @@
-import { Opaque } from 'type-fest';
+import type { Opaque } from 'type-fest';
 import { ValidationOptions, ValidationArguments, buildMessage, ValidateBy } from 'class-validator';
 import { NamespaceName } from './interfaces/ehtag';
 
+/** 表示一个标签的原文，不包含命名空间 */
 export type RawTag = Opaque<string, 'raw'>;
 
+/** 检查输入是否为一个标签的原文，不包含命名空间 */
 export function isRawTag(tag: unknown): tag is RawTag {
     if (typeof tag != 'string') return false;
     if (tag.length < 1) return false;
@@ -12,6 +14,7 @@ export function isRawTag(tag: unknown): tag is RawTag {
     return true;
 }
 
+/** 表示一个标签的原文，不包含命名空间 */
 export function RawTag(tag: string | undefined): RawTag | undefined {
     if (!tag) return undefined;
     tag = tag.trim().toLowerCase();

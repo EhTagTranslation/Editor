@@ -1,7 +1,7 @@
-import { CellType, TagType } from './interfaces/ehtag';
+import type { CellType, TagType } from './interfaces/ehtag';
 import { parse, render } from './markdown';
-import { Context } from './markdown';
-import { Tree } from './interfaces/ehtag.ast';
+import type { Context } from './markdown';
+import type { Tree } from './interfaces/ehtag.ast';
 
 export class Cell {
     constructor(raw: string) {

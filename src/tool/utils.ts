@@ -1,4 +1,4 @@
-import { Sha1Value } from '../shared/interfaces/ehtag';
+import type { Sha1Value } from '../shared/interfaces/ehtag';
 import * as actionsCore from '@actions/core';
 import * as actionsExec from '@actions/exec';
 
@@ -7,7 +7,7 @@ export function ensureEnv(name: string): string;
 export function ensureEnv<T>(name: string, parser?: (s: string) => T): T {
     const env = process.env[name];
     if (env == null) throw new Error(`Environment variable '${name}' required.`);
-    if (!parser) return (env as unknown) as T;
+    if (!parser) return env as unknown as T;
     return parser(env);
 }
 
@@ -36,7 +36,7 @@ class GithubAction {
     }
 
     isAction(): boolean {
-        return !!process.env.GITHUB_ACTIONS;
+        return !!process.env['GITHUB_ACTIONS'];
     }
     ensureAction(): void {
         if (!this.isAction()) throw new Error(`Must run in github action.`);

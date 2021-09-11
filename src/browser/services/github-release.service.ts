@@ -1,13 +1,13 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiEndpointService } from './api-endpoint.service';
-import { GithubRelease } from 'browser/interfaces/github';
+import type { GithubRelease } from 'browser/interfaces/github';
 import { DebugService } from './debug.service';
-import { RepoData } from 'shared/interfaces/ehtag';
-import { of, BehaviorSubject, merge, timer, from, Observable } from 'rxjs';
+import type { RepoData } from 'shared/interfaces/ehtag';
+import { of, BehaviorSubject, merge, timer, from, Observable, lastValueFrom } from 'rxjs';
 import { map, tap, mergeMap, catchError, filter, finalize, throttleTime } from 'rxjs/operators';
 import { CacheService } from './cache.service';
-import { DatabaseView } from 'shared/interfaces/database';
+import type { DatabaseView } from 'shared/interfaces/database';
 import { DatabaseInMemory } from './database';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
@@ -55,7 +55,7 @@ export class GithubReleaseService {
     private getRelease(): Observable<GithubRelease> {
         const get = (): Promise<GithubRelease> => {
             const endpoint = this.endpoints.github('repos/EhTagTranslation/Database/releases/latest');
-            return this.http.get<GithubRelease>(endpoint).toPromise();
+            return lastValueFrom(this.http.get<GithubRelease>(endpoint));
         };
         if (this.getReleasePromise) {
             return from(this.getReleasePromise);
@@ -109,15 +109,17 @@ export class GithubReleaseService {
             return;
         }
         const sha = (
-            await this.http
-                .get<{ commit: { sha: string } }>(
+            await lastValueFrom(
+                this.http.get<{ commit: { sha: string } }>(
                     this.endpoints.github('repos/EhTagTranslation/DatabaseReleases/branches/master'),
-                )
-                .toPromise()
+                ),
+            )
         ).commit.sha;
-        const data = await this.http
-            .get<RepoData<'raw'>>(`https://cdn.jsdelivr.net/gh/EhTagTranslation/DatabaseReleases@${sha}/db.raw.json`)
-            .toPromise();
+        const data = await lastValueFrom(
+            this.http.get<RepoData<'raw'>>(
+                `https://cdn.jsdelivr.net/gh/EhTagTranslation/DatabaseReleases@${sha}/db.raw.json`,
+            ),
+        );
         this.debug.log('release: load end with remote data', { hash: data.head.sha });
         await this.set(data);
         await this.cache.set('REPO_DATA_RAW', data);

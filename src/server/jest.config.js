@@ -4,11 +4,12 @@ const path = require('path');
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
     moduleFileExtensions: ['js', 'json', 'ts'],
-    rootDir: path.resolve(__dirname, '..'),
-    setupFilesAfterEnv: ['<rootDir>/server/setup-jest.ts'],
+    rootDir: path.resolve(__dirname, '../..'),
+    roots: ['<rootDir>/src/'],
+    setupFilesAfterEnv: ['<rootDir>/src/server/setup-jest.ts'],
     moduleNameMapper: {
-        '^shared/.*$': '<rootDir>/$0',
-        '^server/.*$': '<rootDir>/$0',
+        '^shared/.*$': '<rootDir>/src/$0',
+        '^server/.*$': '<rootDir>/src/$0',
     },
     testEnvironment: 'node',
     testRegex: '(\\.test|\\.spec)\\.ts$',

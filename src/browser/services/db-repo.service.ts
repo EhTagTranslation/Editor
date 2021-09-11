@@ -1,4 +1,4 @@
-import { NamespaceName } from 'shared/interfaces/ehtag';
+import type { NamespaceName } from 'shared/interfaces/ehtag';
 import { Injectable } from '@angular/core';
 
 @Injectable({

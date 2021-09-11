@@ -1,4 +1,5 @@
-import { Node, Tree, NodeType, NodeMap, ContainerNode } from '../interfaces/ehtag.ast';
+import { tagAbbrFull } from '../tag';
+import type { Node, Tree, NodeType, NodeMap, ContainerNode } from '../interfaces/ehtag.ast';
 
 function encodeUrl(url: string): string {
     return url;
@@ -29,8 +30,14 @@ const renderers: { [T in NodeType]: (node: NodeMap[T], parent?: ContainerNode, i
         return '\n';
     },
     tagref(node) {
-        let ref = node.tag;
-        if (!ref) ref = node.text;
+        let ref;
+        if (!node.tag) {
+            ref = node.text;
+        } else if (node.ns == null || !node.explicitNs) {
+            ref = node.tag;
+        } else {
+            ref = tagAbbrFull(node.tag, node.ns);
+        }
         let backtick = '`';
         while (ref.includes(backtick)) {
             backtick += '`';

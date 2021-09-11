@@ -1,4 +1,4 @@
-import { SimpleGit } from 'simple-git';
+import type { SimpleGit } from 'simple-git';
 import { Sha1Value } from '../../../shared/interfaces/ehtag';
 
 interface GitTag {

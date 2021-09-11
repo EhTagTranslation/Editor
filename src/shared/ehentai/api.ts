@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { NamespaceName } from '../interfaces/ehtag';
-import { RawTag } from '../validate';
+import type { NamespaceName } from '../interfaces/ehtag';
+import type { RawTag } from '../raw-tag';
 
 const responseType = Symbol();
 
@@ -74,7 +74,7 @@ export async function postApi<T extends ApiRequest<string, unknown>>(payload: T)
     };
     const response = await request<ResponseOf<T>>(req, 3);
     const data = response.data;
-    if ('error' in data) {
+    if (typeof data == 'object' && 'error' in (data as object)) {
         let err = (data as { error: string }).error;
         if (typeof err != 'string') err = JSON.stringify(err);
         throw new Error(err);

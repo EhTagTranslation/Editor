@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
 import { AppModule } from './app/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import * as fastify from 'fastify';
+import type * as fastify from 'fastify';
 import { setupSwagger, enableCors } from './setup';
 import { HttpStatus } from '@nestjs/common';
 
@@ -20,8 +20,12 @@ describe('AppController (e2e)', () => {
         enableCors(app);
         setupSwagger(app);
         await app.init();
-        const adapter = (app.getHttpAdapter() as unknown) as FastifyAdapter;
+        const adapter = app.getHttpAdapter() as unknown as FastifyAdapter;
         await adapter.getInstance<fastify.FastifyInstance>().ready();
+    });
+
+    afterAll(async () => {
+        await app.close();
     });
 
     it('HEAD /database', async () => {
@@ -29,18 +33,18 @@ describe('AppController (e2e)', () => {
             .head('/database')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect((undefined as unknown) as string);
-    });
+            .expect(undefined as unknown as string);
+    }, 3000);
 
     it('HEAD /database ETag: [ETag]', async () => {
         const _ = await supertest(app.getHttpServer())
             .head('/database')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect((undefined as unknown) as string);
+            .expect(undefined as unknown as string);
         const _2 = await supertest(app.getHttpServer())
             .head('/database')
-            .set('If-None-Match', (_.header as Record<string, string>).etag)
+            .set('If-None-Match', (_.header as Record<string, string>)['etag'])
             .expect(HttpStatus.NOT_MODIFIED);
     });
 
@@ -98,7 +102,7 @@ describe('AppController (e2e)', () => {
             .head('/database/rows/female')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect((undefined as unknown) as string);
+            .expect(undefined as unknown as string);
     });
 
     it('GET /database/rows/female?format=text.json', async () => {
@@ -151,8 +155,7 @@ describe('AppController (e2e)', () => {
             links: {
                 raw: '[数据库页面](https://github.com/EhTagTranslation/Database/blob/master/database/female.md)',
                 text: '数据库页面',
-                html:
-                    '<p><a href="https://github.com/EhTagTranslation/Database/blob/master/database/female.md">数据库页面</a></p>',
+                html: '<p><a href="https://github.com/EhTagTranslation/Database/blob/master/database/female.md">数据库页面</a></p>',
                 //  ast: [],
             },
         });
@@ -204,7 +207,60 @@ describe('AppController (e2e)', () => {
             .expect(HttpStatus.BAD_REQUEST);
     });
 
-    afterAll(async () => {
-        await app.close();
+    it('GET /tools/parse raw+json', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .post('/tools/parse')
+            .type('text/plain')
+            .send(
+                `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
+            )
+            .set('accept', 'application/raw+json')
+            .expect(HttpStatus.OK);
+        expect(_.body).toEqual({
+            key: 'a',
+            value: {
+                name: '[http://a.com](http://a.com) [link](http://a.com "name") [link2](http://a.com) *test1* **test2** ``x`xx` `` a!',
+                intro: '![](# "https://ehgt.org/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg") ![图](http://xx.com "aaa") ![图2](http://xx.com)',
+                links: '[萌娘百科](https://zh.moegirl.org.cn/密涅瓦%28公主连结%29)',
+            },
+        });
+    });
+
+    it('GET /tools/parse html+json', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .post('/tools/parse')
+            .type('text/plain')
+            .send(
+                `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
+            )
+            .set('accept', 'application/html+json')
+            .expect(HttpStatus.OK);
+        expect(_.body).toEqual({
+            key: 'a',
+            value: {
+                name: '<p><a href="http://a.com">http://a.com</a> <a href="http://a.com" title="name">link</a> <a href="http://a.com">link2</a> <em>test1</em> <strong>test2</strong> <abbr>x`xx`</abbr> a!</p>',
+                intro: '<p><img src="https://ehgt.org/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg" nsfw="R18"> <img src="http://xx.com" title="aaa" alt="图"> <img src="http://xx.com" alt="图2"></p>',
+                links: '<p><a href="https://zh.moegirl.org.cn/密涅瓦%28公主连结%29">萌娘百科</a></p>',
+            },
+        });
+    });
+
+    it('GET /tools/parse text.json', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .post('/tools/parse')
+            .type('text/plain')
+            .send(
+                `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
+            )
+            .query({ format: 'text.json' })
+            .expect(HttpStatus.OK);
+        expect(_.body).toEqual({
+            key: 'a',
+            value: {
+                name: 'http://a.com link link2 test1 test2 x`xx` a!',
+                intro: '',
+                links: '萌娘百科',
+            },
+        });
     });
 });

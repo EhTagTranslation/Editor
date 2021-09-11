@@ -67,13 +67,13 @@ export class EhHttpInterceptor implements HttpInterceptor {
         }
         const token = this.githubOauth.token;
         if (req.url.startsWith(this.endpoints.github())) {
-            mod.setHeaders.Accept = `application/vnd.github.v3+json`;
+            mod.setHeaders['Accept'] = `application/vnd.github.v3+json`;
             if (token) {
                 /**
                  * use `token` for more rate limits
                  * @see https://developer.github.com/v3/#rate-limiting
                  */
-                mod.setHeaders.Authorization = `token ${token}`;
+                mod.setHeaders['Authorization'] = `token ${token}`;
             }
         } else if (req.url.startsWith(this.endpoints.ehTagConnectorDb())) {
             if (['POST', 'PUT', 'DELETE'].includes(req.method) && mod.setHeaders) {

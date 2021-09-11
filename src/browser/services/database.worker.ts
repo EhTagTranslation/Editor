@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { TagType, RepoData } from './../../shared/interfaces/ehtag';
+import type { TagType, RepoData } from './../../shared/interfaces/ehtag';
 import { DatabaseInMemory } from './database.shared';
 
 addEventListener('message', ({ data }) => {

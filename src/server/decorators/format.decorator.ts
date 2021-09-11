@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext, BadRequestException, Header } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
-import { TagType } from 'shared/interfaces/ehtag';
+import type { TagType } from 'shared/interfaces/ehtag';
 
 function getFromQuery(format: string): TagType {
     format = format.trim().toLowerCase();
@@ -27,14 +27,14 @@ function getFromQuery(format: string): TagType {
 
 function getFromHeader(accept: string): TagType {
     const match = /application\/(?<type>full|html|ast|raw|text)\+json/i.exec(accept);
-    if (match?.groups) return match.groups.type.toLowerCase() as TagType;
+    if (match?.groups) return match.groups['type'].toLowerCase() as TagType;
     return 'full';
 }
 
 export const Format = createParamDecorator<void, ExecutionContext, TagType>(
     (_: void, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest<FastifyRequest>();
-        const format = (request.query as Record<string, string>).format as unknown;
+        const format = (request.query as Record<string, string>)['format'] as unknown;
         if (format && typeof format == 'string') return getFromQuery(format);
         const accept = request.headers.accept as unknown;
         if (accept && typeof accept == 'string') return getFromHeader(accept);

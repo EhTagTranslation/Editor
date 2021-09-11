@@ -1,6 +1,6 @@
-import { RawTag } from '../validate';
+import type { RawTag } from '../raw-tag';
 import { postApi, TagSuggestRequest, ResponseOf } from './api';
-import { NamespaceName } from '../interfaces/ehtag';
+import type { NamespaceName } from '../interfaces/ehtag';
 
 const suggestCache = new Map<string, Tag[]>();
 export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();

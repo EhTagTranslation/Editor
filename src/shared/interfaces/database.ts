@@ -1,6 +1,6 @@
-import { RepoInfo, TagType, RepoData, NamespaceName, FrontMatters, NamespaceInfo, NamespaceData } from './ehtag';
-import { RawTag } from '../validate';
-import { TagRecord } from '../tag-record';
+import type { RepoInfo, TagType, RepoData, NamespaceName, FrontMatters, NamespaceInfo, NamespaceData } from './ehtag';
+import type { RawTag } from '../raw-tag';
+import type { TagRecord } from '../tag-record';
 
 export interface NamespaceDatabaseView {
     readonly name: NamespaceName;

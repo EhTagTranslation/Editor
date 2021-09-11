@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
 import { RouteService } from 'browser/services/route.service';
-import { Observable, BehaviorSubject, combineLatest, merge } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom } from 'rxjs';
 import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -14,9 +14,10 @@ import { Tag, NamespaceName, FrontMatters } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from 'browser/services/github-release.service';
 import { DebugService } from 'browser/services/debug.service';
 import { DbRepoService } from 'browser/services/db-repo.service';
-import { RawTag, isRawTag, isNamespaceName } from 'shared/validate';
+import { RawTag, isRawTag, isNamespaceName } from 'shared/raw-tag';
 import { Context } from 'shared/markdown';
-import { suggestTag, Tag as TagSuggest, parseTag } from 'shared/ehentai';
+import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
+import { parseTag } from 'shared/tag';
 
 class TagSuggestOption {
     constructor(
@@ -284,29 +285,27 @@ export class EditorComponent implements OnInit {
             ),
             tagSuggestSource.pipe(
                 debounceTime(100),
-                mergeMap(
-                    async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
-                        if (!raw) return [raw, []];
-                        const suggestion = await suggestTag(undefined, raw);
-                        suggestion.sort((a, b) => {
-                            const aNs = a.master?.namespace ?? a.namespace;
-                            const bNs = b.master?.namespace ?? b.namespace;
-                            if (aNs === bNs) return 0;
-                            if (aNs === ns) return -1;
-                            if (bNs === ns) return 1;
-                            return 0;
-                        });
-                        if (suggestion.length >= 10 && ns != null) {
-                            const nsSuggestion = await suggestTag(ns, raw);
-                            suggestion.unshift(
-                                ...nsSuggestion.filter((s) =>
-                                    suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
-                                ),
-                            );
-                        }
-                        return [raw, suggestion];
-                    },
-                ),
+                mergeMap(async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
+                    if (!raw) return [raw, []];
+                    const suggestion = await suggestTag(undefined, raw);
+                    suggestion.sort((a, b) => {
+                        const aNs = a.master?.namespace ?? a.namespace;
+                        const bNs = b.master?.namespace ?? b.namespace;
+                        if (aNs === bNs) return 0;
+                        if (aNs === ns) return -1;
+                        if (bNs === ns) return 1;
+                        return 0;
+                    });
+                    if (suggestion.length >= 10 && ns != null) {
+                        const nsSuggestion = await suggestTag(ns, raw);
+                        suggestion.unshift(
+                            ...nsSuggestion.filter((s) =>
+                                suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
+                            ),
+                        );
+                    }
+                    return [raw, suggestion];
+                }),
                 filter(([raw]) => raw === this.tagSuggestTerm.value),
                 map(([, suggestions]) => {
                     return {
@@ -477,9 +476,9 @@ export class EditorComponent implements OnInit {
                 raw: this.value('raw'),
             };
 
-            const result = (await this.ehTagConnector.hasTag(key).toPromise())
-                ? await this.ehTagConnector.modifyTag(key, payload).toPromise()
-                : await this.ehTagConnector.addTag(key, payload).toPromise();
+            const result = (await lastValueFrom(this.ehTagConnector.hasTag(key)))
+                ? await lastValueFrom(this.ehTagConnector.modifyTag(key, payload))
+                : await lastValueFrom(this.ehTagConnector.addTag(key, payload));
             this.router.navigate(['/edit', key.namespace, key.raw], result ?? payload, true);
             this.snackBar.open(result ? '更改已提交' : '提交内容与数据库一致', '关闭', snackBarConfig);
             this.tagForm.markAsPristine();

@@ -18,6 +18,7 @@ import {
     isNodeType,
 } from '../interfaces/ehtag.ast';
 import { renderText } from './text-renderer';
+import { tagAbbr } from '../tag';
 
 const FRAGMENT_NODE = '#root';
 export interface DocumentFragment {
@@ -145,9 +146,9 @@ const ELEMENT_MAP: Record<string, (attrs: Attribute[]) => Node> = {
         return { type: 'paragraph', content: [] };
     },
     template(): Node {
-        return (({
+        return {
             type: TEMPLATE_NODE,
-        } as __Template) as unknown) as Node;
+        } as __Template as unknown as Node;
     },
 };
 const ATTR_MAP: {
@@ -168,8 +169,19 @@ const ATTR_MAP: {
         return attr;
     },
     tagref(node) {
-        if (node.tag) return [{ name: 'title', value: node.tag }];
-        else return [];
+        const attrs = [];
+        if (node.tag) {
+            if (node.explicitNs) {
+                attrs.push({ name: 'title', value: tagAbbr(node.tag, node.ns) });
+            } else {
+                attrs.push({ name: 'title', value: node.tag });
+            }
+
+            if (node.ns) {
+                attrs.push({ name: 'ns', value: node.ns });
+            }
+        }
+        return attrs;
     },
     br: undefined,
     paragraph: undefined,
@@ -219,10 +231,10 @@ class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
         const creater = this._ELEMENT_MAP[tagName];
         const node: Node = creater
             ? creater(attrs)
-            : (({
+            : ({
                   type: tagName,
                   attrs,
-              } as __UnknownNode) as Node);
+              } as __UnknownNode as Node);
         setProp(node, 'namespaceURI', namespaceURI);
         return node;
     }
@@ -281,7 +293,7 @@ class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
         return textNode.text;
     }
     getTemplateContent(templateElement: Node): DocumentFragment {
-        return ((templateElement as unknown) as __Template).template;
+        return (templateElement as unknown as __Template).template;
     }
     insertBefore(parentNode: ContainerNode, newNode: InlineNode, referenceNode: InlineNode): void {
         const i = parentNode.content.indexOf(referenceNode);

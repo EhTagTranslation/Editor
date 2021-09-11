@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 @Injectable()
 class InjectableBase {
     constructor() {
-        this.logger = new Logger(new.target.name, true);
+        this.logger = new Logger(new.target.name, { timestamp: true });
         this.logger.log(`Constructing ${new.target.name}`);
     }
     /** 日志服务 */

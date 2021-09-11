@@ -1,3 +1,6 @@
+import type { RawTag } from '../raw-tag';
+import type { NamespaceName } from './ehtag';
+
 export type Tree = ParaNode[];
 
 export const NodeType = ['paragraph', 'text', 'br', 'tagref', 'image', 'link', 'emphasis', 'strong'] as const;
@@ -28,7 +31,10 @@ export interface TextNode extends TextLeafNode {
 }
 export interface TagRefNode extends TextLeafNode {
     type: 'tagref';
-    tag?: string;
+    tag?: RawTag | '';
+    ns?: NamespaceName;
+    /** 命名空间是输入时显式指定的 */
+    explicitNs?: true;
 }
 export interface BreakNode extends LeafNode {
     type: 'br';

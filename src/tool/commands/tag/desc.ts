@@ -1,7 +1,7 @@
 import { normalizeTag } from '../../../shared/ehentai';
 import { command, parseTag } from './command';
 import axios, { AxiosError } from 'axios';
-import { Tag } from '../../../shared/interfaces/ehtag';
+import type { Tag } from '../../../shared/interfaces/ehtag';
 
 command
     .command('desc <[namespace:]tag>')

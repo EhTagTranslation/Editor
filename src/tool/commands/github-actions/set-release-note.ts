@@ -4,7 +4,7 @@ import { command } from './command';
 import { GitRepoInfoProvider } from '../../../shared/repo-info-provider';
 import { Sha1Value } from '../../../shared/interfaces/ehtag';
 import { lsRemoteTags } from './utils';
-import { OptionValues } from 'commander';
+import type { OptionValues } from 'commander';
 
 function compareInfo(before: string, after: string): string {
     return `上次发布以来的更改 https://github.com/${action.repository}/compare/${before}...${after}`;
@@ -26,15 +26,15 @@ command
         action.exportVariable('RELEASE_NAME', head.message.split('\n', 1)[0]);
         const info = { message } as Record<string, string>;
         const git = SimpleGit();
-        info.before = (await lsRemoteTags(git))[0]?.sha ?? Sha1Value.empty;
-        info.after = head.sha;
-        if (info.before && info.after) {
-            message += `\n\n${compareInfo(info.before, info.after)}`;
+        info['before'] = (await lsRemoteTags(git))[0]?.sha ?? Sha1Value.empty;
+        info['after'] = head.sha;
+        if (info['before'] && info['after']) {
+            message += `\n\n${compareInfo(info['before'], info['after'])}`;
         }
         const { mirrorSha } = options;
         if (typeof mirrorSha == 'string') {
             message += `\n\n${mirrorInfo(mirrorSha)}`;
-            info.mirror = mirrorSha;
+            info['mirror'] = mirrorSha;
         }
         action.exportVariable('RELEASE_BODY', `<!--\n${JSON.stringify(info, undefined, 2)}\n-->\n` + message);
     });

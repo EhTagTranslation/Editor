@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
+import type { SortDirection } from '@angular/material/sort';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
 import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
-import { Params } from '@angular/router';
+import type { Params } from '@angular/router';
 import { map, tap, shareReplay, debounceTime, filter, mergeMap } from 'rxjs/operators';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { RouteService } from 'browser/services/route.service';
 import { DebugService } from 'browser/services/debug.service';
 import { TitleService } from 'browser/services/title.service';
-import { NamespaceName, Tag, RepoData } from 'shared/interfaces/ehtag';
+import type { NamespaceName, Tag, RepoData } from 'shared/interfaces/ehtag';
 import { GithubReleaseService } from 'browser/services/github-release.service';
-import { isNamespaceName } from 'shared/validate';
+import { isNamespaceName } from 'shared/raw-tag';
 
 export interface ETItem extends Tag<'raw'>, ETKey {}
 
@@ -132,7 +132,6 @@ export class ListComponent implements OnInit {
 
         this.filteredTags = combineLatest([this.tags, this.namespace, this.search.pipe(debounceTime(50))]).pipe(
             tap(() => this.loading.next(true)),
-            tap(() => this.navigateParam({ pageIndex: 0 })),
             map((data) => this.getFilteredData(...data)),
             shareReplay(1),
         );

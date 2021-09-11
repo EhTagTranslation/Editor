@@ -1,3 +1,4 @@
+import { tagAbbr } from '../tag';
 import { Node, isNodeType, isContainer } from '../interfaces/ehtag.ast';
 
 export function renderText(node: Node | readonly Node[]): string {
@@ -6,7 +7,7 @@ export function renderText(node: Node | readonly Node[]): string {
     if (isNodeType(node, 'image')) return '';
     if (isNodeType(node, 'text')) return node.text;
     if (isNodeType(node, 'tagref')) {
-        if (node.tag) return `${node.text}(${node.tag})`;
+        if (node.tag) return `${node.text}(${node.explicitNs ? tagAbbr(node.tag, node.ns) : node.tag})`;
         else return node.text;
     }
     if (isContainer(node)) {

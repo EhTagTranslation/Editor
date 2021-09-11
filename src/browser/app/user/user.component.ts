@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GithubOauthService } from 'browser/services/github-oauth.service';
-import { GithubUser } from 'browser/interfaces/github';
+import type { GithubUser } from 'browser/interfaces/github';
 import { GithubReleaseService } from 'browser/services/github-release.service';
 import { finalize } from 'rxjs/operators';
 

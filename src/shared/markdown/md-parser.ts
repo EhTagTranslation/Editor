@@ -12,9 +12,10 @@ import {
     EmphasisNode,
     StrongNode,
 } from '../interfaces/ehtag.ast';
-import Token from 'markdown-it/lib/token';
+import type Token from 'markdown-it/lib/token';
 import { Context } from './context';
-import { isRawTag } from '../validate';
+import type { NamespaceName } from '../interfaces/ehtag';
+import { parseTag } from '../tag';
 
 const md = MarkdownIt('commonmark', {
     html: false,
@@ -43,9 +44,7 @@ md.normalizeLink = md.normalizeLinkText = (url) => {
     return url;
 };
 
-function normalizeUrl(
-    url: string,
-): {
+function normalizeUrl(url: string): {
     url: string;
     nsfw?: ImageNode['nsfw'];
 } {
@@ -59,14 +58,14 @@ function normalizeUrl(
         url,
     );
     if (eh?.groups) {
-        url = 'https://ehgt.org/' + eh.groups.tail;
-        return { url, nsfw: eh.groups.domain.includes('exhentai') ? 'R18' : undefined };
+        url = 'https://ehgt.org/' + eh.groups['tail'];
+        return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
     // pixiv 图片使用反代
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
-        url = 'https://i.pixiv.cat/' + px.groups.tail;
+        url = 'https://i.pixiv.cat/' + px.groups['tail'];
         return { url };
     }
     return { url };
@@ -127,24 +126,60 @@ function normalizeImage(node: ImageNode): void {
     node.nsfw = nsfw;
 }
 
-function normalizeTagref(node: TagRefNode, context: Context): void {
-    const tagDef = node.text.trim();
-    const tag = tagDef.toLowerCase();
-    if (!isRawTag(tag)) {
-        context.warn(`无效标签引用：\`${node.text}\` 不是一个有效的标签。`);
+const SEARCH_ORDER: Record<NamespaceName, readonly NamespaceName[]> = {
+    rows: ['rows', 'reclass', 'female', 'misc', 'male', 'language', 'group', 'artist', 'parody', 'character'],
+    reclass: ['reclass', 'female', 'misc', 'male', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
+    language: ['language', 'female', 'misc', 'male', 'reclass', 'rows', 'group', 'artist', 'parody', 'character'],
+    parody: ['parody', 'character', 'female', 'misc', 'male', 'group', 'artist', 'language', 'reclass', 'rows'],
+    character: ['character', 'parody', 'female', 'misc', 'male', 'group', 'artist', 'language', 'reclass', 'rows'],
+    group: ['group', 'artist', 'parody', 'character', 'language', 'female', 'misc', 'male', 'reclass', 'rows'],
+    artist: ['artist', 'group', 'parody', 'character', 'language', 'female', 'misc', 'male', 'reclass', 'rows'],
+    male: ['male', 'misc', 'female', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
+    female: ['female', 'misc', 'male', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
+    misc: ['misc', 'female', 'male', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
+};
+
+function normalizeTagRef(node: TagRefNode, context: Context): void {
+    const text = (node.text ?? '').trim();
+    const tag = parseTag(text);
+
+    if (!tag.valid) {
+        context.warn(`无效标签引用：\`${text}\` 不是一个有效的标签。`);
         node.tag = '';
-        node.text = tagDef;
+        node.text = text;
         return;
     }
-    const record = context.namespace.get(tag) ?? context.database.get(tag);
+
+    let record;
+    const explicitNs = tag.ns != null;
+    if (tag.ns) {
+        // 标签信息包含命名空间
+        record = context.database.data[tag.ns].get(tag.raw);
+    } else {
+        // 按指定顺序查找
+        for (const ns of SEARCH_ORDER[context.namespace.name]) {
+            record = context.database.data[ns].get(tag.raw);
+            if (record) {
+                tag.ns = ns;
+                break;
+            }
+        }
+    }
     if (!record) {
         context.warn(`无效标签引用：\`${node.text}\` 在数据库中不存在。`);
         node.tag = '';
-        node.text = tagDef;
+        node.text = text;
         return;
     }
-    node.tag = tagDef;
-    const nContext = new Context(record, tag, context.logger);
+
+    node.tag = tag.raw;
+    node.ns = tag.ns;
+    if (explicitNs) {
+        node.explicitNs = true;
+    } else {
+        node.explicitNs = undefined;
+    }
+    const nContext = new Context(record, tag.raw, context.logger);
     node.text = record.name.render('text', nContext);
 }
 
@@ -280,7 +315,7 @@ class AstBuilder {
                 type: 'tagref',
                 text: token.content,
             };
-            normalizeTagref(tag, this.context);
+            normalizeTagRef(tag, this.context);
             parent.content.push(tag);
         } else if (token.type === 'softbreak' || token.type === 'hardbreak') {
             parent.content.push({

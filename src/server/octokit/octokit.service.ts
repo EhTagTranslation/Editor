@@ -1,15 +1,15 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectableBase } from 'server/injectable-base';
 import { Octokit } from '@octokit/rest';
-import { OctokitOptions } from '@octokit/core/dist-types/types';
+import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { ConfigService } from '@nestjs/config';
-import { createAppAuth, Types } from '@octokit/auth-app';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
-import { AsyncReturnType } from 'type-fest';
+import type { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
-import { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
+import type { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
 
-export type AppInfo = Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>;
+export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
 
 export interface Author {
@@ -23,7 +23,7 @@ export interface File {
     sha: Sha1Value;
 }
 
-function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string }): Signature {
+function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string } = {}): Signature {
     return {
         name: name ?? '',
         email: email ?? '',
@@ -49,7 +49,10 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     onModuleInit(): void {
         this.getAppToken().catch((err: unknown) => this.logger.error(err));
-        this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => Object.freeze(appInfoRes.data));
+        this._appInfo = this.forApp.apps.getAuthenticated().then((appInfoRes) => {
+            if (appInfoRes.data) return Object.freeze(appInfoRes.data);
+            else throw new Error(`Failed to get app info`);
+        });
         this._botUserInfo = this._appInfo
             .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }))
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
@@ -84,7 +87,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             clientId: this.APP_CLIENT_ID,
             clientSecret: this.APP_CLIENT_SECRET,
             installationId: this.APP_INSTALLATION_ID,
-        } as Types['StrategyOptions'],
+        } as StrategyOptions,
     });
 
     readonly forOauth = createOAuthAppAuth({
@@ -142,7 +145,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async getFile(path: string): Promise<File> {
-        const res = await (await this.forRepo()).repos.getContent({
+        const res = await (
+            await this.forRepo()
+        ).repos.getContent({
             owner: this.owner,
             repo: this.repo,
             path,
@@ -166,7 +171,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         message: string,
         author: Author,
     ): Promise<{ file: File; commit: Commit }> {
-        const res = await (await this.forRepo()).repos.createOrUpdateFileContents({
+        const res = await (
+            await this.forRepo()
+        ).repos.createOrUpdateFileContents({
             owner: this.owner,
             repo: this.repo,
             path,
@@ -178,12 +185,12 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         const data = res.data;
         return {
             file: {
-                path: data.content.path,
+                path: data.content?.path ?? path,
                 content,
-                sha: data.content.sha as Sha1Value,
+                sha: data.content?.sha as Sha1Value,
             },
             commit: {
-                message: data.commit.message,
+                message: data.commit.message ?? '',
                 sha: data.commit.sha as Sha1Value,
                 author: makeSignature(data.commit.author),
                 committer: makeSignature(data.commit.committer),
@@ -192,7 +199,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async getHead(): Promise<Commit> {
-        const res = await (await this.forRepo()).repos.getBranch({
+        const res = await (
+            await this.forRepo()
+        ).repos.getBranch({
             owner: this.owner,
             repo: this.repo,
             branch: 'master',
@@ -207,7 +216,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async compare(base: Sha1Value, head: Sha1Value): Promise<ApiData<'repos', 'compareCommits'>> {
-        const res = await (await this.forRepo()).repos.compareCommits({
+        const res = await (
+            await this.forRepo()
+        ).repos.compareCommits({
             owner: this.owner,
             repo: this.repo,
             base,
