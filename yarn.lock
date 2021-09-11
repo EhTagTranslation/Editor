@@ -326,7 +326,7 @@
 
 "@assemblyscript/loader@^0.10.1":
   version "0.10.1"
-  resolved "https://registry.nlark.com/@assemblyscript/loader/download/@assemblyscript/loader-0.10.1.tgz#70e45678f06c72fa2e350e8553ec4a4d72b92e06"
+  resolved "https://registry.nlark.com/@assemblyscript/loader/download/@assemblyscript/loader-0.10.1.tgz?cache=0&sync_timestamp=1631323100784&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40assemblyscript%2Floader%2Fdownload%2F%40assemblyscript%2Floader-0.10.1.tgz#70e45678f06c72fa2e350e8553ec4a4d72b92e06"
   integrity sha1-cORWePBscvouNQ6FU+xKTXK5LgY=
 
 "@babel/code-frame@7.12.11":
@@ -623,9 +623,9 @@
     js-tokens "^4.0.0"
 
 "@babel/parser@^7.1.0", "@babel/parser@^7.14.5", "@babel/parser@^7.14.8", "@babel/parser@^7.15.4", "@babel/parser@^7.15.5", "@babel/parser@^7.7.2":
-  version "7.15.5"
-  resolved "https://registry.nlark.com/@babel/parser/download/@babel/parser-7.15.5.tgz?cache=0&sync_timestamp=1630745952185&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fparser%2Fdownload%2F%40babel%2Fparser-7.15.5.tgz#d33a58ca69facc05b26adfe4abebfed56c1c2dac"
-  integrity sha1-0zpYymn6zAWyat/kq+v+1WwcLaw=
+  version "7.15.6"
+  resolved "https://registry.nlark.com/@babel/parser/download/@babel/parser-7.15.6.tgz?cache=0&sync_timestamp=1631216210940&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fparser%2Fdownload%2F%40babel%2Fparser-7.15.6.tgz#043b9aa3c303c0722e5377fef9197f4cf1796549"
+  integrity sha1-BDuao8MDwHIuU3f++Rl/TPF5ZUk=
 
 "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@^7.14.5":
   version "7.15.4"
@@ -720,15 +720,15 @@
     "@babel/plugin-syntax-numeric-separator" "^7.10.4"
 
 "@babel/plugin-proposal-object-rest-spread@^7.14.7":
-  version "7.14.7"
-  resolved "https://registry.nlark.com/@babel/plugin-proposal-object-rest-spread/download/@babel/plugin-proposal-object-rest-spread-7.14.7.tgz?cache=0&sync_timestamp=1624312492015&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fplugin-proposal-object-rest-spread%2Fdownload%2F%40babel%2Fplugin-proposal-object-rest-spread-7.14.7.tgz#5920a2b3df7f7901df0205974c0641b13fd9d363"
-  integrity sha1-WSCis99/eQHfAgWXTAZBsT/Z02M=
+  version "7.15.6"
+  resolved "https://registry.nlark.com/@babel/plugin-proposal-object-rest-spread/download/@babel/plugin-proposal-object-rest-spread-7.15.6.tgz?cache=0&sync_timestamp=1631216850709&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fplugin-proposal-object-rest-spread%2Fdownload%2F%40babel%2Fplugin-proposal-object-rest-spread-7.15.6.tgz#ef68050c8703d07b25af402cb96cf7f34a68ed11"
+  integrity sha1-72gFDIcD0Hslr0AsuWz380po7RE=
   dependencies:
-    "@babel/compat-data" "^7.14.7"
-    "@babel/helper-compilation-targets" "^7.14.5"
+    "@babel/compat-data" "^7.15.0"
+    "@babel/helper-compilation-targets" "^7.15.4"
     "@babel/helper-plugin-utils" "^7.14.5"
     "@babel/plugin-syntax-object-rest-spread" "^7.8.3"
-    "@babel/plugin-transform-parameters" "^7.14.5"
+    "@babel/plugin-transform-parameters" "^7.15.4"
 
 "@babel/plugin-proposal-optional-catch-binding@^7.14.5":
   version "7.14.5"
@@ -1061,7 +1061,7 @@
     "@babel/helper-plugin-utils" "^7.14.5"
     "@babel/helper-replace-supers" "^7.14.5"
 
-"@babel/plugin-transform-parameters@^7.14.5":
+"@babel/plugin-transform-parameters@^7.14.5", "@babel/plugin-transform-parameters@^7.15.4":
   version "7.15.4"
   resolved "https://registry.nlark.com/@babel/plugin-transform-parameters/download/@babel/plugin-transform-parameters-7.15.4.tgz#5f2285cc3160bf48c8502432716b48504d29ed62"
   integrity sha1-XyKFzDFgv0jIUCQycWtIUE0p7WI=
@@ -1154,7 +1154,7 @@
 
 "@babel/preset-env@7.14.8":
   version "7.14.8"
-  resolved "https://registry.nlark.com/@babel/preset-env/download/@babel/preset-env-7.14.8.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fpreset-env%2Fdownload%2F%40babel%2Fpreset-env-7.14.8.tgz#254942f5ca80ccabcfbb2a9f524c74bca574005b"
+  resolved "https://registry.nlark.com/@babel/preset-env/download/@babel/preset-env-7.14.8.tgz?cache=0&sync_timestamp=1631216850458&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fpreset-env%2Fdownload%2F%40babel%2Fpreset-env-7.14.8.tgz#254942f5ca80ccabcfbb2a9f524c74bca574005b"
   integrity sha1-JUlC9cqAzKvPuyqfUkx0vKV0AFs=
   dependencies:
     "@babel/compat-data" "^7.14.7"
@@ -1290,9 +1290,9 @@
     globals "^11.1.0"
 
 "@babel/types@^7.0.0", "@babel/types@^7.14.5", "@babel/types@^7.14.8", "@babel/types@^7.15.4", "@babel/types@^7.3.0", "@babel/types@^7.3.3", "@babel/types@^7.4.4", "@babel/types@^7.8.6":
-  version "7.15.4"
-  resolved "https://registry.nlark.com/@babel/types/download/@babel/types-7.15.4.tgz?cache=0&sync_timestamp=1630618915456&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Ftypes%2Fdownload%2F%40babel%2Ftypes-7.15.4.tgz#74eeb86dbd6748d2741396557b9860e57fce0a0d"
-  integrity sha1-dO64bb1nSNJ0E5ZVe5hg5X/OCg0=
+  version "7.15.6"
+  resolved "https://registry.nlark.com/@babel/types/download/@babel/types-7.15.6.tgz#99abdc48218b2881c058dd0a7ab05b99c9be758f"
+  integrity sha1-mavcSCGLKIHAWN0KerBbmcm+dY8=
   dependencies:
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
@@ -1326,7 +1326,7 @@
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
-  resolved "https://registry.nlark.com/@eslint/eslintrc/download/@eslint/eslintrc-0.4.3.tgz?cache=0&sync_timestamp=1628296487039&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40eslint%2Feslintrc%2Fdownload%2F%40eslint%2Feslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
+  resolved "https://registry.nlark.com/@eslint/eslintrc/download/@eslint/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
   integrity sha1-nkKYHvA1vrPdSa3ResuW6P9vOUw=
   dependencies:
     ajv "^6.12.4"
@@ -2207,10 +2207,10 @@
   resolved "https://registry.nlark.com/@types/minimatch/download/@types/minimatch-3.0.5.tgz?cache=0&sync_timestamp=1629708301760&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fminimatch%2Fdownload%2F%40types%2Fminimatch-3.0.5.tgz#1001cc5e6a3704b83c236027e77f2f58ea010f40"
   integrity sha1-EAHMXmo3BLg8I2An538vWOoBD0A=
 
-"@types/node@*", "@types/node@~16.9.0":
-  version "16.9.0"
-  resolved "https://registry.nlark.com/@types/node/download/@types/node-16.9.0.tgz#d9512fe037472dcb58931ce19f837348db828a62"
-  integrity sha1-2VEv4DdHLctYkxzhn4NzSNuCimI=
+"@types/node@*", "@types/node@~16.9.1":
+  version "16.9.1"
+  resolved "https://registry.nlark.com/@types/node/download/@types/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708"
+  integrity sha1-BhGzfbQkbJN/7vUp3cwBjPjjVwg=
 
 "@types/pako@~1.0.2":
   version "1.0.2"
@@ -3642,10 +3642,10 @@ commander@^7.2.0:
   resolved "https://registry.nlark.com/commander/download/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha1-o2y1fQtQHOEI5NIFWaFQo5HZerc=
 
-commander@~8.1.0:
-  version "8.1.0"
-  resolved "https://registry.nlark.com/commander/download/commander-8.1.0.tgz#db36e3e66edf24ff591d639862c6ab2c52664362"
-  integrity sha1-2zbj5m7fJP9ZHWOYYsarLFJmQ2I=
+commander@~8.2.0:
+  version "8.2.0"
+  resolved "https://registry.nlark.com/commander/download/commander-8.2.0.tgz#37fe2bde301d87d47a53adeff8b5915db1381ca8"
+  integrity sha1-N/4r3jAdh9R6U63v+LWRXbE4HKg=
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -4360,9 +4360,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.830:
-  version "1.3.833"
-  resolved "https://registry.nlark.com/electron-to-chromium/download/electron-to-chromium-1.3.833.tgz#e1394eb32ab8a9430ffd7d5adf632ce6c3b05e18"
-  integrity sha1-4TlOsyq4qUMP/X1a32Ms5sOwXhg=
+  version "1.3.836"
+  resolved "https://registry.nlark.com/electron-to-chromium/download/electron-to-chromium-1.3.836.tgz#823cb9c98f28c64c673920f1c90ea3826596eaf9"
+  integrity sha1-gjy5yY8oxkxnOSDxyQ6jgmWW6vk=
 
 emittery@^0.8.1:
   version "0.8.1"
@@ -4500,7 +4500,7 @@ es6-weak-map@^2.0.3:
 
 esbuild@0.12.24:
   version "0.12.24"
-  resolved "https://registry.nlark.com/esbuild/download/esbuild-0.12.24.tgz?cache=0&sync_timestamp=1630598715108&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fesbuild%2Fdownload%2Fesbuild-0.12.24.tgz#21966fad25a80f368ed308101e88102bce0dc68f"
+  resolved "https://registry.nlark.com/esbuild/download/esbuild-0.12.24.tgz#21966fad25a80f368ed308101e88102bce0dc68f"
   integrity sha1-IZZvrSWoDzaO0wgQHogQK84Nxo8=
 
 escalade@^3.1.1:
@@ -4632,7 +4632,7 @@ eslint@~7.32.0:
 
 espree@^7.3.0, espree@^7.3.1:
   version "7.3.1"
-  resolved "https://registry.nlark.com/espree/download/espree-7.3.1.tgz#f2df330b752c6f55019f8bd89b7660039c1bbbb6"
+  resolved "https://registry.nlark.com/espree/download/espree-7.3.1.tgz?cache=0&sync_timestamp=1631307745569&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fespree%2Fdownload%2Fespree-7.3.1.tgz#f2df330b752c6f55019f8bd89b7660039c1bbbb6"
   integrity sha1-8t8zC3Usb1UBn4vYm3ZgA5wbu7Y=
   dependencies:
     acorn "^7.4.0"
@@ -6982,9 +6982,9 @@ levn@~0.3.0:
     type-check "~0.3.2"
 
 libphonenumber-js@^1.9.7:
-  version "1.9.27"
-  resolved "https://registry.nlark.com/libphonenumber-js/download/libphonenumber-js-1.9.27.tgz#2b81c7b51fd78d3aa8de6668d866865e29e161de"
-  integrity sha1-K4HHtR/XjTqo3mZo2GaGXinhYd4=
+  version "1.9.32"
+  resolved "https://registry.nlark.com/libphonenumber-js/download/libphonenumber-js-1.9.32.tgz#ec8048c7a9d7bb0ce282c5bccea2f945a056af29"
+  integrity sha1-7IBIx6nXuwzigsW8zqL5RaBWryk=
 
 license-webpack-plugin@2.3.20:
   version "2.3.20"
@@ -7735,7 +7735,7 @@ normalize-range@^0.1.2:
 
 normalize-url@^6.0.1:
   version "6.1.0"
-  resolved "https://registry.nlark.com/normalize-url/download/normalize-url-6.1.0.tgz?cache=0&sync_timestamp=1628689122508&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fnormalize-url%2Fdownload%2Fnormalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
+  resolved "https://registry.nlark.com/normalize-url/download/normalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
   integrity sha1-QNCIW1Nd7/4/MUe+yHfQX+TFZoo=
 
 npm-bundled@^1.1.1:
@@ -9117,12 +9117,12 @@ raw-body@2.4.0:
 
 react-is@^16.12.0:
   version "16.13.1"
-  resolved "https://registry.nlark.com/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1631117839147&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
+  resolved "https://registry.nlark.com/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1631290569177&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
 react-is@^17.0.1:
   version "17.0.2"
-  resolved "https://registry.nlark.com/react-is/download/react-is-17.0.2.tgz?cache=0&sync_timestamp=1631117839147&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-is%2Fdownload%2Freact-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
+  resolved "https://registry.nlark.com/react-is/download/react-is-17.0.2.tgz?cache=0&sync_timestamp=1631290569177&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-is%2Fdownload%2Freact-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha1-5pHUqOnHiTZWVVOas3J2Kw77VPA=
 
 read-cache@^1.0.0:
@@ -9495,7 +9495,7 @@ sass-loader@12.1.0:
 
 sass@1.36.0:
   version "1.36.0"
-  resolved "https://registry.nlark.com/sass/download/sass-1.36.0.tgz#5912ef9d5d16714171ba11cb17edb274c4bbc07e"
+  resolved "https://registry.nlark.com/sass/download/sass-1.36.0.tgz?cache=0&sync_timestamp=1631232500700&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fsass%2Fdownload%2Fsass-1.36.0.tgz#5912ef9d5d16714171ba11cb17edb274c4bbc07e"
   integrity sha1-WRLvnV0WcUFxuhHLF+2ydMS7wH4=
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
@@ -10283,7 +10283,7 @@ terminal-link@^2.0.0:
 
 terser-webpack-plugin@5.1.4:
   version "5.1.4"
-  resolved "https://registry.nlark.com/terser-webpack-plugin/download/terser-webpack-plugin-5.1.4.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fterser-webpack-plugin%2Fdownload%2Fterser-webpack-plugin-5.1.4.tgz#c369cf8a47aa9922bd0d8a94fe3d3da11a7678a1"
+  resolved "https://registry.nlark.com/terser-webpack-plugin/download/terser-webpack-plugin-5.1.4.tgz#c369cf8a47aa9922bd0d8a94fe3d3da11a7678a1"
   integrity sha1-w2nPikeqmSK9DYqU/j09oRp2eKE=
   dependencies:
     jest-worker "^27.0.2"
@@ -10294,9 +10294,9 @@ terser-webpack-plugin@5.1.4:
     terser "^5.7.0"
 
 terser-webpack-plugin@^5.1.3:
-  version "5.2.3"
-  resolved "https://registry.nlark.com/terser-webpack-plugin/download/terser-webpack-plugin-5.2.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fterser-webpack-plugin%2Fdownload%2Fterser-webpack-plugin-5.2.3.tgz#4852c91f709a4ea2bcf324cf48e7e88124cda0cc"
-  integrity sha1-SFLJH3CaTqK88yTPSOfogSTNoMw=
+  version "5.2.4"
+  resolved "https://registry.nlark.com/terser-webpack-plugin/download/terser-webpack-plugin-5.2.4.tgz#ad1be7639b1cbe3ea49fab995cbe7224b31747a1"
+  integrity sha1-rRvnY5scvj6kn6uZXL5yJLMXR6E=
   dependencies:
     jest-worker "^27.0.6"
     p-limit "^3.1.0"
@@ -10596,10 +10596,10 @@ type-fest@^0.21.3:
   resolved "https://registry.nlark.com/type-fest/download/type-fest-0.21.3.tgz#d260a24b0198436e133fa26a524a6d65fa3b2e37"
   integrity sha1-0mCiSwGYQ24TP6JqUkptZfo7Ljc=
 
-type-fest@~2.2.0:
-  version "2.2.0"
-  resolved "https://registry.nlark.com/type-fest/download/type-fest-2.2.0.tgz#046d9b65ab5083e691ac4c7c264b54207046a755"
-  integrity sha1-BG2bZatQg+aRrEx8JktUIHBGp1U=
+type-fest@~2.3.1:
+  version "2.3.1"
+  resolved "https://registry.nlark.com/type-fest/download/type-fest-2.3.1.tgz#80170f6f74929fef59251107d2e4175faf743a50"
+  integrity sha1-gBcPb3SSn+9ZJREH0uQXX690OlA=
 
 type-is@~1.6.17, type-is@~1.6.18:
   version "1.6.18"
@@ -10700,7 +10700,7 @@ unique-slug@^2.0.0:
 
 universal-github-app-jwt@^1.0.1:
   version "1.1.0"
-  resolved "https://registry.nlark.com/universal-github-app-jwt/download/universal-github-app-jwt-1.1.0.tgz#0abaa876101cdf1d3e4c546be2768841c0c1b514"
+  resolved "https://registry.npm.taobao.org/universal-github-app-jwt/download/universal-github-app-jwt-1.1.0.tgz#0abaa876101cdf1d3e4c546be2768841c0c1b514"
   integrity sha1-CrqodhAc3x0+TFRr4naIQcDBtRQ=
   dependencies:
     "@types/jsonwebtoken" "^8.3.3"
@@ -10907,7 +10907,7 @@ webpack-bundle-analyzer@~4.4.2:
 
 webpack-dev-middleware@5.0.0:
   version "5.0.0"
-  resolved "https://registry.nlark.com/webpack-dev-middleware/download/webpack-dev-middleware-5.0.0.tgz?cache=0&sync_timestamp=1622642128013&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack-dev-middleware%2Fdownload%2Fwebpack-dev-middleware-5.0.0.tgz#0abe825275720e0a339978aea5f0b03b140c1584"
+  resolved "https://registry.nlark.com/webpack-dev-middleware/download/webpack-dev-middleware-5.0.0.tgz#0abe825275720e0a339978aea5f0b03b140c1584"
   integrity sha1-Cr6CUnVyDgozmXiupfCwOxQMFYQ=
   dependencies:
     colorette "^1.2.2"
@@ -10919,7 +10919,7 @@ webpack-dev-middleware@5.0.0:
 
 webpack-dev-middleware@^3.7.2:
   version "3.7.3"
-  resolved "https://registry.nlark.com/webpack-dev-middleware/download/webpack-dev-middleware-3.7.3.tgz?cache=0&sync_timestamp=1622642128013&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack-dev-middleware%2Fdownload%2Fwebpack-dev-middleware-3.7.3.tgz#0639372b143262e2b84ab95d3b91a7597061c2c5"
+  resolved "https://registry.nlark.com/webpack-dev-middleware/download/webpack-dev-middleware-3.7.3.tgz#0639372b143262e2b84ab95d3b91a7597061c2c5"
   integrity sha1-Bjk3KxQyYuK4SrldO5GnWXBhwsU=
   dependencies:
     memory-fs "^0.4.1"
@@ -10930,7 +10930,7 @@ webpack-dev-middleware@^3.7.2:
 
 webpack-dev-server@3.11.2:
   version "3.11.2"
-  resolved "https://registry.nlark.com/webpack-dev-server/download/webpack-dev-server-3.11.2.tgz?cache=0&sync_timestamp=1631015970609&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack-dev-server%2Fdownload%2Fwebpack-dev-server-3.11.2.tgz#695ebced76a4929f0d5de7fd73fafe185fe33708"
+  resolved "https://registry.nlark.com/webpack-dev-server/download/webpack-dev-server-3.11.2.tgz?cache=0&sync_timestamp=1631214053701&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack-dev-server%2Fdownload%2Fwebpack-dev-server-3.11.2.tgz#695ebced76a4929f0d5de7fd73fafe185fe33708"
   integrity sha1-aV687Xakkp8NXef9c/r+GF/jNwg=
   dependencies:
     ansi-html "0.0.7"
@@ -11018,7 +11018,7 @@ webpack-subresource-integrity@1.5.2:
 
 webpack@5.45.1:
   version "5.45.1"
-  resolved "https://registry.nlark.com/webpack/download/webpack-5.45.1.tgz?cache=0&sync_timestamp=1630682901437&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack%2Fdownload%2Fwebpack-5.45.1.tgz#d78dcbeda18a872dc62b0455d3ed3dcfd1c886bb"
+  resolved "https://registry.nlark.com/webpack/download/webpack-5.45.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack%2Fdownload%2Fwebpack-5.45.1.tgz#d78dcbeda18a872dc62b0455d3ed3dcfd1c886bb"
   integrity sha1-143L7aGKhy3GKwRV0+09z9HIhrs=
   dependencies:
     "@types/eslint-scope" "^3.7.0"
@@ -11047,7 +11047,7 @@ webpack@5.45.1:
 
 webpack@5.50.0:
   version "5.50.0"
-  resolved "https://registry.nlark.com/webpack/download/webpack-5.50.0.tgz?cache=0&sync_timestamp=1630682901437&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack%2Fdownload%2Fwebpack-5.50.0.tgz#5562d75902a749eb4d75131f5627eac3a3192527"
+  resolved "https://registry.nlark.com/webpack/download/webpack-5.50.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack%2Fdownload%2Fwebpack-5.50.0.tgz#5562d75902a749eb4d75131f5627eac3a3192527"
   integrity sha1-VWLXWQKnSetNdRMfVifqw6MZJSc=
   dependencies:
     "@types/eslint-scope" "^3.7.0"
