@@ -37,7 +37,7 @@
     "cli-color": "~2.0.0",
     "commander": "~8.2.0",
     "escape-string-regexp": "~4.0.0",
-    "fastify-swagger": "~4.12.1",
+    "fastify-swagger": "~4.12.2",
     "fs-extra": "~10.0.0",
     "idb-keyval": "~6.0.2",
     "js-yaml": "~4.1.0",
