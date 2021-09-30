@@ -1658,12 +1658,12 @@
   resolved "https://registry.nlark.com/@nestjs/mapped-types/download/@nestjs/mapped-types-1.0.0.tgz?cache=0&sync_timestamp=1625660910977&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40nestjs%2Fmapped-types%2Fdownload%2F%40nestjs%2Fmapped-types-1.0.0.tgz#52a0441795f6da8144a35970d3ebc19281f31cfd"
   integrity sha1-UqBEF5X22oFEo1lw0+vBkoHzHP0=
 
-"@nestjs/platform-fastify@~8.0.7":
-  version "8.0.7"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/download/@nestjs/platform-fastify-8.0.7.tgz#0e4a14e238faeb5f4633445889590f4aa2f90715"
-  integrity sha1-DkoU4jj6619GM0RYiVkPSqL5BxU=
+"@nestjs/platform-fastify@~8.0.9":
+  version "8.0.9"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-8.0.9.tgz#dd28a1389364b219a8a8c8a4a1720b12c2a23bdf"
+  integrity sha512-tv3BZvl8MekKYUWQQfT1TPztoJ5B8B3COboHWXRYtLns/6ntEL+rcJV4i0VLNGqDh1zBN1Qof5lIc47yQXN0zw==
   dependencies:
-    fastify "3.20.2"
+    fastify "3.21.6"
     fastify-cors "6.0.2"
     fastify-formbody "5.1.0"
     light-my-request "4.4.4"
@@ -5004,10 +5004,10 @@ fastify-warning@^0.2.0:
   resolved "https://registry.npm.taobao.org/fastify-warning/download/fastify-warning-0.2.0.tgz#e717776026a4493dc9a2befa44db6d17f618008f"
   integrity sha1-5xd3YCakST3Jor76RNttF/YYAI8=
 
-fastify@3.20.2:
-  version "3.20.2"
-  resolved "https://registry.npmmirror.com/fastify/download/fastify-3.20.2.tgz#99a5a2b4b4a8c468dfae245219af053b12c5fe55"
-  integrity sha1-maWitLSoxGjfriRSGa8FOxLF/lU=
+fastify@3.21.6:
+  version "3.21.6"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-3.21.6.tgz#a8235518147ea469a98ec3e5d4599f56eac3ff09"
+  integrity sha512-PextZFavEZaqn2ZYbVGBPAI0AiElnVdfqo9sN1wlOi0mhGtYuec4KT82MHe5npCf3Lz++6i7jLl7YKyYidPrMg==
   dependencies:
     "@fastify/ajv-compiler" "^1.0.0"
     abstract-logging "^2.0.0"
