@@ -1691,10 +1691,10 @@
     lodash "4.17.21"
     path-to-regexp "3.2.0"
 
-"@nestjs/testing@~8.0.7":
-  version "8.0.7"
-  resolved "https://registry.npmmirror.com/@nestjs/testing/download/@nestjs/testing-8.0.7.tgz#0a2d3d61759c71461fbef31943567c0eb55d5313"
-  integrity sha1-Ci09YXWccUYfvvMZQ1Z8DrVdUxM=
+"@nestjs/testing@~8.0.9":
+  version "8.0.9"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-8.0.9.tgz#46a5770fbed19766d0230cc5d8fa3d8746c9befa"
+  integrity sha512-idFhNESD90jUjDfvePgUS5uJzSXEYRhA8xfpv3snWMr3/4ouR5m+o7Wb3Zr+kDbU0Pi+SemKDLv9QoFWatHDeA==
   dependencies:
     optional "0.1.4"
     tslib "2.3.1"
