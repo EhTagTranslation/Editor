@@ -33,18 +33,35 @@ interface ApiSlaveTag extends ApiMasterTag {
 
 export type ResponseOf<T extends ApiRequest<string, unknown>> = T extends ApiRequest<string, infer U> ? U : unknown;
 
-const config =
-    'window' in globalThis
-        ? {
+declare let location: unknown;
+
+const config: AxiosRequestConfig<never> =
+    typeof location === 'object'
+        ? // Browser environment
+          {
               url: 'https://api.e-hentai.org/api.php',
               headers: {},
           }
-        : {
+        : // Node environment
+          {
               url: 'http://api.e-hentai.org/api.php',
               headers: {
-                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0',
+                  Connection: 'keep-alive',
+                  'sec-ch-ua': '"Chromium";v="94", "Microsoft Edge";v="94", ";Not A Brand";v="99"',
+                  DNT: '1',
+                  'sec-ch-ua-mobile': '?0',
+                  'User-Agent':
+                      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 Edg/94.0.992.31',
+                  'sec-ch-ua-platform': '"Windows"',
+                  'Content-Type': 'application/json',
+                  Accept: '*/*',
                   Origin: 'https://e-hentai.org',
-                  Referer: 'https://e-hentai.org/mytags',
+                  'Sec-Fetch-Dest': 'empty',
+                  'Sec-Fetch-Mode': 'cors',
+                  'Sec-Fetch-Site': 'same-site',
+                  Referer: 'https://e-hentai.org/',
+                  'Accept-Encoding': 'gzip, deflate, br',
+                  'Accept-language': 'en,en-US;q=0.9',
               },
           };
 
@@ -67,7 +84,7 @@ async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestCo
 }
 
 export async function postApi<T extends ApiRequest<string, unknown>>(payload: T): Promise<ResponseOf<T>> {
-    const req: AxiosRequestConfig = {
+    const req: AxiosRequestConfig<T> = {
         ...config,
         method: 'POST',
         data: payload,
