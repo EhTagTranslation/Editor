@@ -1666,15 +1666,15 @@
   resolved "https://registry.nlark.com/@nestjs/mapped-types/download/@nestjs/mapped-types-1.0.0.tgz#52a0441795f6da8144a35970d3ebc19281f31cfd"
   integrity sha1-UqBEF5X22oFEo1lw0+vBkoHzHP0=
 
-"@nestjs/platform-fastify@~8.0.10":
-  version "8.0.10"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/download/@nestjs/platform-fastify-8.0.10.tgz#883a670978c06769e49c4fe8c817c1728947cdd9"
-  integrity sha1-iDpnCXjAZ2nknE/oyBfBcolHzdk=
+"@nestjs/platform-fastify@~8.0.11":
+  version "8.0.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-8.0.11.tgz#0b75e2c0898187af78a1796511145c58bfcb0f19"
+  integrity sha512-vdHA2bGRmoIeng0NdDMFyzJi6cxhC/uzMrN68/gTguNJC03TkYJx8l6oJ+51c+bi1Tncg836pg2Ee78R8VBZ2Q==
   dependencies:
     fastify "3.22.0"
     fastify-cors "6.0.2"
     fastify-formbody "5.1.0"
-    light-my-request "4.4.4"
+    light-my-request "4.5.0"
     middie "5.3.0"
     path-to-regexp "3.2.0"
     tslib "2.3.1"
@@ -6984,18 +6984,7 @@ license-webpack-plugin@2.3.20:
     "@types/webpack-sources" "^0.1.5"
     webpack-sources "^1.2.0"
 
-light-my-request@4.4.4:
-  version "4.4.4"
-  resolved "https://registry.npmmirror.com/light-my-request/download/light-my-request-4.4.4.tgz#051e0d440a7bdaea31bcbe6b480a67a8df77c203"
-  integrity sha1-BR4NRAp72uoxvL5rSApnqN93wgM=
-  dependencies:
-    ajv "^8.1.0"
-    cookie "^0.4.0"
-    fastify-warning "^0.2.0"
-    readable-stream "^3.6.0"
-    set-cookie-parser "^2.4.1"
-
-light-my-request@^4.2.0:
+light-my-request@4.5.0, light-my-request@^4.2.0:
   version "4.5.0"
   resolved "https://registry.npmmirror.com/light-my-request/download/light-my-request-4.5.0.tgz#0818d22463479fdc18b6a19f6261a1815e949ea2"
   integrity sha1-CBjSJGNHn9wYtqGfYmGhgV6UnqI=
