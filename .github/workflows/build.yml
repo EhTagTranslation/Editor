@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: '12'
       - name: Install
@@ -41,7 +41,7 @@ jobs:
           yarn install --prefer-offline
           zip -r ../release.zip .
       - name: Publish release
-        uses: ncipollo/release-action@v1.8.8
+        uses: ncipollo/release-action@v1.8.10
         if: github.ref == 'refs/heads/master'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: '12'
       - name: Install
@@ -91,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2.4.1
         with:
           node-version: '12'
       - name: Install
