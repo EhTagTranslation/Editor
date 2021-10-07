@@ -66,7 +66,7 @@
     "@angular/language-service": "~12.2.8",
     "@angular/material": "~12.2.8",
     "@angular/platform-browser": "~12.2.8",
-    "@angular/platform-browser-dynamic": "~12.2.8",
+    "@angular/platform-browser-dynamic": "~12.2.9",
     "@angular/router": "~12.2.8",
     "@nestjs/cli": "~8.1.2",
     "@nestjs/schematics": "~8.0.3",
