@@ -1627,12 +1627,12 @@
     webpack "5.45.1"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@~8.0.11":
-  version "8.0.11"
-  resolved "https://registry.npmmirror.com/@nestjs/common/download/@nestjs/common-8.0.11.tgz#ad86a778d6e5183c0567c34b68acf73cfdb1480f"
-  integrity sha1-rYaneNblGDwFZ8NLaKz3PP2xSA8=
+"@nestjs/common@~8.1.0":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-8.1.0.tgz#0830a30b604c5a8fd35dd211542f23c7570ceb10"
+  integrity sha512-GrzvuxwYl3FKGx7bgBNV1rNUqvXdGRZYsm9Vm9ayta4ee+dKSMUoaMOY9Jf1bCvCilI7RQcyJhFAm8lzZ2ejEg==
   dependencies:
-    axios "0.22.0"
+    axios "0.23.0"
     iterare "1.2.1"
     tslib "2.3.1"
     uuid "8.3.2"
@@ -2926,14 +2926,7 @@ aws4@^1.8.0:
   resolved "https://registry.nlark.com/aws4/download/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha1-1h9G2DslGSUOJ4Ta9bCUeai0HFk=
 
-axios@0.22.0:
-  version "0.22.0"
-  resolved "https://registry.npmmirror.com/axios/download/axios-0.22.0.tgz#bf702c41fb50fbca4539589d839a077117b79b25"
-  integrity sha1-v3AsQftQ+8pFOVidg5oHcRe3myU=
-  dependencies:
-    follow-redirects "^1.14.4"
-
-axios@~0.23.0:
+axios@0.23.0, axios@~0.23.0:
   version "0.23.0"
   resolved "https://registry.npmmirror.com/axios/download/axios-0.23.0.tgz#b0fa5d0948a8d1d75e3d5635238b6c4625b05149"
   integrity sha1-sPpdCUio0ddePVY1I4tsRiWwUUk=
