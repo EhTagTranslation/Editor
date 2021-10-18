@@ -138,18 +138,6 @@
     "@angular-devkit/architect" "0.1202.10"
     rxjs "6.6.7"
 
-"@angular-devkit/core@12.0.5":
-  version "12.0.5"
-  resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-12.0.5.tgz?cache=0&sync_timestamp=1634171427064&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40angular-devkit%2Fcore%2Fdownload%2F%40angular-devkit%2Fcore-12.0.5.tgz#3d02abd97684434f6e1ffee470b7a9c63987ae51"
-  integrity sha1-PQKr2XaEQ09uH/7kcLepxjmHrlE=
-  dependencies:
-    ajv "8.2.0"
-    ajv-formats "2.0.2"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.7"
-    source-map "0.7.3"
-
 "@angular-devkit/core@12.2.10":
   version "12.2.10"
   resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-12.2.10.tgz?cache=0&sync_timestamp=1634171427064&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40angular-devkit%2Fcore%2Fdownload%2F%40angular-devkit%2Fcore-12.2.10.tgz#3da62eceef3904f92cd3f860618b4ae513029ce2"
@@ -185,15 +173,6 @@
     inquirer "8.1.2"
     minimist "1.2.5"
     symbol-observable "4.0.0"
-
-"@angular-devkit/schematics@12.0.5":
-  version "12.0.5"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics/download/@angular-devkit/schematics-12.0.5.tgz#db099b6cba1cadf064b87fd675857f6eba167b2a"
-  integrity sha1-2wmbbLocrfBkuH/WdYV/broWeyo=
-  dependencies:
-    "@angular-devkit/core" "12.0.5"
-    ora "5.4.0"
-    rxjs "6.6.7"
 
 "@angular-devkit/schematics@12.2.10":
   version "12.2.10"
@@ -1680,13 +1659,13 @@
     path-to-regexp "3.2.0"
     tslib "2.3.1"
 
-"@nestjs/schematics@^8.0.3", "@nestjs/schematics@~8.0.3":
-  version "8.0.3"
-  resolved "https://registry.nlark.com/@nestjs/schematics/download/@nestjs/schematics-8.0.3.tgz#b2247e6f5e8dd38e67969a662437f61b48841456"
-  integrity sha1-siR+b16N045nlppmJDf2G0iEFFY=
+"@nestjs/schematics@^8.0.3", "@nestjs/schematics@~8.0.4":
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-8.0.4.tgz#4af3de12c6aaf90f359c617d88ac4719a1432161"
+  integrity sha512-uEmEfuNuIgsNr4m0wEkXIIG6usegehnpwhtOoxXWwvKO0CFO3POAx4pOazPgC4ky6pJ0XROhE/8O55JtmEw0UQ==
   dependencies:
-    "@angular-devkit/core" "12.0.5"
-    "@angular-devkit/schematics" "12.0.5"
+    "@angular-devkit/core" "12.2.10"
+    "@angular-devkit/schematics" "12.2.10"
     fs-extra "10.0.0"
     jsonc-parser "3.0.0"
     pluralize "8.0.0"
@@ -2611,13 +2590,6 @@ ajv-errors@^1.0.0:
   resolved "https://registry.nlark.com/ajv-errors/download/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
   integrity sha1-81mGrOuRr63sQQL72FAUlQzvpk0=
 
-ajv-formats@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.nlark.com/ajv-formats/download/ajv-formats-2.0.2.tgz#69875cb99d76c74be46e9c7a4444bc232354eba0"
-  integrity sha1-aYdcuZ12x0vkbpx6RES8IyNU66A=
-  dependencies:
-    ajv "^8.0.0"
-
 ajv-formats@2.1.0:
   version "2.1.0"
   resolved "https://registry.nlark.com/ajv-formats/download/ajv-formats-2.1.0.tgz#96eaf83e38d32108b66d82a9cb0cfa24886cdfeb"
@@ -2629,16 +2601,6 @@ ajv-keywords@^3.1.0, ajv-keywords@^3.4.1, ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.nlark.com/ajv-keywords/download/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
   integrity sha1-MfKdpatuANHC0yms97WSlhTVAU0=
-
-ajv@8.2.0:
-  version "8.2.0"
-  resolved "https://registry.nlark.com/ajv/download/ajv-8.2.0.tgz?cache=0&sync_timestamp=1631470871211&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fajv%2Fdownload%2Fajv-8.2.0.tgz#c89d3380a784ce81b2085f48811c4c101df4c602"
-  integrity sha1-yJ0zgKeEzoGyCF9IgRxMEB30xgI=
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    json-schema-traverse "^1.0.0"
-    require-from-string "^2.0.2"
-    uri-js "^4.2.2"
 
 ajv@8.6.2:
   version "8.6.2"
@@ -8080,21 +8042,6 @@ optionator@^0.9.1:
     prelude-ls "^1.2.1"
     type-check "^0.4.0"
     word-wrap "^1.2.3"
-
-ora@5.4.0:
-  version "5.4.0"
-  resolved "https://registry.nlark.com/ora/download/ora-5.4.0.tgz#42eda4855835b9cd14d33864c97a3c95a3f56bf4"
-  integrity sha1-Qu2khVg1uc0U0zhkyXo8laP1a/Q=
-  dependencies:
-    bl "^4.1.0"
-    chalk "^4.1.0"
-    cli-cursor "^3.1.0"
-    cli-spinners "^2.5.0"
-    is-interactive "^1.0.0"
-    is-unicode-supported "^0.1.0"
-    log-symbols "^4.1.0"
-    strip-ansi "^6.0.0"
-    wcwidth "^1.0.1"
 
 ora@5.4.1, ora@^5.3.0:
   version "5.4.1"
