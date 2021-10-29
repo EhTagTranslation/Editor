@@ -15,11 +15,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2.4.1
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
@@ -59,11 +57,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2.4.1
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
@@ -93,11 +89,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2.4.1
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
