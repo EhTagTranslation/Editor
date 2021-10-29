@@ -17,7 +17,7 @@ import { ApiEndpointService } from './api-endpoint.service';
 import { DebugService } from './debug.service';
 
 function isHttpErrorResponse(error: Error): error is HttpErrorResponse {
-    return error.name === HttpErrorResponse.name;
+    return error.name === 'HttpErrorResponse';
 }
 
 @Injectable()
