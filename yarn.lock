@@ -44,6 +44,14 @@
     "@angular-devkit/core" "12.2.11"
     rxjs "6.6.7"
 
+"@angular-devkit/architect@0.1202.12":
+  version "0.1202.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/architect/-/architect-0.1202.12.tgz#23f525ac81387428c1aae11dbbfb6f4bd01d3b68"
+  integrity sha512-md7F1chg8zwrmX2C2E2GoOaHhXp03+DmGph5CBTB6t8q3yB734I9A2bE5i0TyxCBLZzh8GOTH9nOGSGX6JlYrw==
+  dependencies:
+    "@angular-devkit/core" "12.2.12"
+    rxjs "6.6.7"
+
 "@angular-devkit/build-angular@~12.2.11":
   version "12.2.11"
   resolved "https://registry.npmmirror.com/@angular-devkit/build-angular/download/@angular-devkit/build-angular-12.2.11.tgz#560abb92949afec28f9741ac70e2a50a6635b710"
@@ -162,6 +170,18 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
+"@angular-devkit/core@12.2.12":
+  version "12.2.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-12.2.12.tgz#a185d79fb5e84fcf2ced69f49ac2ed3c5d9e52f1"
+  integrity sha512-ZFThmQecQmlniQl65rWn4oOMuWKy313O6Hk8sen7WdsjDircqtbHmtJCA1w/EU4xIilIJHo0Kez4Ihi00cGyYw==
+  dependencies:
+    ajv "8.6.2"
+    ajv-formats "2.1.0"
+    fast-json-stable-stringify "2.1.0"
+    magic-string "0.25.7"
+    rxjs "6.6.7"
+    source-map "0.7.3"
+
 "@angular-devkit/schematics-cli@12.2.10":
   version "12.2.10"
   resolved "https://registry.npmmirror.com/@angular-devkit/schematics-cli/download/@angular-devkit/schematics-cli-12.2.10.tgz#91d27181176b924fa8872506d3552c183e6f2f1f"
@@ -183,12 +203,12 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-"@angular-devkit/schematics@12.2.11":
-  version "12.2.11"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics/download/@angular-devkit/schematics-12.2.11.tgz#6dbd331aa2dc1c7afbf19f5db0e628d281cf19fd"
-  integrity sha1-bb0zGqLcHHr78Z9dsOYo0oHPGf0=
+"@angular-devkit/schematics@12.2.12":
+  version "12.2.12"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-12.2.12.tgz#f6145c2f3fe815b269512028cb2c7d189b4d0cef"
+  integrity sha512-Z5Z8HvIRoNEXMrfJgVZieSTZyD0TytRJscuW6xS83Aeqp5py9hvs5ytWhlpnTRz0ji8qc67csFKHvphDOqDduQ==
   dependencies:
-    "@angular-devkit/core" "12.2.11"
+    "@angular-devkit/core" "12.2.12"
     ora "5.4.1"
     rxjs "6.6.7"
 
@@ -208,15 +228,15 @@
   optionalDependencies:
     parse5 "^5.0.0"
 
-"@angular/cli@~12.2.11":
-  version "12.2.11"
-  resolved "https://registry.npmmirror.com/@angular/cli/download/@angular/cli-12.2.11.tgz#ee2d82aaa8352e454c6d66e5cc340f43b6e634b6"
-  integrity sha1-7i2Cqqg1LkVMbWblzDQPQ7bmNLY=
+"@angular/cli@~12.2.12":
+  version "12.2.12"
+  resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-12.2.12.tgz#ce4eeb8889eecb51a1a2af4fb69d3d2ce11728dd"
+  integrity sha512-69M5lrXuHKBkPne8h1v1Mgl9aJZhc+jamU7iZjQhlIt8xL1pTGr/y9/4S+sX1gKEGhd6p/82KwJ1CFcm/Kjhfg==
   dependencies:
-    "@angular-devkit/architect" "0.1202.11"
-    "@angular-devkit/core" "12.2.11"
-    "@angular-devkit/schematics" "12.2.11"
-    "@schematics/angular" "12.2.11"
+    "@angular-devkit/architect" "0.1202.12"
+    "@angular-devkit/core" "12.2.12"
+    "@angular-devkit/schematics" "12.2.12"
+    "@schematics/angular" "12.2.12"
     "@yarnpkg/lockfile" "1.1.0"
     ansi-colors "4.1.1"
     debug "4.3.2"
@@ -1948,13 +1968,13 @@
   resolved "https://registry.npmmirror.com/@polka/url/download/@polka/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha1-XeWiOFo1MJQn9gEZkrVEUU1VmqE=
 
-"@schematics/angular@12.2.11":
-  version "12.2.11"
-  resolved "https://registry.npmmirror.com/@schematics/angular/download/@schematics/angular-12.2.11.tgz?cache=0&sync_timestamp=1634779161771&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40schematics%2Fangular%2Fdownload%2F%40schematics%2Fangular-12.2.11.tgz#c15cbb2d4d19c1e5033688b69640e451c09598a2"
-  integrity sha1-wVy7LU0ZweUDNoi2lkDkUcCVmKI=
+"@schematics/angular@12.2.12":
+  version "12.2.12"
+  resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-12.2.12.tgz#1d7996cd1ba2d8a8760a274f0c4f2f4506848728"
+  integrity sha512-XkHs4aMlOT64QxfDbIBFLxM/qCsuhkZ6G696C0t3eEX2kA1OmED34Qs1ezwb7fqdlcSrt3D3SGdBBcMzaMT7hg==
   dependencies:
-    "@angular-devkit/core" "12.2.11"
-    "@angular-devkit/schematics" "12.2.11"
+    "@angular-devkit/core" "12.2.12"
+    "@angular-devkit/schematics" "12.2.12"
     jsonc-parser "3.0.0"
 
 "@sinonjs/commons@^1.7.0":
