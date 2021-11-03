@@ -1618,10 +1618,10 @@
     tslib "2.3.1"
     uuid "8.3.2"
 
-"@nestjs/config@~1.0.2":
-  version "1.0.2"
-  resolved "https://registry.npmmirror.com/@nestjs/config/download/@nestjs/config-1.0.2.tgz#2eec40f7c4c09fcbe3ece1dc5025e2145eb275f1"
-  integrity sha1-LuxA98TAn8vj7OHcUCXiFF6ydfE=
+"@nestjs/config@~1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-1.1.0.tgz#71b7030355a3b3c0e1872a8083dbf5e192d96ce5"
+  integrity sha512-/HsxSAxBNDihFqsHata/fTCpibOplw1G8lUc6ow62GKEBWvftNo+XaoAC6UwYHdU+Xo1VG2E8T3uCqFGhInK5w==
   dependencies:
     dotenv "10.0.0"
     dotenv-expand "5.1.0"
