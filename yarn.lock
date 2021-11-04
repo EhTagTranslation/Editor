@@ -187,12 +187,12 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/cdk@~12.2.12":
-  version "12.2.12"
-  resolved "https://registry.npmmirror.com/@angular/cdk/download/@angular/cdk-12.2.12.tgz#61dda37d8900275790da623c1f83daa1e859c795"
-  integrity sha1-Yd2jfYkAJ1eQ2mI8H4PaoehZx5U=
+"@angular/cdk@~13.0.0":
+  version "13.0.0"
+  resolved "https://registry.npmmirror.com/@angular/cdk/download/@angular/cdk-13.0.0.tgz#a8f98efa34b747d17079cf5df13ddec565c80559"
+  integrity sha1-qPmO+jS3R9Fwec9d8T3exWXIBVk=
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
   optionalDependencies:
     parse5 "^5.0.0"
 
@@ -271,12 +271,12 @@
   resolved "https://registry.npmmirror.com/@angular/language-service/download/@angular/language-service-13.0.0.tgz#871926bbe5f7a48ffd8357d52b7b737d48d20b77"
   integrity sha1-hxkmu+X3pI/9g1fVK3tzfUjSC3c=
 
-"@angular/material@~12.2.12":
-  version "12.2.12"
-  resolved "https://registry.npmmirror.com/@angular/material/download/@angular/material-12.2.12.tgz#66add3fb649422128b3273c10b9b7cce2f77e0cf"
-  integrity sha1-Zq3T+2SUIhKLMnPBC5t8zi934M8=
+"@angular/material@~13.0.0":
+  version "13.0.0"
+  resolved "https://registry.npmmirror.com/@angular/material/download/@angular/material-13.0.0.tgz#4ae47de400ee01a985ec544c2152edd8cd4432c0"
+  integrity sha1-SuR95ADuAamF7FRMIVLt2M1EMsA=
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@angular/platform-browser-dynamic@~13.0.0":
   version "13.0.0"
@@ -8858,7 +8858,7 @@ tsconfig-paths@3.11.0, tsconfig-paths@^3.9.0, tsconfig-paths@~3.11.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@2.3.1, tslib@^2.0.0, tslib@^2.2.0, tslib@^2.3.0, tslib@~2.3.1:
+tslib@2.3.1, tslib@^2.0.0, tslib@^2.3.0, tslib@~2.3.1:
   version "2.3.1"
   resolved "https://registry.nlark.com/tslib/download/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha1-6KM1rdXOrlGqJh0ypJAVjvBC7wE=
