@@ -72,13 +72,13 @@ interface __UnknownNode {
     attrs: Attribute[];
 }
 
-interface NodeMapEx extends NodeMap {
-    [TEMPLATE_NODE]: __Template;
-    [DOCUMENT_NODE]: __Document;
-    [COMMENT_NODE]: __CommentNode;
-    [FRAGMENT_NODE]: DocumentFragment;
-    [TEMPLATE_NODE]: __Template;
-}
+// interface NodeMapEx extends NodeMap {
+//     [TEMPLATE_NODE]: __Template;
+//     [DOCUMENT_NODE]: __Document;
+//     [COMMENT_NODE]: __CommentNode;
+//     [FRAGMENT_NODE]: DocumentFragment;
+//     [TEMPLATE_NODE]: __Template;
+// }
 
 interface TreeAdapterTypeMap {
     attribute: Attribute;

@@ -47,7 +47,7 @@ command
     .option('--no-tags', '保留 git 标签')
     .option('--keep <n>', '保留最新的 n 个发布')
     .action(async (repo: string | undefined, options: OptionValues) => {
-        const main = new Main(options['keep'] ? Number.parseInt(options['keep']) : undefined, repo);
+        const main = new Main(options['keep'] ? Number.parseInt(options['keep'] as string) : undefined, repo);
         if (options['releases']) await main.deleteRelease();
         if (options['tags']) await main.deleteTag();
     });

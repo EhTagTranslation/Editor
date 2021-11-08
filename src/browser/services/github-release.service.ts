@@ -91,7 +91,7 @@ export class GithubReleaseService {
                 this.debug.log('release: init skipped, no db data');
             }
         } catch (error) {
-            this.debug.log('release: init failed', { error: error as unknown });
+            this.debug.log('release: init failed', { error });
         }
     }
 

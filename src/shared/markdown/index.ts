@@ -12,8 +12,7 @@ export function parse(src: string, context: Context): Tree {
 }
 
 export const render = <T extends TagType>(parsed: Tree, target: T): CellType<T> => {
-    const t = target as TagType;
-    switch (t) {
+    switch (target) {
         case 'raw':
             return renderMd(parsed) as CellType<T>;
         case 'text':
@@ -30,7 +29,7 @@ export const render = <T extends TagType>(parsed: Tree, target: T): CellType<T> 
                 ast: render(parsed, 'ast'),
             } as CellType<T>;
         default: {
-            const _: never = t;
+            const _: never = target;
             throw new Error(`Unknown tag type ${target}`);
         }
     }
