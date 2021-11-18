@@ -1,6 +1,5 @@
 # EhTag Editor
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=EhTagTranslation/Editor)](//dependabot.com)
 [![build](https://github.com/EhTagTranslation/Editor/workflows/build/badge.svg)](//github.com/EhTagTranslation/Editor/actions?query=workflow%3Abuild)
 [![Vercel](https://img.shields.io/github/deployments/EhTagTranslation/Editor/Production?label=Vercel&logo=vercel)](//github.com/EhTagTranslation/Editor/deployments?environment=Production#activity-log)
 [![Heroku](https://img.shields.io/github/deployments/EhTagTranslation/Editor/ehtt?label=Heroku&logo=Heroku)](//github.com/EhTagTranslation/Editor/deployments?environment=ehtt#activity-log)
