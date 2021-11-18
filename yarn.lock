@@ -124,18 +124,6 @@
     "@angular-devkit/architect" "0.1300.3"
     rxjs "6.6.7"
 
-"@angular-devkit/core@12.2.10":
-  version "12.2.10"
-  resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-12.2.10.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40angular-devkit%2Fcore%2Fdownload%2F%40angular-devkit%2Fcore-12.2.10.tgz#3da62eceef3904f92cd3f860618b4ae513029ce2"
-  integrity sha1-PaYuzu85BPks0/hgYYtK5RMCnOI=
-  dependencies:
-    ajv "8.6.2"
-    ajv-formats "2.1.0"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.7"
-    source-map "0.7.3"
-
 "@angular-devkit/core@13.0.2":
   version "13.0.2"
   resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-13.0.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40angular-devkit%2Fcore%2Fdownload%2F%40angular-devkit%2Fcore-13.0.2.tgz#1ef92388464ca86d22b21c6ebcb9fc3b6a16c374"
@@ -160,26 +148,17 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/schematics-cli@12.2.10":
-  version "12.2.10"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics-cli/download/@angular-devkit/schematics-cli-12.2.10.tgz#91d27181176b924fa8872506d3552c183e6f2f1f"
-  integrity sha1-kdJxgRdrkk+ohyUG01UsGD5vLx8=
+"@angular-devkit/schematics-cli@13.0.3":
+  version "13.0.3"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics-cli/-/schematics-cli-13.0.3.tgz#ec216398e28ac4c8acf8f4467cd9022d976b2c0e"
+  integrity sha512-iGEA3hEbHcmhAkGmrFXKWDnelzhSSJLaZPHr6SLPpztKEU8OFMZxv8NFATc/IpXknEhX3+Tm5DkrOpSc4rJlhA==
   dependencies:
-    "@angular-devkit/core" "12.2.10"
-    "@angular-devkit/schematics" "12.2.10"
+    "@angular-devkit/core" "13.0.3"
+    "@angular-devkit/schematics" "13.0.3"
     ansi-colors "4.1.1"
-    inquirer "8.1.2"
+    inquirer "8.2.0"
     minimist "1.2.5"
     symbol-observable "4.0.0"
-
-"@angular-devkit/schematics@12.2.10":
-  version "12.2.10"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics/download/@angular-devkit/schematics-12.2.10.tgz?cache=0&sync_timestamp=1637196062179&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40angular-devkit%2Fschematics%2Fdownload%2F%40angular-devkit%2Fschematics-12.2.10.tgz#b8d4031053fd76d93caa7f33aeeb67383e37f0ab"
-  integrity sha1-uNQDEFP9dtk8qn8zrutnOD438Ks=
-  dependencies:
-    "@angular-devkit/core" "12.2.10"
-    ora "5.4.1"
-    rxjs "6.6.7"
 
 "@angular-devkit/schematics@13.0.2":
   version "13.0.2"
@@ -1577,20 +1556,20 @@
   resolved "https://registry.nlark.com/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha1-is5SWSVEJszvV/MXW8ZO1wle2Rk=
 
-"@nestjs/cli@~8.1.4":
-  version "8.1.4"
-  resolved "https://registry.npmmirror.com/@nestjs/cli/download/@nestjs/cli-8.1.4.tgz#8105c791eae3ead67e8ba7b4df2c0f45a445d0cd"
-  integrity sha1-gQXHkerj6tZ+i6e03ywPRaRF0M0=
+"@nestjs/cli@~8.1.5":
+  version "8.1.5"
+  resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-8.1.5.tgz#3149c89c18901bfd31a7458369e4d03b9e130bd3"
+  integrity sha512-eGlSTCFf/M3ACSNpW3mx5raZ+qq7k/4v6nFuaGpKafQKSKNw7cRVqSeAtHzd7bcK0ik7tKTyhQ8oxnygMLm5Iw==
   dependencies:
-    "@angular-devkit/core" "12.2.10"
-    "@angular-devkit/schematics" "12.2.10"
-    "@angular-devkit/schematics-cli" "12.2.10"
+    "@angular-devkit/core" "13.0.3"
+    "@angular-devkit/schematics" "13.0.3"
+    "@angular-devkit/schematics-cli" "13.0.3"
     "@nestjs/schematics" "^8.0.3"
     chalk "3.0.0"
     chokidar "3.5.2"
     cli-table3 "0.6.0"
     commander "4.1.1"
-    fork-ts-checker-webpack-plugin "6.3.4"
+    fork-ts-checker-webpack-plugin "6.4.0"
     inquirer "7.3.3"
     node-emoji "1.11.0"
     ora "5.4.1"
@@ -1600,9 +1579,9 @@
     source-map-support "0.5.20"
     tree-kill "1.2.2"
     tsconfig-paths "3.11.0"
-    tsconfig-paths-webpack-plugin "3.5.1"
+    tsconfig-paths-webpack-plugin "3.5.2"
     typescript "4.3.5"
-    webpack "5.58.2"
+    webpack "5.64.1"
     webpack-node-externals "3.0.0"
 
 "@nestjs/common@~8.2.1":
@@ -2564,13 +2543,6 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ajv-formats@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmmirror.com/ajv-formats/download/ajv-formats-2.1.0.tgz#96eaf83e38d32108b66d82a9cb0cfa24886cdfeb"
-  integrity sha1-lur4PjjTIQi2bYKpywz6JIhs3+s=
-  dependencies:
-    ajv "^8.0.0"
-
 ajv-formats@2.1.1, ajv-formats@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmmirror.com/ajv-formats/download/ajv-formats-2.1.1.tgz#6e669400659eb74973bbf2e33327180a0996b520"
@@ -2589,16 +2561,6 @@ ajv-keywords@^5.0.0:
   integrity sha1-0Bs7IXFbL2PQKqURuC/G6zswCDw=
   dependencies:
     fast-deep-equal "^3.1.3"
-
-ajv@8.6.2:
-  version "8.6.2"
-  resolved "https://registry.npmmirror.com/ajv/download/ajv-8.6.2.tgz?cache=0&sync_timestamp=1637094116531&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fajv%2Fdownload%2Fajv-8.6.2.tgz#2fb45e0e5fcbc0813326c1c3da535d1881bb0571"
-  integrity sha1-L7ReDl/LwIEzJsHD2lNdGIG7BXE=
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    json-schema-traverse "^1.0.0"
-    require-from-string "^2.0.2"
-    uri-js "^4.2.2"
 
 ajv@8.6.3:
   version "8.6.3"
@@ -4688,10 +4650,10 @@ follow-redirects@^1.0.0, follow-redirects@^1.14.4:
   resolved "https://registry.npmmirror.com/follow-redirects/download/follow-redirects-1.14.5.tgz?cache=0&sync_timestamp=1635857764332&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Ffollow-redirects%2Fdownload%2Ffollow-redirects-1.14.5.tgz#f09a5848981d3c772b5392309778523f8d85c381"
   integrity sha1-8JpYSJgdPHcrU5Iwl3hSP42Fw4E=
 
-fork-ts-checker-webpack-plugin@6.3.4:
-  version "6.3.4"
-  resolved "https://registry.npmmirror.com/fork-ts-checker-webpack-plugin/download/fork-ts-checker-webpack-plugin-6.3.4.tgz#9af17de0a36caf6f1b4e1d2d081cf586f0a12b14"
-  integrity sha1-mvF94KNsr28bTh0tCBz1hvChKxQ=
+fork-ts-checker-webpack-plugin@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-6.4.0.tgz#057e477cf1d8b013b2ed2669437f818680289c4c"
+  integrity sha512-3I3wFkc4DbzaUDPWEi96wdYGu4EKtxBafhZYm0o4mX51d9bphAY4P3mBl8K5mFXFJqVzHfmdbm9kLGnm7vwwBg==
   dependencies:
     "@babel/code-frame" "^7.8.3"
     "@types/json-schema" "^7.0.5"
@@ -5214,26 +5176,6 @@ inquirer@7.3.3:
     mute-stream "0.0.8"
     run-async "^2.4.0"
     rxjs "^6.6.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-    through "^2.3.6"
-
-inquirer@8.1.2:
-  version "8.1.2"
-  resolved "https://registry.npmmirror.com/inquirer/download/inquirer-8.1.2.tgz?cache=0&sync_timestamp=1633472834271&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Finquirer%2Fdownload%2Finquirer-8.1.2.tgz#65b204d2cd7fb63400edd925dfe428bafd422e3d"
-  integrity sha1-ZbIE0s1/tjQA7dkl3+Qouv1CLj0=
-  dependencies:
-    ansi-escapes "^4.2.1"
-    chalk "^4.1.1"
-    cli-cursor "^3.1.0"
-    cli-width "^3.0.0"
-    external-editor "^3.0.3"
-    figures "^3.0.0"
-    lodash "^4.17.21"
-    mute-stream "0.0.8"
-    ora "^5.3.0"
-    run-async "^2.4.0"
-    rxjs "^7.2.0"
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
     through "^2.3.6"
@@ -7024,7 +6966,7 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-ora@5.4.1, ora@^5.3.0, ora@^5.4.1:
+ora@5.4.1, ora@^5.4.1:
   version "5.4.1"
   resolved "https://registry.npmmirror.com/ora/download/ora-5.4.1.tgz#1b2678426af4ac4a509008e5e4ac9e9959db9e18"
   integrity sha1-GyZ4Qmr0rEpQkAjl5KyemVnbnhg=
@@ -8891,10 +8833,10 @@ ts-node@~10.4.0:
     make-error "^1.1.1"
     yn "3.1.1"
 
-tsconfig-paths-webpack-plugin@3.5.1:
-  version "3.5.1"
-  resolved "https://registry.npmmirror.com/tsconfig-paths-webpack-plugin/download/tsconfig-paths-webpack-plugin-3.5.1.tgz#e4dbf492a20dca9caab60086ddacb703afc2b726"
-  integrity sha1-5Nv0kqINypyqtgCG3ay3A6/CtyY=
+tsconfig-paths-webpack-plugin@3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/tsconfig-paths-webpack-plugin/-/tsconfig-paths-webpack-plugin-3.5.2.tgz#01aafff59130c04a8c4ebc96a3045c43c376449a"
+  integrity sha512-EhnfjHbzm5IYI9YPNVIxx1moxMI4bpHD2e0zTXeDNQcwjjRaGepP7IhTHJkyDBG0CAOoxRfe7jCG630Ou+C6Pw==
   dependencies:
     chalk "^4.1.0"
     enhanced-resolve "^5.7.0"
@@ -9291,7 +9233,7 @@ webpack-node-externals@3.0.0:
   resolved "https://registry.nlark.com/webpack-node-externals/download/webpack-node-externals-3.0.0.tgz?cache=0&sync_timestamp=1618999751438&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fwebpack-node-externals%2Fdownload%2Fwebpack-node-externals-3.0.0.tgz#1a3407c158d547a9feb4229a9e3385b7b60c9917"
   integrity sha1-GjQHwVjVR6n+tCKanjOFt7YMmRc=
 
-webpack-sources@^3.0.0, webpack-sources@^3.2.0, webpack-sources@^3.2.2:
+webpack-sources@^3.0.0, webpack-sources@^3.2.2:
   version "3.2.2"
   resolved "https://registry.npmmirror.com/webpack-sources/download/webpack-sources-3.2.2.tgz?cache=0&sync_timestamp=1636982763649&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fwebpack-sources%2Fdownload%2Fwebpack-sources-3.2.2.tgz#d88e3741833efec57c4c789b6010db9977545260"
   integrity sha512-cp5qdmHnu5T8wRg2G3vZZHoJPN14aqQ89SyQ11NpGH5zEMDCclt49rzo+MaRazk7/UeILhAI+/sEtcM+7Fr0nw==
@@ -9302,36 +9244,6 @@ webpack-subresource-integrity@5.0.0:
   integrity sha1-gmi5zBoimo+BKcqe61nN5SGFtrE=
   dependencies:
     typed-assert "^1.0.8"
-
-webpack@5.58.2:
-  version "5.58.2"
-  resolved "https://registry.npmmirror.com/webpack/download/webpack-5.58.2.tgz?cache=0&sync_timestamp=1636996758967&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fwebpack%2Fdownload%2Fwebpack-5.58.2.tgz#6b4af12fc9bd5cbedc00dc0a2fc2b9592db16b44"
-  integrity sha1-a0rxL8m9XL7cANwKL8K5WS2xa0Q=
-  dependencies:
-    "@types/eslint-scope" "^3.7.0"
-    "@types/estree" "^0.0.50"
-    "@webassemblyjs/ast" "1.11.1"
-    "@webassemblyjs/wasm-edit" "1.11.1"
-    "@webassemblyjs/wasm-parser" "1.11.1"
-    acorn "^8.4.1"
-    acorn-import-assertions "^1.7.6"
-    browserslist "^4.14.5"
-    chrome-trace-event "^1.0.2"
-    enhanced-resolve "^5.8.3"
-    es-module-lexer "^0.9.0"
-    eslint-scope "5.1.1"
-    events "^3.2.0"
-    glob-to-regexp "^0.4.1"
-    graceful-fs "^4.2.4"
-    json-parse-better-errors "^1.0.2"
-    loader-runner "^4.2.0"
-    mime-types "^2.1.27"
-    neo-async "^2.6.2"
-    schema-utils "^3.1.0"
-    tapable "^2.1.1"
-    terser-webpack-plugin "^5.1.3"
-    watchpack "^2.2.0"
-    webpack-sources "^3.2.0"
 
 webpack@5.64.1:
   version "5.64.1"
