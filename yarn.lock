@@ -1624,10 +1624,10 @@
   resolved "https://registry.nlark.com/@nestjs/mapped-types/download/@nestjs/mapped-types-1.0.0.tgz#52a0441795f6da8144a35970d3ebc19281f31cfd"
   integrity sha1-UqBEF5X22oFEo1lw0+vBkoHzHP0=
 
-"@nestjs/platform-fastify@~8.2.2":
-  version "8.2.2"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/download/@nestjs/platform-fastify-8.2.2.tgz#218af6a47e641ba1063fca7abacdc06068ce395f"
-  integrity sha1-IYr2pH5kG6EGP8p6us3AYGjOOV8=
+"@nestjs/platform-fastify@~8.2.3":
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-8.2.3.tgz#7680f2247863b22c4d376de8078399ffd78c36f1"
+  integrity sha512-uZelasRb99Rgq6h7QLWXlFdx8lqf3M/ln+1XzVPaWbJza4eUSo1f3BvrO4r1V/OKZLgW7pyB1CM2P4lKLMK1cA==
   dependencies:
     fastify "3.24.0"
     fastify-cors "6.0.2"
