@@ -1,4 +1,4 @@
-import { Attribute, serialize, SerializerOptions, TypedTreeAdapter } from 'parse5';
+import { Attribute, EndLocation, serialize, SerializerOptions, TypedTreeAdapter } from 'parse5';
 import {
     BreakNode,
     ContainerNode,
@@ -210,6 +210,9 @@ class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
         private readonly _ATTR_MAP: typeof ATTR_MAP,
         private readonly _TAG_NAME_MAP: typeof TAG_NAME_MAP,
     ) {}
+    updateNodeSourceCodeLocation(_node: Node, _location: EndLocation): void {
+        throw new Error('Method not implemented.');
+    }
     adoptAttributes(_recipient: Node, _attrs: Attribute[]): void {
         throw new Error('Method not implemented.');
     }
