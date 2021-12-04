@@ -36,7 +36,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
         tag.id = Number.parseInt(key);
         const current: Tag = {
             id: Number.parseInt(key),
-            namespace: tag.ns ?? 'misc',
+            namespace: tag.ns ?? 'other',
             raw: tag.tn,
         };
         tags.push(current);
@@ -44,7 +44,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
         if ('mid' in tag) {
             const master: Tag = {
                 id: tag.mid,
-                namespace: tag.mns ?? 'misc',
+                namespace: tag.mns ?? 'other',
                 raw: tag.mtn,
             };
             current.master = master;

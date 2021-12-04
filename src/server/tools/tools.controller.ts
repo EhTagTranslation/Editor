@@ -21,7 +21,7 @@ export class ToolsController extends InjectableBase {
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
     normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
-        const record = new TagRecord(tag, this.db.data.data.misc);
+        const record = new TagRecord(tag, this.db.data.data.other);
         return record.render(format, new Context(record));
     }
 
@@ -40,7 +40,7 @@ export class ToolsController extends InjectableBase {
     })
     @HttpCode(HttpStatus.OK)
     serialize(@Param() p: TagParams, @Body() tag: LooseTagDto): string {
-        const record = new TagRecord(tag, this.db.data.data.misc);
+        const record = new TagRecord(tag, this.db.data.data.other);
         return record.stringify(new Context(record, RawTag(p.raw)));
     }
 
@@ -52,7 +52,7 @@ export class ToolsController extends InjectableBase {
     parse(@Body() line: string, @Format() format: TagType): ParsedLine {
         if (line.indexOf('\n') >= 0) throw new BadRequestException('Parse one line at once');
         line = line.trim();
-        const parsed = TagRecord.parse(line, this.db.data.data.misc);
+        const parsed = TagRecord.parse(line, this.db.data.data.other);
         if (!parsed) throw new BadRequestException('Invalid markdown table row');
         return {
             key: parsed[0],

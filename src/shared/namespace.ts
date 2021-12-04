@@ -3,9 +3,8 @@ import { NamespaceName } from './interfaces/ehtag';
 const nsDic: { [k: string]: NamespaceName } = {
     rows: 'rows',
 
-    '': 'misc',
-    misc: 'misc',
-    miscellaneous: 'misc',
+    mixed: 'mixed',
+    x: 'mixed',
 
     r: 'reclass',
     reclass: 'reclass',
@@ -30,15 +29,22 @@ const nsDic: { [k: string]: NamespaceName } = {
     a: 'artist',
     artist: 'artist',
 
+    cos: 'cosplayer',
+    coser: 'cosplayer',
+    cosplayer: 'cosplayer',
+
     m: 'male',
     male: 'male',
 
     f: 'female',
     female: 'female',
+
+    o: 'other',
+    other: 'other',
 };
 
 export function parseNamespace(ns: string | null | undefined): NamespaceName {
-    if (!ns) return 'misc';
+    if (!ns) return 'other';
     if (ns in nsDic) return nsDic[ns];
     ns = ns.toLowerCase();
     if (ns in nsDic) return nsDic[ns];
@@ -46,7 +52,7 @@ export function parseNamespace(ns: string | null | undefined): NamespaceName {
     if (ns in nsDic) return nsDic[ns];
     ns = ns[0];
     if (ns in nsDic) return nsDic[ns];
-    return 'misc';
+    return 'other';
 }
 
 export function isNamespaceName(ns: unknown): ns is NamespaceName {

@@ -70,7 +70,7 @@ describe('AppController (e2e)', () => {
                     when: '2020-07-18T08:44:54.000Z',
                 },
             },
-            version: 5,
+            version: 6,
             data: [
                 {
                     namespace: 'rows',

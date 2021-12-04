@@ -58,9 +58,11 @@ export const NamespaceName = [
     'character',
     'group',
     'artist',
+    'cosplayer',
     'male',
     'female',
-    'misc',
+    'mixed',
+    'other',
 ] as const;
 export type NamespaceName = typeof NamespaceName[number];
 
