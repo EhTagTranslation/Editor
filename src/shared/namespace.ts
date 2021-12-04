@@ -43,8 +43,8 @@ const nsDic: { [k: string]: NamespaceName } = {
     other: 'other',
 };
 
-export function parseNamespace(ns: string | null | undefined): NamespaceName {
-    if (!ns) return 'other';
+export function parseNamespace(ns: string | null | undefined): NamespaceName | undefined {
+    if (typeof ns != 'string' || !ns) return undefined;
     if (ns in nsDic) return nsDic[ns];
     ns = ns.toLowerCase();
     if (ns in nsDic) return nsDic[ns];
@@ -52,7 +52,7 @@ export function parseNamespace(ns: string | null | undefined): NamespaceName {
     if (ns in nsDic) return nsDic[ns];
     ns = ns[0];
     if (ns in nsDic) return nsDic[ns];
-    return 'other';
+    return undefined;
 }
 
 export function isNamespaceName(ns: unknown): ns is NamespaceName {

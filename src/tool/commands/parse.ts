@@ -22,7 +22,7 @@ const opts = async (): Promise<{
     return {
         db: await Database.create(String(context ?? '.')),
         outType: String(outType ?? 'raw').toLowerCase() as TagType,
-        ns: parseNamespace(ns),
+        ns: parseNamespace(ns) ?? 'other',
     };
 };
 
