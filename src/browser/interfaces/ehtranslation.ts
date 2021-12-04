@@ -13,4 +13,4 @@ export const notEditableNs: readonly NamespaceName[] = [
     'mixed',
     'other',
 ];
-export const editableNs: readonly NamespaceName[] = ['parody', 'character', 'group', 'artist'];
+export const editableNs: readonly NamespaceName[] = ['parody', 'character', 'group', 'artist', 'cosplayer'];
