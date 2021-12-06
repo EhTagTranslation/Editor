@@ -3,8 +3,9 @@ import { NamespaceName } from './interfaces/ehtag';
 const nsDic: { [k: string]: NamespaceName } = {
     rows: 'rows',
 
-    mixed: 'mixed',
     x: 'mixed',
+    mix: 'mixed',
+    mixed: 'mixed',
 
     r: 'reclass',
     reclass: 'reclass',
@@ -49,8 +50,6 @@ export function parseNamespace(ns: string | null | undefined): NamespaceName | u
     ns = ns.toLowerCase();
     if (ns in nsDic) return nsDic[ns];
     ns = ns.trim();
-    if (ns in nsDic) return nsDic[ns];
-    ns = ns[0];
     if (ns in nsDic) return nsDic[ns];
     return undefined;
 }
