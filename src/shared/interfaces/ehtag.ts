@@ -77,7 +77,12 @@ export interface NamespaceInfo {
 
 /** 表示命名空间文件头部数据 */
 export interface FrontMatters {
+    /** 命名空间完整名称 */
     key: NamespaceName;
+    /** 命名空间简称 */
+    abbr?: string;
+    /** 命名空间的别名 */
+    aliases?: string[];
     /** 命名空间中文名称 */
     name: string;
     /** 命名空间描述 */
