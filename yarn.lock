@@ -136,18 +136,6 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/core@13.0.3":
-  version "13.0.3"
-  resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-13.0.3.tgz#05911ab964f8cbd5cade9bd48215424836ab9c87"
-  integrity sha512-5yTYW6m4pkDPSYNxThm+47h+UZ6XVEfdfsXR3o+WlRG0hc18EuQ+sXZkzhvZrk5KMLlXFex4eO40RPq2vvWS/w==
-  dependencies:
-    ajv "8.6.3"
-    ajv-formats "2.1.1"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.7"
-    source-map "0.7.3"
-
 "@angular-devkit/core@13.1.1":
   version "13.1.1"
   resolved "https://registry.npmmirror.com/@angular-devkit/core/download/@angular-devkit/core-13.1.1.tgz#ecf14453a0cdcb5b153f84fb1713e2deccadbfb4"
@@ -160,13 +148,13 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/schematics-cli@13.0.3":
-  version "13.0.3"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics-cli/download/@angular-devkit/schematics-cli-13.0.3.tgz#ec216398e28ac4c8acf8f4467cd9022d976b2c0e"
-  integrity sha512-iGEA3hEbHcmhAkGmrFXKWDnelzhSSJLaZPHr6SLPpztKEU8OFMZxv8NFATc/IpXknEhX3+Tm5DkrOpSc4rJlhA==
+"@angular-devkit/schematics-cli@13.1.1":
+  version "13.1.1"
+  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics-cli/-/schematics-cli-13.1.1.tgz#5a5a2b276f1c7dcd31490a9da2499e7eb9baf541"
+  integrity sha512-i3hkJ/k0gZMmxIAq0yq0V7mW1kSRJcyND6NN6fmeOEd0UMCwtNhn1sbVdxbdUiKD5vcpNTi5prRmqDITF894bA==
   dependencies:
-    "@angular-devkit/core" "13.0.3"
-    "@angular-devkit/schematics" "13.0.3"
+    "@angular-devkit/core" "13.1.1"
+    "@angular-devkit/schematics" "13.1.1"
     ansi-colors "4.1.1"
     inquirer "8.2.0"
     minimist "1.2.5"
@@ -178,17 +166,6 @@
   integrity sha512-qrTe1teQptgP8gmVy6QX0T4dNfnNipEv+cM2cr7JXOmkPpwF+6oBDrTRIJ55t6rziqrXHJ3rxjKm1aHAxFrIEQ==
   dependencies:
     "@angular-devkit/core" "13.0.2"
-    jsonc-parser "3.0.0"
-    magic-string "0.25.7"
-    ora "5.4.1"
-    rxjs "6.6.7"
-
-"@angular-devkit/schematics@13.0.3":
-  version "13.0.3"
-  resolved "https://registry.npmmirror.com/@angular-devkit/schematics/download/@angular-devkit/schematics-13.0.3.tgz#255895e10c2b025df8ee4ff93428cb2249ae5fc0"
-  integrity sha512-+Va1E0zJBCg5jqSfITusghoMJgPAwlU+WUs49fuGVCzfJPwfSjTKSrsbhanahMd27+Ys3rovGZq0F2JUdL801A==
-  dependencies:
-    "@angular-devkit/core" "13.0.3"
     jsonc-parser "3.0.0"
     magic-string "0.25.7"
     ora "5.4.1"
@@ -1516,32 +1493,32 @@
   resolved "https://registry.npm.taobao.org/@kwsites/promise-deferred/download/@kwsites/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha1-is5SWSVEJszvV/MXW8ZO1wle2Rk=
 
-"@nestjs/cli@~8.1.5":
-  version "8.1.5"
-  resolved "https://registry.npmmirror.com/@nestjs/cli/download/@nestjs/cli-8.1.5.tgz#3149c89c18901bfd31a7458369e4d03b9e130bd3"
-  integrity sha1-MUnInBiQG/0xp0WDaeTQO54TC9M=
+"@nestjs/cli@~8.1.6":
+  version "8.1.6"
+  resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-8.1.6.tgz#e624cb292f7758437efd9460ffb3f5c43f776f68"
+  integrity sha512-SFz/DNjsxNamBEi00ml6+Qx7DmnljI+lYqNzk/+1WZWCfONmvGxQrUaXcUHulkwMXZF/wpD93rgbbnT1CXirqQ==
   dependencies:
-    "@angular-devkit/core" "13.0.3"
-    "@angular-devkit/schematics" "13.0.3"
-    "@angular-devkit/schematics-cli" "13.0.3"
+    "@angular-devkit/core" "13.1.1"
+    "@angular-devkit/schematics" "13.1.1"
+    "@angular-devkit/schematics-cli" "13.1.1"
     "@nestjs/schematics" "^8.0.3"
     chalk "3.0.0"
     chokidar "3.5.2"
     cli-table3 "0.6.0"
     commander "4.1.1"
-    fork-ts-checker-webpack-plugin "6.4.0"
+    fork-ts-checker-webpack-plugin "6.5.0"
     inquirer "7.3.3"
     node-emoji "1.11.0"
     ora "5.4.1"
     os-name "4.0.1"
     rimraf "3.0.2"
     shelljs "0.8.4"
-    source-map-support "0.5.20"
+    source-map-support "0.5.21"
     tree-kill "1.2.2"
-    tsconfig-paths "3.11.0"
+    tsconfig-paths "3.12.0"
     tsconfig-paths-webpack-plugin "3.5.2"
     typescript "4.3.5"
-    webpack "5.64.1"
+    webpack "5.65.0"
     webpack-node-externals "3.0.0"
 
 "@nestjs/common@~8.2.3":
@@ -4605,10 +4582,10 @@ follow-redirects@^1.0.0, follow-redirects@^1.14.4:
   resolved "https://registry.npmmirror.com/follow-redirects/download/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
   integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
 
-fork-ts-checker-webpack-plugin@6.4.0:
-  version "6.4.0"
-  resolved "https://registry.npmmirror.com/fork-ts-checker-webpack-plugin/download/fork-ts-checker-webpack-plugin-6.4.0.tgz#057e477cf1d8b013b2ed2669437f818680289c4c"
-  integrity sha1-BX5HfPHYsBOy7SZpQ3+BhoAonEw=
+fork-ts-checker-webpack-plugin@6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-6.5.0.tgz#0282b335fa495a97e167f69018f566ea7d2a2b5e"
+  integrity sha512-cS178Y+xxtIjEUorcHddKS7yCMlrDPV31mt47blKKRfMd70Kxu5xruAFE2o9sDY6wVC5deuob/u/alD04YYHnw==
   dependencies:
     "@babel/code-frame" "^7.8.3"
     "@types/json-schema" "^7.0.5"
@@ -8355,14 +8332,6 @@ source-map-resolve@^0.6.0:
     atob "^2.1.2"
     decode-uri-component "^0.2.0"
 
-source-map-support@0.5.20:
-  version "0.5.20"
-  resolved "https://registry.npmmirror.com/source-map-support/download/source-map-support-0.5.20.tgz#12166089f8f5e5e8c56926b377633392dd2cb6c9"
-  integrity sha1-EhZgifj15ejFaSazd2Mzkt0stsk=
-  dependencies:
-    buffer-from "^1.0.0"
-    source-map "^0.6.0"
-
 source-map-support@0.5.21, source-map-support@^0.5.5, source-map-support@^0.5.6, source-map-support@~0.5.20, source-map-support@~0.5.21:
   version "0.5.21"
   resolved "https://registry.npmmirror.com/source-map-support/download/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
@@ -8803,17 +8772,7 @@ tsconfig-paths-webpack-plugin@3.5.2:
     enhanced-resolve "^5.7.0"
     tsconfig-paths "^3.9.0"
 
-tsconfig-paths@3.11.0:
-  version "3.11.0"
-  resolved "https://registry.npmmirror.com/tsconfig-paths/download/tsconfig-paths-3.11.0.tgz#954c1fe973da6339c78e06b03ce2e48810b65f36"
-  integrity sha1-lUwf6XPaYznHjgawPOLkiBC2XzY=
-  dependencies:
-    "@types/json5" "^0.0.29"
-    json5 "^1.0.1"
-    minimist "^1.2.0"
-    strip-bom "^3.0.0"
-
-tsconfig-paths@^3.9.0, tsconfig-paths@~3.12.0:
+tsconfig-paths@3.12.0, tsconfig-paths@^3.9.0, tsconfig-paths@~3.12.0:
   version "3.12.0"
   resolved "https://registry.npmmirror.com/tsconfig-paths/download/tsconfig-paths-3.12.0.tgz#19769aca6ee8f6a1a341e38c8fa45dd9fb18899b"
   integrity sha1-GXaaym7o9qGjQeOMj6Rd2fsYiZs=
@@ -9081,7 +9040,7 @@ walker@^1.0.7:
   dependencies:
     makeerror "1.0.12"
 
-watchpack@^2.2.0, watchpack@^2.3.1:
+watchpack@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npmmirror.com/watchpack/download/watchpack-2.3.1.tgz#4200d9447b401156eeca7767ee610f8809bc9d25"
   integrity sha512-x0t0JuydIo8qCNctdDrn1OzH/qDzk2+rdCOC3YzumZ42fiMqmQ7T3xQurykYMhYfHaPHTp4ZxAx2NfUo1K6QaA==
@@ -9199,36 +9158,6 @@ webpack-subresource-integrity@5.0.0:
   integrity sha1-gmi5zBoimo+BKcqe61nN5SGFtrE=
   dependencies:
     typed-assert "^1.0.8"
-
-webpack@5.64.1:
-  version "5.64.1"
-  resolved "https://registry.npmmirror.com/webpack/download/webpack-5.64.1.tgz#fd59840c16f04fe315f2b2598a85026f12dfa1bb"
-  integrity sha512-b4FHmRgaaAjP+aVOVz41a9Qa5SmkUPQ+u8FntTQ1roPHahSComB6rXnLwc976VhUY4CqTaLu5mCswuHiNhOfVw==
-  dependencies:
-    "@types/eslint-scope" "^3.7.0"
-    "@types/estree" "^0.0.50"
-    "@webassemblyjs/ast" "1.11.1"
-    "@webassemblyjs/wasm-edit" "1.11.1"
-    "@webassemblyjs/wasm-parser" "1.11.1"
-    acorn "^8.4.1"
-    acorn-import-assertions "^1.7.6"
-    browserslist "^4.14.5"
-    chrome-trace-event "^1.0.2"
-    enhanced-resolve "^5.8.3"
-    es-module-lexer "^0.9.0"
-    eslint-scope "5.1.1"
-    events "^3.2.0"
-    glob-to-regexp "^0.4.1"
-    graceful-fs "^4.2.4"
-    json-parse-better-errors "^1.0.2"
-    loader-runner "^4.2.0"
-    mime-types "^2.1.27"
-    neo-async "^2.6.2"
-    schema-utils "^3.1.0"
-    tapable "^2.1.1"
-    terser-webpack-plugin "^5.1.3"
-    watchpack "^2.2.0"
-    webpack-sources "^3.2.2"
 
 webpack@5.65.0:
   version "5.65.0"
