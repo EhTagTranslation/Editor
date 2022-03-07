@@ -69,7 +69,7 @@
     "@angular/platform-browser-dynamic": "~13.2.2",
     "@angular/router": "~13.2.2",
     "@nestjs/cli": "~8.2.0",
-    "@nestjs/schematics": "~8.0.5",
+    "@nestjs/schematics": "~8.0.8",
     "@nestjs/testing": "~8.2.6",
     "@types/bluebird-global": "~3.5.13",
     "@types/cli-color": "~2.0.2",
