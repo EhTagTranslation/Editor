@@ -1789,14 +1789,14 @@
     universal-github-app-jwt "^1.0.1"
     universal-user-agent "^6.0.0"
 
-"@octokit/auth-oauth-app@^4.3.0", "@octokit/auth-oauth-app@~4.3.0":
-  version "4.3.0"
-  resolved "https://registry.npmmirror.com/@octokit/auth-oauth-app/-/auth-oauth-app-4.3.0.tgz#de02f184360ffd7cfccef861053784fc4410e7ea"
-  integrity sha512-cETmhmOQRHCz6cLP7StThlJROff3A/ln67Q961GuIr9zvyFXZ4lIJy9RE6Uw5O7D8IXWPU3jhDnG47FTSGQr8Q==
+"@octokit/auth-oauth-app@^4.3.0", "@octokit/auth-oauth-app@~4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-oauth-app/-/auth-oauth-app-4.3.1.tgz#c5c423f17519eb7e039a7d60936dfb869c7bdf36"
+  integrity sha512-FXkKcGtTXS2987rp11mSuhMOXDw8Iy/ED9aXs83T29VeMEWjv40q4ytC0voUDxkBC/of1QYOPQUAdI2tv/dwNg==
   dependencies:
     "@octokit/auth-oauth-device" "^3.1.1"
     "@octokit/auth-oauth-user" "^1.2.1"
-    "@octokit/request" "^5.3.0"
+    "@octokit/request" "^5.6.3"
     "@octokit/types" "^6.0.3"
     "@types/btoa-lite" "^1.0.0"
     btoa-lite "^1.0.0"
@@ -1912,7 +1912,7 @@
     deprecation "^2.0.0"
     once "^1.4.0"
 
-"@octokit/request@^5.3.0", "@octokit/request@^5.4.14", "@octokit/request@^5.6.0", "@octokit/request@^5.6.3":
+"@octokit/request@^5.4.14", "@octokit/request@^5.6.0", "@octokit/request@^5.6.3":
   version "5.6.3"
   resolved "https://registry.npmmirror.com/@octokit/request/-/request-5.6.3.tgz#19a022515a5bba965ac06c9d1334514eb50c48b0"
   integrity sha512-bFJl0I1KVc9jYTe9tdGGpAMPy32dLBXXo1dS/YwSCTL/2nd9XeHsY616RE3HPXDVk+a+dBuzyz5YdlXwcDTr2A==
