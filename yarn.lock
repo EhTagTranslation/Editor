@@ -279,10 +279,10 @@
   resolved "https://registry.npmmirror.com/@angular/language-service/-/language-service-13.3.3.tgz#195aaa3fe2f371427b7f0427e8799f55ab731139"
   integrity sha512-oIiUfdVN2KFwo/Lup5+03iUMXnomUFctjWRU+z3LRKDe5iYskWq6pfbVGAJnKkPxSCvhWQofqV4DP7ktXdq0eQ==
 
-"@angular/material@~13.3.3":
-  version "13.3.3"
-  resolved "https://registry.npmmirror.com/@angular/material/-/material-13.3.3.tgz#efeb63f01529ecbee7dd41f4eb34aaf28b778588"
-  integrity sha512-PkZ7VW3/7tqdBHSOOmq7com7Ir147OEe1+kfgF/G3y8WUutI9jY2cHKARXGWB+5WgcqKr7ol43u239UGkPfFHg==
+"@angular/material@~13.3.4":
+  version "13.3.4"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-13.3.4.tgz#202a5abf4771db56c9b434885262499261de4baf"
+  integrity sha512-jK9rWmBaPrE+3re6uIdyvG5DCzc47VUvnP1DqblNnpaa8GCKllb1cFRGqa5GPYB1/96d3wO+RPwzhC06qqV+yw==
   dependencies:
     tslib "^2.3.0"
 
