@@ -36,5 +36,5 @@ command
             message += `\n\n${mirrorInfo(mirrorSha)}`;
             info['mirror'] = mirrorSha;
         }
-        action.exportVariable('RELEASE_BODY', `<!--\n${JSON.stringify(info, undefined, 2)}\n-->\n` + message);
+        action.exportVariable('RELEASE_BODY', message + `\n<!--\n${JSON.stringify(info, undefined, 2)}\n-->`);
     });
