@@ -464,7 +464,7 @@ class AstBuilder {
     }
 
     private buildInlineToken(token: Token, parent: ContainerNode): void {
-        if (token.type === 'text') {
+        if (token.type === 'text' || token.type === 'text_special') {
             parent.content.push({
                 type: 'text',
                 text: token.content,
