@@ -207,6 +207,10 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         };
     }
 
+    raw(): IterableIterator<[RawTag, TagLine]> {
+        return this.rawMap.entries();
+    }
+
     get size(): number {
         return this.rawMap.size;
     }

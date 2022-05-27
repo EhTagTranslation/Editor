@@ -9,7 +9,6 @@ import pako from './pako';
 import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
 import { normalizeTag, loadMasterTags } from '../../../shared/ehentai';
-import type { RawTag } from '../../../shared/raw-tag';
 import clc from 'cli-color';
 import { error, warning, notice } from '@actions/core';
 
@@ -63,6 +62,10 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     process.chdir(old);
 }
 
+function clearLine(): void {
+    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+}
+
 async function runSourceCheck(db: Database): Promise<void> {
     console.log('\nChecking tags from source...\n');
     const t = await loadMasterTags();
@@ -75,14 +78,10 @@ async function runSourceCheck(db: Database): Promise<void> {
         const ns = k as NamespaceName;
         if (ns === 'rows') continue;
         const nsDb = db.data[ns];
-        const tags = nsDb.render('raw').data;
-        for (const t in tags) {
-            const tag = t as RawTag;
-            const record = nsDb.get(tag);
-            if (!record) throw new Error();
-
+        for (const [tag, tagLine] of nsDb.raw()) {
             count++;
             if (showProgress) {
+                clearLine();
                 process.stderr.write(
                     `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
                         `${((count / size) * 100).toFixed(3)}%`,
@@ -90,26 +89,32 @@ async function runSourceCheck(db: Database): Promise<void> {
                 process.stderr.write(clc.move.lineBegin);
             }
 
+            const context = (): Context => {
+                const c = new Context(tagLine.record, tag);
+                c.line = tagLine.line;
+                return c;
+            };
+
             const normTag = await normalizeTag(ns, tag, true);
             if (normTag == null) {
                 if (tag.length <= 2) {
                     if (showProgress) {
-                        process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+                        clearLine();
                     }
-                    db.logger.info(new Context(record, tag), 'Tag is too short, you should check it manually.');
+                    db.logger.info(context(), 'Tag is too short, you should check it manually.');
                     continue;
                 }
                 if (showProgress) {
-                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+                    clearLine();
                 }
-                db.logger.warn(new Context(record, tag), 'Tag not found.');
+                db.logger.warn(context(), 'Tag not found.');
                 continue;
             }
             if (normTag[1] !== tag) {
                 if (showProgress) {
-                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+                    clearLine();
                 }
-                db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
+                db.logger.warn(context(), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
                 continue;
             }
         }
@@ -118,16 +123,18 @@ async function runSourceCheck(db: Database): Promise<void> {
 }
 
 class ActionLogger extends Logger {
+    static override buildMessage(logger: keyof Logger, context: Context, message: string): string {
+        return `${context.namespace.name}:${context.raw ?? '<unknown raw>'}: ${message}`;
+    }
     readonly map: Record<keyof Logger, typeof notice> = {
         info: notice,
         warn: warning,
         error: error,
     };
     protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
-        this.map[logger](Logger.buildMessage(logger, context, message), {
+        this.map[logger](ActionLogger.buildMessage(logger, context, message), {
             file: `database/${context.namespace.name}.md`,
             startLine: context.line,
-            endLine: context.line,
         });
         if (this.setFailed[logger]) {
             process.exitCode = action.ExitCode.Failure;
