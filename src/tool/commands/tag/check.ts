@@ -1,6 +1,5 @@
 import { normalizeTag } from '../../../shared/ehentai';
-import { command, parseTag } from './command';
-import { formatTag } from './utils';
+import { command, parseTag, formatTag } from './command';
 
 command
     .command('check <[namespace:]tag>')

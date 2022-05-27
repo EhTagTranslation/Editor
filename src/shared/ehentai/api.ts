@@ -35,35 +35,46 @@ export type ResponseOf<T extends ApiRequest<string, unknown>> = T extends ApiReq
 
 declare let location: unknown;
 
-const config: AxiosRequestConfig<never> =
-    typeof location === 'object'
-        ? // Browser environment
-          {
-              url: 'https://api.e-hentai.org/api.php',
-              headers: {},
-          }
-        : // Node environment
-          {
-              url: 'http://api.e-hentai.org/api.php',
-              headers: {
-                  Connection: 'keep-alive',
-                  'sec-ch-ua': '"Chromium";v="94", "Microsoft Edge";v="94", ";Not A Brand";v="99"',
-                  DNT: '1',
-                  'sec-ch-ua-mobile': '?0',
-                  'User-Agent':
-                      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36 Edg/94.0.992.31',
-                  'sec-ch-ua-platform': '"Windows"',
-                  'Content-Type': 'application/json',
-                  Accept: '*/*',
-                  Origin: 'https://e-hentai.org',
-                  'Sec-Fetch-Dest': 'empty',
-                  'Sec-Fetch-Mode': 'cors',
-                  'Sec-Fetch-Site': 'same-site',
-                  Referer: 'https://e-hentai.org/',
-                  'Accept-Encoding': 'gzip, deflate, br',
-                  'Accept-language': 'en,en-US;q=0.9',
-              },
-          };
+async function config(url: string): Promise<AxiosRequestConfig<never>> {
+    if (typeof location === 'object') {
+        // Browser environment
+        return {
+            headers: {},
+        };
+    }
+    // Node environment
+    const { default: ProxyAgent } = await import('proxy-agent');
+    const agent = new ProxyAgent();
+    return {
+        headers: {
+            Connection: 'keep-alive',
+            DNT: '1',
+            'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'user-agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53',
+            'content-type': 'application/json',
+            accept: '*/*',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-site',
+            'accept-Encoding': 'gzip, deflate, br',
+            'accept-language': 'en,en-US;q=0.9',
+
+            ...(url.includes('hentai.org')
+                ? {
+                      origin: 'https://e-hentai.org',
+                      referer: 'https://e-hentai.org/',
+                      cookie: 'ipb_member_id=3552014; ipb_pass_hash=7a245abd0fa9866ccdfeaf58ff7dd0fd;',
+                  }
+                : {}),
+        },
+        httpAgent: agent,
+        httpsAgent: agent,
+        proxy: false,
+    };
+}
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -84,12 +95,7 @@ async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestCo
 }
 
 export async function postApi<T extends ApiRequest<string, unknown>>(payload: T): Promise<ResponseOf<T>> {
-    const req: AxiosRequestConfig<T> = {
-        ...config,
-        method: 'POST',
-        data: payload,
-    };
-    const response = await request<ResponseOf<T>>(req, 3);
+    const response = await post<ResponseOf<T>, T>('http://api.e-hentai.org/api.php', payload);
     const data = response.data;
     if (typeof data == 'object' && 'error' in (data as object)) {
         let err = (data as { error: string }).error;
@@ -97,4 +103,29 @@ export async function postApi<T extends ApiRequest<string, unknown>>(payload: T)
         throw new Error(err);
     }
     return data;
+}
+
+export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T, D>> {
+    const response = await request<T>(
+        {
+            ...(await config(url)),
+            url,
+            method: 'POST',
+            data,
+        },
+        3,
+    );
+    return response;
+}
+
+export async function get<T>(url: string): Promise<AxiosResponse<T>> {
+    const response = await request<T>(
+        {
+            ...(await config(url)),
+            url,
+            method: 'GET',
+        },
+        3,
+    );
+    return response;
 }

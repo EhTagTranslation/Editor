@@ -1,7 +1,8 @@
-import { normalizeTag } from '../../../shared/ehentai';
-import { command, parseTag } from './command';
-import axios, { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import type { Tag } from '../../../shared/interfaces/ehtag';
+import { normalizeTag } from '../../../shared/ehentai';
+import { get } from '../../../shared/ehentai/api';
+import { command, parseTag, formatTag } from './command';
 
 command
     .command('desc <[namespace:]tag>')
@@ -15,10 +16,10 @@ command
             return;
         }
         try {
-            const info = await axios.get<Tag<'raw'>>(
+            const info = await get<Tag<'raw'>>(
                 `https://ehtt.herokuapp.com/database/${result[0]}/${result[1]}?format=raw.json`,
             );
-            console.log(`原始标签：${result[0]}:${result[1]}`);
+            console.log(`原始标签：${formatTag({ namespace: result[0], raw: result[1] })}`);
             console.log(`    名称：${info.data.name}`);
             console.log(`    描述：${info.data.intro}`);
             console.log(`外部链接：${info.data.links}`);

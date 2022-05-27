@@ -8,10 +8,8 @@ import { tagCache, Tag, suggestTag } from './suggest-tag';
 export async function normalizeTag(
     ns: NamespaceName | undefined,
     raw: RawTag,
+    strictCheck = false,
 ): Promise<[NamespaceName, RawTag] | undefined> {
-    // short tags will not returned by suggest api
-    if (raw.length <= 2) return [ns as NamespaceName, raw];
-
     const nsMap = tagCache.get(raw);
     let match: Tag | undefined;
     if (ns && nsMap) {
@@ -35,7 +33,14 @@ export async function normalizeTag(
             [match] = nsMap.values();
         }
     }
-    if (match == null) return undefined;
+
+    if (match == null) {
+        // short tags will not returned by suggest api
+        if (!strictCheck && raw.length <= 2 && ns) {
+            return [ns, raw];
+        }
+        return undefined;
+    }
     if (match.master) {
         match = match.master;
     }

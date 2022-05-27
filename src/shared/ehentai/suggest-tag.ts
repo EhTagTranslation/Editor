@@ -1,6 +1,6 @@
-import type { RawTag } from '../raw-tag';
-import { postApi, TagSuggestRequest, ResponseOf } from './api';
-import type { NamespaceName } from '../interfaces/ehtag';
+import { isNamespaceName, isRawTag, RawTag } from '../raw-tag';
+import { postApi, TagSuggestRequest, ResponseOf, get } from './api';
+import { NamespaceName } from '../interfaces/ehtag';
 
 const suggestCache = new Map<string, Tag[]>();
 export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();
@@ -54,10 +54,43 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     return tags;
 }
 
+/** 通过 https://repo.e-hentai.org/tools.php?act=taggroup 加载所有主标签，并设置缓存 */
+export async function loadMasterTags(): Promise<Tag[]> {
+    const tags = [];
+    for (let i = 0; i <= 11; i++) {
+        const response = (await get<string>(`http://repo.e-hentai.org/tools.php?act=taggroup&show=${i}`)).data;
+        const namespace = /\[<span style="font-weight:bold">(\w+)<\/span>\]/.exec(response)?.[1];
+        if (!isNamespaceName(namespace)) {
+            continue;
+        }
+        const matches = response.matchAll(
+            /<a href="https:\/\/repo\.e-hentai\.org\/tools\.php\?act=taggroup&amp;mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
+        );
+        for (const match of matches) {
+            const id = Number.parseInt(match[1]);
+            const ns = match[2];
+            const tag = match[3];
+            if (!isRawTag(tag) || !isNamespaceName(ns)) {
+                console.warn(`Invalid tag match: ${match[0]}`);
+                continue;
+            }
+            const current: Tag = {
+                id,
+                namespace: ns,
+                raw: tag,
+            };
+            store(current);
+            tags.push(current);
+        }
+    }
+    return tags;
+}
+
+/** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
 export async function suggestTag(ns: NamespaceName | undefined, raw: string): Promise<Tag[]> {
     try {
         raw = raw.trim().toLowerCase();
-        const text = `${ns != null ? ns + ':' : ''}${raw}`;
+        const text = `${ns != null ? ns + ':' : ''}${raw.slice(0, 100)}`;
         const cache = suggestCache.get(text);
         if (cache) return cache;
         const response = await postApi<TagSuggestRequest>({

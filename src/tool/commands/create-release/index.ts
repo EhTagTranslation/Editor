@@ -8,7 +8,7 @@ import { Database } from '../../../shared/database';
 import pako from './pako';
 import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
-import { normalizeTag } from '../../../shared/ehentai';
+import { normalizeTag, loadMasterTags } from '../../../shared/ehentai';
 import type { RawTag } from '../../../shared/raw-tag';
 import clc from 'cli-color';
 
@@ -64,6 +64,8 @@ async function createRelease(db: Database, destination: string): Promise<void> {
 
 async function runSourceCheck(db: Database): Promise<boolean> {
     console.log('\nChecking tags from source...\n');
+    const t = await loadMasterTags();
+    console.log(`Preloaded ${t.length} tags from tag group tool.`);
     const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
     const sizeWidth = Math.floor(Math.log10(size)) + 1;
     let count = 0;
@@ -88,15 +90,15 @@ async function runSourceCheck(db: Database): Promise<boolean> {
                 process.stderr.write(clc.move.lineBegin);
             }
 
-            if (tag.length <= 2) {
-                if (showProgress) {
-                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
-                }
-                db.logger.info(new Context(record, tag), 'Tag is too short, you should check it manually.');
-                continue;
-            }
-            const normTag = await normalizeTag(ns, tag);
+            const normTag = await normalizeTag(ns, tag, true);
             if (normTag == null) {
+                if (tag.length <= 2) {
+                    if (showProgress) {
+                        process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+                    }
+                    db.logger.info(new Context(record, tag), 'Tag is too short, you should check it manually.');
+                    continue;
+                }
                 if (showProgress) {
                     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }

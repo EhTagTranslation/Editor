@@ -1,2 +1,2 @@
 export { normalizeTag } from './normalize-tag';
-export { suggestTag, Tag } from './suggest-tag';
+export { suggestTag, Tag, loadMasterTags } from './suggest-tag';

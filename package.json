@@ -47,6 +47,7 @@
     "node-cache": "~5.1.2",
     "pako": "~2.0.4",
     "parse5": "~6.0.0",
+    "proxy-agent": "^5.0.0",
     "reflect-metadata": "~0.1.13",
     "rxjs": "~7.5.5",
     "simple-git": "~3.7.1",
