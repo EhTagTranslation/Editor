@@ -11,6 +11,7 @@ import { Logger, Context } from '../../../shared/markdown';
 import { normalizeTag, loadMasterTags } from '../../../shared/ehentai';
 import type { RawTag } from '../../../shared/raw-tag';
 import clc from 'cli-color';
+import { error, warning, notice } from '@actions/core';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -62,14 +63,13 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     process.chdir(old);
 }
 
-async function runSourceCheck(db: Database): Promise<boolean> {
+async function runSourceCheck(db: Database): Promise<void> {
     console.log('\nChecking tags from source...\n');
     const t = await loadMasterTags();
     console.log(`Preloaded ${t.length} tags from tag group tool.`);
     const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
     const sizeWidth = Math.floor(Math.log10(size)) + 1;
     let count = 0;
-    let ok = true;
     const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
     for (const k in db.data) {
         const ns = k as NamespaceName;
@@ -103,7 +103,6 @@ async function runSourceCheck(db: Database): Promise<boolean> {
                     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
                 db.logger.warn(new Context(record, tag), 'Tag not found.');
-                ok = false;
                 continue;
             }
             if (normTag[1] !== tag) {
@@ -111,26 +110,25 @@ async function runSourceCheck(db: Database): Promise<boolean> {
                     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
                 db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
-                ok = false;
                 continue;
             }
         }
     }
     console.log(' ');
-    return ok;
 }
 
 class ActionLogger extends Logger {
-    readonly map: Record<keyof Logger, 'info' | 'warning' | 'error'> = {
-        info: 'info',
-        warn: 'warning',
-        error: 'error',
+    readonly map: Record<keyof Logger, typeof notice> = {
+        info: notice,
+        warn: warning,
+        error: error,
     };
     protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
-        const l = context.line ? `,line=${context.line}` : '';
-        const f = `file=database/${context.namespace.name}.md`;
-        const m = Logger.buildMessage(logger, context, message);
-        console.log(`::${this.map[logger]} ${f}${l}::${m}`);
+        this.map[logger](Logger.buildMessage(logger, context, message), {
+            file: `database/${context.namespace.name}.md`,
+            startLine: context.line,
+            endLine: context.line,
+        });
         if (this.setFailed[logger]) {
             process.exitCode = action.ExitCode.Failure;
         }
@@ -172,15 +170,11 @@ program
             undefined,
             action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : undefined,
         );
-        let sourceCheckOk = true;
         if (sourceCheck) {
-            sourceCheckOk = await runSourceCheck(db);
+            await runSourceCheck(db);
         }
         await createRelease(db, destination);
         if (rewrite) {
             await db.save();
-        }
-        if (!sourceCheckOk) {
-            process.exitCode = action.ExitCode.Failure;
         }
     });
