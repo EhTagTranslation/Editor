@@ -11,7 +11,8 @@ command
         const result = await normalizeTag(namespace, raw);
         if (!result) {
             console.error('未找到相应标签');
-            process.exit(1);
+            process.exitCode = 1;
+            return;
         }
         try {
             const info = await axios.get<Tag<'raw'>>(
@@ -25,7 +26,8 @@ command
             const ae = err as AxiosError;
             if (ae.response?.status === 404) {
                 console.error(`未找到标签 ${result[0]}:${result[1]} 的翻译`);
-                process.exit(1);
+                process.exitCode = 1;
+                return;
             }
             console.error(err);
         }

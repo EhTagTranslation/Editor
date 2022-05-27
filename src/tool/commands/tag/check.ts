@@ -10,7 +10,8 @@ command
         const result = await normalizeTag(namespace, raw);
         if (!result) {
             console.error('未找到相应标签');
-            process.exit(1);
+            process.exitCode = 1;
+            return;
         }
         console.log(
             formatTag({

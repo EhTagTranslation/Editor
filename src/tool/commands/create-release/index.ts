@@ -62,11 +62,13 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     process.chdir(old);
 }
 
-async function runSourceCheck(db: Database): Promise<void> {
+async function runSourceCheck(db: Database): Promise<boolean> {
     console.log('\nChecking tags from source...\n');
     const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
     const sizeWidth = Math.floor(Math.log10(size)) + 1;
     let count = 0;
+    let ok = true;
+    const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
     for (const k in db.data) {
         const ns = k as NamespaceName;
         if (ns === 'rows') continue;
@@ -78,7 +80,7 @@ async function runSourceCheck(db: Database): Promise<void> {
             if (!record) throw new Error();
 
             count++;
-            if (process.stderr.isTTY) {
+            if (showProgress) {
                 process.stderr.write(
                     `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
                         `${((count / size) * 100).toFixed(3)}%`,
@@ -88,19 +90,22 @@ async function runSourceCheck(db: Database): Promise<void> {
 
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
-                if (process.stderr.isTTY) {
-                    process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                if (showProgress) {
+                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
                 db.logger.warn(new Context(record, tag), 'Tag not found');
+                ok = false;
             } else if (normTag[1] !== tag) {
-                if (process.stderr.isTTY) {
-                    process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                if (showProgress) {
+                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
                 db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
+                ok = false;
             }
         }
     }
     console.log(' ');
+    return ok;
 }
 
 class ActionLogger extends Logger {
@@ -155,11 +160,15 @@ program
             undefined,
             action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : undefined,
         );
+        let sourceCheckOk = true;
         if (sourceCheck) {
-            await runSourceCheck(db);
+            sourceCheckOk = await runSourceCheck(db);
         }
         await createRelease(db, destination);
         if (rewrite) {
             await db.save();
+        }
+        if (!sourceCheckOk) {
+            process.exitCode = action.ExitCode.Failure;
         }
     });
