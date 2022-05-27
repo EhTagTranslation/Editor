@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { NamespaceName } from '../interfaces/ehtag';
 import type { RawTag } from '../raw-tag';
+import proxyConfig from './proxy';
 
 const responseType = Symbol();
 
@@ -43,8 +44,6 @@ async function config(url: string): Promise<AxiosRequestConfig<never>> {
         };
     }
     // Node environment
-    const { default: ProxyAgent } = await import('proxy-agent');
-    const agent = new ProxyAgent();
     return {
         headers: {
             Connection: 'keep-alive',
@@ -70,9 +69,7 @@ async function config(url: string): Promise<AxiosRequestConfig<never>> {
                   }
                 : {}),
         },
-        httpAgent: agent,
-        httpsAgent: agent,
-        proxy: false,
+        ...proxyConfig,
     };
 }
 

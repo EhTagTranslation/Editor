@@ -6,5 +6,6 @@
     "strictInjectionParameters": true,
     "strictTemplates": true
   },
+  "include": ["./**/*.ts", "../**/*.browser.ts"],
   "exclude": ["test.ts", "**/*.spec.ts", "**/*.worker.ts"]
 }
