@@ -88,19 +88,29 @@ async function runSourceCheck(db: Database): Promise<boolean> {
                 process.stderr.write(clc.move.lineBegin);
             }
 
+            if (tag.length <= 2) {
+                if (showProgress) {
+                    process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
+                }
+                db.logger.info(new Context(record, tag), 'Tag is too short, you should check it manually.');
+                continue;
+            }
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
                 if (showProgress) {
                     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
-                db.logger.warn(new Context(record, tag), 'Tag not found');
+                db.logger.warn(new Context(record, tag), 'Tag not found.');
                 ok = false;
-            } else if (normTag[1] !== tag) {
+                continue;
+            }
+            if (normTag[1] !== tag) {
                 if (showProgress) {
                     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
                 }
                 db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
                 ok = false;
+                continue;
             }
         }
     }
