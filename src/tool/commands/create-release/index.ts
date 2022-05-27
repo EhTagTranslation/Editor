@@ -10,6 +10,7 @@ import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
 import { normalizeTag } from '../../../shared/ehentai';
 import type { RawTag } from '../../../shared/raw-tag';
+import clc from 'cli-color';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -62,7 +63,10 @@ async function createRelease(db: Database, destination: string): Promise<void> {
 }
 
 async function runSourceCheck(db: Database): Promise<void> {
-    console.log('Checking tags from source...\n');
+    console.log('\nChecking tags from source...\n');
+    const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
+    const sizeWidth = Math.floor(Math.log10(size)) + 1;
+    let count = 0;
     for (const k in db.data) {
         const ns = k as NamespaceName;
         if (ns === 'rows') continue;
@@ -72,10 +76,20 @@ async function runSourceCheck(db: Database): Promise<void> {
             const tag = t as RawTag;
             const record = nsDb.get(tag);
             if (!record) throw new Error();
+
+            count++;
+            process.stderr.write(
+                `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
+                    `${((count / size) * 100).toFixed(3)}%`,
+            );
+            process.stderr.write(clc.move.lineBegin);
+
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
+                process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
                 db.logger.warn(new Context(record, tag), 'Tag not found');
             } else if (normTag[1] !== tag) {
+                process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
                 db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
             }
         }
