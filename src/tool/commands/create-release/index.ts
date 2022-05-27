@@ -78,18 +78,24 @@ async function runSourceCheck(db: Database): Promise<void> {
             if (!record) throw new Error();
 
             count++;
-            process.stderr.write(
-                `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
-                    `${((count / size) * 100).toFixed(3)}%`,
-            );
-            process.stderr.write(clc.move.lineBegin);
+            if (process.stderr.isTTY) {
+                process.stderr.write(
+                    `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
+                        `${((count / size) * 100).toFixed(3)}%`,
+                );
+                process.stderr.write(clc.move.lineBegin);
+            }
 
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
-                process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                if (process.stderr.isTTY) {
+                    process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                }
                 db.logger.warn(new Context(record, tag), 'Tag not found');
             } else if (normTag[1] !== tag) {
-                process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                if (process.stderr.isTTY) {
+                    process.stderr.write(` `.repeat(clc.windowSize.width - 1) + clc.move.lineBegin);
+                }
                 db.logger.warn(new Context(record, tag), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
             }
         }
