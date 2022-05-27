@@ -1,7 +1,6 @@
-import { suggestTag } from '../../../shared/ehentai';
-import { command, parseTag } from './command';
 import clc from 'cli-color';
-import { formatTag } from './utils';
+import { suggestTag } from '../../../shared/ehentai';
+import { command, parseTag, formatTag } from './command';
 
 command
     .command('search <[namespace:]tag>')
