@@ -1,5 +1,6 @@
 import { normalizeTag } from '../../../shared/ehentai';
 import { command, parseTag } from './command';
+import { formatTag } from './utils';
 
 command
     .command('check <[namespace:]tag>')
@@ -11,5 +12,10 @@ command
             console.error('未找到相应标签');
             process.exit(1);
         }
-        console.log(`${result[0]}:${result[1]}`);
+        console.log(
+            formatTag({
+                namespace: result[0],
+                raw: result[1],
+            }),
+        );
     });

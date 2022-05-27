@@ -1,16 +1,7 @@
-import { suggestTag, Tag } from '../../../shared/ehentai';
+import { suggestTag } from '../../../shared/ehentai';
 import { command, parseTag } from './command';
 import clc from 'cli-color';
-import escapeRegexp from 'escape-string-regexp';
-
-function formatTag(tag: Tag, term?: string): string {
-    let raw: string = tag.raw;
-    if (term) {
-        const reg = new RegExp(escapeRegexp(term), 'gi');
-        raw = raw.replace(reg, clc.bold(term));
-    }
-    return `${clc.green(tag.namespace)}:${raw}`;
-}
+import { formatTag } from './utils';
 
 command
     .command('search <[namespace:]tag>')
