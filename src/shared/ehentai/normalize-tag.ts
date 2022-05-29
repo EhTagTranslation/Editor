@@ -44,18 +44,9 @@ export async function normalizeTag(
     if (ns && nsMap) {
         match = nsMap.get(ns);
     }
-    if (match == null) {
-        const result = await suggestTag(undefined, raw);
-        if (result != null) {
-            match = result.find(isMatch);
-        }
-    }
-    if (match == null) {
-        const result = await suggestTag(ns, raw);
-        if (result != null) {
-            match = result.find(isMatch);
-        }
-    }
+
+    match ??= await find(isMatch);
+    match ??= await find(isMatchOrMove);
 
     if (match == null) {
         // 短于 2 字符的标签、重命名为更长且包含原名的标签（abc => abcde）、作为子串出现超过 10 次的标签
@@ -64,14 +55,36 @@ export async function normalizeTag(
         else return undefined;
     }
     if (match.master) {
+        // 标签发生移动的，返回主标签
         match = match.master;
     }
     return [match.namespace, match.raw];
 
+    /** 使用 @see suggestTag 进行查找 */
+    async function find(matcher: (tag: Tag) => boolean): Promise<Tag | undefined> {
+        const resultGeneral = await suggestTag(undefined, raw);
+        if (resultGeneral) {
+            const match = resultGeneral.find(matcher);
+            if (match) return match;
+        }
+        const resultNs = await suggestTag(ns, raw);
+        if (resultNs != null) {
+            const match = resultNs.find(isMatchOrMove);
+            if (match) return match;
+        }
+        return undefined;
+    }
+
+    /** 严格命中 */
     function isMatch(tag: Tag): boolean {
         // 严格命中
         if (tag.namespace === ns && tag.raw === raw) return true;
-        // 从 temp 移动到期望的命名空间
+        return false;
+    }
+
+    /** 从 temp 移动到期望的命名空间 */
+    function isMatchOrMove(tag: Tag): boolean {
+        if (isMatch(tag)) return true;
         if ((tag.namespace as string) === 'temp' && tag.raw === raw && (!ns || tag.master?.namespace === ns))
             return true;
         return false;
