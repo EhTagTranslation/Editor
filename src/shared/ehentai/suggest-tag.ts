@@ -59,7 +59,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
 export async function loadMasterTags(): Promise<Tag[]> {
     const tags = [];
     for (let i = 0; i <= 11; i++) {
-        const response = (await get<string>(`http://repo.e-hentai.org/tools.php?act=taggroup&show=${i}`)).data;
+        const response = (await get<string>(`https://repo.e-hentai.org/tools.php?act=taggroup&show=${i}`)).data;
         const namespace = /\[<span style="font-weight:bold">(\w+)<\/span>\]/.exec(response)?.[1];
         if (!isNamespaceName(namespace)) {
             continue;

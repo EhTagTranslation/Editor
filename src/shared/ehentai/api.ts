@@ -53,7 +53,7 @@ async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestCo
 }
 
 export async function postApi<T extends ApiRequest<string, unknown>>(payload: T): Promise<ResponseOf<T>> {
-    const response = await post<ResponseOf<T>, T>('http://api.e-hentai.org/api.php', payload);
+    const response = await post<ResponseOf<T>, T>('https://api.e-hentai.org/api.php', payload);
     const data = response.data;
     if (typeof data == 'object' && 'error' in (data as object)) {
         let err = (data as { error: string }).error;
