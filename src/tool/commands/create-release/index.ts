@@ -66,10 +66,12 @@ function clearLine(): void {
     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
 }
 
+const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other']);
+
 async function runSourceCheck(db: Database): Promise<void> {
-    console.log('\nChecking tags from source...\n');
+    console.log('\n从 E 站标签数据库检查标签...\n');
     const t = await loadMasterTags();
-    console.log(`Preloaded ${t.length} tags from tag group tool.`);
+    console.log(`从 tag group 工具预加载了 ${t.length} 个标签`);
     const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
     const sizeWidth = Math.floor(Math.log10(size)) + 1;
     let count = 0;
@@ -100,19 +102,23 @@ async function runSourceCheck(db: Database): Promise<void> {
                 if (showProgress) {
                     clearLine();
                 }
-                db.logger.warn(context(), 'Tag not found.');
+                db.logger[SOURCE_CHECK_NOTICE.has(ns) ? 'info' : 'warn'](context(), '未找到标签');
                 continue;
             }
             if (normTag[1] !== tag) {
                 if (showProgress) {
                     clearLine();
                 }
-                db.logger.warn(context(), `Tag renamed: => ${normTag[0]}:${normTag[1]}`);
+                db.logger.warn(context(), `标签重命名 => ${normTag[0]}:${normTag[1]}`);
                 continue;
             }
         }
+
+        if (!showProgress) {
+            process.stderr.write(`[${count.toString().padStart(sizeWidth)}/${size}] 完成 ${ns} 的检查\n`);
+        }
     }
-    console.log(' ');
+    console.log('');
 }
 
 class ActionLogger extends Logger {
@@ -159,7 +165,7 @@ program
     .argument('[source]', 'REPO 的本地路径')
     .argument('[destination]', '生成发布文件的路径')
     .option('--strict', '启用严格检查')
-    .option('--source-check', '检查 TAG 数据库，提示不存在的和重命名的标签')
+    .option('--source-check', '检查 E 站标签数据库，提示不存在的和重命名的标签')
     .option('--no-rewrite', '不重新序列化数据库内容')
     .action(async (source: string | undefined, destination: string | undefined, options: OptionValues) => {
         source = path.resolve(source ?? '.');
