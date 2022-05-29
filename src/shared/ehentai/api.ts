@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { NamespaceName } from '../interfaces/ehtag';
 import type { RawTag } from '../raw-tag';
-import proxyConfig from './proxy';
+import { config } from './config';
 
 const responseType = Symbol();
 
@@ -33,45 +33,6 @@ interface ApiSlaveTag extends ApiMasterTag {
 }
 
 export type ResponseOf<T extends ApiRequest<string, unknown>> = T extends ApiRequest<string, infer U> ? U : unknown;
-
-declare let location: unknown;
-
-async function config(url: string): Promise<AxiosRequestConfig<never>> {
-    if (typeof location === 'object') {
-        // Browser environment
-        return {
-            headers: {},
-        };
-    }
-    // Node environment
-    return {
-        headers: {
-            Connection: 'keep-alive',
-            DNT: '1',
-            'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'user-agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53',
-            'content-type': 'application/json',
-            accept: '*/*',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site',
-            'accept-Encoding': 'gzip, deflate, br',
-            'accept-language': 'en,en-US;q=0.9',
-
-            ...(url.includes('hentai.org')
-                ? {
-                      origin: 'https://e-hentai.org',
-                      referer: 'https://e-hentai.org/',
-                      cookie: 'ipb_member_id=3552014; ipb_pass_hash=7a245abd0fa9866ccdfeaf58ff7dd0fd;',
-                  }
-                : {}),
-        },
-        ...proxyConfig,
-    };
-}
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -105,7 +66,7 @@ export async function postApi<T extends ApiRequest<string, unknown>>(payload: T)
 export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T, D>> {
     const response = await request<T>(
         {
-            ...(await config(url)),
+            ...config(url),
             url,
             method: 'POST',
             data,
@@ -118,7 +79,7 @@ export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T,
 export async function get<T>(url: string): Promise<AxiosResponse<T>> {
     const response = await request<T>(
         {
-            ...(await config(url)),
+            ...config(url),
             url,
             method: 'GET',
         },

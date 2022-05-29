@@ -1,6 +1,7 @@
-import { isNamespaceName, isRawTag, RawTag } from '../raw-tag';
+import { isRawTag, RawTag } from '../raw-tag';
 import { postApi, TagSuggestRequest, ResponseOf, get } from './api';
 import type { NamespaceName } from '../interfaces/ehtag';
+import { isNamespaceName } from '../namespace';
 
 const suggestCache = new Map<string, Tag[]>();
 export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();

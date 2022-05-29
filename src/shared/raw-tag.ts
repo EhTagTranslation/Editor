@@ -45,8 +45,3 @@ export function IsRawTag(validationOptions?: ValidationOptions): PropertyDecorat
         validationOptions,
     );
 }
-
-export function isNamespaceName(ns: unknown): ns is NamespaceName {
-    if (typeof ns != 'string') return false;
-    return NamespaceName.includes(ns as NamespaceName);
-}

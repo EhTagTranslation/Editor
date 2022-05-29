@@ -95,15 +95,8 @@ async function runSourceCheck(db: Database): Promise<void> {
                 return c;
             };
 
-            const normTag = await normalizeTag(ns, tag, true);
+            const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
-                if (tag.length <= 2) {
-                    if (showProgress) {
-                        clearLine();
-                    }
-                    db.logger.info(context(), 'Tag is too short, you should check it manually.');
-                    continue;
-                }
                 if (showProgress) {
                     clearLine();
                 }
