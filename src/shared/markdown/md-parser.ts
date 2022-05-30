@@ -84,7 +84,7 @@ const knownHosts = new Map<string, string>([
     ['facebook.com', '脸书'],
     ['twitter.com', 'Twitter'],
     ['weibo.com', '微博'],
-    ['bangumi.tv', '番组计划'],
+    ['bgm.tv', 'Bangumi'],
 ]);
 function normalizeLink(node: LinkNode): void {
     const href = node.url;
