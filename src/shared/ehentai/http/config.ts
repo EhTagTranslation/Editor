@@ -24,7 +24,7 @@ const fakeHeaders: AxiosRequestHeaders = {
     'accept-language': 'en,en-US;q=0.9',
 };
 
-export function config(url: string): AxiosRequestConfig<never> {
+export function config(url: string, _config: AxiosRequestConfig): AxiosRequestConfig<never> {
     const headers = { ...fakeHeaders };
     const u = new URL(url, 'https://e-hentai.org');
     headers['origin'] = u.origin;

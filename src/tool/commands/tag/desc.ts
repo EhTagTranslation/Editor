@@ -1,7 +1,7 @@
 import type { AxiosError } from 'axios';
 import type { Tag } from '../../../shared/interfaces/ehtag';
 import { normalizeTag } from '../../../shared/ehentai';
-import { get } from '../../../shared/ehentai/api';
+import { get } from '../../../shared/ehentai/http';
 import { command, parseTag, formatTag } from './command';
 
 command

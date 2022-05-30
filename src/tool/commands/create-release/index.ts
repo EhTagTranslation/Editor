@@ -8,8 +8,8 @@ import { promisify } from 'util';
 import type { TagType, RepoData, NamespaceName } from '../../../shared/interfaces/ehtag';
 import { Database } from '../../../shared/database';
 import { Logger, Context } from '../../../shared/markdown';
+import { normalizeTag, getTagGroups } from '../../../shared/ehentai';
 import type { RawTag } from '../../../shared/raw-tag';
-import { normalizeTag, loadMasterTags } from '../../../shared/ehentai';
 import { action } from '../../utils';
 import pako from './pako';
 
@@ -71,10 +71,18 @@ const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', '
 
 async function runSourceCheck(db: Database): Promise<void> {
     console.log('\n从 E 站标签数据库检查标签...\n');
-    const t = await loadMasterTags();
-    console.log(`从 tag group 工具预加载了 ${t.length} 个标签`);
-    const size = Object.values(db.data).reduce((sum, ns) => sum + (ns.name === 'rows' ? 0 : ns.size), 0);
-    const sizeWidth = Math.floor(Math.log10(size)) + 1;
+    const tagFromEh = await getTagGroups();
+    console.log(`从 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
+    const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
+    for (const k in db.data) {
+        const ns = k as NamespaceName;
+        if (ns === 'rows') continue;
+        const nsDb = db.data[ns];
+        for (const [tag] of nsDb.raw()) {
+            tagFromEtt.add(`${ns}:${tag}`);
+        }
+    }
+    console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
     let count = 0;
     const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
     for (const k in db.data) {
@@ -85,10 +93,7 @@ async function runSourceCheck(db: Database): Promise<void> {
             count++;
             if (showProgress) {
                 clearLine();
-                process.stderr.write(
-                    `[${count.toString().padStart(sizeWidth)}/${size}] ${ns}:${tag}`.padEnd(clc.windowSize.width - 10) +
-                        `${((count / size) * 100).toFixed(3)}%`,
-                );
+                progress(count, `${ns}:${tag}`);
                 process.stderr.write(clc.move.lineBegin);
             }
 
@@ -116,10 +121,32 @@ async function runSourceCheck(db: Database): Promise<void> {
         }
 
         if (!showProgress) {
-            process.stderr.write(`[${count.toString().padStart(sizeWidth)}/${size}] 完成 ${ns} 的检查\n`);
+            progress(count, `完成 ${ns} 的检查`);
+            process.stderr.write(`\n`);
         }
     }
+
+    for (const tag of tagFromEh) {
+        if (!SOURCE_CHECK_NOTICE.has(tag.namespace)) {
+            continue;
+        }
+        if (tagFromEtt.has(`${tag.namespace}:${tag.raw}`)) {
+            continue;
+        }
+        const nsDb = db.data[tag.namespace];
+        db.logger.warn(new Context(nsDb, tag.raw), '标签在 E 站标签数据库中存在，但未找到翻译');
+    }
     console.log('');
+
+    function progress(count: number, message: string): void {
+        const size = tagFromEtt.size;
+        const sizeWidth = Math.floor(Math.log10(size)) + 1;
+        let formatted = `[${count.toString().padStart(sizeWidth)}/${size}] ${message}`;
+        if (clc.windowSize.width - 10 > formatted.length) {
+            formatted = formatted.padEnd(clc.windowSize.width - 10);
+        }
+        process.stderr.write(`${formatted} ${((count / size) * 100).toFixed(3)}%`);
+    }
 }
 
 class ActionLogger extends Logger {
@@ -182,50 +209,6 @@ program
             await runSourceCheck(db);
         }
         await createRelease(db, destination);
-        if (rewrite) {
-            await db.save();
-        }
-    });
-
-async function runAutoTag(db: Database): Promise<void> {
-    console.log('\n从 E 站标签数据库检查标签...\n');
-    const loadTagFromEh = loadMasterTags();
-    const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
-    for (const k in db.data) {
-        const ns = k as NamespaceName;
-        if (ns === 'rows') continue;
-        const nsDb = db.data[ns];
-        for (const [tag] of nsDb.raw()) {
-            tagFromEtt.add(`${ns}:${tag}`);
-        }
-    }
-    const tagFromEh = await loadTagFromEh;
-    console.log(`从 tag group 工具加载了 ${tagFromEh.length} 个标签`);
-    console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
-    for (const tag of tagFromEh) {
-        if (tagFromEtt.has(`${tag.namespace}:${tag.raw}`)) {
-            continue;
-        }
-        const nsDb = db.data[tag.namespace];
-        db.logger[SOURCE_CHECK_NOTICE.has(tag.namespace) ? 'warn' : 'info'](new Context(nsDb, tag.raw), '未找到标签');
-        nsDb.add(tag.raw, {
-            name: tag.raw,
-            intro: '由 Auto-Tag 创建',
-            links: '',
-        });
-    }
-}
-
-program
-    .command('auto-tag')
-    .description('检查 E 站标签数据库，添加缺失的标签')
-    .argument('[source]', 'REPO 的本地路径')
-    .option('--no-rewrite', '不重新序列化数据库内容')
-    .action(async (source: string | undefined, options: OptionValues) => {
-        source = path.resolve(source ?? '.');
-        const { rewrite } = options;
-        const db = await Database.create(source, undefined, action.isAction() ? new ActionLogger('error') : undefined);
-        await runAutoTag(db);
         if (rewrite) {
             await db.save();
         }
