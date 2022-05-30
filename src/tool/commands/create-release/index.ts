@@ -1,16 +1,17 @@
 import { program, OptionValues } from 'commander';
+import { error, warning, notice } from '@actions/core';
+import clc from 'cli-color';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
 import { promisify } from 'util';
 import type { TagType, RepoData, NamespaceName } from '../../../shared/interfaces/ehtag';
 import { Database } from '../../../shared/database';
-import pako from './pako';
-import { action } from '../../utils';
 import { Logger, Context } from '../../../shared/markdown';
+import type { RawTag } from '../../../shared/raw-tag';
 import { normalizeTag, loadMasterTags } from '../../../shared/ehentai';
-import clc from 'cli-color';
-import { error, warning, notice } from '@actions/core';
+import { action } from '../../utils';
+import pako from './pako';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
@@ -162,6 +163,7 @@ class ActionLogger extends Logger {
 
 program
     .command('create-release')
+    .description('生成发布文件')
     .argument('[source]', 'REPO 的本地路径')
     .argument('[destination]', '生成发布文件的路径')
     .option('--strict', '启用严格检查')
@@ -180,6 +182,50 @@ program
             await runSourceCheck(db);
         }
         await createRelease(db, destination);
+        if (rewrite) {
+            await db.save();
+        }
+    });
+
+async function runAutoTag(db: Database): Promise<void> {
+    console.log('\n从 E 站标签数据库检查标签...\n');
+    const loadTagFromEh = loadMasterTags();
+    const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
+    for (const k in db.data) {
+        const ns = k as NamespaceName;
+        if (ns === 'rows') continue;
+        const nsDb = db.data[ns];
+        for (const [tag] of nsDb.raw()) {
+            tagFromEtt.add(`${ns}:${tag}`);
+        }
+    }
+    const tagFromEh = await loadTagFromEh;
+    console.log(`从 tag group 工具加载了 ${tagFromEh.length} 个标签`);
+    console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
+    for (const tag of tagFromEh) {
+        if (tagFromEtt.has(`${tag.namespace}:${tag.raw}`)) {
+            continue;
+        }
+        const nsDb = db.data[tag.namespace];
+        db.logger[SOURCE_CHECK_NOTICE.has(tag.namespace) ? 'warn' : 'info'](new Context(nsDb, tag.raw), '未找到标签');
+        nsDb.add(tag.raw, {
+            name: tag.raw,
+            intro: '由 Auto-Tag 创建',
+            links: '',
+        });
+    }
+}
+
+program
+    .command('auto-tag')
+    .description('检查 E 站标签数据库，添加缺失的标签')
+    .argument('[source]', 'REPO 的本地路径')
+    .option('--no-rewrite', '不重新序列化数据库内容')
+    .action(async (source: string | undefined, options: OptionValues) => {
+        source = path.resolve(source ?? '.');
+        const { rewrite } = options;
+        const db = await Database.create(source, undefined, action.isAction() ? new ActionLogger('error') : undefined);
+        await runAutoTag(db);
         if (rewrite) {
             await db.save();
         }
