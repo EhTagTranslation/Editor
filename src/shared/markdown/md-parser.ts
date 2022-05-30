@@ -75,12 +75,16 @@ function normalizeUrl(url: string): {
 const knownHosts = new Map<string, string>([
     ['moegirl.org', '萌娘百科'],
     ['moegirl.org.cn', '萌娘百科'],
-    ['wikipedia.org', '维基百科'],
+    ['zh.wikipedia.org', '维基百科'],
+    ['ja.wikipedia.org', '维基百科（日语）'],
+    ['en.wikipedia.org', '维基百科（英语）'],
+    ['en.wikipedia.org', '维基百科（英语）'],
     ['pixiv.net', 'pixiv'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
     ['twitter.com', 'Twitter'],
     ['weibo.com', '微博'],
+    ['bangumi.tv', '番组计划'],
 ]);
 function normalizeLink(node: LinkNode): void {
     const href = node.url;

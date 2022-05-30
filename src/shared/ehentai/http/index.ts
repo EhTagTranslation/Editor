@@ -4,6 +4,8 @@ import { request } from './core';
 export * from './api';
 export * from './html';
 
+export { request };
+
 export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T, D>> {
     const response = await request<T>({
         url,

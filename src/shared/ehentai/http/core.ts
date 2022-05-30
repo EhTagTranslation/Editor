@@ -25,5 +25,8 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
 
 export async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestConfig, retry = 3): Promise<R> {
     if (!config.url) throw new Error('url is required');
-    return requestImpl({ ...defaultConfig(config.url, config), ...config }, retry, 1000);
+    const def = defaultConfig(config.url, config);
+    const headers = { ...def.headers, ...config.headers };
+    const cfg = { ...def, ...config, headers };
+    return requestImpl(cfg, retry, 1000);
 }
