@@ -1,3 +1,4 @@
+import { Context, parse, render } from '../../../shared/markdown';
 import type { NamespaceName, Tag } from '../../../shared/interfaces/ehtag';
 import type { RawTag } from '../../../shared/raw-tag';
 import { parseTag } from '../tag/command';
@@ -51,17 +52,20 @@ async function findJaInGalleryTitles(raw: RawTag, galleries: Gallery[], page = 1
 }
 
 async function translateParody(raw: RawTag, galleries: Gallery[]): Promise<Tag<'raw'> | undefined> {
-    const ehWikiJa = await searchEhWiki(raw);
-    let found = ehWikiJa;
-    if (!ehWikiJa) {
-        found = await findJaInGalleryTitles(raw, galleries);
+    const ehWiki = await searchEhWiki(raw);
+    let found = ehWiki;
+    if (!ehWiki) {
+        const foundInGalleries = await findJaInGalleryTitles(raw, galleries);
+        if (foundInGalleries) {
+            found = ['ja', [], foundInGalleries];
+        }
     }
     if (!found) return undefined;
-    const translated = await translateByWiki(found);
+    const translated = await translateByWiki(found[2], found[0], found[1]);
     if (!translated) {
-        if (!ehWikiJa) return undefined;
+        if (!ehWiki) return undefined;
         return {
-            name: ehWikiJa,
+            name: ehWiki[2],
             intro: '',
             links: `[EhWiki](https://ehwiki.org/wiki/${raw.replace(/\s/g, '_')})`,
         };
@@ -100,12 +104,13 @@ command
         }
         try {
             const translated = await translate(ns, raw);
+            const normalize = (x: string): string => render(parse(x, Context.fake), 'raw');
             console.log(
                 `生成结果：
     原始标签：${ns}:${raw}
-    名    称：${translated.name}
-    描    述：${translated.intro}
-    外部链接：${translated.links}`,
+    名    称：${normalize(translated.name)}
+    描    述：${normalize(translated.intro)}
+    外部链接：${normalize(translated.links)}`,
             );
         } catch (ex) {
             console.error((ex as Error).message);

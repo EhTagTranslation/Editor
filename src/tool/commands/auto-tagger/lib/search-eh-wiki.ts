@@ -1,7 +1,12 @@
 import { get } from '../../../../shared/ehentai/http';
 import type { RawTag } from '../../../../shared/raw-tag';
 
-export async function searchEhWiki(tag: RawTag): Promise<string | undefined> {
+const MediaType = ['video game', 'movie', 'novel', 'anime/manga'] as const;
+export type MediaType = typeof MediaType[number];
+
+export async function searchEhWiki(
+    tag: RawTag,
+): Promise<[lang: 'zh' | 'ja' | 'en', mediaTypes: MediaType[], text: string] | undefined> {
     const result = await get<{
         query: {
             pages: [
@@ -26,18 +31,39 @@ export async function searchEhWiki(tag: RawTag): Promise<string | undefined> {
         )}`,
     );
 
+    const title = result.data.query.pages[0].title;
     const content = result.data.query.pages[0].revisions?.[0].slots.main.content;
     if (!content) {
-        console.log(`未找到 EhWiki 条目“${result.data.query.pages[0].title}”`);
+        console.log(`未找到 EhWiki 条目“${title}”`);
         return undefined;
     }
 
-    const jp = /^\*'''Japanese''': (.+)$/m.exec(content)?.[1];
-    if (!jp) {
-        console.log(`找到 EhWiki 条目“${result.data.query.pages[0].title}”`);
-    } else {
-        console.log(`找到 EhWiki 条目“${result.data.query.pages[0].title}”及日文翻译“${jp}”`);
+    const mediaTypes: MediaType[] = [];
+    const type = /^\*'''Type''': (.+)$/m.exec(content)?.[1];
+    if (type) {
+        for (const mt of type.split(',')) {
+            const mtTrimmed = mt.trim().toLowerCase();
+            if (MediaType.includes(mtTrimmed as MediaType)) {
+                mediaTypes.push(mtTrimmed as MediaType);
+            }
+        }
     }
 
-    return jp;
+    const zh = /^\*'''Chinese''': (.+)$/m.exec(content)?.[1];
+    if (zh) {
+        console.log(`找到 EhWiki 条目“${title}”（${mediaTypes.join(', ')}）及汉语翻译“${zh}”`);
+        return ['zh', mediaTypes, zh];
+    }
+    const ja = /^\*'''Japanese''': (.+)$/m.exec(content)?.[1];
+    if (ja) {
+        console.log(`找到 EhWiki 条目“${title}”（${mediaTypes.join(', ')}）及日语翻译“${ja}”`);
+        return ['ja', mediaTypes, ja];
+    }
+    const en = /^\*'''English''': (.+)$/m.exec(content)?.[1];
+    if (en) {
+        console.log(`找到 EhWiki 条目“${title}”（${mediaTypes.join(', ')}）及英语翻译“${en}”`);
+        return ['en', mediaTypes, en];
+    }
+    console.log(`未找到 EhWiki 条目“${title}”（${mediaTypes.join(', ')}）的任何翻译，视标题为英语`);
+    return ['en', mediaTypes, title];
 }
