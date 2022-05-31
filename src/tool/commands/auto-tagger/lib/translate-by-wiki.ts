@@ -13,16 +13,16 @@ async function wikiApi<T>(
     url: string,
     query: {
         action: string;
-        [key: string]: string | string[];
+        [key: string]: string | number | string[];
     },
 ): Promise<T> {
     const search = new URLSearchParams('format=json&formatversion=2');
     for (const key in query) {
         const value = query[key];
         if (Array.isArray(value)) {
-            value.forEach((v) => search.append(key, v));
+            search.set(key, value.join('|'));
         } else {
-            search.set(key, value);
+            search.set(key, String(value));
         }
     }
     return (
@@ -96,11 +96,10 @@ async function langlinks(
         redirects: Array<{ from: string; to: string }>;
     }>(`https://${from}.wikipedia.org/w/api.php`, {
         action: 'query',
-        prop: 'langlinks|categories',
+        prop: ['langlinks', 'categories'],
         redirects: '',
         titles: title,
         lllang: to,
-        pllimit: '100',
     });
     if (res.redirects?.[0]?.from === title) {
         console.log(`${WIKI_LANG[from]}维基条目“${title}”重定向到“${res.redirects[0].to}”`);
@@ -130,6 +129,7 @@ async function langlinks(
             action: 'query',
             prop: 'links',
             redirects: '',
+            pllimit: 100,
             titles: title,
         });
         const candidates = res.pages[0].links.map((l) => l.title);
