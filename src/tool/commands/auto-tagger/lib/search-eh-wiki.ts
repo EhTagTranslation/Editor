@@ -1,8 +1,17 @@
 import { get } from '../../../../shared/ehentai/http';
 import type { RawTag } from '../../../../shared/raw-tag';
 
-const MediaType = ['video game', 'movie', 'novel', 'anime/manga'] as const;
+const MediaType = ['game', 'movie', 'novel', 'anime/manga'] as const;
 export type MediaType = typeof MediaType[number];
+
+const MediaTypeMap: Record<string, MediaType> = {
+    'video game': 'game',
+    movie: 'movie',
+    novel: 'novel',
+    'anime/manga': 'anime/manga',
+    anime: 'anime/manga',
+    manga: 'anime/manga',
+};
 
 export async function searchEhWiki(
     tag: RawTag,
@@ -43,8 +52,8 @@ export async function searchEhWiki(
     if (type) {
         for (const mt of type.split(',')) {
             const mtTrimmed = mt.trim().toLowerCase();
-            if (MediaType.includes(mtTrimmed as MediaType)) {
-                mediaTypes.push(mtTrimmed as MediaType);
+            if (mtTrimmed in MediaTypeMap) {
+                mediaTypes.push(MediaTypeMap[mtTrimmed]);
             }
         }
     }

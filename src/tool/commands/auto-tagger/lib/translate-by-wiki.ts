@@ -43,25 +43,25 @@ function pickDisambiguation(
 ): string | undefined {
     const disambiguationHint = {
         ja: {
-            'video game': 'ゲーム',
-            'anime/manga': 'アニメ',
+            game: 'ゲーム',
+            'anime/manga': ['アニメ', '漫画'],
             movie: '映画',
             novel: '小説',
         },
         en: {
-            'video game': 'video game',
-            'anime/manga': 'anime',
+            game: 'video game',
+            'anime/manga': ['anime', 'manga'],
             movie: 'movie',
             novel: 'novel',
         },
         zh: {
-            'video game': '电视游戏',
-            'anime/manga': '动漫',
+            game: '电视游戏',
+            'anime/manga': ['动画', '漫画'],
             movie: '电影',
             novel: '小说',
         },
     }[lang];
-    const mt = mediaTypes.map((m) => `(${disambiguationHint[m]})`);
+    const mt = mediaTypes.flatMap((m) => disambiguationHint[m]);
     const filtered = candidates.filter((c) => mt.some((m) => c.includes(m)));
     console.log(mt, filtered);
     if (filtered.length > 0) {
