@@ -3,7 +3,6 @@
   "cli": {
     "analytics": false
   },
-  "defaultProject": "eh-tag-editor",
   "newProjectRoot": "projects",
   "projects": {
     "eh-tag-editor": {
