@@ -229,7 +229,7 @@ export class EditorComponent implements OnInit {
             links: this.router.initQueryParam('links', (v) => v),
         };
         for (const key in this.tagForm.controls) {
-            const element = this.tagForm.controls[key];
+            const element = this.tagForm.controls[key as keyof typeof this.tagForm.controls];
             element.valueChanges.subscribe((value) => {
                 if (element.dirty) {
                     this.router.navigateParam({
@@ -439,7 +439,7 @@ export class EditorComponent implements OnInit {
         }
         if (this.tagForm.invalid) {
             for (const key in this.tagForm.controls) {
-                const element = this.tagForm.controls[key];
+                const element = this.tagForm.controls[key as keyof typeof this.tagForm.controls];
                 element.markAsTouched();
             }
             return false;

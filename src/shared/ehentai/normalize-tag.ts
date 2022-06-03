@@ -27,7 +27,7 @@ async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
 }
 
 function searchCache(ns: NamespaceName, raw: RawTag): boolean {
-    const term = `${ns}:${raw}`;
+    const term = `${ns}:${raw}` as const;
     return tagsFoundBySearch.has(term);
 }
 
