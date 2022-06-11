@@ -188,6 +188,29 @@ class ActionLogger extends Logger {
     }
 }
 
+class FileLogger extends Logger {
+    constructor(readonly location: string) {
+        super();
+    }
+    protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
+        process.stderr.write(
+            clc[
+                (
+                    {
+                        info: 'blue',
+                        warn: 'yellow',
+                        error: 'red',
+                    } as const
+                )[logger]
+            ](`[${logger.slice(0, 4).toUpperCase()}] `),
+        );
+        const l = context.line ? `${context.line}: ` : ' ';
+        const r = context.raw ?? '<unknown raw>';
+        const f = path.resolve(this.location ?? '.', `./database/${context.namespace.name}.md`);
+        console.log(`${path.relative(process.cwd(), f)}:${l}${r}: ${message}`);
+    }
+}
+
 program
     .command('create-release')
     .description('生成发布文件')
@@ -203,7 +226,7 @@ program
         const db = await Database.create(
             source,
             undefined,
-            action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : undefined,
+            action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : new FileLogger(source),
         );
         if (sourceCheck) {
             await runSourceCheck(db);
