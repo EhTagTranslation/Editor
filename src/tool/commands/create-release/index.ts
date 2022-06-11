@@ -1,13 +1,14 @@
 import { error, notice, warning } from '@actions/core';
 import clc from 'cli-color';
-import { OptionValues, program } from 'commander';
+import { program } from 'commander';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
+import { parseNamespace } from '../../../shared/namespace';
 import { promisify } from 'util';
 import { Database } from '../../../shared/database';
 import { getTagGroups, normalizeTag } from '../../../shared/ehentai';
-import type { NamespaceName, RepoData, TagType } from '../../../shared/interfaces/ehtag';
+import { NamespaceName, RepoData, TagType } from '../../../shared/interfaces/ehtag';
 import { Context, Logger } from '../../../shared/markdown';
 import type { RawTag } from '../../../shared/raw-tag';
 import { action } from '../../utils';
@@ -69,14 +70,21 @@ function clearLine(): void {
 
 const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other']);
 
-async function runSourceCheck(db: Database): Promise<void> {
+async function runSourceCheck(db: Database, checkedNs: readonly NamespaceName[]): Promise<void> {
+    /** 是否跳过 */
+    function skipNs(ns: NamespaceName): boolean {
+        if (ns === 'rows') return true;
+        if (!checkedNs.includes(ns)) return true;
+        return false;
+    }
+
     console.log('\n从 E 站标签数据库检查标签...\n');
     const tagFromEh = await getTagGroups();
     console.log(`从 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
     const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
     for (const k in db.data) {
         const ns = k as NamespaceName;
-        if (ns === 'rows') continue;
+        if (skipNs(ns)) continue;
         const nsDb = db.data[ns];
         for (const [tag] of nsDb.raw()) {
             tagFromEtt.add(`${ns}:${tag}`);
@@ -87,7 +95,8 @@ async function runSourceCheck(db: Database): Promise<void> {
     const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
     for (const k in db.data) {
         const ns = k as NamespaceName;
-        if (ns === 'rows') continue;
+        if (skipNs(ns)) continue;
+
         const nsDb = db.data[ns];
         for (const [tag, tagLine] of nsDb.raw()) {
             count++;
@@ -127,12 +136,10 @@ async function runSourceCheck(db: Database): Promise<void> {
     }
 
     for (const tag of tagFromEh) {
-        if (!SOURCE_CHECK_NOTICE.has(tag.namespace)) {
-            continue;
-        }
-        if (tagFromEtt.has(`${tag.namespace}:${tag.raw}`)) {
-            continue;
-        }
+        if (skipNs(tag.namespace)) continue;
+        if (!SOURCE_CHECK_NOTICE.has(tag.namespace)) continue;
+
+        if (tagFromEtt.has(`${tag.namespace}:${tag.raw}`)) continue;
         const nsDb = db.data[tag.namespace];
         db.logger.warn(new Context(nsDb, tag.raw), '标签在 E 站标签数据库中存在，但未找到翻译');
     }
@@ -222,22 +229,48 @@ program
     .argument('[source]', 'REPO 的本地路径')
     .argument('[destination]', '生成发布文件的路径')
     .option('--strict', '启用严格检查')
-    .option('--source-check', '检查 E 站标签数据库，提示不存在的和重命名的标签')
+    .option('--source-check [ns]', '检查 E 站标签数据库，提示不存在的和重命名的标签')
     .option('--no-rewrite', '不重新序列化数据库内容')
-    .action(async (source: string | undefined, destination: string | undefined, options: OptionValues) => {
-        source = path.resolve(source ?? '.');
-        destination = path.resolve(destination ?? path.join(source, 'publish'));
-        const { strict, rewrite, sourceCheck } = options;
-        const db = await Database.create(
-            source,
-            undefined,
-            action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : new FileLogger(source),
-        );
-        if (sourceCheck) {
-            await runSourceCheck(db);
-        }
-        await createRelease(db, destination);
-        if (rewrite) {
-            await db.save();
-        }
-    });
+    .action(
+        async (
+            source: string | undefined,
+            destination: string | undefined,
+            options: {
+                strict: boolean;
+                rewrite: boolean;
+                sourceCheck: string | boolean;
+            },
+        ) => {
+            source = path.resolve(source ?? '.');
+            destination = path.resolve(destination ?? path.join(source, 'publish'));
+            const { strict, rewrite, sourceCheck } = options;
+            const db = await Database.create(
+                source,
+                undefined,
+                action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : new FileLogger(source),
+            );
+            if (sourceCheck) {
+                const checkNs: NamespaceName[] = [];
+                sourceCheck === true ? [...NamespaceName] : [];
+                if (typeof sourceCheck == 'string') {
+                    for (const ns of sourceCheck.split(',')) {
+                        const nsName = parseNamespace(ns);
+                        if (!nsName) {
+                            console.error(`无效的命名空间 ${ns}`);
+                            process.exitCode = 2;
+                            return;
+                        }
+                        checkNs.push(nsName);
+                    }
+                    console.log(`检查命名空间 ${checkNs.join(', ')}`);
+                } else {
+                    checkNs.push(...NamespaceName);
+                }
+                await runSourceCheck(db, checkNs);
+            }
+            await createRelease(db, destination);
+            if (rewrite) {
+                await db.save();
+            }
+        },
+    );
