@@ -249,10 +249,9 @@ program
                 undefined,
                 action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : new FileLogger(source),
             );
-            if (sourceCheck) {
+            if (sourceCheck || typeof sourceCheck == 'string') {
                 const checkNs: NamespaceName[] = [];
-                sourceCheck === true ? [...NamespaceName] : [];
-                if (typeof sourceCheck == 'string') {
+                if (sourceCheck && typeof sourceCheck == 'string') {
                     for (const ns of sourceCheck.split(',')) {
                         const nsName = parseNamespace(ns);
                         if (!nsName) {
