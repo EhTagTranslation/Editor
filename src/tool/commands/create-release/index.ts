@@ -193,21 +193,26 @@ class FileLogger extends Logger {
         super();
     }
     protected log(logger: 'info' | 'warn' | 'error', context: Context, message: string): void {
-        process.stderr.write(
-            clc[
-                (
-                    {
-                        info: 'blue',
-                        warn: 'yellow',
-                        error: 'red',
-                    } as const
-                )[logger]
-            ](`[${logger.slice(0, 4).toUpperCase()}] `),
+        const color = ({ info: 'blue', warn: 'yellow', error: 'red' } as const)[logger];
+        process.stderr.write(clc[color](`[${logger.slice(0, 4).toUpperCase()}] `));
+
+        const f = path.relative(
+            process.cwd(),
+            path.resolve(this.location ?? '.', `./database/${context.namespace.name}.md`),
         );
-        const l = context.line ? `${context.line}: ` : ' ';
-        const r = context.raw ?? '<unknown raw>';
-        const f = path.resolve(this.location ?? '.', `./database/${context.namespace.name}.md`);
-        console.log(`${path.relative(process.cwd(), f)}:${l}${r}: ${message}`);
+        if (context.line) {
+            process.stderr.write(clc.underline(`${f}:${context.line}`));
+        } else {
+            process.stderr.write(clc.underline(f));
+        }
+        process.stderr.write(clc.black(`: `));
+
+        const raw = context.raw ?? '<unknown raw>';
+        process.stderr.write(clc.bold(raw));
+        process.stderr.write(clc.black(`: `));
+
+        process.stderr.write(message);
+        process.stderr.write(`\n`);
     }
 }
 
