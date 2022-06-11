@@ -212,3 +212,11 @@ mat-option .hint {
     width: 50%;
   }
 }
+
+.eh-name ::ng-deep {
+  img[ehimg] {
+    max-width: 2em;
+    max-height: 1.25em;
+    vertical-align: middle;
+  }
+}

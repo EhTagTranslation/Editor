@@ -70,7 +70,7 @@
         <ng-container matColumnDef="namespace">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">命名空间</th>
           <td mat-cell *matCellDef="let row">
-            <div>
+            <div class="eh-namespace">
               <a (click)="setNs(row.namespace)" [routerLink]="['/list', row.namespace]">{{ row.namespace }}</a>
             </div>
           </td>
@@ -79,7 +79,7 @@
         <ng-container matColumnDef="raw">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">原始标签</th>
           <td mat-cell *matCellDef="let row">
-            <div>
+            <div class="eh-raw">
               <a
                 *ngIf="row.namespace === 'rows' && row.raw !== 'temp'; else notRow"
                 (click)="setNs(row.raw)"
@@ -94,21 +94,21 @@
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">名称</th>
           <td mat-cell *matCellDef="let row">
-            <div class="md-container" [innerHTML]="row.renderedName | mark: (search | async):true"></div>
+            <div class="md-container eh-name" [innerHTML]="row.renderedName | mark: (search | async):true"></div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="intro">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">描述</th>
           <td mat-cell *matCellDef="let row">
-            <div class="md-container" [innerHTML]="row.renderedIntro | mark: (search | async):true"></div>
+            <div class="md-container eh-intro" [innerHTML]="row.renderedIntro | mark: (search | async):true"></div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="links">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text">外部链接</th>
           <td mat-cell *matCellDef="let row">
-            <div class="md-container" [innerHTML]="row.renderedLinks | mark: (search | async):true"></div>
+            <div class="md-container eh-links" [innerHTML]="row.renderedLinks | mark: (search | async):true"></div>
           </td>
         </ng-container>
 

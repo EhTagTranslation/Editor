@@ -3,6 +3,14 @@
   height: 100%;
 }
 
+.eh-name ::ng-deep {
+  img[ehimg] {
+    max-width: 2em;
+    max-height: 1.25em;
+    vertical-align: middle;
+  }
+}
+
 #root {
   &.show-img-no-r18 ::ng-deep {
     img[ehimg][nsfw] {
@@ -22,6 +30,12 @@
     img[ehimg],
     img[ehimg] + br {
       display: none;
+    }
+  }
+
+  .eh-name ::ng-deep {
+    img[ehimg] {
+      display: inline;
     }
   }
 }
