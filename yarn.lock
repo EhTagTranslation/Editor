@@ -1772,10 +1772,10 @@
   resolved "https://registry.npmmirror.com/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz#78b62041c7a407db4a90eb140567321602bed18e"
   integrity sha512-NFvofzSinp00j5rzUd4tf+xi9od6383iY0JP7o0Bnu1fuItAUkWBgc4EKuIQ3D+c2QI3i9pG1kDWAeY27EMGtg==
 
-"@nestjs/platform-fastify@~8.4.6":
-  version "8.4.6"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/-/platform-fastify-8.4.6.tgz#ef8b95c2d6e66900026bdfa3a1a4b348573a501b"
-  integrity sha512-sRu8nWRFOAyLsu84Mc/YIWztorcYnDkO21P2ZDK6kxGPOrw82ePr0G5xV5BtbbTlkJkzjJ4GWsZvRGYTtnH0cg==
+"@nestjs/platform-fastify@~8.4.7":
+  version "8.4.7"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-8.4.7.tgz#5c37fe00b4d5c039c4fc0f43c0d14cfc0fa101aa"
+  integrity sha512-3miB5AYQMlwTAC6W3HE3UTfsQF5RcCsellIEHhNKWN9jGA3C++zr24nEBzw61+Ca2fOG4+ccg4agtODn53d+UA==
   dependencies:
     fastify "3.29.0"
     fastify-cors "6.1.0"
