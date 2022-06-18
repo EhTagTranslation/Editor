@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 
 /** @typedef {import('ts-jest')} */
 /** @type {import('@jest/types').Config.InitialOptions} */
@@ -22,4 +22,5 @@ const config = {
         },
     },
 };
-module.exports = config;
+
+export default config;
