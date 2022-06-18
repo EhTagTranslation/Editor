@@ -45,7 +45,7 @@ export interface RepoInfo {
 }
 
 /** 表示一个 Git Repo 的数据 */
-export interface RepoData<T extends TagType> extends RepoInfo {
+export interface RepoData<T = TagType> extends RepoInfo {
     data: Array<NamespaceData<T>>;
 }
 
@@ -96,12 +96,12 @@ export interface FrontMatters {
 }
 
 /** 表示一个命名空间的数据 */
-export interface NamespaceData<T extends TagType = TagType> extends NamespaceInfo {
+export interface NamespaceData<T = TagType> extends NamespaceInfo {
     data: { [raw: string]: Tag<T> };
 }
 
 /** 表示一条翻译的内容 */
-export interface Tag<T extends TagType = TagType> {
+export interface Tag<T = TagType> {
     name: CellType<T>;
     intro: CellType<T>;
     links: CellType<T>;
@@ -118,4 +118,4 @@ interface CellTypeMap extends Record<TagType, unknown> {
 }
 
 /** 表示一条翻译的单元格内容 */
-export type CellType<T extends TagType> = CellTypeMap[T];
+export type CellType<T = TagType> = T extends TagType ? CellTypeMap[T] : CellTypeMap[TagType];
