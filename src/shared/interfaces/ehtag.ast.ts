@@ -61,9 +61,7 @@ export interface ImageNode extends MediaNode {
     nsfw: false | 'R18' | 'R18G';
 }
 
-type NodeMapBase = { [T in NodeType]: Node };
-
-export interface NodeMap extends NodeMapBase {
+export interface NodeMap extends Record<NodeType, Node> {
     image: ImageNode;
     link: LinkNode;
     strong: StrongNode;
@@ -79,6 +77,8 @@ export function isNodeType<T extends NodeType>(node: Node | undefined, type: T):
     return node.type === type;
 }
 
-export function isContainer(node: Node): node is ContainerNode {
-    return 'content' in node && Array.isArray((node as ContainerNode).content);
+export function isContainer(node: Node | undefined): node is ContainerNode {
+    if (node == null) return false;
+    if (typeof node.type != 'string') return false;
+    return Array.isArray((node as ContainerNode).content);
 }

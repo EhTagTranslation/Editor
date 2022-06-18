@@ -1,6 +1,5 @@
 import type { Opaque } from 'type-fest';
 import { ValidationOptions, ValidationArguments, buildMessage, ValidateBy } from 'class-validator';
-import { NamespaceName } from './interfaces/ehtag';
 
 /** 表示一个标签的原文，不包含命名空间 */
 export type RawTag = Opaque<string, 'raw'>;

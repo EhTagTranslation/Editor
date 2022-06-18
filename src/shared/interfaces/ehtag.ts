@@ -14,7 +14,7 @@ export const Sha1Value = Object.freeze(
         },
         {
             empty: '0'.repeat(40) as Sha1Value,
-            validate(value: string): value is Sha1Value {
+            validate(value: unknown): value is Sha1Value {
                 return typeof value == 'string' && value.length === 40 && value.trim().length === 40;
             },
         },
@@ -45,7 +45,7 @@ export interface RepoInfo {
 }
 
 /** 表示一个 Git Repo 的数据 */
-export interface RepoData<T> extends RepoInfo {
+export interface RepoData<T extends TagType> extends RepoInfo {
     data: Array<NamespaceData<T>>;
 }
 
@@ -96,12 +96,12 @@ export interface FrontMatters {
 }
 
 /** 表示一个命名空间的数据 */
-export interface NamespaceData<T = TagType> extends NamespaceInfo {
+export interface NamespaceData<T extends TagType = TagType> extends NamespaceInfo {
     data: { [raw: string]: Tag<T> };
 }
 
 /** 表示一条翻译的内容 */
-export interface Tag<T = TagType> {
+export interface Tag<T extends TagType = TagType> {
     name: CellType<T>;
     intro: CellType<T>;
     links: CellType<T>;
@@ -110,15 +110,12 @@ export interface Tag<T = TagType> {
 /** 翻译数据序列化的类型 */
 export type TagType = 'raw' | 'ast' | 'html' | 'text' | 'full';
 
+interface CellTypeMap extends Record<TagType, unknown> {
+    raw: string;
+    ast: Ast.Tree;
+    text: string;
+    full: { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> };
+}
+
 /** 表示一条翻译的单元格内容 */
-export type CellType<T> = T extends 'raw'
-    ? string
-    : T extends 'ast'
-    ? Ast.Tree
-    : T extends 'html'
-    ? string
-    : T extends 'text'
-    ? string
-    : T extends 'full'
-    ? { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> }
-    : T;
+export type CellType<T extends TagType> = CellTypeMap[T];
