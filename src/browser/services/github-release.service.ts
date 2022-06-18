@@ -66,7 +66,7 @@ export class GithubReleaseService {
         this.refreshEvent.next(-1);
     }
     private async set(value: RepoData<'raw'>): Promise<void> {
-        await Promise.delay(0);
+        await new Promise((resolve) => setTimeout(resolve, 0));
         const data = new DatabaseInMemory(this.cache, value, this.get().revision + 1);
         this.debug.log('release: rendering');
         await data.render('full');

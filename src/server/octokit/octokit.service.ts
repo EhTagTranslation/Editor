@@ -104,20 +104,21 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     private appToken?: Promise<ApiData<'apps', 'createInstallationAccessToken'>>;
     async getAppToken(): Promise<string> {
-        if (
-            this.appToken?.isPending() ||
-            (this.appToken?.isFulfilled() && Date.parse((await this.appToken).expires_at) > Date.now() + 600_000)
-        )
-            return this.appToken.get('token');
+        const currentQuery = await this.appToken;
+        if (currentQuery && Date.parse(currentQuery.expires_at) > Date.now() + 600_000) {
+            return currentQuery.token;
+        }
+
         const tokenReq = this.forApp.apps.createInstallationAccessToken({
             installation_id: this.APP_INSTALLATION_ID,
         });
-        return (this.appToken = tokenReq.then((token) => {
+        this.appToken = tokenReq.then((token) => {
             this._forRepo = this.createOctokit({
                 auth: token.data.token,
             });
             return token.data;
-        })).get('token');
+        });
+        return (await this.appToken).token;
     }
     async user(userToken: string): Promise<UserInfo> {
         const cache = this.userInfoCache.get<UserInfo>(userToken);
