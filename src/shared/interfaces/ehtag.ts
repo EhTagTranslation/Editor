@@ -119,4 +119,4 @@ interface CellTypeMap extends Record<TagType, unknown> {
 }
 
 /** 表示一条翻译的单元格内容 */
-export type CellType<T = TagType> = T extends TagType ? CellTypeMap[T] : CellTypeMap[TagType];
+export type CellType<T = TagType> = T extends TagType ? CellTypeMap[T] : T;
