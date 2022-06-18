@@ -5,8 +5,20 @@
     <script>
       var code = (/[?&]code=([^\s&]+)($|&)/.exec(location.search) || [])[1];
       var state = (/[?&]state=([^\s&]+)($|&)/.exec(location.search) || [])[1];
-      window.opener.postMessage({ code: code, state: state }, location.origin);
-      window.close();
+      if (window.opener) {
+        window.opener.postMessage({ code: code, state: state }, location.origin);
+        window.close();
+      } else {
+        fetch(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`)
+          .then((res) => res.json())
+          .catch((error) => ({ error }))
+          .then(({ token, error }) => {
+            if (token) {
+              localStorage.setItem('github_oauth_token', token);
+            }
+            window.close();
+          });
+      }
     </script>
   </head>
 </html>
