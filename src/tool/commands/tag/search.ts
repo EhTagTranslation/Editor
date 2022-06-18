@@ -1,5 +1,5 @@
 import clc from 'cli-color';
-import { suggestTag } from '../../../shared/ehentai/index.js';
+import { suggestTag } from '#shared/ehentai/index';
 import { command, parseTag, formatTag } from './command.js';
 
 command

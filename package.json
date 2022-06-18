@@ -27,7 +27,7 @@
     "./src/shared/ehentai/http/config.ts": "./src/shared/ehentai/http/config.browser.ts"
   },
   "imports": {
-    "#*": "./dist/*"
+    "#*": "./dist/*.js"
   },
   "private": true,
   "dependencies": {

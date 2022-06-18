@@ -1,4 +1,4 @@
-import type { Sha1Value } from '../shared/interfaces/ehtag.js';
+import type { Sha1Value } from '#shared/interfaces/ehtag';
 import * as actionsCore from '@actions/core';
 import * as actionsExec from '@actions/exec';
 

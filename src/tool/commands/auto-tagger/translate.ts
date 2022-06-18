@@ -1,6 +1,6 @@
-import { Context, parse, render } from '../../../shared/markdown/index.js';
-import type { NamespaceName, Tag } from '../../../shared/interfaces/ehtag.js';
-import type { RawTag } from '../../../shared/raw-tag.js';
+import { Context, parse, render } from '#shared/markdown/index';
+import type { NamespaceName, Tag } from '#shared/interfaces/ehtag';
+import type { RawTag } from '#shared/raw-tag';
 import { parseTag } from '../tag/command.js';
 import { command } from './command.js';
 import { searchEhWiki } from './lib/search-eh-wiki.js';

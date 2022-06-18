@@ -1,10 +1,10 @@
 import { program } from 'commander';
-import { TagRecord } from '../../shared/tag-record.js';
-import { Database } from '../../shared/database.js';
-import { Context } from '../../shared/markdown/index.js';
-import { Cell } from '../../shared/cell.js';
-import { parseNamespace } from '../../shared/namespace.js';
-import type { NamespaceName, TagType } from '../../shared/interfaces/ehtag.js';
+import { TagRecord } from '#shared/tag-record';
+import { Database } from '#shared/database';
+import { Context } from '#shared/markdown/index';
+import { Cell } from '#shared/cell';
+import { parseNamespace } from '#shared/namespace';
+import type { NamespaceName, TagType } from '#shared/interfaces/ehtag';
 
 const parse = program
     .command('parse')

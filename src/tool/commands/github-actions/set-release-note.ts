@@ -1,8 +1,8 @@
 import { action } from '../../utils.js';
 import SimpleGit from 'simple-git';
 import { command } from './command.js';
-import { GitRepoInfoProvider } from '../../../shared/repo-info-provider.js';
-import { Sha1Value } from '../../../shared/interfaces/ehtag.js';
+import { GitRepoInfoProvider } from '#shared/repo-info-provider';
+import { Sha1Value } from '#shared/interfaces/ehtag';
 import { lsRemoteTags } from './utils.js';
 import type { OptionValues } from 'commander';
 

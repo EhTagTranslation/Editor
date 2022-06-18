@@ -1,10 +1,10 @@
 import { program } from 'commander';
 import escapeRegexp from 'escape-string-regexp';
 import clc from 'cli-color';
-import type { NamespaceName } from '../../../shared/interfaces/ehtag.js';
-import type { RawTag } from '../../../shared/raw-tag.js';
-import { parseTag as parseTagRaw } from '../../../shared/tag.js';
-import type { Tag } from '../../../shared/ehentai/index.js';
+import type { NamespaceName } from '#shared/interfaces/ehtag';
+import type { RawTag } from '#shared/raw-tag';
+import { parseTag as parseTagRaw } from '#shared/tag';
+import type { Tag } from '#shared/ehentai/index';
 
 export { Command } from 'commander';
 

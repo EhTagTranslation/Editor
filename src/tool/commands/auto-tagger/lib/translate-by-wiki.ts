@@ -1,4 +1,4 @@
-import { request } from '../../../../shared/ehentai/http/index.js';
+import { request } from '#shared/ehentai/http/index';
 import type { MediaType } from './search-eh-wiki.js';
 
 export const WIKI_LANG = {

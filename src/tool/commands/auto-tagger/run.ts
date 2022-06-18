@@ -1,11 +1,11 @@
 import { Option, OptionValues } from 'commander';
 import path from 'path';
-import { Context } from '../../../shared/markdown/index.js';
-import { Database } from '../../../shared/database.js';
-import { getTagGroups } from '../../../shared/ehentai/index.js';
-import { NamespaceName } from '../../../shared/interfaces/ehtag.js';
-import { isRawTag, RawTag } from '../../../shared/raw-tag.js';
-import { isNamespaceName } from '../../../shared/namespace.js';
+import { Context } from '#shared/markdown/index';
+import { Database } from '#shared/database';
+import { getTagGroups } from '#shared/ehentai/index';
+import { NamespaceName } from '#shared/interfaces/ehtag';
+import { isRawTag, RawTag } from '#shared/raw-tag';
+import { isNamespaceName } from '#shared/namespace';
 import { command } from './command.js';
 import { translate } from './translate.js';
 
