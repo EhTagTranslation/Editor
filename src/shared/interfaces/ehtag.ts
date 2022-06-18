@@ -114,6 +114,7 @@ interface CellTypeMap extends Record<TagType, unknown> {
     raw: string;
     ast: Ast.Tree;
     text: string;
+    html: string;
     full: { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> };
 }
 
