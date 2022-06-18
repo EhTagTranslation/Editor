@@ -4,6 +4,7 @@
 /scripts
 *.config.js
 .*.{js,ts}
+/test/
 
 # packages
 /node_modules/

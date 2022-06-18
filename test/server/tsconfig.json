@@ -1,6 +1,7 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../src/server/tsconfig.json",
   "compilerOptions": {
     "types": ["node", "jest", "jest-to-match-shape-of"]
-  }
+  },
+  "include": ["**/*.ts"]
 }
