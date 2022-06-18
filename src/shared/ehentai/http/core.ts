@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { config as defaultConfig } from './config';
+import { config as defaultConfig } from './config.js';
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 

@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
-import { ensureEnv, action } from '../../utils';
-import { command } from './command';
+import { ensureEnv, action } from '../../utils.js';
+import { command } from './command.js';
 import type { OptionValues } from 'commander';
 
 async function main(envName?: string): Promise<void> {

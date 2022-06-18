@@ -1,4 +1,4 @@
-import { NamespaceName } from './interfaces/ehtag';
+import { NamespaceName } from './interfaces/ehtag.js';
 
 const nsDic: { [k: string]: NamespaceName } = {
     rows: 'rows',

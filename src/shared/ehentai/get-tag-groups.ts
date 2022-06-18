@@ -1,7 +1,7 @@
-import { isRawTag } from '../raw-tag';
-import { isNamespaceName } from '../namespace';
-import { get } from './http';
-import { MasterTag, store } from './tag';
+import { isRawTag } from '../raw-tag.js';
+import { isNamespaceName } from '../namespace.js';
+import { get } from './http/index.js';
+import { MasterTag, store } from './tag.js';
 
 /**
  * 通过 https://repo.e-hentai.org/tools.php?act=taggroup

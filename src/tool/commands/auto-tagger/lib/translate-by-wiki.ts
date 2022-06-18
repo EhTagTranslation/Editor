@@ -1,5 +1,5 @@
-import { request } from '../../../../shared/ehentai/http';
-import type { MediaType } from './search-eh-wiki';
+import { request } from '../../../../shared/ehentai/http/index.js';
+import type { MediaType } from './search-eh-wiki.js';
 
 export const WIKI_LANG = {
     zh: '中文',

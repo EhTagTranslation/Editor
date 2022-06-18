@@ -1,9 +1,9 @@
-import { isRawTag, RawTag } from '../raw-tag';
-import type { NamespaceName } from '../interfaces/ehtag';
-import { isNamespaceName } from '../namespace';
-import { suggestTag } from './suggest-tag';
-import { get } from './http';
-import { Tag, tagCache } from './tag';
+import { isRawTag, RawTag } from '../raw-tag.js';
+import type { NamespaceName } from '../interfaces/ehtag.js';
+import { isNamespaceName } from '../namespace.js';
+import { suggestTag } from './suggest-tag.js';
+import { get } from './http/index.js';
+import { Tag, tagCache } from './tag.js';
 
 const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 

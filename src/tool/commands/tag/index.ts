@@ -1,3 +1,3 @@
-import './check';
-import './search';
-import './desc';
+import './check.js';
+import './search.js';
+import './desc.js';

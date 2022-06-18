@@ -1,5 +1,4 @@
-import { serialize, SerializerOptions, TreeAdapterTypeMap, TreeAdapter } from 'parse5';
-import type { Attribute, ElementLocation } from 'parse5/dist/common/token';
+import { serialize, SerializerOptions, TreeAdapterTypeMap, TreeAdapter, html, Token } from 'parse5';
 import {
     BreakNode,
     ContainerNode,
@@ -17,10 +16,9 @@ import {
     NodeMap,
     isContainer,
     isNodeType,
-} from '../interfaces/ehtag.ast';
-import { renderText } from './text-renderer';
-import { tagAbbr } from '../tag';
-import type { DOCUMENT_MODE } from 'parse5/dist/common/html';
+} from '../interfaces/ehtag.ast.js';
+import { renderText } from './text-renderer.js';
+import { tagAbbr } from '../tag.js';
 
 const FRAGMENT_NODE = '#root';
 export interface DocumentFragment {
@@ -30,7 +28,7 @@ export interface DocumentFragment {
 
 const props = {
     parent: new WeakMap<Node, ContainerNode>(),
-    namespaceURI: new WeakMap<Node, string>(),
+    namespaceURI: new WeakMap<Node, html.NS>(),
 };
 type Props = keyof typeof props;
 type PropValue<T extends Props> = typeof props[T] extends WeakMap<object, infer V> ? V : never;
@@ -49,7 +47,7 @@ function setProp<T extends keyof typeof props>(node: Node, key: T, value?: PropV
     }
 }
 
-function getAttr(attrs: Attribute[], name: string): string | undefined {
+function getAttr(attrs: Token.Attribute[], name: string): string | undefined {
     const attr = attrs.find((a) => a.name === name);
     return attr?.value;
 }
@@ -71,7 +69,7 @@ interface __Template {
 }
 interface __UnknownNode {
     type: string;
-    attrs: Attribute[];
+    attrs: Token.Attribute[];
 }
 
 // interface NodeMapEx extends NodeMap {
@@ -84,7 +82,7 @@ interface __UnknownNode {
 
 type MyTreeAdapterTypeMap = TreeAdapterTypeMap<
     Node,
-    Node,
+    __Document | DocumentFragment | Node,
     Node,
     __Document,
     DocumentFragment,
@@ -95,7 +93,7 @@ type MyTreeAdapterTypeMap = TreeAdapterTypeMap<
     never
 >;
 
-const ELEMENT_MAP: Record<string, (attrs: Attribute[]) => Node> = {
+const ELEMENT_MAP: Record<string, (attrs: Token.Attribute[]) => Node> = {
     a(attrs): LinkNode {
         return {
             type: 'link',
@@ -154,7 +152,7 @@ const ELEMENT_MAP: Record<string, (attrs: Attribute[]) => Node> = {
     },
 };
 const ATTR_MAP: {
-    [T in NodeType]: undefined | ((node: NodeMap[T]) => Attribute[]);
+    [T in NodeType]: undefined | ((node: NodeMap[T]) => Token.Attribute[]);
 } = {
     link(node) {
         const attr = [{ name: 'href', value: node.url }];
@@ -212,10 +210,10 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
         private readonly _ATTR_MAP: typeof ATTR_MAP,
         private readonly _TAG_NAME_MAP: typeof TAG_NAME_MAP,
     ) {}
-    updateNodeSourceCodeLocation(_node: Node, _location: Partial<ElementLocation>): void {
+    updateNodeSourceCodeLocation(_node: Node, _location: Partial<Token.ElementLocation>): void {
         throw new Error('Method not implemented.');
     }
-    adoptAttributes(_recipient: Node, _attrs: Attribute[]): void {
+    adoptAttributes(_recipient: Node, _attrs: Token.Attribute[]): void {
         throw new Error('Method not implemented.');
     }
     appendChild(parentNode: ContainerNode, newNode: InlineNode): void {
@@ -232,7 +230,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     createDocumentFragment(): DocumentFragment {
         return { type: FRAGMENT_NODE, content: [] };
     }
-    createElement(tagName: string, namespaceURI: string, attrs: Attribute[]): Node {
+    createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Node {
         const creater = this._ELEMENT_MAP[tagName];
         const node: Node = creater
             ? creater(attrs)
@@ -251,7 +249,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
             setProp(node, 'parent');
         }
     }
-    getAttrList(element: Node): Attribute[] {
+    getAttrList(element: Node): Token.Attribute[] {
         if ('attrs' in element) return (element as __UnknownNode).attrs ?? [];
         const attrList = this._ATTR_MAP[element.type];
         if (attrList) return attrList(element as never);
@@ -265,7 +263,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     getCommentNodeContent(commentNode: __CommentNode): string {
         return commentNode.text;
     }
-    getDocumentMode(_document: __Document): DOCUMENT_MODE {
+    getDocumentMode(_document: __Document): html.DOCUMENT_MODE {
         throw new Error('Method not implemented.');
     }
     getDocumentTypeNodeName(_doctypeNode: never): string {
@@ -280,12 +278,10 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     getFirstChild(node: ContainerNode): Node {
         return this.getChildNodes(node)[0];
     }
-    getNamespaceURI(element: Node): NS {
-        return getProp(element, 'namespaceURI') ?? '';
+    getNamespaceURI(element: Node): html.NS {
+        return getProp(element, 'namespaceURI') ?? html.NS.HTML;
     }
-    getNodeSourceCodeLocation(
-        _node: Node,
-    ): import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation {
+    getNodeSourceCodeLocation(_node: Node): Token.ElementLocation | undefined | null {
         throw new Error('Method not implemented.');
     }
     getParentNode(node: Node): ContainerNode {
@@ -318,7 +314,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     isCommentNode(node: Node | __CommentNode): node is __CommentNode {
         return node.type === COMMENT_NODE;
     }
-    isDocumentTypeNode(_node: Node | import('parse5').DocumentType): _node is import('parse5').DocumentType {
+    isDocumentTypeNode(_node: Node): _node is never {
         return false;
     }
     isElementNode(node: Node): node is Node {
@@ -331,16 +327,13 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     isTextNode(node: Node): node is TextNode {
         return node.type === 'text';
     }
-    setDocumentMode(_document: __Document, _mode: import('parse5').DocumentMode): void {
+    setDocumentMode(_document: __Document, _mode: html.DOCUMENT_MODE): void {
         throw new Error('Method not implemented.');
     }
     setDocumentType(_document: __Document, _name: string, _publicId: string, _systemId: string): void {
         throw new Error('Method not implemented.');
     }
-    setNodeSourceCodeLocation(
-        _node: Node,
-        _location: import('parse5').Location | import('parse5').StartTagLocation | import('parse5').ElementLocation,
-    ): void {
+    setNodeSourceCodeLocation(_node: Node, _location: Token.ElementLocation | null): void {
         throw new Error('Method not implemented.');
     }
     setTemplateContent(templateElement: __Template | Node, contentElement: DocumentFragment): void {

@@ -1,12 +1,12 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { NamespaceDatabase } from './namespace-database';
-import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag';
-import type { TagRecord } from './tag-record';
-import type { RawTag } from './raw-tag';
-import type { DatabaseView } from './interfaces/database';
-import { Logger } from './markdown';
-import { GitRepoInfoProvider, RepoInfoProvider } from './repo-info-provider';
+import { NamespaceDatabase } from './namespace-database.js';
+import { NamespaceName, RepoInfo, Sha1Value, RepoData, TagType } from './interfaces/ehtag.js';
+import type { TagRecord } from './tag-record.js';
+import type { RawTag } from './raw-tag.js';
+import type { DatabaseView } from './interfaces/database.js';
+import { Logger } from './markdown/index.js';
+import { GitRepoInfoProvider, RepoInfoProvider } from './repo-info-provider.js';
 
 const SUPPORTED_REPO_VERSION = 6;
 export class Database implements DatabaseView {

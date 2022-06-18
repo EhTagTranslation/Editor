@@ -4,15 +4,15 @@ import { program } from 'commander';
 import fs from 'fs-extra';
 import { gzip } from 'pako';
 import path from 'path';
-import { parseNamespace } from '../../../shared/namespace';
+import { parseNamespace } from '../../../shared/namespace.js';
 import { promisify } from 'util';
-import { Database } from '../../../shared/database';
-import { getTagGroups, normalizeTag } from '../../../shared/ehentai';
-import { NamespaceName, RepoData, TagType } from '../../../shared/interfaces/ehtag';
-import { Context, Logger } from '../../../shared/markdown';
-import type { RawTag } from '../../../shared/raw-tag';
-import { action } from '../../utils';
-import pako from './pako';
+import { Database } from '../../../shared/database.js';
+import { getTagGroups, normalizeTag } from '../../../shared/ehentai/index.js';
+import { NamespaceName, RepoData, TagType } from '../../../shared/interfaces/ehtag.js';
+import { Context, Logger } from '../../../shared/markdown/index.js';
+import type { RawTag } from '../../../shared/raw-tag.js';
+import { action } from '../../utils.js';
+import pako from './pako.js';
 
 async function logFile(file: string): Promise<void> {
     console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);

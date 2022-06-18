@@ -1,5 +1,5 @@
 import type { SimpleGit } from 'simple-git';
-import { Sha1Value } from '../../../shared/interfaces/ehtag';
+import { Sha1Value } from '../../../shared/interfaces/ehtag.js';
 
 interface GitTag {
     sha: Sha1Value;

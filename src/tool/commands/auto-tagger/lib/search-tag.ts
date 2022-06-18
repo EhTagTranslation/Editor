@@ -1,7 +1,7 @@
 import { decodeHTML } from 'entities';
-import { get, api, ApiRequest } from '../../../../shared/ehentai/http';
-import type { NamespaceName } from '../../../../shared/interfaces/ehtag';
-import type { RawTag } from '../../../../shared/raw-tag';
+import { get, api, ApiRequest } from '../../../../shared/ehentai/http/index.js';
+import type { NamespaceName } from '../../../../shared/interfaces/ehtag.js';
+import type { RawTag } from '../../../../shared/raw-tag.js';
 
 interface GMetadata {
     gid: number;

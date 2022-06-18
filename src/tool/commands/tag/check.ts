@@ -1,7 +1,7 @@
-import { NamespaceName } from '../../../shared/interfaces/ehtag';
-import { normalizeTag } from '../../../shared/ehentai';
-import type { RawTag } from '../../../shared/raw-tag';
-import { command, parseTag, formatTag } from './command';
+import { NamespaceName } from '../../../shared/interfaces/ehtag.js';
+import { normalizeTag } from '../../../shared/ehentai/index.js';
+import type { RawTag } from '../../../shared/raw-tag.js';
+import { command, parseTag, formatTag } from './command.js';
 
 function print(tag: [NamespaceName, RawTag]): void {
     console.log(

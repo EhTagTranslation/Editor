@@ -14,7 +14,6 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es6",
-    "types": ["node", "bluebird-global"],
 
     "strict": true,
     "noImplicitReturns": true,

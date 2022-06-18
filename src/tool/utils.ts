@@ -1,4 +1,4 @@
-import type { Sha1Value } from '../shared/interfaces/ehtag';
+import type { Sha1Value } from '../shared/interfaces/ehtag.js';
 import * as actionsCore from '@actions/core';
 import * as actionsExec from '@actions/exec';
 
@@ -11,7 +11,7 @@ export function ensureEnv<T>(name: string, parser?: (s: string) => T): T {
     return parser(env);
 }
 
-class GithubAction {
+class _GithubAction {
     /** 触发工作流程的提交 SHA。 例如 ffac537e6cbbf934b08745a378932722df287a53。 */
     get sha(): Sha1Value {
         return ensureEnv('GITHUB_SHA') as Sha1Value;
@@ -43,12 +43,12 @@ class GithubAction {
     }
 }
 
-Object.defineProperties(GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsCore));
-Object.defineProperties(GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsExec));
+Object.defineProperties(_GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsCore));
+Object.defineProperties(_GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsExec));
 
 type ActionsCore = typeof actionsCore;
 type ActionsExec = typeof actionsExec;
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface GithubAction extends ActionsCore, ActionsExec {}
+type GithubAction = _GithubAction & ActionsCore & ActionsExec;
 
-export const action = new GithubAction();
+export const action = new _GithubAction() as GithubAction;

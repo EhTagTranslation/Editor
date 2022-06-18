@@ -1,8 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "CommonJS",
+    "target": "ES2021",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "outDir": "../../dist",
     "lib": ["ES2018"]
   },

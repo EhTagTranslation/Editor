@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import { request } from './core';
+import { request } from './core.js';
 import { parse, DefaultTreeAdapterMap } from 'parse5';
 
 export type Document = DefaultTreeAdapterMap['document'];

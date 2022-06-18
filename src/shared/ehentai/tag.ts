@@ -1,5 +1,5 @@
-import type { NamespaceName } from '../interfaces/ehtag';
-import type { RawTag } from '../raw-tag';
+import type { NamespaceName } from '../interfaces/ehtag.js';
+import type { RawTag } from '../raw-tag.js';
 
 export interface MasterTag {
     id: number;

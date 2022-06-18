@@ -1,4 +1,4 @@
-import type * as Ast from './ehtag.ast';
+import type * as Ast from './ehtag.ast.js';
 import type { Opaque } from 'type-fest';
 
 /** 表示一个 SHA1 字符串，用来记录 Git 版本 */
