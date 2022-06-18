@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import {
     Controller,
     UseInterceptors,
@@ -16,10 +17,6 @@ import {
     Headers,
     HttpException,
 } from '@nestjs/common';
-import { InjectableBase } from 'server/injectable-base';
-import { DatabaseService } from './database.service';
-import { EtagInterceptor } from 'server/app/etag.interceptor';
-import type { TagType } from 'shared/interfaces/ehtag';
 import {
     ApiTags,
     ApiOperation,
@@ -28,13 +25,17 @@ import {
     ApiConflictResponse,
     ApiExcludeEndpoint,
 } from '@nestjs/swagger';
-import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } from 'server/dtos/repo-info.dto';
-import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto';
-import { Format } from 'server/decorators/format.decorator';
-import type { UserInfo } from 'server/octokit/octokit.service';
-import { User } from 'server/decorators/user.decorator';
-import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from 'server/decorators/swagger.decoretor';
-import { Context } from 'shared/markdown';
+import type { TagType } from '#shared/interfaces/ehtag.js';
+import { Context } from '#shared/markdown/index.js';
+import { InjectableBase } from '../injectable-base.js';
+import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
+import { EtagInterceptor } from '../app/etag.interceptor.js';
+import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } from '../dtos/repo-info.dto.js';
+import { Format } from '../decorators/format.decorator.js';
+import type { UserInfo } from '../octokit/octokit.service.js';
+import { User } from '../decorators/user.decorator.js';
+import { DatabaseService } from './database.service.js';
+import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto.js';
 
 @Controller('database')
 @ApiTags('Database')

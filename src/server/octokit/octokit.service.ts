@@ -1,13 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectableBase } from 'server/injectable-base';
-import { Octokit } from '@octokit/rest';
-import type { OctokitOptions } from '@octokit/core/dist-types/types';
-import { ConfigService } from '@nestjs/config';
-import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
-import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import type { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
-import type { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Octokit } from '@octokit/rest';
+import type { OctokitOptions } from '@octokit/core/dist-types/types';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
+import { InjectableBase } from '../injectable-base.js';
+import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag.js';
 
 export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;

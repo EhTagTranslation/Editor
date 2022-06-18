@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
-import { InjectableBase } from '../injectable-base';
-import { OctokitService } from '../octokit/octokit.service';
+import { InjectableBase } from '../injectable-base.js';
+import { OctokitService } from '../octokit/octokit.service.js';
 
 @Injectable()
 export class GithubIdentityGuard extends InjectableBase implements CanActivate {

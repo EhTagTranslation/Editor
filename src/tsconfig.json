@@ -13,7 +13,11 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es6",
+    "target": "ES2020",
+
+    "paths": {
+      "#shared/*": ["./shared/*"]
+    },
 
     "strict": true,
     "noImplicitReturns": true,

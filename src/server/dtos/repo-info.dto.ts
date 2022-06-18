@@ -1,3 +1,5 @@
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { IsString, MinLength } from 'class-validator';
 import {
     RepoInfo,
     Commit,
@@ -9,9 +11,7 @@ import {
     RepoData,
     NamespaceData,
     Tag,
-} from 'shared/interfaces/ehtag';
-import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+} from '#shared/interfaces/ehtag.js';
 
 export class SignatureDto implements Signature {
     name!: string;

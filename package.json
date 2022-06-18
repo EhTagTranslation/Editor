@@ -26,6 +26,9 @@
   "browser": {
     "./src/shared/ehentai/http/config.ts": "./src/shared/ehentai/http/config.browser.ts"
   },
+  "imports": {
+    "#shared/*": "./dist/shared/*"
+  },
   "private": true,
   "dependencies": {
     "@actions/core": "~1.9.0",

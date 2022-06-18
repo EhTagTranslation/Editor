@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@
 import type { FastifyRequest } from 'fastify';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
-import type { UserInfo } from '../octokit/octokit.service';
+import type { UserInfo } from '../octokit/octokit.service.js';
 
 export const User = createParamDecorator<void, ExecutionContext, UserInfo>(
     (_: void, ctx: ExecutionContext) => {
