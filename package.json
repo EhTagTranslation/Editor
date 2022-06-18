@@ -1,6 +1,7 @@
 {
   "name": "eh-tag-editor",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "type": "module",
   "engines": {
     "node": "16",
     "yarn": "1.22"
@@ -43,7 +44,7 @@
     "class-validator": "~0.13.2",
     "cli-color": "~2.0.2",
     "commander": "~9.3.0",
-    "escape-string-regexp": "~4.0.0",
+    "escape-string-regexp": "~5.0.0",
     "fastify-swagger": "~5.2.0",
     "fs-extra": "~10.1.0",
     "idb-keyval": "~6.1.0",
@@ -53,11 +54,11 @@
     "markdown-it": "~13.0.1",
     "node-cache": "~5.1.2",
     "pako": "~2.0.4",
-    "parse5": "~6.0.0",
+    "parse5": "~7.0.0",
     "proxy-agent": "^5.0.0",
     "reflect-metadata": "~0.1.13",
     "rxjs": "~7.5.5",
-    "simple-git": "~3.7.1",
+    "simple-git": "~3.8.0",
     "source-map-support": "~0.5.21",
     "tslib": "~2.4.0"
   },

@@ -4071,6 +4071,11 @@ entities@^2.0.0:
   resolved "https://registry.npmmirror.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
+entities@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npmmirror.com/entities/-/entities-4.3.0.tgz#62915f08d67353bb4eb67e3d62641a4059aec656"
+  integrity sha512-/iP1rZrSEJ0DTlPiX+jbzlA3eVkY/e8L8SozroF395fIqE3TYF/Nz7YOMAawta+vLmyJ/hkGNNPcSbMADCCXbg==
+
 entities@~3.0.1:
   version "3.0.1"
   resolved "https://registry.npmmirror.com/entities/-/entities-3.0.1.tgz#2b887ca62585e96db3903482d336c1006c3001d4"
@@ -4292,10 +4297,15 @@ escape-string-regexp@^2.0.0:
   resolved "https://registry.npmmirror.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
 
-escape-string-regexp@^4.0.0, escape-string-regexp@~4.0.0:
+escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmmirror.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
+
+escape-string-regexp@~5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz#4683126b500b61762f2dbebace1806e8be31b1c8"
+  integrity sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==
 
 escodegen@^1.8.1:
   version "1.14.3"
@@ -7286,10 +7296,17 @@ parse5@^5.0.0:
   resolved "https://registry.npmmirror.com/parse5/-/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
   integrity sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==
 
-parse5@^6.0.1, parse5@~6.0.0:
+parse5@^6.0.1:
   version "6.0.1"
   resolved "https://registry.npmmirror.com/parse5/-/parse5-6.0.1.tgz#e1a1c085c569b3dc08321184f19a39cc27f7c30b"
   integrity sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==
+
+parse5@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.npmmirror.com/parse5/-/parse5-7.0.0.tgz#51f74a5257f5fcc536389e8c2d0b3802e1bfa91a"
+  integrity sha512-y/t8IXSPWTuRZqXc0ajH/UwDj4mnqLEbSttNbThcFhGrZuOyoyvNBO85PBp2jQa55wY9d07PBNjsK8ZP3K5U6g==
+  dependencies:
+    entities "^4.3.0"
 
 parseurl@~1.3.2, parseurl@~1.3.3:
   version "1.3.3"
@@ -8417,14 +8434,14 @@ signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   resolved "https://registry.npmmirror.com/signal-exit/-/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
-simple-git@~3.7.1:
-  version "3.7.1"
-  resolved "https://registry.npmmirror.com/simple-git/-/simple-git-3.7.1.tgz#cb85c59da4da3d69792d206dd28cfbd803941fac"
-  integrity sha512-+Osjtsumbtew2y9to0pOYjNzSIr4NkKGBg7Po5SUtjQhaJf2QBmiTX/9E9cv9rmc7oUiSGFIB9e7ys5ibnT9+A==
+simple-git@~3.8.0:
+  version "3.8.0"
+  resolved "https://registry.npmmirror.com/simple-git/-/simple-git-3.8.0.tgz#d93500f3d792cec365420c80ddc6cb782edf737d"
+  integrity sha512-nbR1PufcbvCaW90CiAXC1mM7OnEqLzjSOnySnq7Sd2kcVG6GxSa+DhxhFmCgxLv4kWCKmZagkCZSjfNAQTZwaw==
   dependencies:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
-    debug "^4.3.3"
+    debug "^4.3.4"
 
 sirv@^1.0.7:
   version "1.0.19"

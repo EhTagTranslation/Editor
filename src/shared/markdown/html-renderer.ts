@@ -1,4 +1,5 @@
-import { Attribute, EndLocation, serialize, SerializerOptions, TypedTreeAdapter } from 'parse5';
+import { serialize, SerializerOptions, TreeAdapterTypeMap, TreeAdapter } from 'parse5';
+import type { Attribute, ElementLocation } from 'parse5/dist/common/token';
 import {
     BreakNode,
     ContainerNode,
@@ -19,6 +20,7 @@ import {
 } from '../interfaces/ehtag.ast';
 import { renderText } from './text-renderer';
 import { tagAbbr } from '../tag';
+import type { DOCUMENT_MODE } from 'parse5/dist/common/html';
 
 const FRAGMENT_NODE = '#root';
 export interface DocumentFragment {
@@ -80,18 +82,18 @@ interface __UnknownNode {
 //     [TEMPLATE_NODE]: __Template;
 // }
 
-interface TreeAdapterTypeMap {
-    attribute: Attribute;
-    childNode: Node;
-    commentNode: __CommentNode;
-    document: __Document;
-    documentFragment: DocumentFragment;
-    documentType: import('parse5').DocumentType;
-    element: Node;
-    node: Node;
-    parentNode: Node;
-    textNode: TextNode;
-}
+type MyTreeAdapterTypeMap = TreeAdapterTypeMap<
+    Node,
+    Node,
+    Node,
+    __Document,
+    DocumentFragment,
+    Node,
+    __CommentNode,
+    TextNode,
+    never,
+    never
+>;
 
 const ELEMENT_MAP: Record<string, (attrs: Attribute[]) => Node> = {
     a(attrs): LinkNode {
@@ -204,13 +206,13 @@ const TAG_NAME_MAP: {
     text: undefined,
 };
 
-class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
+class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     constructor(
         private readonly _ELEMENT_MAP: typeof ELEMENT_MAP,
         private readonly _ATTR_MAP: typeof ATTR_MAP,
         private readonly _TAG_NAME_MAP: typeof TAG_NAME_MAP,
     ) {}
-    updateNodeSourceCodeLocation(_node: Node, _location: EndLocation): void {
+    updateNodeSourceCodeLocation(_node: Node, _location: Partial<ElementLocation>): void {
         throw new Error('Method not implemented.');
     }
     adoptAttributes(_recipient: Node, _attrs: Attribute[]): void {
@@ -263,22 +265,22 @@ class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
     getCommentNodeContent(commentNode: __CommentNode): string {
         return commentNode.text;
     }
-    getDocumentMode(_document: __Document): import('parse5').DocumentMode {
+    getDocumentMode(_document: __Document): DOCUMENT_MODE {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodeName(_doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodeName(_doctypeNode: never): string {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodePublicId(_doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodePublicId(_doctypeNode: never): string {
         throw new Error('Method not implemented.');
     }
-    getDocumentTypeNodeSystemId(_doctypeNode: import('parse5').DocumentType): string {
+    getDocumentTypeNodeSystemId(_doctypeNode: never): string {
         throw new Error('Method not implemented.');
     }
     getFirstChild(node: ContainerNode): Node {
         return this.getChildNodes(node)[0];
     }
-    getNamespaceURI(element: Node): string {
+    getNamespaceURI(element: Node): NS {
         return getProp(element, 'namespaceURI') ?? '';
     }
     getNodeSourceCodeLocation(
@@ -345,7 +347,7 @@ class SerializeTreeAdapter implements TypedTreeAdapter<TreeAdapterTypeMap> {
         (templateElement as __Template).template = contentElement;
     }
 }
-const options: SerializerOptions<SerializeTreeAdapter> = {
+const options: SerializerOptions<MyTreeAdapterTypeMap> = {
     treeAdapter: new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP),
 };
 export function renderHtml(node: Node | Tree): string {
