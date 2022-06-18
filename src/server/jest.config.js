@@ -14,6 +14,7 @@ const config = {
         '^shared/.*$': '<rootDir>/src/$0',
         '^server/.*$': '<rootDir>/src/$0',
     },
+    extensionsToTreatAsEsm: ['.ts'],
     testEnvironment: 'node',
     testRegex: '(\\.test|\\.spec)\\.ts$',
     transform: {

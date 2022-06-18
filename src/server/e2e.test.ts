@@ -3,8 +3,8 @@ import supertest from 'supertest';
 import type * as fastify from 'fastify';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
-import { AppModule } from './app/app.module.js';
-import { setupSwagger, enableCors } from './setup.js';
+import { AppModule } from '#server/app/app.module.js';
+import { setupSwagger, enableCors } from '#server/setup.js';
 
 jest.setTimeout(30_000);
 
