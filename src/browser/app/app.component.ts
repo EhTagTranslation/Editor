@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
+import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
 import { Location } from '@angular/common';
-import { DbRepoService } from 'browser/services/db-repo.service';
+import { DbRepoService } from '#browser/services/db-repo.service';
 
 @Component({
     selector: 'app-root',

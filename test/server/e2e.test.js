@@ -1,27 +1,30 @@
+// @ts-check
+import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
-import { AppModule } from './app/app.module';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import type * as fastify from 'fastify';
-import { setupSwagger, enableCors } from './setup';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
+import { AppModule } from '#server/app/app.module';
+import { setupSwagger, enableCors } from '#server/setup';
 
 jest.setTimeout(30_000);
 
 describe('AppController (e2e)', () => {
-    let app: NestFastifyApplication;
+    /** @type {import('@nestjs/platform-fastify').NestFastifyApplication} */
+    let app;
 
     beforeAll(async () => {
         const moduleFixture = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
 
-        app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter(), {});
+        app = moduleFixture.createNestApplication(new FastifyAdapter(), {});
         enableCors(app);
         setupSwagger(app);
         await app.init();
-        const adapter = app.getHttpAdapter() as unknown as FastifyAdapter;
-        await adapter.getInstance<fastify.FastifyInstance>().ready();
+        /** @type {FastifyAdapter} */
+        const adapter = app.getHttpAdapter();
+        await adapter.getInstance().ready();
     });
 
     afterAll(async () => {
@@ -33,7 +36,7 @@ describe('AppController (e2e)', () => {
             .head('/database')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect(undefined as unknown as string);
+            .expect(undefined);
     }, 3000);
 
     it('HEAD /database ETag: [ETag]', async () => {
@@ -41,10 +44,10 @@ describe('AppController (e2e)', () => {
             .head('/database')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect(undefined as unknown as string);
+            .expect(undefined);
         const _2 = await supertest(app.getHttpServer())
             .head('/database')
-            .set('If-None-Match', (_.header as Record<string, string>)['etag'])
+            .set('If-None-Match', _.header['etag'])
             .expect(HttpStatus.NOT_MODIFIED);
     });
 
@@ -70,7 +73,7 @@ describe('AppController (e2e)', () => {
                     when: '2020-07-18T08:44:54.000Z',
                 },
             },
-            version: 5,
+            version: 6,
             data: [
                 {
                     namespace: 'rows',
@@ -102,7 +105,7 @@ describe('AppController (e2e)', () => {
             .head('/database/rows/female')
             .expect(HttpStatus.OK)
             .expect((res) => expect(res.header).toHaveProperty('etag'))
-            .expect(undefined as unknown as string);
+            .expect(undefined);
     });
 
     it('GET /database/rows/female?format=text.json', async () => {

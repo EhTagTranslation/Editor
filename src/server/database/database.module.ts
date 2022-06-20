@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
-import { DatabaseController } from './database.controller';
-import { OctokitModule } from 'server/octokit/octokit.module';
-import { DatabaseBadgeController } from './database-badge.controller';
+import { OctokitModule } from '../octokit/octokit.module.js';
+import { DatabaseService } from './database.service.js';
+import { DatabaseController } from './database.controller.js';
+import { DatabaseBadgeController } from './database-badge.controller.js';
 
 @Module({
     imports: [OctokitModule],

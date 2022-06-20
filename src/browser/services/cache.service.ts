@@ -1,4 +1,4 @@
-import type { RepoData } from 'shared/interfaces/ehtag';
+import type { RepoData } from '#shared/interfaces/ehtag';
 import { Injectable } from '@angular/core';
 import * as idb from 'idb-keyval';
 

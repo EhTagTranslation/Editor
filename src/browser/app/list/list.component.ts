@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import type { SortDirection } from '@angular/material/sort';
-import { editableNs, ETKey } from '../../interfaces/ehtranslation';
-import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
 import type { Params } from '@angular/router';
+import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
 import { map, tap, shareReplay, debounceTime, filter, mergeMap } from 'rxjs/operators';
+import type { NamespaceName, Tag, RepoData } from '#shared/interfaces/ehtag';
+import { isNamespaceName } from '#shared/namespace';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
-import { RouteService } from 'browser/services/route.service';
-import { DebugService } from 'browser/services/debug.service';
-import { TitleService } from 'browser/services/title.service';
-import type { NamespaceName, Tag, RepoData } from 'shared/interfaces/ehtag';
-import { GithubReleaseService } from 'browser/services/github-release.service';
-import { isNamespaceName } from 'shared/raw-tag';
+import { editableNs, ETKey } from '../../interfaces/ehtranslation';
+import { RouteService } from '#browser/services/route.service';
+import { DebugService } from '#browser/services/debug.service';
+import { TitleService } from '#browser/services/title.service';
+import { GithubReleaseService } from '#browser/services/github-release.service';
 
 export interface ETItem extends Tag<'raw'>, ETKey {}
 
@@ -33,9 +33,11 @@ const nsScore: {
     rows: 10,
     female: 5,
     male: 4.995,
-    misc: 4.5,
+    mixed: 4.5,
     language: 1,
+    other: 1.5,
     artist: 3,
+    cosplayer: 2.7,
     group: 2.5,
     parody: 4,
     character: 3.5,

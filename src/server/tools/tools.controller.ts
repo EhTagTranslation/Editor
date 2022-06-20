@@ -1,14 +1,14 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, Param, BadRequestException } from '@nestjs/common';
-import { TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
-import { Format } from 'server/decorators/format.decorator';
-import type { TagType } from 'shared/interfaces/ehtag';
-import { TagRecord } from 'shared/tag-record';
-import { InjectableBase } from 'server/injectable-base';
-import { DatabaseService } from 'server/database/database.service';
-import { RawTag } from 'shared/raw-tag';
+import { TagResponseDto, LooseTagDto } from '../dtos/repo-info.dto.js';
+import { Format } from '../decorators/format.decorator.js';
+import type { TagType } from '#shared/interfaces/ehtag';
+import { TagRecord } from '#shared/tag-record';
+import { InjectableBase } from '../injectable-base.js';
+import { DatabaseService } from '../database/database.service.js';
+import { RawTag } from '#shared/raw-tag';
 import { ApiOperation, ApiConsumes, ApiTags, ApiProduces, ApiOkResponse, ApiBody } from '@nestjs/swagger';
-import { TagParams, ParsedLine } from './tools.dto';
-import { Context } from 'shared/markdown';
+import { TagParams, ParsedLine } from './tools.dto.js';
+import { Context } from '#shared/markdown/index';
 
 @ApiTags('Tools')
 @Controller('tools')
@@ -21,7 +21,7 @@ export class ToolsController extends InjectableBase {
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
     normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
-        const record = new TagRecord(tag, this.db.data.data.misc);
+        const record = new TagRecord(tag, this.db.data.data.other);
         return record.render(format, new Context(record));
     }
 
@@ -40,7 +40,7 @@ export class ToolsController extends InjectableBase {
     })
     @HttpCode(HttpStatus.OK)
     serialize(@Param() p: TagParams, @Body() tag: LooseTagDto): string {
-        const record = new TagRecord(tag, this.db.data.data.misc);
+        const record = new TagRecord(tag, this.db.data.data.other);
         return record.stringify(new Context(record, RawTag(p.raw)));
     }
 
@@ -52,7 +52,7 @@ export class ToolsController extends InjectableBase {
     parse(@Body() line: string, @Format() format: TagType): ParsedLine {
         if (line.indexOf('\n') >= 0) throw new BadRequestException('Parse one line at once');
         line = line.trim();
-        const parsed = TagRecord.parse(line, this.db.data.data.misc);
+        const parsed = TagRecord.parse(line, this.db.data.data.other);
         if (!parsed) throw new BadRequestException('Invalid markdown table row');
         return {
             key: parsed[0],

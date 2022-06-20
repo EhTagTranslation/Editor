@@ -1,4 +1,4 @@
-import type * as Ast from './ehtag.ast';
+import type * as Ast from './ehtag.ast.js';
 import type { Opaque } from 'type-fest';
 
 /** 表示一个 SHA1 字符串，用来记录 Git 版本 */
@@ -14,7 +14,7 @@ export const Sha1Value = Object.freeze(
         },
         {
             empty: '0'.repeat(40) as Sha1Value,
-            validate(value: string): value is Sha1Value {
+            validate(value: unknown): value is Sha1Value {
                 return typeof value == 'string' && value.length === 40 && value.trim().length === 40;
             },
         },
@@ -45,7 +45,7 @@ export interface RepoInfo {
 }
 
 /** 表示一个 Git Repo 的数据 */
-export interface RepoData<T> extends RepoInfo {
+export interface RepoData<T = TagType> extends RepoInfo {
     data: Array<NamespaceData<T>>;
 }
 
@@ -58,9 +58,11 @@ export const NamespaceName = [
     'character',
     'group',
     'artist',
+    'cosplayer',
     'male',
     'female',
-    'misc',
+    'mixed',
+    'other',
 ] as const;
 export type NamespaceName = typeof NamespaceName[number];
 
@@ -75,7 +77,12 @@ export interface NamespaceInfo {
 
 /** 表示命名空间文件头部数据 */
 export interface FrontMatters {
+    /** 命名空间完整名称 */
     key: NamespaceName;
+    /** 命名空间简称 */
+    abbr?: string;
+    /** 命名空间的别名 */
+    aliases?: string[];
     /** 命名空间中文名称 */
     name: string;
     /** 命名空间描述 */
@@ -103,15 +110,13 @@ export interface Tag<T = TagType> {
 /** 翻译数据序列化的类型 */
 export type TagType = 'raw' | 'ast' | 'html' | 'text' | 'full';
 
+interface CellTypeMap extends Record<TagType, unknown> {
+    raw: string;
+    ast: Ast.Tree;
+    text: string;
+    html: string;
+    full: { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> };
+}
+
 /** 表示一条翻译的单元格内容 */
-export type CellType<T> = T extends 'raw'
-    ? string
-    : T extends 'ast'
-    ? Ast.Tree
-    : T extends 'html'
-    ? string
-    : T extends 'text'
-    ? string
-    : T extends 'full'
-    ? { raw: CellType<'raw'>; ast: CellType<'ast'>; html: CellType<'html'>; text: CellType<'text'> }
-    : T;
+export type CellType<T = TagType> = T extends TagType ? CellTypeMap[T] : T;

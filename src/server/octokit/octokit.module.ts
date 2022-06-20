@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { OctokitService } from './octokit.service';
+import { OctokitService } from './octokit.service.js';
 
 @Module({
     providers: [OctokitService],

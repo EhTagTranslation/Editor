@@ -131,8 +131,8 @@ export class MarkPipe implements PipeTransform {
         }
         const regexp = search ? regexFromSearch(search).regex : undefined;
         if (inputAsHtml) {
-            const dom = parser.parseFromString(value, 'text/html') as HTMLDocument;
-            const root = dom.body as Element;
+            const dom = parser.parseFromString(value, 'text/html');
+            const root = dom.body;
             this.markNodes(root, regexp);
             return this.sanitizer.bypassSecurityTrustHtml(root.innerHTML);
         } else {

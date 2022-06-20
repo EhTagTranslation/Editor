@@ -4,11 +4,11 @@ import { Observable, of, throwError, OperatorFunction } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import type { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
-import type { TagType, Tag, NamespaceName } from 'shared/interfaces/ehtag';
+import type { TagType, Tag, NamespaceName } from '#shared/interfaces/ehtag';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
-import { TagRecord } from 'shared/tag-record';
-import { Context } from 'shared/markdown';
+import { TagRecord } from '#shared/tag-record';
+import { Context } from '#shared/markdown';
 
 const EH_TAG_HASH = 'eh-tag-hash';
 

@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 @import 'theme';
 
 $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
@@ -220,5 +220,13 @@ mat-option .hint {
   #form-container,
   #preview-container {
     width: 50%;
+  }
+}
+
+.eh-name ::ng-deep {
+  img[ehimg] {
+    max-width: 2em;
+    max-height: 1.25em;
+    vertical-align: middle;
   }
 }

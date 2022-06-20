@@ -1,10 +1,9 @@
-import '../shared/init';
 import { NestFactory } from '@nestjs/core';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from './app/app.module';
-import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
-import { setupSwagger, enableCors } from './setup';
+import { ConfigService } from '@nestjs/config';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { AppModule } from './app/app.module.js';
+import { setupSwagger, enableCors } from './setup.js';
 
 const logger = new Logger('Main', { timestamp: true });
 /**

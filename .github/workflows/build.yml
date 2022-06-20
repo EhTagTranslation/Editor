@@ -11,22 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3.0.2
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v3.3.0
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
         run: yarn build:tool
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: tool
           path: ./dist
@@ -41,12 +39,12 @@ jobs:
           yarn install --prefer-offline
           zip -r ../release.zip .
       - name: Publish release
-        uses: ncipollo/release-action@v1.8.10
+        uses: ncipollo/release-action@v1.10.0
         if: github.ref == 'refs/heads/master'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ github.event.head_commit.message }}
-          tag: v${{ env.PACKAGE_VERSION}}
+          tag: v${{ env.PACKAGE_VERSION }}
           commit: ${{ github.sha }}
           artifacts: ./release.zip
           allowUpdates: true
@@ -55,22 +53,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3.0.2
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v3.3.0
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
         run: yarn build:server
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: server
           path: ./dist
@@ -89,22 +85,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3.0.2
       - name: Setup Node.js
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v3.3.0
         with:
-          node-version: '12'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
         run: yarn build:browser
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: browser
           path: ./dist/browser

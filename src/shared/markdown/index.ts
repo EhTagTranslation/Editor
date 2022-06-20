@@ -1,19 +1,18 @@
-import type { CellType, TagType } from '../interfaces/ehtag';
-import { renderText } from './text-renderer';
-import { renderHtml } from './html-renderer';
-import { renderMd } from './md-renderer';
-import { parseMd } from './md-parser';
-import type { Context } from './context';
-export * from './context';
-import type { Tree } from '../interfaces/ehtag.ast';
+import type { CellType, TagType } from '../interfaces/ehtag.js';
+import { renderText } from './text-renderer.js';
+import { renderHtml } from './html-renderer.js';
+import { renderMd } from './md-renderer.js';
+import { parseMd } from './md-parser.js';
+import type { Context } from './context.js';
+export * from './context.js';
+import type { Tree } from '../interfaces/ehtag.ast.js';
 export function parse(src: string, context: Context): Tree {
     const ast = parseMd(src, context);
     return ast;
 }
 
 export const render = <T extends TagType>(parsed: Tree, target: T): CellType<T> => {
-    const t = target as TagType;
-    switch (t) {
+    switch (target) {
         case 'raw':
             return renderMd(parsed) as CellType<T>;
         case 'text':
@@ -30,7 +29,7 @@ export const render = <T extends TagType>(parsed: Tree, target: T): CellType<T> 
                 ast: render(parsed, 'ast'),
             } as CellType<T>;
         default: {
-            const _: never = t;
+            const _: never = target;
             throw new Error(`Unknown tag type ${target}`);
         }
     }

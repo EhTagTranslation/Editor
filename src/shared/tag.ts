@@ -1,6 +1,6 @@
-import { parseNamespace } from './namespace';
-import type { NamespaceName } from './interfaces/ehtag';
-import { RawTag } from './raw-tag';
+import { parseNamespace } from './namespace.js';
+import type { NamespaceName } from './interfaces/ehtag.js';
+import { RawTag } from './raw-tag.js';
 
 export function parseTag(tag: string):
     | {
@@ -35,10 +35,11 @@ export function parseTag(tag: string):
     };
 }
 
-/** 生成含命名空间 `f` 和 `m` 的标签 */
+/** 生成含命名空间 `f`, `m` 和 `x` 的标签 */
 export function tagAbbr(tag: RawTag, ns?: NamespaceName): string {
     if (ns === 'male') return `m:${tag}`;
     if (ns === 'female') return `f:${tag}`;
+    if (ns === 'mixed') return `x:${tag}`;
     return tag;
 }
 
@@ -47,20 +48,22 @@ export function tagFull(tag: RawTag, ns: NamespaceName): string {
     return `${ns}:${tag}`;
 }
 
-const nsDic: Record<NamespaceName, string> = {
-    rows: 'rows',
-    misc: '',
-    reclass: 'r',
-    language: 'l',
-    parody: 'p',
-    character: 'c',
-    group: 'g',
-    artist: 's',
-    male: 'm',
-    female: 'f',
-};
+export const namespaceMapToSearch: Readonly<Record<NamespaceName, string>> = Object.freeze({
+    artist: 'a:',
+    parody: 'p:',
+    reclass: 'r:',
+    character: 'c:',
+    group: 'g:',
+    language: 'l:',
+    male: 'm:',
+    female: 'f:',
+    mixed: 'x:',
+    other: 'o',
+    cosplayer: 'cos:',
+    rows: 'rows:',
+});
 
 /** 生成含单字母命名空间的标签 */
 export function tagAbbrFull(tag: RawTag, ns: NamespaceName): string {
-    return `${nsDic[ns]}:${tag}`;
+    return `${namespaceMapToSearch[ns]}${tag}`;
 }

@@ -7,35 +7,36 @@ import {
     FrontMatters,
     RepoData,
     RepoInfo,
-} from 'shared/interfaces/ehtag';
-import type { DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
-import { Context } from 'shared/markdown';
-import type { RawTag } from 'shared/raw-tag';
-import { TagRecord } from 'shared/tag-record';
+} from '#shared/interfaces/ehtag';
+import type { DatabaseView, NamespaceDatabaseView } from '#shared/interfaces/database';
+import { Context } from '#shared/markdown';
+import type { RawTag } from '#shared/raw-tag';
+import { TagRecord } from '#shared/tag-record';
 
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },
-    artist: { name: '艺术家', description: '绘画作者 / Coser。' },
+    artist: { name: '艺术家', description: '绘画作者/写手。' },
+    cosplayer: { name: '艺术家', description: '角色扮演者。' },
     female: { name: '女性', description: '女性角色相关的恋物标签。' },
     male: { name: '男性', description: '男性角色相关的恋物标签。' },
     parody: { name: '原作', description: '同人作品模仿的原始作品。' },
     character: { name: '角色', description: '作品中出现的角色。' },
     group: { name: '团队', description: '制作社团或公司。' },
     language: { name: '语言', description: '作品的语言。' },
+    other: { name: '其他', description: '经过确认的技术标签。' },
     reclass: {
         name: '重新分类',
         description: '用于分类出错的画廊，当某个重新分类标签权重达到 100，将移动画廊至对应分类。',
     },
-    misc: {
-        name: '杂项',
-        description:
-            '两性/中性的恋物标签或没有具体分类的标签，可以在论坛发帖请求管理员添加新的标签或将标签移动到正确分类。',
+    mixed: {
+        name: '混合',
+        description: '两性/中性的恋物标签。',
     },
 };
 
 const info = {
     repo: 'https://github.com/EhTagTranslation/Database.git',
-    version: 5,
+    version: 6,
     head: {
         sha: '000000000000000000000000000' as Sha1Value,
         message: '',
@@ -125,7 +126,7 @@ export class DatabaseInMemory implements DatabaseView {
         this.data = data;
     }
     get version(): number {
-        return this.storage?.version ?? 5;
+        return this.storage?.version ?? 6;
     }
     readonly data: { readonly [key in NamespaceName]: NamespaceDatabaseInMemory };
 

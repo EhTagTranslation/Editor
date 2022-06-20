@@ -1,5 +1,5 @@
-@use '~@angular/material' as mat;
-// Plus imports for other components in your app.
+@use '@angular/material' as mat;
+/* Plus imports for other components in your app. */
 
 $app-font-family: 'Roboto, "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif';
 
@@ -7,16 +7,18 @@ $app-typography: mat.define-typography-config(
   $font-family: $app-font-family,
 );
 
+/* 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
+*/
 $app-primary: mat.define-palette(mat.$deep-purple-palette);
-$app-accent: mat.define-palette(mat.$purple-palette, A700, A600, A900);
+$app-accent: mat.define-palette(mat.$purple-palette, A700, A400, 900);
 
-// The warn palette is optional (defaults to red).
+/* The warn palette is optional (defaults to red). */
 $app-warn: mat.define-palette(mat.$red-palette);
 
-// Create the theme object (a Sass map containing all of the palettes).
+/* Create the theme object (a Sass map containing all of the palettes). */
 $app-theme: mat.define-light-theme($app-primary, $app-accent, $app-warn);
 
 $app-foreground: map-get($app-theme, 'foreground');

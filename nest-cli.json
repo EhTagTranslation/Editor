@@ -4,7 +4,6 @@
   "entryFile": "server/main",
   "compilerOptions": {
     "deleteOutDir": true,
-    "plugins": [{ "name": "@nestjs/swagger/plugin" }],
     "tsConfigPath": "src/server/tsconfig.json"
   }
 }

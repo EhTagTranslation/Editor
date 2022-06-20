@@ -1,7 +1,6 @@
-import type { CellType, TagType } from './interfaces/ehtag';
-import { parse, render } from './markdown';
-import type { Context } from './markdown';
-import type { Tree } from './interfaces/ehtag.ast';
+import type { CellType, TagType } from './interfaces/ehtag.js';
+import { parse, render, type Context } from './markdown/index.js';
+import type { Tree } from './interfaces/ehtag.ast.js';
 
 export class Cell {
     constructor(raw: string) {
@@ -26,7 +25,7 @@ export class Cell {
                 return undefined;
             }
         } else {
-            return cache[target as Exclude<TagType, 'full'>] as CellType<T> | undefined;
+            return cache[target as TagType as Exclude<TagType, 'full'>] as CellType<T> | undefined;
         }
     }
     private setCache<T extends TagType>(target: T, revision: number, rendered: CellType<T>): void {
@@ -40,7 +39,7 @@ export class Cell {
             this.cache.html = i.html;
             this.cache.ast = i.ast;
         } else {
-            this.cache[target as Exclude<TagType, 'full'>] = rendered as string & Tree;
+            this.cache[target as TagType as Exclude<TagType, 'full'>] = rendered as string & Tree;
         }
         this.revision = revision;
     }

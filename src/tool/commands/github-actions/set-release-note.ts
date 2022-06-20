@@ -1,9 +1,9 @@
-import { action } from '../../utils';
+import { action } from '../../utils.js';
 import SimpleGit from 'simple-git';
-import { command } from './command';
-import { GitRepoInfoProvider } from '../../../shared/repo-info-provider';
-import { Sha1Value } from '../../../shared/interfaces/ehtag';
-import { lsRemoteTags } from './utils';
+import { command } from './command.js';
+import { GitRepoInfoProvider } from '#shared/repo-info-provider';
+import { Sha1Value } from '#shared/interfaces/ehtag';
+import { lsRemoteTags } from './utils.js';
 import type { OptionValues } from 'commander';
 
 function compareInfo(before: string, after: string): string {
@@ -36,5 +36,5 @@ command
             message += `\n\n${mirrorInfo(mirrorSha)}`;
             info['mirror'] = mirrorSha;
         }
-        action.exportVariable('RELEASE_BODY', `<!--\n${JSON.stringify(info, undefined, 2)}\n-->\n` + message);
+        action.exportVariable('RELEASE_BODY', message + `\n<!--\n${JSON.stringify(info, undefined, 2)}\n-->`);
     });

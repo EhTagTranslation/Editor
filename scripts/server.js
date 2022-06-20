@@ -1,12 +1,13 @@
-const fs = require('fs-extra');
+// @ts-check
+import fs from 'fs-extra';
 
 const removedPackages = ['lazysizes', 'zone.js'];
 const removedPackageHeaders = ['@angular', 'angular', '@actions/'];
 
 /** @type {import('type-fest').PackageJson} */
-const packageJson = fs.readJSONSync('./package.json');
+const packageJson = await fs.readJSON('./package.json');
 packageJson.scripts = {
-    start: 'node server/main.js',
+    start: 'node dist/server/main.js',
 };
 packageJson.devDependencies = undefined;
 for (const key in packageJson.dependencies) {
@@ -14,4 +15,4 @@ for (const key in packageJson.dependencies) {
         packageJson.dependencies[key] = undefined;
     }
 }
-fs.writeJSONSync('./dist/package.json', packageJson);
+await fs.writeJSON('./package.json', packageJson);

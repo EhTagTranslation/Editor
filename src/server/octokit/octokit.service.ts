@@ -1,13 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { InjectableBase } from 'server/injectable-base';
-import { Octokit } from '@octokit/rest';
-import type { OctokitOptions } from '@octokit/core/dist-types/types';
-import { ConfigService } from '@nestjs/config';
-import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
-import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import type { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
-import type { Sha1Value, Commit, Signature } from 'shared/interfaces/ehtag';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Octokit } from '@octokit/rest';
+import type { OctokitOptions } from '@octokit/core/dist-types/types';
+import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
+import { InjectableBase } from '../injectable-base.js';
+import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag';
 
 export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
@@ -104,20 +104,21 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     private appToken?: Promise<ApiData<'apps', 'createInstallationAccessToken'>>;
     async getAppToken(): Promise<string> {
-        if (
-            this.appToken?.isPending() ||
-            (this.appToken?.isFulfilled() && Date.parse((await this.appToken).expires_at) > Date.now() + 600_000)
-        )
-            return this.appToken.get('token');
+        const currentQuery = await this.appToken;
+        if (currentQuery && Date.parse(currentQuery.expires_at) > Date.now() + 600_000) {
+            return currentQuery.token;
+        }
+
         const tokenReq = this.forApp.apps.createInstallationAccessToken({
             installation_id: this.APP_INSTALLATION_ID,
         });
-        return (this.appToken = tokenReq.then((token) => {
+        this.appToken = tokenReq.then((token) => {
             this._forRepo = this.createOctokit({
                 auth: token.data.token,
             });
             return token.data;
-        })).get('token');
+        });
+        return (await this.appToken).token;
     }
     async user(userToken: string): Promise<UserInfo> {
         const cache = this.userInfoCache.get<UserInfo>(userToken);

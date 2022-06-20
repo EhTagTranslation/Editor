@@ -31,8 +31,8 @@ import { EditorComponent } from './editor/editor.component';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { LinkifyPipe } from './shared/pipe/linkify.pipe';
-import { TitleService } from 'browser/services/title.service';
-import { ehHttpInterceptorProvider } from 'browser/services/eh-http-interceptor';
+import { TitleService } from '#browser/services/title.service';
+import { ehHttpInterceptorProvider } from '#browser/services/eh-http-interceptor';
 
 @NgModule({
     declarations: [

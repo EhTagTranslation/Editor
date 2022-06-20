@@ -1,11 +1,11 @@
-import { NamespaceName } from './interfaces/ehtag';
+import { NamespaceName } from './interfaces/ehtag.js';
 
 const nsDic: { [k: string]: NamespaceName } = {
     rows: 'rows',
 
-    '': 'misc',
-    misc: 'misc',
-    miscellaneous: 'misc',
+    x: 'mixed',
+    mix: 'mixed',
+    mixed: 'mixed',
 
     r: 'reclass',
     reclass: 'reclass',
@@ -30,23 +30,28 @@ const nsDic: { [k: string]: NamespaceName } = {
     a: 'artist',
     artist: 'artist',
 
+    cos: 'cosplayer',
+    coser: 'cosplayer',
+    cosplayer: 'cosplayer',
+
     m: 'male',
     male: 'male',
 
     f: 'female',
     female: 'female',
+
+    o: 'other',
+    other: 'other',
 };
 
-export function parseNamespace(ns: string | null | undefined): NamespaceName {
-    if (!ns) return 'misc';
+export function parseNamespace(ns: string | null | undefined): NamespaceName | undefined {
+    if (typeof ns != 'string' || !ns) return undefined;
     if (ns in nsDic) return nsDic[ns];
     ns = ns.toLowerCase();
     if (ns in nsDic) return nsDic[ns];
     ns = ns.trim();
     if (ns in nsDic) return nsDic[ns];
-    ns = ns[0];
-    if (ns in nsDic) return nsDic[ns];
-    return 'misc';
+    return undefined;
 }
 
 export function isNamespaceName(ns: unknown): ns is NamespaceName {

@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
-import { RouteService } from 'browser/services/route.service';
+import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
+import { RouteService } from '#browser/services/route.service';
 import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom } from 'rxjs';
-import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
+import { editableNs, ETKey } from '#browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap, mergeMap, filter, shareReplay, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { TitleService } from 'browser/services/title.service';
-import { GithubOauthService } from 'browser/services/github-oauth.service';
+import { TitleService } from '#browser/services/title.service';
+import { GithubOauthService } from '#browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { snackBarConfig } from 'browser/environments/environment';
-import { Tag, NamespaceName, FrontMatters } from 'shared/interfaces/ehtag';
-import { GithubReleaseService } from 'browser/services/github-release.service';
-import { DebugService } from 'browser/services/debug.service';
-import { DbRepoService } from 'browser/services/db-repo.service';
-import { RawTag, isRawTag, isNamespaceName } from 'shared/raw-tag';
-import { Context } from 'shared/markdown';
-import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
-import { parseTag } from 'shared/tag';
+import { snackBarConfig } from '#browser/environments/environment';
+import { Tag, NamespaceName, FrontMatters } from '#shared/interfaces/ehtag';
+import { GithubReleaseService } from '#browser/services/github-release.service';
+import { DebugService } from '#browser/services/debug.service';
+import { DbRepoService } from '#browser/services/db-repo.service';
+import { RawTag, isRawTag } from '#shared/raw-tag';
+import { isNamespaceName } from '#shared/namespace';
+import { Context } from '#shared/markdown';
+import { suggestTag, Tag as TagSuggest } from '#shared/ehentai';
+import { namespaceMapToSearch, parseTag, tagAbbrFull } from '#shared/tag';
 
 class TagSuggestOption {
     constructor(
@@ -59,19 +60,6 @@ class TagSuggestOption {
 
 type Fields = keyof Tag<'raw'> | keyof ETKey;
 interface Item extends Tag<'raw'>, ETKey {}
-
-const namespaceMapToSearch: { [k in NamespaceName]: string } = {
-    artist: 'a:',
-    parody: 'p:',
-    reclass: 'r:',
-    character: 'c:',
-    group: 'g:',
-    language: 'l:',
-    male: 'm:',
-    female: 'f:',
-    misc: '',
-    rows: '',
-};
 
 function legalRaw(control: AbstractControl): ValidationErrors | null {
     const value = String(control.value || '');
@@ -241,7 +229,7 @@ export class EditorComponent implements OnInit {
             links: this.router.initQueryParam('links', (v) => v),
         };
         for (const key in this.tagForm.controls) {
-            const element = this.tagForm.controls[key];
+            const element = this.tagForm.controls[key as keyof typeof this.tagForm.controls];
             element.valueChanges.subscribe((value) => {
                 if (element.dirty) {
                     this.router.navigateParam({
@@ -371,8 +359,7 @@ export class EditorComponent implements OnInit {
 
         combineLatest([this.original.namespace, this.original.raw]).subscribe((v) => {
             if (v[1]) {
-                const nsShort = v[0] === 'misc' ? '' : v[0][0] + ':';
-                this.title.title = `${nsShort}${v[1]} - 修改标签`;
+                this.title.title = `${tagAbbrFull(v[1] as RawTag, v[0])} - 修改标签`;
             } else {
                 this.title.title = '新建标签';
             }
@@ -413,7 +400,7 @@ export class EditorComponent implements OnInit {
             return (v.value ?? '') as Item[F];
         }
         if (field === 'namespace') {
-            return 'misc' as Item[F];
+            return 'other' as Item[F];
         }
         return '' as Item[F];
     }
@@ -452,7 +439,7 @@ export class EditorComponent implements OnInit {
         }
         if (this.tagForm.invalid) {
             for (const key in this.tagForm.controls) {
-                const element = this.tagForm.controls[key];
+                const element = this.tagForm.controls[key as keyof typeof this.tagForm.controls];
                 element.markAsTouched();
             }
             return false;

@@ -1,7 +1,7 @@
-import type { TagRecord } from '../tag-record';
-import type { RawTag } from '../raw-tag';
-import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database';
-import type { Database } from '../database';
+import type { TagRecord } from '../tag-record.js';
+import type { RawTag } from '../raw-tag.js';
+import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database.js';
+import type { Database } from '../database.js';
 
 export abstract class Logger {
     info(context: Context, message: string): void {
@@ -29,9 +29,11 @@ export abstract class Logger {
 }
 
 export class Context {
+    static readonly fake: Context = new Context(undefined as unknown as TagRecord);
     constructor(tag: TagRecord, raw?: RawTag, logger?: Logger);
     constructor(namespace: NamespaceDatabaseView, raw?: RawTag, logger?: Logger);
     constructor(root: TagRecord | NamespaceDatabaseView, raw?: RawTag, logger?: Logger) {
+        if (root == null) return;
         this.raw = raw;
         const nsv = root as NamespaceDatabaseView;
         if (typeof nsv.database == 'object' && typeof nsv.name == 'string' && typeof nsv.size == 'number') {
@@ -44,8 +46,8 @@ export class Context {
         this.database = this.namespace.database;
         this.logger = logger;
     }
-    database: DatabaseView;
-    namespace: NamespaceDatabaseView;
+    database!: DatabaseView;
+    namespace!: NamespaceDatabaseView;
     raw?: RawTag;
     tag?: TagRecord;
     line?: number;

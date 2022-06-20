@@ -1,13 +1,13 @@
 import fs from 'fs-extra';
 import readline from 'readline';
-import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag';
 import { load, dump } from 'js-yaml';
-import { TagRecord } from './tag-record';
-import type { Database } from './database';
-import type { RawTag } from './raw-tag';
-import type { NamespaceDatabaseView } from './interfaces/database';
-import { Context } from './markdown';
 import { PassThrough } from 'stream';
+import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag.js';
+import { TagRecord } from './tag-record.js';
+import type { Database } from './database.js';
+import type { RawTag } from './raw-tag.js';
+import type { NamespaceDatabaseView } from './interfaces/database.js';
+import { Context } from './markdown/index.js';
 
 interface TagLine {
     raw?: RawTag;
@@ -205,6 +205,10 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
             ...info,
             data,
         };
+    }
+
+    raw(): IterableIterator<[RawTag, TagLine]> {
+        return this.rawMap.entries();
     }
 
     get size(): number {

@@ -1,7 +1,8 @@
-import { normalizeTag } from '../../../shared/ehentai';
-import { command, parseTag } from './command';
-import axios, { AxiosError } from 'axios';
-import type { Tag } from '../../../shared/interfaces/ehtag';
+import type { AxiosError } from 'axios';
+import type { Tag } from '#shared/interfaces/ehtag';
+import { normalizeTag } from '#shared/ehentai/index';
+import { get } from '#shared/ehentai/http/index';
+import { command, parseTag, formatTag } from './command.js';
 
 command
     .command('desc <[namespace:]tag>')
@@ -11,13 +12,14 @@ command
         const result = await normalizeTag(namespace, raw);
         if (!result) {
             console.error('未找到相应标签');
-            process.exit(1);
+            process.exitCode = 1;
+            return;
         }
         try {
-            const info = await axios.get<Tag<'raw'>>(
+            const info = await get<Tag<'raw'>>(
                 `https://ehtt.herokuapp.com/database/${result[0]}/${result[1]}?format=raw.json`,
             );
-            console.log(`原始标签：${result[0]}:${result[1]}`);
+            console.log(`原始标签：${formatTag({ namespace: result[0], raw: result[1] })}`);
             console.log(`    名称：${info.data.name}`);
             console.log(`    描述：${info.data.intro}`);
             console.log(`外部链接：${info.data.links}`);
@@ -25,7 +27,8 @@ command
             const ae = err as AxiosError;
             if (ae.response?.status === 404) {
                 console.error(`未找到标签 ${result[0]}:${result[1]} 的翻译`);
-                process.exit(1);
+                process.exitCode = 1;
+                return;
             }
             console.error(err);
         }

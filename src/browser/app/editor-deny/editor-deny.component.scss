@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  height: 100%;
+  user-select: none;
+}
+
+.page-box {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.content-box {
+  margin: 22px 18px 0;
+}

@@ -1,4 +1,8 @@
 import MarkdownIt from 'markdown-it';
+import type Token from 'markdown-it/lib/token.js';
+import type { FixedLengthArray } from 'type-fest';
+import { Context } from './context.js';
+import type { NamespaceName } from '../interfaces/ehtag.js';
 import {
     Tree,
     ParaNode,
@@ -11,11 +15,8 @@ import {
     isNodeType,
     EmphasisNode,
     StrongNode,
-} from '../interfaces/ehtag.ast';
-import type Token from 'markdown-it/lib/token';
-import { Context } from './context';
-import type { NamespaceName } from '../interfaces/ehtag';
-import { parseTag } from '../tag';
+} from '../interfaces/ehtag.ast.js';
+import { parseTag } from '../tag.js';
 
 const md = MarkdownIt('commonmark', {
     html: false,
@@ -74,12 +75,16 @@ function normalizeUrl(url: string): {
 const knownHosts = new Map<string, string>([
     ['moegirl.org', '萌娘百科'],
     ['moegirl.org.cn', '萌娘百科'],
-    ['wikipedia.org', '维基百科'],
+    ['zh.wikipedia.org', '维基百科'],
+    ['ja.wikipedia.org', '维基百科（日语）'],
+    ['en.wikipedia.org', '维基百科（英语）'],
+    ['en.wikipedia.org', '维基百科（英语）'],
     ['pixiv.net', 'pixiv'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
     ['twitter.com', 'Twitter'],
     ['weibo.com', '微博'],
+    ['bgm.tv', 'Bangumi'],
 ]);
 function normalizeLink(node: LinkNode): void {
     const href = node.url;
@@ -126,17 +131,175 @@ function normalizeImage(node: ImageNode): void {
     node.nsfw = nsfw;
 }
 
-const SEARCH_ORDER: Record<NamespaceName, readonly NamespaceName[]> = {
-    rows: ['rows', 'reclass', 'female', 'misc', 'male', 'language', 'group', 'artist', 'parody', 'character'],
-    reclass: ['reclass', 'female', 'misc', 'male', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
-    language: ['language', 'female', 'misc', 'male', 'reclass', 'rows', 'group', 'artist', 'parody', 'character'],
-    parody: ['parody', 'character', 'female', 'misc', 'male', 'group', 'artist', 'language', 'reclass', 'rows'],
-    character: ['character', 'parody', 'female', 'misc', 'male', 'group', 'artist', 'language', 'reclass', 'rows'],
-    group: ['group', 'artist', 'parody', 'character', 'language', 'female', 'misc', 'male', 'reclass', 'rows'],
-    artist: ['artist', 'group', 'parody', 'character', 'language', 'female', 'misc', 'male', 'reclass', 'rows'],
-    male: ['male', 'misc', 'female', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
-    female: ['female', 'misc', 'male', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
-    misc: ['misc', 'female', 'male', 'reclass', 'rows', 'language', 'group', 'artist', 'parody', 'character'],
+const SEARCH_ORDER: Record<NamespaceName, Readonly<FixedLengthArray<NamespaceName, 12>>> = {
+    rows: [
+        'rows',
+        'reclass',
+        'female',
+        'mixed',
+        'male',
+        'other',
+        'language',
+        'parody',
+        'character',
+        'group',
+        'artist',
+        'cosplayer',
+    ],
+    reclass: [
+        'reclass',
+        'female',
+        'mixed',
+        'male',
+        'other',
+        'language',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'rows',
+    ],
+    language: [
+        'language',
+        'other',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    other: [
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'rows',
+    ],
+    parody: [
+        'parody',
+        'character',
+        'group',
+        'artist',
+        'cosplayer',
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    character: [
+        'character',
+        'parody',
+        'group',
+        'artist',
+        'cosplayer',
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    group: [
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    artist: [
+        'artist',
+        'group',
+        'cosplayer',
+        'parody',
+        'character',
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    cosplayer: [
+        'cosplayer',
+        'group',
+        'artist',
+        'parody',
+        'character',
+        'other',
+        'language',
+        'female',
+        'mixed',
+        'male',
+        'reclass',
+        'rows',
+    ],
+    male: [
+        'male',
+        'mixed',
+        'female',
+        'other',
+        'language',
+        'reclass',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'rows',
+    ],
+    female: [
+        'female',
+        'mixed',
+        'male',
+        'other',
+        'language',
+        'reclass',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'rows',
+    ],
+    mixed: [
+        'mixed',
+        'female',
+        'male',
+        'other',
+        'language',
+        'reclass',
+        'group',
+        'artist',
+        'cosplayer',
+        'parody',
+        'character',
+        'rows',
+    ],
 };
 
 function normalizeTagRef(node: TagRefNode, context: Context): void {
@@ -305,7 +468,7 @@ class AstBuilder {
     }
 
     private buildInlineToken(token: Token, parent: ContainerNode): void {
-        if (token.type === 'text') {
+        if (token.type === 'text' || token.type === 'text_special') {
             parent.content.push({
                 type: 'text',
                 text: token.content,

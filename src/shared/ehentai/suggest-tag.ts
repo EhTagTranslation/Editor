@@ -1,31 +1,28 @@
-import type { RawTag } from '../raw-tag';
-import { postApi, TagSuggestRequest, ResponseOf } from './api';
-import type { NamespaceName } from '../interfaces/ehtag';
+import type { RawTag } from '../raw-tag.js';
+import { api, ApiRequest, ResponseOf } from './http/index.js';
+import type { NamespaceName } from '../interfaces/ehtag.js';
+import { SlaveTag, store, Tag } from './tag.js';
 
-const suggestCache = new Map<string, Tag[]>();
-export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();
-
-interface MasterTag {
-    id: number;
-    namespace: NamespaceName;
-    raw: RawTag;
-    master?: MasterTag;
+interface TagSuggestRequest
+    extends ApiRequest<
+        'tagsuggest',
+        {
+            tags: Record<number, ApiMasterTag | ApiSlaveTag> | [];
+        }
+    > {
+    text: string;
 }
-interface SlaveTag extends MasterTag {
-    id: number;
-    namespace: NamespaceName;
-    raw: RawTag;
-    master: MasterTag;
-}
-export type Tag = MasterTag | SlaveTag;
 
-function store(tag: Tag): void {
-    const raw = tagCache.get(tag.raw);
-    if (raw) {
-        raw.set(tag.namespace, tag);
-    } else {
-        tagCache.set(tag.raw, new Map([[tag.namespace, tag]]));
-    }
+interface ApiMasterTag {
+    id: number;
+    ns: NamespaceName;
+    tn: RawTag;
+}
+
+interface ApiSlaveTag extends ApiMasterTag {
+    mid: number;
+    mns: NamespaceName;
+    mtn: RawTag;
 }
 
 function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
@@ -34,33 +31,37 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     for (const key in response.tags) {
         const tag = response.tags[key];
         tag.id = Number.parseInt(key);
-        const current: Tag = {
+        const current = {
             id: Number.parseInt(key),
-            namespace: tag.ns ?? 'misc',
+            namespace: tag.ns ?? 'other',
             raw: tag.tn,
-        };
+        } as Tag;
         tags.push(current);
         store(current);
         if ('mid' in tag) {
             const master: Tag = {
                 id: tag.mid,
-                namespace: tag.mns ?? 'misc',
+                namespace: tag.mns ?? 'other',
                 raw: tag.mtn,
             };
-            current.master = master;
+            (current as SlaveTag).master = master;
             store(master);
         }
     }
     return tags;
 }
 
+const suggestCache = new Map<string, Tag[]>();
+
+/** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
 export async function suggestTag(ns: NamespaceName | undefined, raw: string): Promise<Tag[]> {
+    raw = raw.trim().toLowerCase();
+    const text = `${ns != null ? ns + ':' : ''}${raw}`;
+    const cache = suggestCache.get(text);
+    if (cache) return cache;
+
     try {
-        raw = raw.trim().toLowerCase();
-        const text = `${ns != null ? ns + ':' : ''}${raw.slice(0, 50)}`;
-        const cache = suggestCache.get(text);
-        if (cache) return cache;
-        const response = await postApi<TagSuggestRequest>({
+        const response = await api<TagSuggestRequest>({
             method: 'tagsuggest',
             text,
         });
