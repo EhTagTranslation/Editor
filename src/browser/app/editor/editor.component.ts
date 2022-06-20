@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { EhTagConnectorService } from 'browser/services/eh-tag-connector.service';
-import { RouteService } from 'browser/services/route.service';
+import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
+import { RouteService } from '#browser/services/route.service';
 import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom } from 'rxjs';
-import { editableNs, ETKey } from 'browser/interfaces/ehtranslation';
+import { editableNs, ETKey } from '#browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap, mergeMap, filter, shareReplay, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { TitleService } from 'browser/services/title.service';
-import { GithubOauthService } from 'browser/services/github-oauth.service';
+import { TitleService } from '#browser/services/title.service';
+import { GithubOauthService } from '#browser/services/github-oauth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { snackBarConfig } from 'browser/environments/environment';
-import { Tag, NamespaceName, FrontMatters } from 'shared/interfaces/ehtag';
-import { GithubReleaseService } from 'browser/services/github-release.service';
-import { DebugService } from 'browser/services/debug.service';
-import { DbRepoService } from 'browser/services/db-repo.service';
-import { RawTag, isRawTag } from 'shared/raw-tag';
-import { isNamespaceName } from 'shared/namespace';
-import { Context } from 'shared/markdown';
-import { suggestTag, Tag as TagSuggest } from 'shared/ehentai';
-import { namespaceMapToSearch, parseTag, tagAbbrFull } from 'shared/tag';
+import { snackBarConfig } from '#browser/environments/environment';
+import { Tag, NamespaceName, FrontMatters } from '#shared/interfaces/ehtag';
+import { GithubReleaseService } from '#browser/services/github-release.service';
+import { DebugService } from '#browser/services/debug.service';
+import { DbRepoService } from '#browser/services/db-repo.service';
+import { RawTag, isRawTag } from '#shared/raw-tag';
+import { isNamespaceName } from '#shared/namespace';
+import { Context } from '#shared/markdown';
+import { suggestTag, Tag as TagSuggest } from '#shared/ehentai';
+import { namespaceMapToSearch, parseTag, tagAbbrFull } from '#shared/tag';
 
 class TagSuggestOption {
     constructor(

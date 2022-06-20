@@ -1,13 +1,13 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiEndpointService } from './api-endpoint.service';
-import type { GithubRelease } from 'browser/interfaces/github';
+import type { GithubRelease } from '#browser/interfaces/github';
 import { DebugService } from './debug.service';
-import type { RepoData } from 'shared/interfaces/ehtag';
+import type { RepoData } from '#shared/interfaces/ehtag';
 import { of, BehaviorSubject, merge, timer, from, Observable, lastValueFrom } from 'rxjs';
 import { map, tap, mergeMap, catchError, filter, finalize, throttleTime } from 'rxjs/operators';
 import { CacheService } from './cache.service';
-import type { DatabaseView } from 'shared/interfaces/database';
+import type { DatabaseView } from '#shared/interfaces/database';
 import { DatabaseInMemory } from './database';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {

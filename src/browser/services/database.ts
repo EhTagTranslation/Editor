@@ -1,4 +1,4 @@
-import type { TagType, RepoData } from 'shared/interfaces/ehtag';
+import type { TagType, RepoData } from '#shared/interfaces/ehtag';
 import type { CacheService } from './cache.service';
 import { DatabaseInMemory as DatabaseInMemoryBase } from './database.shared';
 
