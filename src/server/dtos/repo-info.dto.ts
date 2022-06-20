@@ -11,7 +11,7 @@ import {
     RepoData,
     NamespaceData,
     Tag,
-} from '#shared/interfaces/ehtag.js';
+} from '#shared/interfaces/ehtag';
 
 export class SignatureDto implements Signature {
     name!: string;

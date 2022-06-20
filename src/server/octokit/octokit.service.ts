@@ -7,7 +7,7 @@ import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { InjectableBase } from '../injectable-base.js';
-import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag.js';
+import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag';
 
 export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;

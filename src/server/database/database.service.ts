@@ -4,11 +4,11 @@ import type { Octokit } from '@octokit/rest';
 import type { AsyncReturnType } from 'type-fest';
 import fs from 'fs-extra';
 import path from 'path';
-import { Database } from '#shared/database.js';
-import { Sha1Value, NamespaceName, Commit } from '#shared/interfaces/ehtag.js';
-import type { TagRecord } from '#shared/tag-record.js';
-import type { RawTag } from '#shared/raw-tag.js';
-import { Context } from '#shared/markdown/index.js';
+import { Database } from '#shared/database';
+import { Sha1Value, NamespaceName, Commit } from '#shared/interfaces/ehtag';
+import type { TagRecord } from '#shared/tag-record';
+import type { RawTag } from '#shared/raw-tag';
+import { Context } from '#shared/markdown/index';
 import { InjectableBase } from '../injectable-base.js';
 import { OctokitService, UserInfo } from '../octokit/octokit.service.js';
 

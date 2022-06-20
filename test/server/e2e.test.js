@@ -1,14 +1,16 @@
+// @ts-check
+import { jest } from '@jest/globals';
 import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
-import { AppModule } from '#server/app/app.module.js';
-import { setupSwagger, enableCors } from '#server/setup.js';
+import { AppModule } from '#server/app/app.module';
+import { setupSwagger, enableCors } from '#server/setup';
 
 jest.setTimeout(30_000);
 
 describe('AppController (e2e)', () => {
-    /** @type {NestFastifyApplication} */
+    /** @type {import('@nestjs/platform-fastify').NestFastifyApplication} */
     let app;
 
     beforeAll(async () => {

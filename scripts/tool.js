@@ -1,3 +1,4 @@
+// @ts-check
 import fs from 'fs-extra';
 
 const removedPackages = ['lazysizes', 'zone.js'];
@@ -18,10 +19,10 @@ for (const key in packageJson.imports) {
         packageJson.imports[key] = value.replace(/^.\/dist\//, './');
     }
 }
-for (const key in packageJson.exports) {
+for (const key in /** @type {object} */ (packageJson.exports)) {
     const value = packageJson.exports[key];
     if (typeof value == 'string') {
-        packageJson.imports[key] = value.replace(/^.\/dist\//, './');
+        packageJson.exports[key] = value.replace(/^.\/dist\//, './');
     }
 }
 await fs.writeJSON('./dist/package.json', packageJson);

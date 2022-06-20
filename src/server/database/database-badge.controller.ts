@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { InjectableBase } from '../injectable-base.js';
-import { NamespaceName } from '#shared/interfaces/ehtag.js';
+import { NamespaceName } from '#shared/interfaces/ehtag';
 import { DatabaseService } from './database.service.js';
 import { NsParams } from './params.dto.js';
 import { Badge } from './database-badge.dto.js';

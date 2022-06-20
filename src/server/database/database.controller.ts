@@ -25,8 +25,8 @@ import {
     ApiConflictResponse,
     ApiExcludeEndpoint,
 } from '@nestjs/swagger';
-import type { TagType } from '#shared/interfaces/ehtag.js';
-import { Context } from '#shared/markdown/index.js';
+import type { TagType } from '#shared/interfaces/ehtag';
+import { Context } from '#shared/markdown/index';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
 import { EtagInterceptor } from '../app/etag.interceptor.js';
