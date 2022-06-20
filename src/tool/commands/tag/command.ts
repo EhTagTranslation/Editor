@@ -1,10 +1,11 @@
 import { program } from 'commander';
-import type { NamespaceName } from '../../../shared/interfaces/ehtag';
-import type { RawTag } from '../../../shared/raw-tag';
-import { parseTag as parseTagRaw } from '../../../shared/tag';
-import type { Tag } from '../../../shared/ehentai';
-import clc from 'cli-color';
 import escapeRegexp from 'escape-string-regexp';
+import clc from 'cli-color';
+import type { NamespaceName } from '#shared/interfaces/ehtag';
+import type { RawTag } from '#shared/raw-tag';
+import { parseTag as parseTagRaw } from '#shared/tag';
+import type { Tag } from '#shared/ehentai/index';
+
 export { Command } from 'commander';
 
 export const command = program.command('tag').description('用于处理标签的相关工具');

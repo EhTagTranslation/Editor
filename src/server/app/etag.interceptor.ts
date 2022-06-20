@@ -1,9 +1,9 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor, HttpException, HttpStatus } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { Observable, from, throwError, of } from 'rxjs';
 import { map, mergeMap, delayWhen, catchError } from 'rxjs/operators';
-import { InjectableBase } from '../injectable-base';
+import { InjectableBase } from '../injectable-base.js';
+import { DatabaseService } from '../database/database.service.js';
 
 function getSha(etag: unknown): string | undefined {
     if (typeof etag != 'string') return undefined;

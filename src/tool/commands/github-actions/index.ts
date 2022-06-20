@@ -1,3 +1,3 @@
-import './delete-releases';
-import './generate-token';
-import './set-release-note';
+import './delete-releases.js';
+import './generate-token.js';
+import './set-release-note.js';

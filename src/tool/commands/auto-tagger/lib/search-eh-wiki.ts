@@ -1,5 +1,5 @@
-import { get } from '../../../../shared/ehentai/http';
-import type { RawTag } from '../../../../shared/raw-tag';
+import { get } from '#shared/ehentai/http/index';
+import type { RawTag } from '#shared/raw-tag';
 
 const MediaType = ['game', 'movie', 'novel', 'anime/manga'] as const;
 export type MediaType = typeof MediaType[number];

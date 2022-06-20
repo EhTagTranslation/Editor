@@ -2,8 +2,9 @@
 /dist
 /db
 /scripts
-*.config.js
+*.config.{js,ts}
 .*.{js,ts}
+/test/
 
 # packages
 /node_modules/

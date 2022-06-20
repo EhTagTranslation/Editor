@@ -7,11 +7,11 @@ import {
     FrontMatters,
     RepoData,
     RepoInfo,
-} from 'shared/interfaces/ehtag';
-import type { DatabaseView, NamespaceDatabaseView } from 'shared/interfaces/database';
-import { Context } from 'shared/markdown';
-import type { RawTag } from 'shared/raw-tag';
-import { TagRecord } from 'shared/tag-record';
+} from '#shared/interfaces/ehtag';
+import type { DatabaseView, NamespaceDatabaseView } from '#shared/interfaces/database';
+import { Context } from '#shared/markdown';
+import type { RawTag } from '#shared/raw-tag';
+import { TagRecord } from '#shared/tag-record';
 
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },

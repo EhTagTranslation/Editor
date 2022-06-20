@@ -3,14 +3,14 @@ import type { SortDirection } from '@angular/material/sort';
 import type { Params } from '@angular/router';
 import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
 import { map, tap, shareReplay, debounceTime, filter, mergeMap } from 'rxjs/operators';
-import type { NamespaceName, Tag, RepoData } from 'shared/interfaces/ehtag';
-import { isNamespaceName } from 'shared/namespace';
+import type { NamespaceName, Tag, RepoData } from '#shared/interfaces/ehtag';
+import { isNamespaceName } from '#shared/namespace';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
 import { editableNs, ETKey } from '../../interfaces/ehtranslation';
-import { RouteService } from 'browser/services/route.service';
-import { DebugService } from 'browser/services/debug.service';
-import { TitleService } from 'browser/services/title.service';
-import { GithubReleaseService } from 'browser/services/github-release.service';
+import { RouteService } from '#browser/services/route.service';
+import { DebugService } from '#browser/services/debug.service';
+import { TitleService } from '#browser/services/title.service';
+import { GithubReleaseService } from '#browser/services/github-release.service';
 
 export interface ETItem extends Tag<'raw'>, ETKey {}
 

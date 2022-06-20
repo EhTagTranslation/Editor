@@ -1,8 +1,8 @@
-import type { Tag, TagType } from './interfaces/ehtag';
-import { Cell } from './cell';
-import type { NamespaceDatabaseView } from './interfaces/database';
-import type { Context } from './markdown';
-import { RawTag } from './raw-tag';
+import type { Tag, TagType } from './interfaces/ehtag.js';
+import { Cell } from './cell.js';
+import type { NamespaceDatabaseView } from './interfaces/database.js';
+import type { Context } from './markdown/index.js';
+import { RawTag } from './raw-tag.js';
 
 const recordRegex =
     /^\s*(?<!\\)\|?\s*(?<raw>.*?)\s*(?<!\\)\|\s*(?<name>.*?)\s*(?<!\\)\|\s*(?<intro>.*?)\s*(?<!\\)\|\s*(?<links>.*?)\s*(?<!\\)\|?\s*$/;

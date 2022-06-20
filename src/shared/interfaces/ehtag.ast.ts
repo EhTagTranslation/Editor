@@ -1,5 +1,5 @@
-import type { RawTag } from '../raw-tag';
-import type { NamespaceName } from './ehtag';
+import type { RawTag } from '../raw-tag.js';
+import type { NamespaceName } from './ehtag.js';
 
 export type Tree = ParaNode[];
 

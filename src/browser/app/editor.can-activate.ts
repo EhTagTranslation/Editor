@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, UrlTree, Router } from '@angular/router';
-import { parseNamespace } from 'shared/namespace';
+import { parseNamespace } from '#shared/namespace';
 
 @Injectable()
 export class CanActivateEditor implements CanActivate {

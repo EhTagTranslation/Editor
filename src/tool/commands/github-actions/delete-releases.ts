@@ -1,9 +1,9 @@
 import path from 'path';
 import Git from 'simple-git';
 import { Octokit } from '@octokit/rest';
-import { action } from '../../utils';
-import { command } from './command';
-import { lsRemoteTags } from './utils';
+import { action } from '../../utils.js';
+import { command } from './command.js';
+import { lsRemoteTags } from './utils.js';
 import type { OptionValues } from 'commander';
 
 class Main {

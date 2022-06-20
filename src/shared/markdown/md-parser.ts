@@ -1,4 +1,8 @@
 import MarkdownIt from 'markdown-it';
+import type Token from 'markdown-it/lib/token.js';
+import type { FixedLengthArray } from 'type-fest';
+import { Context } from './context.js';
+import type { NamespaceName } from '../interfaces/ehtag.js';
 import {
     Tree,
     ParaNode,
@@ -11,12 +15,8 @@ import {
     isNodeType,
     EmphasisNode,
     StrongNode,
-} from '../interfaces/ehtag.ast';
-import type Token from 'markdown-it/lib/token';
-import { Context } from './context';
-import type { NamespaceName } from '../interfaces/ehtag';
-import { parseTag } from '../tag';
-import type { FixedLengthArray } from 'type-fest';
+} from '../interfaces/ehtag.ast.js';
+import { parseTag } from '../tag.js';
 
 const md = MarkdownIt('commonmark', {
     html: false,

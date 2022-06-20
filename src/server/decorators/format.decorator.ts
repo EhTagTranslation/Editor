@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext, BadRequestException, Header } f
 import type { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';
-import type { TagType } from 'shared/interfaces/ehtag';
+import type { TagType } from '#shared/interfaces/ehtag';
 
 function getFromQuery(format: string): TagType {
     format = format.trim().toLowerCase();

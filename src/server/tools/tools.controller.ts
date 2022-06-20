@@ -1,14 +1,14 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, Param, BadRequestException } from '@nestjs/common';
-import { TagResponseDto, LooseTagDto } from 'server/dtos/repo-info.dto';
-import { Format } from 'server/decorators/format.decorator';
-import type { TagType } from 'shared/interfaces/ehtag';
-import { TagRecord } from 'shared/tag-record';
-import { InjectableBase } from 'server/injectable-base';
-import { DatabaseService } from 'server/database/database.service';
-import { RawTag } from 'shared/raw-tag';
+import { TagResponseDto, LooseTagDto } from '../dtos/repo-info.dto.js';
+import { Format } from '../decorators/format.decorator.js';
+import type { TagType } from '#shared/interfaces/ehtag';
+import { TagRecord } from '#shared/tag-record';
+import { InjectableBase } from '../injectable-base.js';
+import { DatabaseService } from '../database/database.service.js';
+import { RawTag } from '#shared/raw-tag';
 import { ApiOperation, ApiConsumes, ApiTags, ApiProduces, ApiOkResponse, ApiBody } from '@nestjs/swagger';
-import { TagParams, ParsedLine } from './tools.dto';
-import { Context } from 'shared/markdown';
+import { TagParams, ParsedLine } from './tools.dto.js';
+import { Context } from '#shared/markdown/index';
 
 @ApiTags('Tools')
 @Controller('tools')

@@ -44,7 +44,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ github.event.head_commit.message }}
-          tag: v${{ env.PACKAGE_VERSION}}
+          tag: v${{ env.PACKAGE_VERSION }}
           commit: ${{ github.sha }}
           artifacts: ./release.zip
           allowUpdates: true

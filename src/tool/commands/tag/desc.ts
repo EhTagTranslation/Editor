@@ -1,8 +1,8 @@
 import type { AxiosError } from 'axios';
-import type { Tag } from '../../../shared/interfaces/ehtag';
-import { normalizeTag } from '../../../shared/ehentai';
-import { get } from '../../../shared/ehentai/http';
-import { command, parseTag, formatTag } from './command';
+import type { Tag } from '#shared/interfaces/ehtag';
+import { normalizeTag } from '#shared/ehentai/index';
+import { get } from '#shared/ehentai/http/index';
+import { command, parseTag, formatTag } from './command.js';
 
 command
     .command('desc <[namespace:]tag>')

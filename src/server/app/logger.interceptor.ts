@@ -1,8 +1,8 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor, HttpException } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 import type { Observable } from 'rxjs';
-import { InjectableBase } from '../injectable-base';
 import { tap } from 'rxjs/operators';
+import { InjectableBase } from '../injectable-base.js';
 
 @Injectable()
 export class LoggerInterceptor extends InjectableBase implements NestInterceptor {

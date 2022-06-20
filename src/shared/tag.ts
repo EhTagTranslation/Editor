@@ -1,6 +1,6 @@
-import { parseNamespace } from './namespace';
-import type { NamespaceName } from './interfaces/ehtag';
-import { RawTag } from './raw-tag';
+import { parseNamespace } from './namespace.js';
+import type { NamespaceName } from './interfaces/ehtag.js';
+import { RawTag } from './raw-tag.js';
 
 export function parseTag(tag: string):
     | {

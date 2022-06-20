@@ -1,8 +1,8 @@
 import type { AxiosResponse } from 'axios';
-import { request } from './core';
+import { request } from './core.js';
 
-export * from './api';
-export * from './html';
+export * from './api.js';
+export * from './html.js';
 
 export { request };
 

@@ -1,6 +1,14 @@
-import type { RepoInfo, TagType, RepoData, NamespaceName, FrontMatters, NamespaceInfo, NamespaceData } from './ehtag';
-import type { RawTag } from '../raw-tag';
-import type { TagRecord } from '../tag-record';
+import type {
+    RepoInfo,
+    TagType,
+    RepoData,
+    NamespaceName,
+    FrontMatters,
+    NamespaceInfo,
+    NamespaceData,
+} from './ehtag.js';
+import type { RawTag } from '../raw-tag.js';
+import type { TagRecord } from '../tag-record.js';
 
 export interface NamespaceDatabaseView {
     readonly name: NamespaceName;

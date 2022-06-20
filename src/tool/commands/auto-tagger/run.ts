@@ -1,13 +1,13 @@
 import { Option, OptionValues } from 'commander';
 import path from 'path';
-import { Context } from '../../../shared/markdown';
-import { Database } from '../../../shared/database';
-import { getTagGroups } from '../../../shared/ehentai';
-import { NamespaceName } from '../../../shared/interfaces/ehtag';
-import { isRawTag, RawTag } from '../../../shared/raw-tag';
-import { isNamespaceName } from '../../../shared/namespace';
-import { command } from './command';
-import { translate } from './translate';
+import { Context } from '#shared/markdown/index';
+import { Database } from '#shared/database';
+import { getTagGroups } from '#shared/ehentai/index';
+import { NamespaceName } from '#shared/interfaces/ehtag';
+import { isRawTag, RawTag } from '#shared/raw-tag';
+import { isNamespaceName } from '#shared/namespace';
+import { command } from './command.js';
+import { translate } from './translate.js';
 
 async function run(db: Database, namespace?: NamespaceName, fromTag?: RawTag, signal?: AbortSignal): Promise<void> {
     const tagFromEh = await getTagGroups();

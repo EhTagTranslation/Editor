@@ -1,4 +1,4 @@
-import type { NamespaceName } from 'shared/interfaces/ehtag';
+import type { NamespaceName } from '#shared/interfaces/ehtag';
 
 export interface ETKey {
     raw: string;

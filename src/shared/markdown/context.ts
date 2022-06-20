@@ -1,7 +1,7 @@
-import type { TagRecord } from '../tag-record';
-import type { RawTag } from '../raw-tag';
-import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database';
-import type { Database } from '../database';
+import type { TagRecord } from '../tag-record.js';
+import type { RawTag } from '../raw-tag.js';
+import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database.js';
+import type { Database } from '../database.js';
 
 export abstract class Logger {
     info(context: Context, message: string): void {

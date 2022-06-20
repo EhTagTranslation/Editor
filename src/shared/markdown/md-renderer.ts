@@ -1,5 +1,5 @@
-import { tagAbbrFull } from '../tag';
-import type { Node, Tree, NodeType, NodeMap, ContainerNode } from '../interfaces/ehtag.ast';
+import { tagAbbrFull } from '../tag.js';
+import type { Node, Tree, NodeType, NodeMap, ContainerNode } from '../interfaces/ehtag.ast.js';
 
 function encodeUrl(url: string): string {
     return url;

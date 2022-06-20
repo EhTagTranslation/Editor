@@ -1,11 +1,11 @@
-import { Context, parse, render } from '../../../shared/markdown';
-import type { NamespaceName, Tag } from '../../../shared/interfaces/ehtag';
-import type { RawTag } from '../../../shared/raw-tag';
-import { parseTag } from '../tag/command';
-import { command } from './command';
-import { searchEhWiki } from './lib/search-eh-wiki';
-import { Gallery, searchTag } from './lib/search-tag';
-import { translateByWiki } from './lib/translate-by-wiki';
+import { Context, parse, render } from '#shared/markdown/index';
+import type { NamespaceName, Tag } from '#shared/interfaces/ehtag';
+import type { RawTag } from '#shared/raw-tag';
+import { parseTag } from '../tag/command.js';
+import { command } from './command.js';
+import { searchEhWiki } from './lib/search-eh-wiki.js';
+import { Gallery, searchTag } from './lib/search-tag.js';
+import { translateByWiki } from './lib/translate-by-wiki.js';
 
 async function findJaInGalleryTitles(raw: RawTag, galleries: Gallery[], page = 1): Promise<string | undefined> {
     let found;

@@ -1,5 +1,5 @@
 import simpleGit from 'simple-git';
-import type { RepoInfo, Sha1Value } from './interfaces/ehtag';
+import type { RepoInfo, Sha1Value } from './interfaces/ehtag.js';
 
 export interface RepoInfoProvider {
     head(): Promise<RepoInfo['head']> | RepoInfo['head'];

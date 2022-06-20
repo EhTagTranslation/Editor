@@ -1,11 +1,11 @@
-import type { CellType, TagType } from '../interfaces/ehtag';
-import { renderText } from './text-renderer';
-import { renderHtml } from './html-renderer';
-import { renderMd } from './md-renderer';
-import { parseMd } from './md-parser';
-import type { Context } from './context';
-export * from './context';
-import type { Tree } from '../interfaces/ehtag.ast';
+import type { CellType, TagType } from '../interfaces/ehtag.js';
+import { renderText } from './text-renderer.js';
+import { renderHtml } from './html-renderer.js';
+import { renderMd } from './md-renderer.js';
+import { parseMd } from './md-parser.js';
+import type { Context } from './context.js';
+export * from './context.js';
+import type { Tree } from '../interfaces/ehtag.ast.js';
 export function parse(src: string, context: Context): Tree {
     const ast = parseMd(src, context);
     return ast;

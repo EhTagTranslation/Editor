@@ -1,7 +1,7 @@
-import type { RawTag } from '../raw-tag';
-import { api, ApiRequest, ResponseOf } from './http';
-import type { NamespaceName } from '../interfaces/ehtag';
-import { SlaveTag, store, Tag } from './tag';
+import type { RawTag } from '../raw-tag.js';
+import { api, ApiRequest, ResponseOf } from './http/index.js';
+import type { NamespaceName } from '../interfaces/ehtag.js';
+import { SlaveTag, store, Tag } from './tag.js';
 
 interface TagSuggestRequest
     extends ApiRequest<
