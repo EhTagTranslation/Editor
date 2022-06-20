@@ -7,7 +7,7 @@
     "outDir": "../../dist",
 
     "paths": {
-      "#*": ["./*"]
+      "#*": ["../*"]
     }
   },
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "setup-jest.ts"]
