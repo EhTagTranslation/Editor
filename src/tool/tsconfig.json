@@ -1,11 +1,5 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "target": "ES2021",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "outDir": "../../dist",
-    "lib": ["ES2018"]
-  },
+  "compilerOptions": {},
   "exclude": ["test.ts", "**/*.spec.ts"]
 }

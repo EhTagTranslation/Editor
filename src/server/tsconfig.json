@@ -1,14 +1,5 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "outDir": "../../dist",
-
-    "paths": {
-      "#*": ["../*"]
-    }
-  },
+  "compilerOptions": {},
   "exclude": ["**/*.test.ts", "**/*.spec.ts", "setup-jest.ts"]
 }
