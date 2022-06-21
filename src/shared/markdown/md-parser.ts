@@ -78,7 +78,6 @@ const knownHosts = new Map<string, string>([
     ['zh.wikipedia.org', '维基百科'],
     ['ja.wikipedia.org', '维基百科（日语）'],
     ['en.wikipedia.org', '维基百科（英语）'],
-    ['en.wikipedia.org', '维基百科（英语）'],
     ['pixiv.net', 'pixiv'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
@@ -86,33 +85,51 @@ const knownHosts = new Map<string, string>([
     ['weibo.com', '微博'],
     ['bgm.tv', 'Bangumi'],
 ]);
+
+const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
+
 function normalizeLink(node: LinkNode): void {
+    // 规格化 URL
     const href = node.url;
-    const url = normalizeUrl(href).url;
+    const { url, nsfw } = normalizeUrl(href);
     node.url = url;
-    if (node.content.length === 1) {
-        const cNode = node.content[0];
-        if (isNodeType(cNode, 'text') && cNode.text === href) {
-            try {
-                const hrefUrl = new URL(href);
-                const host = hrefUrl.host.toLowerCase();
-                for (const [k, v] of knownHosts) {
-                    if (host.endsWith(k)) {
-                        cNode.text = v;
-                        break;
-                    }
-                }
-            } catch (ex) {
-                console.log(ex);
+
+    // 不进一步处理复杂内容节点
+    if (node.content.length !== 1) return;
+    const contentNode = node.content[0];
+    if (!isNodeType(contentNode, 'text') || contentNode.text !== href) return;
+
+    try {
+        const hrefUrl = new URL(href);
+        // 检查是否为图片
+        const pathname = hrefUrl.pathname.toLowerCase();
+        for (const k of knownImageExtensions) {
+            if (pathname.endsWith(k)) {
+                const imgNode = node as LinkNode | ImageNode as ImageNode;
+                imgNode.type = 'image';
+                imgNode.content = [];
+                imgNode.nsfw = nsfw ?? false;
+                normalizeImage(imgNode);
+                break;
             }
         }
+        // 检查是否为已知域名
+        const host = hrefUrl.host.toLowerCase();
+        for (const [k, v] of knownHosts) {
+            if (host.endsWith(k)) {
+                contentNode.text = v;
+                break;
+            }
+        }
+    } catch (ex) {
+        console.log(ex);
     }
 }
 
 function normalizeImage(node: ImageNode): void {
     let src = node.url;
     let title = node.title;
-    let nsfw: ImageNode['nsfw'] = node.nsfw;
+    let nsfw = node.nsfw;
     if (src.startsWith('#') && /^https?:\/\/[^/]+/.test(title)) {
         if (src === '#') {
             src = title;
