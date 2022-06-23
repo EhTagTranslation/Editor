@@ -84,6 +84,8 @@ const knownHosts = new Map<string, string>([
     ['twitter.com', 'Twitter'],
     ['weibo.com', '微博'],
     ['bgm.tv', 'Bangumi'],
+    ['fandom.com', 'Fandom'],
+    ['fanbox.cc', 'FANBOX'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
@@ -116,7 +118,7 @@ function normalizeLink(node: LinkNode): void {
         // 检查是否为已知域名
         const host = hrefUrl.host.toLowerCase();
         for (const [k, v] of knownHosts) {
-            if (host.endsWith(k)) {
+            if (host === k || (host.endsWith(k) && host[host.length - k.length - 1] === '.')) {
                 contentNode.text = v;
                 break;
             }
