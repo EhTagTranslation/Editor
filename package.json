@@ -80,7 +80,7 @@
     "@angular/platform-browser": "^14.0.2",
     "@angular/platform-browser-dynamic": "^14.0.2",
     "@angular/router": "^14.0.2",
-    "@nestjs/cli": "~8.2.6",
+    "@nestjs/cli": "~8.2.8",
     "@nestjs/schematics": "~8.0.11",
     "@nestjs/testing": "~8.4.7",
     "@types/cli-color": "~2.0.2",
