@@ -86,6 +86,7 @@ const knownHosts = new Map<string, string>([
     ['bgm.tv', 'Bangumi'],
     ['fandom.com', 'Fandom'],
     ['fanbox.cc', 'FANBOX'],
+    ['bilibili.com', '哔哩哔哩'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
