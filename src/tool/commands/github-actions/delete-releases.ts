@@ -12,7 +12,10 @@ class Main {
     }
     async deleteRelease(): Promise<void> {
         const octokit = new Octokit({ auth: action.token });
-        const releases = await octokit.paginate(octokit.repos.listReleases, { owner: action.owner, repo: action.repo });
+        const releases = await octokit.paginate('GET /repos/{owner}/{repo}/releases', {
+            owner: action.owner,
+            repo: action.repo,
+        });
         console.log(`Found ${releases.length} releases`);
         const releases_to_delete = releases.slice(this.KEEP_RELEASE);
         for (let i = 0; i < releases_to_delete.length; i++) {
