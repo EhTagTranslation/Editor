@@ -69,7 +69,7 @@
     "@angular-devkit/build-angular": "^14.0.3",
     "@angular/animations": "^14.0.3",
     "@angular/cdk": "^14.0.3",
-    "@angular/cli": "^14.0.3",
+    "@angular/cli": "^14.0.4",
     "@angular/common": "^14.0.3",
     "@angular/compiler": "^14.0.3",
     "@angular/compiler-cli": "^14.0.3",
