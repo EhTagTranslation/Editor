@@ -23,6 +23,8 @@ import {
     ApiNoContentResponse,
     ApiConflictResponse,
     ApiExcludeEndpoint,
+    ApiOkResponse,
+    ApiCreatedResponse,
 } from '@nestjs/swagger';
 import type { TagType } from '#shared/interfaces/ehtag';
 import { Context } from '#shared/markdown/index';
@@ -47,6 +49,7 @@ export class DatabaseController extends InjectableBase {
     @Get()
     @ApiOperation({ summary: '查询数据库基本情况' })
     @ApiIfNoneMatchHeader()
+    @ApiOkResponse({ type: RepoInfoDto })
     getInfo(): Promise<RepoInfoDto> {
         return this.service.data.info();
     }
@@ -57,6 +60,7 @@ export class DatabaseController extends InjectableBase {
         description: '如只需获取 `ETag` 信息（即最新一次提交的 sha1），可以使用 `HEAD` 请求。',
     })
     @ApiIfNoneMatchHeader()
+    @ApiOkResponse()
     headInfo(): void {
         return;
     }
@@ -64,6 +68,7 @@ export class DatabaseController extends InjectableBase {
     @Get(':namespace')
     @ApiOperation({ summary: '查询某一分类的信息' })
     @ApiIfNoneMatchHeader()
+    @ApiOkResponse({ type: NamespaceInfoDto })
     getNs(@Param() p: NsParams): NamespaceInfoDto {
         return this.service.data.data[p.namespace].info();
     }
@@ -73,6 +78,7 @@ export class DatabaseController extends InjectableBase {
     @ApiIfNoneMatchHeader()
     @ApiNoContentResponse({ description: '条目存在' })
     @ApiNotFoundResponse({ description: '条目不存在' })
+    @ApiOkResponse()
     headTag(@Param() p: TagParams): void {
         const dic = this.service.data.data[p.namespace];
         if (!dic.has(p.raw)) throw new NotFoundException();
@@ -82,6 +88,7 @@ export class DatabaseController extends InjectableBase {
     @ApiOperation({ summary: '查询某一条目的翻译' })
     @ApiIfNoneMatchHeader()
     @ApiNotFoundResponse({ description: '条目不存在' })
+    @ApiOkResponse({ type: TagResponseDto })
     getTag(@Param() p: TagParams, @Format() format: TagType): TagResponseDto {
         const dic = this.service.data.data[p.namespace];
         const rec = dic.get(p.raw);
@@ -93,6 +100,7 @@ export class DatabaseController extends InjectableBase {
     @ApiOperation({ summary: '增加条目' })
     @ApiIfMatchHeader()
     @ApiConflictResponse({ description: '已有同名条目，需改用 `PUT` 请求' })
+    @ApiCreatedResponse({ type: TagResponseDto })
     async postTag(
         @Param() p: TagParams,
         @Format() format: TagType,
@@ -120,6 +128,7 @@ export class DatabaseController extends InjectableBase {
     @Post(':namespace/~comment')
     @ApiOperation({ summary: '插入注释行' })
     @ApiIfMatchHeader()
+    @ApiCreatedResponse({ type: TagResponseDto })
     async postComment(
         @Param() p: NsParams,
         @Format() format: TagType,
@@ -148,6 +157,7 @@ export class DatabaseController extends InjectableBase {
     @ApiIfMatchHeader()
     @ApiNotFoundResponse({ description: '条目不存在，需改用 `POST` 请求' })
     @ApiNoContentResponse({ description: '请求内容与数据库内容一致，未进行修改' })
+    @ApiOkResponse({ type: TagResponseDto })
     async putTag(
         @Param() p: TagParams,
         @Format() format: TagType,
@@ -177,6 +187,7 @@ export class DatabaseController extends InjectableBase {
     @ApiOperation({ summary: '删除条目' })
     @ApiIfMatchHeader()
     @ApiNotFoundResponse({ description: '条目不存在' })
+    @ApiOkResponse()
     async deleteTag(@Param() p: TagParams, @User() user: UserInfo): Promise<void> {
         const dic = this.service.data.data[p.namespace];
         const rec = dic.delete(p.raw);

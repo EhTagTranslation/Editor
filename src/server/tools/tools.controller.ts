@@ -20,6 +20,7 @@ export class ToolsController extends InjectableBase {
     @Post('normalize')
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: TagResponseDto })
     normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
         const record = new TagRecord(tag, this.db.data.data.other);
         return record.render(format, new Context(record));
@@ -49,6 +50,7 @@ export class ToolsController extends InjectableBase {
     @ApiBody({})
     @ApiConsumes('text/plain')
     @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({ type: ParsedLine })
     parse(@Body() line: string, @Format() format: TagType): ParsedLine {
         if (line.indexOf('\n') >= 0) throw new BadRequestException('Parse one line at once');
         line = line.trim();
