@@ -258,12 +258,10 @@ describe('AppController (e2e)', () => {
             .query({ format: 'text.json' })
             .expect(HttpStatus.OK);
         expect(_.body).toEqual({
-            key: 'a',
-            value: {
-                name: 'http://a.com link link2 test1 test2 x`xx` a!',
-                intro: '',
-                links: '萌娘百科',
-            },
+            raw: 'a',
+            name: 'http://a.com link link2 test1 test2 x`xx` a!',
+            intro: '',
+            links: '萌娘百科',
         });
     });
 });

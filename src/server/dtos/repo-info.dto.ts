@@ -15,7 +15,7 @@ import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec
 export class SignatureDto implements Signature {
     @ApiProperty({ type: String, description: '签名名称' })
     name!: string;
-    @ApiProperty({ type: String, description: '签名 E-mail' })
+    @ApiProperty({ type: String, description: '签名 E-mail', format: 'email' })
     email!: string;
     @ApiProperty({ type: Date, description: '签名时间' })
     when!: Date;
@@ -28,21 +28,12 @@ export class CommitDto implements Commit {
     @ApiProperty({
         type: String,
         description: '提交的 SHA1 值',
-        examples: [
-            '868fd9abce99988bb570dd24973ac8ac09d47374',
-            'a6d33997b583b3b3f343f1675316c9ffa726c6bc',
-            '2c2332aa6cce7c36f93df545fbb83008b72d30de',
-        ],
+        pattern: '^[a-f0-9]{40}$',
     })
     sha!: Sha1Value;
     @ApiProperty({
         type: String,
         description: '提交的消息',
-        examples: [
-            '修改 character:cynthia - 竹兰 | 辛西娅',
-            '添加 parody:tsukuyomi moon phase - 月咏',
-            'Update README.md',
-        ],
     })
     message!: string;
 }
