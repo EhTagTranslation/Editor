@@ -13,7 +13,7 @@ import {
 import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 export class SignatureDto implements Signature {
-    @ApiProperty({ type: String, description: '签名名称' })
+    @ApiProperty({ type: String, description: '签名名称', example: 'user' })
     name!: string;
     @ApiProperty({ type: String, description: '签名 E-mail', format: 'email' })
     email!: string;
