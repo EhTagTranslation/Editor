@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import type { TagResponseDto } from '../dtos/repo-info.dto.js';
+import { TagResponseDto } from '../dtos/repo-info.dto.js';
 
 export class TagParams {
     @ApiProperty({ type: String, description: '原始标签' })
@@ -9,6 +9,8 @@ export class TagParams {
 }
 
 export class ParsedLine {
+    @ApiProperty({ type: String, description: '原始标签' })
     key?: string;
+    @ApiProperty({ type: TagResponseDto, description: '翻译内容' })
     value!: TagResponseDto;
 }

@@ -60,7 +60,7 @@ export class DatabaseController extends InjectableBase {
         description: '如只需获取 `ETag` 信息（即最新一次提交的 sha1），可以使用 `HEAD` 请求。',
     })
     @ApiIfNoneMatchHeader()
-    @ApiOkResponse()
+    @ApiNoContentResponse({ description: '数据库数据版本从 `ETag` 返回' })
     headInfo(): void {
         return;
     }
@@ -78,7 +78,6 @@ export class DatabaseController extends InjectableBase {
     @ApiIfNoneMatchHeader()
     @ApiNoContentResponse({ description: '条目存在' })
     @ApiNotFoundResponse({ description: '条目不存在' })
-    @ApiOkResponse()
     headTag(@Param() p: TagParams): void {
         const dic = this.service.data.data[p.namespace];
         if (!dic.has(p.raw)) throw new NotFoundException();

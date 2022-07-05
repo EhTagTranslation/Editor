@@ -31,7 +31,7 @@ export const ApiIfMatchHeader = (): MethodDecorator => (target, key, desc) => {
                 description: '`If-Match` 头与数据库当前版本不匹配',
             }),
             ApiResponse({
-                status: 428,
+                status: HttpStatus.PRECONDITION_REQUIRED,
                 description: '未提供 `If-Match` 头',
             }),
             ApiHeader({
