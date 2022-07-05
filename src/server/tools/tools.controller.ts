@@ -47,7 +47,13 @@ export class ToolsController extends InjectableBase {
 
     @Post('parse')
     @ApiOperation({ summary: '解析 MarkDown 条目', description: '使用此 API 解析数据库中的 MarkDown 表格行' })
-    @ApiBody({})
+    @ApiBody({
+        schema: {
+            type: 'string',
+            example:
+                '| ruri gokou | 五更琉璃（黑猫） | ![黑猫](https://ehgt.org/1b/04/1b04021da892517c44f0729afb44168bd32c1c90-1985827-2521-3600-jpg_l.jpg)<br>网名黑猫。SNS社群“宅女集合”的成员之一，桐乃在线下会认识的宅友。有在进行同人社团活动，并开设了个人博客，宅的程度不在桐乃之下。 | [萌娘百科](https://zh.moegirl.org.cn/zh-hans/五更琉璃) [Fandom](https://oreimo.fandom.com/zh/wiki/五更琉璃) |',
+        },
+    })
     @ApiConsumes('text/plain')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: ParsedLine })
@@ -57,8 +63,8 @@ export class ToolsController extends InjectableBase {
         const parsed = TagRecord.parse(line, this.db.data.data.other);
         if (!parsed) throw new BadRequestException('Invalid markdown table row');
         return {
-            key: parsed[0],
-            value: parsed[1].render(format, new Context(parsed[1], parsed[0])),
+            raw: parsed[0],
+            ...parsed[1].render(format, new Context(parsed[1], parsed[0])),
         };
     }
 }
