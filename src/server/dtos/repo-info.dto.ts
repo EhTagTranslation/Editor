@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, MinLength } from 'class-validator';
 import {
     RepoInfo,
@@ -8,8 +8,6 @@ import {
     Sha1Value,
     FrontMatters,
     NamespaceName,
-    RepoData,
-    NamespaceData,
     Tag,
 } from '#shared/interfaces/ehtag';
 import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
