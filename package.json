@@ -88,7 +88,7 @@
     "@types/jest": "~28.1.4",
     "@types/js-yaml": "~4.0.5",
     "@types/markdown-it": "~12.2.3",
-    "@types/node": "~18.0.1",
+    "@types/node": "~18.0.3",
     "@types/pako": "~2.0.0",
     "@types/parse5": "~6.0.3",
     "@types/source-map-support": "~0.5.4",
