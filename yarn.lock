@@ -1839,13 +1839,24 @@
     path-to-regexp "3.2.0"
     tslib "2.4.0"
 
-"@nestjs/schematics@^8.0.3", "@nestjs/schematics@~8.0.11":
+"@nestjs/schematics@^8.0.3":
   version "8.0.11"
   resolved "https://registry.npmmirror.com/@nestjs/schematics/-/schematics-8.0.11.tgz#5d0c56184826660a2c01b1c326dbdbb12880e864"
   integrity sha512-W/WzaxgH5aE01AiIErE9QrQJ73VR/M/8p8pq0LZmjmNcjZqU5kQyOWUxZg13WYfSpJdOa62t6TZRtFDmgZPoIg==
   dependencies:
     "@angular-devkit/core" "13.3.5"
     "@angular-devkit/schematics" "13.3.5"
+    fs-extra "10.1.0"
+    jsonc-parser "3.0.0"
+    pluralize "8.0.0"
+
+"@nestjs/schematics@~9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-9.0.1.tgz#2ec1b3fc4cd2c44310d4d7d1f5f276a18d24964b"
+  integrity sha512-QU7GbnQvADFXdumcdADmv4vil3bhnYl2IFHWKieRt0MgIhghgBxIB7kDKWhswcuZ0kZztVbyYjo9aCrlf62fcw==
+  dependencies:
+    "@angular-devkit/core" "14.0.5"
+    "@angular-devkit/schematics" "14.0.5"
     fs-extra "10.1.0"
     jsonc-parser "3.0.0"
     pluralize "8.0.0"

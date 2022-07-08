@@ -81,7 +81,7 @@
     "@angular/platform-browser-dynamic": "^14.0.5",
     "@angular/router": "^14.0.5",
     "@nestjs/cli": "~8.2.8",
-    "@nestjs/schematics": "~8.0.11",
+    "@nestjs/schematics": "~9.0.1",
     "@nestjs/testing": "~8.4.7",
     "@types/cli-color": "~2.0.2",
     "@types/fs-extra": "~9.0.13",
