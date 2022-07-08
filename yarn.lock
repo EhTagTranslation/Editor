@@ -1994,10 +1994,10 @@
     universal-github-app-jwt "^1.0.1"
     universal-user-agent "^6.0.0"
 
-"@octokit/auth-oauth-app@^4.3.0", "@octokit/auth-oauth-app@~4.3.1":
-  version "4.3.1"
-  resolved "https://registry.npmmirror.com/@octokit/auth-oauth-app/-/auth-oauth-app-4.3.1.tgz#c5c423f17519eb7e039a7d60936dfb869c7bdf36"
-  integrity sha512-FXkKcGtTXS2987rp11mSuhMOXDw8Iy/ED9aXs83T29VeMEWjv40q4ytC0voUDxkBC/of1QYOPQUAdI2tv/dwNg==
+"@octokit/auth-oauth-app@^4.3.0", "@octokit/auth-oauth-app@~4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@octokit/auth-oauth-app/-/auth-oauth-app-4.3.3.tgz#5ac5e23b5788bb92e17eb3e7212c90c3dbd081f0"
+  integrity sha512-xzwJEvQaGEbEWXevnODI8FtHijS2eiD9IJpPcbgcw6XC20bURTG/MoO0gMKywWW6U+U/Ez6gAp+bNkbzHuJ3Nw==
   dependencies:
     "@octokit/auth-oauth-device" "^3.1.1"
     "@octokit/auth-oauth-user" "^1.2.1"
