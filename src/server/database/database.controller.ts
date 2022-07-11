@@ -46,14 +46,6 @@ export class DatabaseController extends InjectableBase {
         super();
     }
 
-    @Get()
-    @ApiOperation({ summary: '查询数据库基本情况' })
-    @ApiIfNoneMatchHeader()
-    @ApiOkResponse({ type: RepoInfoDto })
-    getInfo(): Promise<RepoInfoDto> {
-        return this.service.data.info();
-    }
-
     @Head()
     @ApiOperation({
         summary: '查询数据库数据版本',
@@ -63,6 +55,14 @@ export class DatabaseController extends InjectableBase {
     @ApiNoContentResponse({ description: '数据库数据版本从 `ETag` 返回' })
     headInfo(): void {
         return;
+    }
+
+    @Get()
+    @ApiOperation({ summary: '查询数据库基本情况' })
+    @ApiIfNoneMatchHeader()
+    @ApiOkResponse({ type: RepoInfoDto })
+    getInfo(): Promise<RepoInfoDto> {
+        return this.service.data.info();
     }
 
     @Get(':namespace')
