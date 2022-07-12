@@ -82,7 +82,7 @@
     "@angular/router": "^14.0.5",
     "@nestjs/cli": "~9.0.0",
     "@nestjs/schematics": "~9.0.1",
-    "@nestjs/testing": "~9.0.2",
+    "@nestjs/testing": "~9.0.3",
     "@types/cli-color": "~2.0.2",
     "@types/fs-extra": "~9.0.13",
     "@types/jest": "~28.1.4",
