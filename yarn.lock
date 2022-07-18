@@ -1812,10 +1812,10 @@
     lodash "4.17.21"
     uuid "8.3.2"
 
-"@nestjs/core@~9.0.2":
-  version "9.0.2"
-  resolved "https://registry.npmmirror.com/@nestjs/core/-/core-9.0.2.tgz#d71399c2fbcc0bc98c58fec3ad014b49559914b3"
-  integrity sha512-Gbj+xpRJOpSHCtv+z6hQIuj8B787A57cbDNguzAx9O0+Z5S+r71kotTYCHIkLqzGxc8Z1qDuimJwBpMPO2OGTw==
+"@nestjs/core@~9.0.4":
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-9.0.4.tgz#b44f74d6d617a8a12b2cb94c8574c1850efe48f1"
+  integrity sha512-8mOzpXmxAWRByw5v6Npl/S7Zowmm2JHzS+h46iQK0BGkvlVXwMZXL2sJLH9XIokRvjASVbWqUn+d7W1mMjT9/Q==
   dependencies:
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.1.1"
