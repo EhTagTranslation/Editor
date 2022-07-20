@@ -34,7 +34,7 @@
     "@actions/core": "~1.9.0",
     "@actions/exec": "~1.1.1",
     "@fastify/static": "^6.4.0",
-    "@nestjs/common": "~9.0.4",
+    "@nestjs/common": "~9.0.5",
     "@nestjs/config": "~2.2.0",
     "@nestjs/core": "~9.0.4",
     "@nestjs/platform-fastify": "~9.0.4",
