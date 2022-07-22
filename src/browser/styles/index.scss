@@ -17,7 +17,7 @@
 */
 @include mat.all-component-themes($app-theme);
 
-@import url(https://unpkg.com/material-design-icons/iconfont/material-icons.css);
+@import 'https://unpkg.com/material-design-icons/iconfont/material-icons.css';
 
 @import 'iconfont.css';
 
