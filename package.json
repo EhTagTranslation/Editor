@@ -80,6 +80,7 @@
     "@angular/platform-browser": "^14.1.0",
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
+    "@angular/service-worker": "^14.1.0",
     "@nestjs/cli": "~9.0.0",
     "@nestjs/schematics": "~9.0.1",
     "@nestjs/testing": "~9.0.5",

@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -33,6 +34,7 @@ import { MarkPipe } from './shared/pipe/mark.pipe';
 import { LinkifyPipe } from './shared/pipe/linkify.pipe';
 import { TitleService } from '#browser/services/title.service';
 import { ehHttpInterceptorProvider } from '#browser/services/eh-http-interceptor';
+import { environment } from '../environments/environment';
 
 @NgModule({
     declarations: [
@@ -71,6 +73,12 @@ import { ehHttpInterceptorProvider } from '#browser/services/eh-http-interceptor
         FormsModule,
         ReactiveFormsModule,
         TextFieldModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000',
+        }),
     ],
     providers: [ehHttpInterceptorProvider, TitleService],
     bootstrap: [AppComponent],

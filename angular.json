@@ -58,7 +58,9 @@
             "styles": ["src/browser/styles/index.scss"],
             "tsConfig": "src/browser/tsconfig.json",
             "vendorChunk": true,
-            "webWorkerTsConfig": "src/browser/tsconfig.worker.json"
+            "webWorkerTsConfig": "src/browser/tsconfig.worker.json",
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           }
         },
         "serve": {
