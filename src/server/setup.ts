@@ -1,5 +1,6 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { INestApplication } from '@nestjs/common';
+import type { FastifyReply } from 'fastify';
 
 export function setupSwagger(app: INestApplication): void {
     const options = new DocumentBuilder()
@@ -11,7 +12,10 @@ export function setupSwagger(app: INestApplication): void {
         .addTag('Tools', '不直接操作数据库的帮助工具。')
         .build();
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup('/', app, document);
+    SwaggerModule.setup('/swagger', app, document);
+    app.getHttpAdapter().get('/', (req, res: FastifyReply) => {
+        void res.redirect(302, '/swagger');
+    });
 }
 
 export function enableCors(app: INestApplication): void {
