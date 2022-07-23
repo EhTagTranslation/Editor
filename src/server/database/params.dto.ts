@@ -19,11 +19,11 @@ export class TagParams extends NsParams {
 }
 
 export class PostTagQuery {
-    @ApiProperty({ type: String, description: '插入该标签前一行' })
+    @ApiProperty({ type: String, description: '插入该标签前一行', required: false })
     @IsRawTag()
     @IsOptional()
     before?: RawTag;
-    @ApiProperty({ type: String, description: '插入该标签后一行' })
+    @ApiProperty({ type: String, description: '插入该标签后一行', required: false })
     @IsRawTag()
     @IsOptional()
     after?: RawTag;
