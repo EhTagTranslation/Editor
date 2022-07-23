@@ -1,5 +1,5 @@
 <button class="user-button" mat-button *ngIf="user && !loading" [matMenuTriggerFor]="userMenu">
-  <img [src]="user.avatar_url" />
+  <img [src]="user.avatar_url" alt="用户头像" />
   <span>{{ user.name }}</span>
 </button>
 <button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">

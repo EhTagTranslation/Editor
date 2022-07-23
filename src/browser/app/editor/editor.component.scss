@@ -38,7 +38,7 @@ $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
 
   section {
     flex: auto;
-    height: 0;
+    overflow-y: auto;
     display: flex;
     position: relative;
     align-items: stretch;
@@ -47,55 +47,62 @@ $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
       display: inline-block;
       vertical-align: top;
     }
+  }
+}
 
-    > #form-container {
-      form {
-        user-select: none;
+#form-container,
+#preview-container {
+  display: flex;
+  flex-flow: column;
+  padding: 18px;
+  gap: 18px;
+  box-sizing: border-box;
+  height: fit-content;
+}
 
-        mat-form-field {
-          &.markdown mat-label::after {
-            font-family: 'iconfont';
-            content: ' \00e6d1';
-          }
-        }
+#form-container {
+  form {
+    user-select: none;
+    display: contents;
 
-        > * {
-          margin: 18px;
-          display: block;
-        }
-
-        > mat-hint {
-          font-size: 12px;
-
-          > p {
-            margin: 10px 0 10px 8px;
-          }
-        }
+    mat-form-field {
+      &.markdown mat-label::after {
+        font-family: 'iconfont';
+        content: ' \00e6d1';
       }
     }
 
-    > #preview-container {
-      mat-card {
-        margin: 18px;
+    > * {
+      display: block;
+    }
 
-        mat-card-subtitle {
-          user-select: none;
+    > mat-hint {
+      font-size: 12px;
 
-          .loading {
-            margin-left: 8px;
-          }
-        }
+      p {
+        margin: 10px 0 2px 8px;
       }
+    }
+  }
+}
 
-      #preview-row1 {
-        display: flex;
-        margin: 9px;
+#preview-container {
+  mat-card {
+    mat-card-subtitle {
+      user-select: none;
 
-        mat-card {
-          width: 50%;
-          margin: 9px;
-        }
+      .loading {
+        margin-left: 8px;
       }
+    }
+  }
+
+  #preview-row1 {
+    display: flex;
+    gap: 18px;
+
+    mat-card {
+      flex: 1;
     }
   }
 }
