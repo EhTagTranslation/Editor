@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, IsOptional } from 'class-validator';
 import { NamespaceName, Sha1Value } from '#shared/interfaces/ehtag';
 import { IsRawTag, RawTag } from '#shared/raw-tag';
+
 export class NsParams {
     @ApiProperty({
         description: '命名空间名称',
