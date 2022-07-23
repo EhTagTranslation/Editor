@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
 import { RouteService } from '#browser/services/route.service';
-import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom, of } from 'rxjs';
 import { editableNs, ETKey } from '#browser/interfaces/ehtranslation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -35,6 +35,7 @@ class TagSuggestOption {
         return this.services.release.tags.pipe(
             map((v) => {
                 const { namespace: ns, raw } = this.master;
+                if (ns === 'temp') return undefined;
                 const tag = v.data[ns].get(raw);
                 if (!tag) return undefined;
                 return tag.render('text', new Context(tag, raw));
@@ -374,7 +375,8 @@ export class EditorComponent implements OnInit {
         return form;
     }
 
-    getNamespace(namespace: NamespaceName): Observable<FrontMatters> {
+    getNamespace(namespace: NamespaceName | 'temp'): Observable<FrontMatters | undefined> {
+        if (!namespace || namespace === 'temp') return of(undefined);
         return this.release.tags.pipe(map((tags) => tags.data[namespace].frontMatters));
     }
 

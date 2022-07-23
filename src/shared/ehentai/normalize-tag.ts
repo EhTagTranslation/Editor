@@ -59,6 +59,10 @@ export async function normalizeTag(
         // 标签发生移动的，返回主标签
         match = match.master;
     }
+    if (match.namespace === 'temp') {
+        // 临时标签认为不存在
+        return undefined;
+    }
     return [match.namespace, match.raw];
 
     /** 使用 @see suggestTag 进行查找 */

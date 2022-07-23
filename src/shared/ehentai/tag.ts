@@ -3,19 +3,19 @@ import type { RawTag } from '../raw-tag.js';
 
 export interface MasterTag {
     id: number;
-    namespace: NamespaceName;
+    namespace: NamespaceName | 'temp';
     raw: RawTag;
     master?: undefined;
 }
 export interface SlaveTag {
     id: number;
-    namespace: NamespaceName;
+    namespace: NamespaceName | 'temp';
     raw: RawTag;
     master: MasterTag;
 }
 export type Tag = MasterTag | SlaveTag;
 
-export const tagCache = new Map<RawTag, Map<NamespaceName, Tag>>();
+export const tagCache = new Map<RawTag, Map<NamespaceName | 'temp', Tag>>();
 
 export function store(tag: Tag): void {
     const raw = tagCache.get(tag.raw);

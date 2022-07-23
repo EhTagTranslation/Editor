@@ -1,7 +1,7 @@
 import type { RawTag } from '../raw-tag.js';
 import { api, ApiRequest, ResponseOf } from './http/index.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
-import { SlaveTag, store, Tag } from './tag.js';
+import { MasterTag, store, Tag } from './tag.js';
 
 interface TagSuggestRequest
     extends ApiRequest<
@@ -15,7 +15,7 @@ interface TagSuggestRequest
 
 interface ApiMasterTag {
     id: number;
-    ns: NamespaceName;
+    ns: NamespaceName | 'temp';
     tn: RawTag;
 }
 
@@ -31,22 +31,23 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     for (const key in response.tags) {
         const tag = response.tags[key];
         tag.id = Number.parseInt(key);
-        const current = {
-            id: Number.parseInt(key),
-            namespace: tag.ns ?? 'other',
-            raw: tag.tn,
-        } as Tag;
-        tags.push(current);
-        store(current);
+        let master: MasterTag | undefined;
         if ('mid' in tag) {
-            const master: Tag = {
+            master = {
                 id: tag.mid,
                 namespace: tag.mns ?? 'other',
                 raw: tag.mtn,
             };
-            (current as SlaveTag).master = master;
             store(master);
         }
+        const current: Tag = {
+            id: Number.parseInt(key),
+            namespace: tag.ns ?? 'other',
+            raw: tag.tn,
+            master,
+        };
+        tags.push(current);
+        store(current);
     }
     return tags;
 }

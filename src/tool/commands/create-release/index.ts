@@ -72,8 +72,8 @@ const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', '
 
 async function runSourceCheck(db: Database, checkedNs: readonly NamespaceName[]): Promise<void> {
     /** 是否跳过 */
-    function skipNs(ns: NamespaceName): boolean {
-        if (ns === 'rows') return true;
+    function skipNs(ns: NamespaceName | 'temp'): ns is 'rows' | 'temp' {
+        if (ns === 'rows' || ns === 'temp') return true;
         if (!checkedNs.includes(ns)) return true;
         return false;
     }
