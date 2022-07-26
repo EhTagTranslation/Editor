@@ -94,7 +94,7 @@
     "@types/parse5": "~7.0.0",
     "@types/source-map-support": "~0.5.4",
     "@types/supertest": "~2.0.12",
-    "@typescript-eslint/eslint-plugin": "~5.30.7",
+    "@typescript-eslint/eslint-plugin": "~5.31.0",
     "@typescript-eslint/parser": "~5.30.7",
     "cross-env": "^7.0.3",
     "eslint": "~8.20.0",
