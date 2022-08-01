@@ -1462,10 +1462,10 @@
     path-to-regexp "^6.1.0"
     reusify "^1.0.4"
 
-"@fastify/static@^6.4.0":
-  version "6.4.1"
-  resolved "https://registry.npmmirror.com/@fastify/static/-/static-6.4.1.tgz#d9b51c6cadfbe1796c7f375817ed1817a302812c"
-  integrity sha512-RuNZyZwddGCOcxGeplWM3eBh6pgnSGGeXJX4nLeJX8NzggMWR8XwGI3/DW/S3DFjo8vBPUvdi/Vd/beqQt9Y2w==
+"@fastify/static@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-6.5.0.tgz#004fdb487ddf0ee5fdf7541e56bfcb493d7a1060"
+  integrity sha512-WEk6iqgejA6ivjkvbJ47A+uMci225z5lZwLXCXZS3ZYR/kYje1gzzarkKKGL6TWpBw6smkOzxA7dfEoY0347Nw==
   dependencies:
     "@fastify/accept-negotiator" "^1.0.0"
     content-disposition "^0.5.3"
