@@ -1917,10 +1917,10 @@
     path-to-regexp "3.2.0"
     swagger-ui-dist "4.13.2"
 
-"@nestjs/testing@~9.0.8":
-  version "9.0.8"
-  resolved "https://registry.npmmirror.com/@nestjs/testing/-/testing-9.0.8.tgz#94c346cf39a9beaed084debff2960d09ce7818e1"
-  integrity sha512-7mFQwhA+wE4gqYoZnW7+BM7ELM4FMZPQMfDSiHYaBSLkH8w6Ddn1+D7w1gXebgz0SkT1/EUJv/sJpFD9Vsgfvg==
+"@nestjs/testing@~9.0.11":
+  version "9.0.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-9.0.11.tgz#8e60107a7aaf9fc7b2bf29d473c2bdb1887de017"
+  integrity sha512-tT+yj3av7ZJb9Cy09C4+FoUULvzUntf81g5eK5shRVeQ35RWqr7E5Uq77B7ePUF2Er/TictVZk43d7rKq1ClNA==
   dependencies:
     tslib "2.4.0"
 
