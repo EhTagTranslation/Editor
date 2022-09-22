@@ -1517,11 +1517,12 @@
   dependencies:
     fast-json-stringify "^5.0.0"
 
-"@fastify/formbody@7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npmmirror.com/@fastify/formbody/-/formbody-7.2.0.tgz#a05631f199ac324117220534320c990cd78e58be"
-  integrity sha512-87mxTUo3u6xOwfuU2yuQUq//DcLmtvr9WQ1vl1q96zrMfweZYpERcTSJ0nFoWUOcd0NS/jliM7c9RzTJs7A/9Q==
+"@fastify/formbody@7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@fastify/formbody/-/formbody-7.3.0.tgz#0da0f3e8895d7360d179020cf999be3b1d68d514"
+  integrity sha512-4uHTS7wH0mkUoltk4wyJ966rs/TQP0BNDSCtyqRMy7p5adGg+5ERbYue/zGh/qI9yLDPN0K98u7Fw+lLEmBZJQ==
   dependencies:
+    fast-querystring "^1.0.0"
     fastify-plugin "^4.0.0"
 
 "@fastify/middie@8.0.0":
@@ -1932,13 +1933,13 @@
   resolved "https://registry.npmmirror.com/@nestjs/mapped-types/-/mapped-types-1.1.0.tgz#54a9fa61079635dd6c3c75fd9593f20b2302a55b"
   integrity sha512-+2kSly4P1QI+9eGt+/uGyPdEG1hVz7nbpqPHWZVYgoqz8eOHljpXPag+UCVRw9zo2XCu4sgNUIGe8Uk0+OvUQg==
 
-"@nestjs/platform-fastify@~9.1.1":
-  version "9.1.1"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/-/platform-fastify-9.1.1.tgz#d6c66eb290946091e0b846963fe3753ae596a5e7"
-  integrity sha512-/e1qlY2gLdSa/LktdROxyou5L3pR2QbriglqpMk2aE35QTs7HuQkGZ/bj7ltuO10ro61YL5be56Ri6Viirl4ZA==
+"@nestjs/platform-fastify@~9.1.2":
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-9.1.2.tgz#1dd4efc9e72366471a5eed86a937071477a49077"
+  integrity sha512-BmyFTtScg4sHdFacLLrDEVGRMh+dw8hIBLqsNArerkj3/0k9IUWC2pY6Wv62kfOV27xeUJw0lLfreGptfpvqcQ==
   dependencies:
     "@fastify/cors" "8.1.0"
-    "@fastify/formbody" "7.2.0"
+    "@fastify/formbody" "7.3.0"
     "@fastify/middie" "8.0.0"
     fastify "4.6.0"
     light-my-request "5.6.1"
