@@ -75,7 +75,7 @@
     "@angular/compiler-cli": "^14.2.2",
     "@angular/core": "^14.2.2",
     "@angular/forms": "^14.2.2",
-    "@angular/language-service": "^14.2.2",
+    "@angular/language-service": "^14.2.5",
     "@angular/material": "^14.2.2",
     "@angular/platform-browser": "^14.2.2",
     "@angular/platform-browser-dynamic": "^14.2.2",
