@@ -39,7 +39,7 @@ jobs:
           yarn install --prefer-offline
           zip -r ../release.zip .
       - name: Publish release
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1.11.1
         if: github.ref == 'refs/heads/master'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
