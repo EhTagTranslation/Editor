@@ -30,5 +30,11 @@
 
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
+  },
+
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "strictTemplates": true
   }
 }
