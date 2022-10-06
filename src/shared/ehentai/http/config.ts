@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosRequestHeaders } from 'axios';
+import type { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import ProxyAgent from 'proxy-agent';
 
 const agent = new ProxyAgent();
@@ -8,7 +8,7 @@ const proxyConfig: AxiosRequestConfig<never> = {
     proxy: false,
 };
 
-const fakeHeaders: AxiosRequestHeaders = {
+const fakeHeaders: RawAxiosRequestHeaders = {
     dnt: '1',
     'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"',
     'sec-ch-ua-mobile': '?0',
