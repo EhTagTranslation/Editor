@@ -31,7 +31,7 @@ export function config(url: string, _config: AxiosRequestConfig): AxiosRequestCo
     headers['referer'] = u.origin + '/';
     if (u.hostname.endsWith('hentai.org')) {
         headers['cookie'] =
-            'ipb_member_id=3512590; ipb_pass_hash=cfb712ea2633f9894c5dae23146f78d0; igneous=322abe39d; sl=dm_2';
+            'ipb_member_id=5550882; ipb_pass_hash=8ac07d0a410dc5576c7c1c7b0e2c223b; igneous=1458eb0dc; sl=dm_2';
     }
     return {
         ...proxyConfig,
