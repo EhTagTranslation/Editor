@@ -86,7 +86,7 @@
     "@nestjs/testing": "~9.1.4",
     "@types/cli-color": "~2.0.2",
     "@types/fs-extra": "~9.0.13",
-    "@types/jest": "~29.1.2",
+    "@types/jest": "~29.2.0",
     "@types/js-yaml": "~4.0.5",
     "@types/markdown-it": "~12.2.3",
     "@types/node": "~18.11.0",
