@@ -10,7 +10,7 @@ export class DatabaseInMemory extends DatabaseInMemoryBase {
 
     private readonly cache = {} as { [T in TagType]: RepoData<T> | undefined };
     async render<T extends TagType>(type: T): Promise<RepoData<T>> {
-        const cached = this.cache[type] as RepoData<T> | undefined;
+        const cached: RepoData<T> | undefined = this.cache[type];
         if (cached) return Promise.resolve(cached);
 
         const cacheKey = `REPO_DATA_${type.toUpperCase()}`;
