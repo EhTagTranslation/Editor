@@ -251,6 +251,7 @@ export class ListComponent implements OnInit {
                 const str = t[k];
                 if (regex.regex.test(str)) {
                     const score = (weight * regex.data.length) / str.length;
+                    if (regex.fullRegex.test(str)) return score * 10;
                     if (regex.startRegex.test(str)) return score * 2;
                     return score;
                 } else {

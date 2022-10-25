@@ -17,6 +17,7 @@ interface SearchTerm {
     isRegex: boolean;
     regex: RegExp;
     startRegex: RegExp;
+    fullRegex: RegExp;
 }
 
 const noSearchTerm: NoSearchTerm = { data: '', isRegex: undefined };
@@ -32,11 +33,13 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
         try {
             const exp = search.substring(1, search.length - 1);
             const startExp = exp.startsWith('^') ? exp : '^' + exp;
+            const fullExp = startExp.endsWith('$') ? startExp : startExp + '$';
             return (regexFromSearchCache = {
                 data: search,
                 isRegex: true,
                 regex: new RegExp(exp, 'ig'),
                 startRegex: new RegExp(startExp, 'ig'),
+                fullRegex: new RegExp(fullExp, 'ig'),
             });
         } catch {
             //
@@ -48,6 +51,7 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
         isRegex: false,
         regex: new RegExp(escaped, 'ig'),
         startRegex: new RegExp('^' + escaped, 'ig'),
+        fullRegex: new RegExp('^' + escaped + '$', 'ig'),
     });
 }
 
