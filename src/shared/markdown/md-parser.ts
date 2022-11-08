@@ -368,7 +368,7 @@ function normalizeTagRef(node: TagRefNode, context: Context): void {
 }
 
 class AstBuilder {
-    constructor(readonly src: string, readonly context: Context) {
+    constructor(readonly src: string, readonly context: Context | undefined) {
         this.build();
     }
 
@@ -499,7 +499,9 @@ class AstBuilder {
                 type: 'tagref',
                 text: token.content,
             };
-            normalizeTagRef(tag, this.context);
+            if (this.context) {
+                normalizeTagRef(tag, this.context);
+            }
             parent.content.push(tag);
         } else if (token.type === 'softbreak' || token.type === 'hardbreak') {
             parent.content.push({
@@ -522,7 +524,7 @@ class AstBuilder {
     }
 }
 
-export function parseMd(src: string, context: Context): Tree {
+export function parseMd(src: string, context: Context | undefined): Tree {
     const builder = new AstBuilder(src, context);
     return builder.result;
 }

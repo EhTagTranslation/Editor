@@ -6,7 +6,8 @@ import { parseMd } from './md-parser.js';
 import type { Context } from './context.js';
 export * from './context.js';
 import type { Tree } from '../interfaces/ehtag.ast.js';
-export function parse(src: string, context: Context): Tree {
+
+export function parse(src: string, context: Context | undefined): Tree {
     const ast = parseMd(src, context);
     return ast;
 }

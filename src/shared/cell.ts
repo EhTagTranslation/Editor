@@ -43,14 +43,16 @@ export class Cell {
         }
         this.revision = revision;
     }
-    render<T extends TagType>(target: T, context: Context): CellType<T> {
-        const revision = context.database.revision;
-        const cache = this.getCache(target, revision);
-        if (cache) return cache;
+    render<T extends TagType>(target: T, context: Context | undefined): CellType<T> {
+        const revision = context?.database.revision;
+        if (revision) {
+            const cache = this.getCache(target, revision);
+            if (cache) return cache;
+        }
 
         const tokens = parse(this.input, context);
         const result = render(tokens, target);
-        this.setCache(target, revision, result);
+        if (revision) this.setCache(target, revision, result);
         return result;
     }
 }
