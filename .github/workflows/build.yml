@@ -82,10 +82,12 @@ jobs:
           DB_REPO: EhTagTranslation/Database
         run: yarn test:server
       - name: Install Prod
+        if: github.ref == 'refs/heads/master'
         uses: bahmutov/npm-install@v1
         env:
           NODE_ENV: production
       - name: Deploy
+        if: github.ref == 'refs/heads/master'
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: flyctl deploy --remote-only
