@@ -1,10 +1,6 @@
 # compiled output
 /.angular/cache
-/dist
 /db
-
-# env
-/.env
 
 # packages
 /node_modules/
@@ -34,10 +30,4 @@ coverage/
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
