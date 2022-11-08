@@ -112,7 +112,7 @@ export class GithubOauthService {
             .then(({ code, state }) => {
                 if (state !== myState) throw new Error('Wrong state');
                 return lastValueFrom(
-                    this.httpClient.get<TokenData>(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`),
+                    this.httpClient.get<TokenData>(`https://ehtt.fly.dev/auth/${code}?state=${state}`),
                 );
             })
             .catch((error: unknown) => ({ token: null, error }))

@@ -98,7 +98,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3.5.1
         with:
-          node-version: '18'
+          node-version: '16'
       - name: Install
         uses: bahmutov/npm-install@v1
       - name: Set env

@@ -9,7 +9,7 @@
         window.opener.postMessage({ code: code, state: state }, location.origin);
         window.close();
       } else {
-        fetch(`https://ehtt.herokuapp.com/auth/${code}?state=${state}`)
+        fetch(`https://ehtt.fly.dev/auth/${code}?state=${state}`)
           .then((res) => res.json())
           .catch((error) => ({ error }))
           .then(({ token, error }) => {

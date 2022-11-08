@@ -17,7 +17,7 @@ command
         }
         try {
             const info = await get<Tag<'raw'>>(
-                `https://ehtt.herokuapp.com/database/${result[0]}/${result[1]}?format=raw.json`,
+                `https://ehtt.fly.dev/database/${result[0]}/${result[1]}?format=raw.json`,
             );
             console.log(`原始标签：${formatTag({ namespace: result[0], raw: result[1] })}`);
             console.log(`    名称：${info.data.name}`);

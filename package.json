@@ -3,14 +3,13 @@
   "version": "2.0.0",
   "type": "module",
   "engines": {
-    "node": "18",
+    "node": ">= 16 <= 18",
     "yarn": "1.22"
   },
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
     "test:server": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config ./test/server/jest.config.js",
-    "heroku-postbuild": "yarn build:server && yarn test:server && node scripts/server.js",
     "start:tool": "yarn build:tool --watch",
     "build:tool": "tsc --project ./src/tool",
     "test:tool": "yarn tool --help",
