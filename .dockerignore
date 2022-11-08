@@ -2,11 +2,6 @@
 /.angular/cache
 /db
 
-# packages
-/node_modules/
-/.pnp.js
-/.pnp/
-
 # Logs
 logs
 *.log

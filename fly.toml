@@ -14,6 +14,10 @@ processes = []
   allowed_public_ports = []
   auto_rollback = true
 
+[mounts]
+  source="ehtt_db"
+  destination="/db"
+
 [[services]]
   http_checks = []
   internal_port = 8080
