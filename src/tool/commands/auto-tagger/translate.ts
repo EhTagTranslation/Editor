@@ -104,7 +104,7 @@ command
         }
         try {
             const translated = await translate(ns, raw);
-            const normalize = (x: string): string => render(parse(x, Context.fake), 'raw');
+            const normalize = (x: string): string => render(parse(x, undefined), 'raw');
             console.log(
                 `生成结果：
     原始标签：${ns}:${raw}

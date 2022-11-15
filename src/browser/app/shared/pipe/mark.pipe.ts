@@ -26,6 +26,7 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
     if (!search) {
         return noSearchTerm;
     }
+    search = search.normalize();
     if (search === regexFromSearchCache.data) {
         return regexFromSearchCache;
     }
