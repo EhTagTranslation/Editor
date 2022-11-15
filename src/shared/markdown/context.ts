@@ -29,7 +29,6 @@ export abstract class Logger {
 }
 
 export class Context {
-    static readonly fake: Context = new Context(undefined as unknown as TagRecord);
     constructor(tag: TagRecord, raw?: RawTag, logger?: Logger);
     constructor(namespace: NamespaceDatabaseView, raw?: RawTag, logger?: Logger);
     constructor(root: TagRecord | NamespaceDatabaseView, raw?: RawTag, logger?: Logger) {
