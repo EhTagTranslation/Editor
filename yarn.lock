@@ -305,10 +305,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/language-service@^14.2.10":
-  version "14.2.10"
-  resolved "https://registry.npmmirror.com/@angular/language-service/-/language-service-14.2.10.tgz#d0d44342c892a4033f180c30b0acd90066340955"
-  integrity sha512-192PXTB5JXCSqEaco+eQjiL2/l0Jf/y4m0jB/X4TE6cN1sPYNob0A8amtswPwDv0kzdBFsphPiao7obylVJEHA==
+"@angular/language-service@^15.0.0":
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-15.0.0.tgz#74b2b50a1370ed1e403156ca9dd4b81372a4ec2b"
+  integrity sha512-/NUoY2KCLLxqfoDnYf2NK1Vtllp5DCejCs0yjF50uEz1Ad0FOMsTa0oCwKM6Gs+emOjUvzpKeTVoJ6IVf8UwVQ==
 
 "@angular/material@^14.2.7":
   version "14.2.7"
