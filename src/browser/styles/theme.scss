@@ -3,7 +3,7 @@
 
 $app-font-family: 'Roboto, "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif';
 
-$app-typography: mat.define-typography-config(
+$app-typography: mat.define-legacy-typography-config(
   $font-family: $app-font-family,
 );
 

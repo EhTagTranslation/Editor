@@ -1,4 +1,4 @@
-import type { MatSnackBarConfig } from '@angular/material/snack-bar';
+import type { MatLegacySnackBarConfig as MatSnackBarConfig } from '@angular/material/legacy-snack-bar';
 
 export const environment = {
     production: true,
