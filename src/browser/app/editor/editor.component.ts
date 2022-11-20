@@ -3,7 +3,7 @@ import { EhTagConnectorService } from '#browser/services/eh-tag-connector.servic
 import { RouteService } from '#browser/services/route.service';
 import { Observable, BehaviorSubject, combineLatest, merge, lastValueFrom, of } from 'rxjs';
 import { editableNs, ETKey } from '#browser/interfaces/ehtranslation';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
 import { map, tap, mergeMap, filter, shareReplay, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TitleService } from '#browser/services/title.service';
