@@ -1,4 +1,5 @@
 import type { NamespaceName } from '#shared/interfaces/ehtag';
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -11,9 +12,20 @@ export class DbRepoService {
         return new URL(path, this.root).href;
     }
 
-    issue(raw: string, ns?: NamespaceName, isNew: boolean | null = false): string {
-        const title = encodeURIComponent(`${isNew ? '添加' : '更改'}标签 - ${ns ? `${ns}:${raw}` : raw}`);
-        return this.resolve(`issues/new?assignees=&labels=翻译&template=tag-translation.md&title=${title}`);
+    issue(
+        raw: string,
+        ns?: NamespaceName,
+        isNew: boolean | null = false,
+        name?: string,
+        intro?: string,
+        links?: string,
+    ): string {
+        const query = new URLSearchParams('template=tag-translation.yml');
+        query.set('title', `${isNew ? '添加' : '更改'}标签 - ${ns ? `${ns}:${raw}` : raw}`);
+        name && query.set('name', name);
+        intro && query.set('intro', intro);
+        links && query.set('links', links);
+        return this.resolve(`issues/new?${query.toString()}`);
     }
 
     code(page: string): string {
