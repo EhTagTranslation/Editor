@@ -55,7 +55,7 @@
     "markdown-it": "~13.0.1",
     "node-cache": "~5.1.2",
     "pako": "~2.1.0",
-    "parse5": "~7.1.1",
+    "parse5": "~7.1.2",
     "proxy-agent": "^5.0.0",
     "reflect-metadata": "~0.1.13",
     "rxjs": "~7.5.7",
