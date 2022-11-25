@@ -9,8 +9,8 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import alias from '@rollup/plugin-alias';
 
-const ignore = ['pac-proxy-agent'];
-const external = [];
+const ignore = [];
+const external = ['proxy-agent'];
 const minify = true;
 
 /** @type {import('type-fest').PackageJson} */
