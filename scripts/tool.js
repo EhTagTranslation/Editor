@@ -1,5 +1,6 @@
 // @ts-check
 import fs from 'fs-extra';
+import path from 'node:path';
 import { createRequire } from 'node:module';
 import { rollup } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
@@ -51,9 +52,16 @@ const build = await rollup({
             exportConditions: ['node'],
         }),
         alias({
-            entries: {
-                'string_decoder/': 'string_decoder',
-            },
+            entries: [
+                {
+                    find: /\/$/,
+                    replacement: '',
+                },
+                {
+                    find: /^#(.+)/,
+                    replacement: path.join(process.cwd(), 'src') + '/$1.ts',
+                },
+            ],
         }),
         commonjs(),
         json(),
