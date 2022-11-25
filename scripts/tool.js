@@ -9,7 +9,9 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import alias from '@rollup/plugin-alias';
 
-const external = ['proxy-agent'];
+const ignore = ['pac-proxy-agent'];
+const external = [];
+const minify = true;
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = await fs.readJSON('./package.json');
@@ -42,11 +44,12 @@ const build = await rollup({
         console.warn(warning.toString());
     },
     input: './src/tool/index.ts',
-    external,
+    external: [...ignore, ...external],
     plugins: [
         nodeResolve({
             preferBuiltins: true,
             exportConditions: ['node'],
+            mainFields: ['es2015', 'main', 'module'],
         }),
         alias({
             entries: Object.entries(imports).map(([from, to]) => ({
@@ -60,8 +63,8 @@ const build = await rollup({
         commonjs(),
         json(),
         esbuild({
-            sourceMap: false,
-            minify: true,
+            sourceMap: !minify,
+            minify: minify,
             target: 'es2020',
         }),
     ],
@@ -69,6 +72,7 @@ const build = await rollup({
 await build.write({
     format: 'esm',
     dir: './dist/tool/',
-    compact: true,
+    compact: minify,
+    sourcemap: !minify,
 });
 await build.close();

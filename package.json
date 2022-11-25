@@ -13,7 +13,7 @@
     "start:tool": "yarn build:tool --watch",
     "build:tool": "node scripts/tool.js",
     "test:tool": "yarn tool --help",
-    "tool": "node ./dist/tool",
+    "tool": "node --trace-deprecation --enable-source-maps -r dotenv/config ./dist/tool",
     "start:browser": "ng serve",
     "build:browser": "ng build --configuration production",
     "test:browser": "echo no test",
