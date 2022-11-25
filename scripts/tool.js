@@ -9,22 +9,19 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import alias from '@rollup/plugin-alias';
 
-const external = ['vm2'];
+const external = ['proxy-agent'];
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = await fs.readJSON('./package.json');
+const imports = packageJson.imports ?? {};
+
 packageJson.scripts = undefined;
 packageJson.devDependencies = undefined;
 packageJson.dependencies = {};
 packageJson.resolutions = undefined;
 packageJson.browser = undefined;
 packageJson.type = 'module';
-for (const key in packageJson.imports) {
-    const value = packageJson.imports[key];
-    if (typeof value == 'string') {
-        packageJson.imports[key] = value.replace(/^.\/dist\//, './');
-    }
-}
+packageJson.imports = undefined;
 for (const key in /** @type {object | undefined} */ (packageJson.exports)) {
     const value = packageJson.exports[key];
     if (typeof value == 'string') {
@@ -52,16 +49,13 @@ const build = await rollup({
             exportConditions: ['node'],
         }),
         alias({
-            entries: [
-                {
-                    find: /\/$/,
-                    replacement: '',
-                },
-                {
-                    find: /^#(.+)/,
-                    replacement: path.join(process.cwd(), 'src') + '/$1.ts',
-                },
-            ],
+            entries: Object.entries(imports).map(([from, to]) => ({
+                find: new RegExp(`^${from.replace('*', '(.+)')}$`),
+                replacement: path.join(
+                    process.cwd(),
+                    String(to).replace('dist', 'src').replace('*', '$1').replace('.js', '.ts'),
+                ),
+            })),
         }),
         commonjs(),
         json(),
