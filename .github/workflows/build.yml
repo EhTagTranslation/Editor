@@ -36,8 +36,7 @@ jobs:
         run: |
           cd ./dist/tool
           yarn install --prefer-offline
-          cd ../..
-          zip -r ./release.zip ./dist/tool
+          zip -r ../../release.zip .
       - name: Publish release
         uses: ncipollo/release-action@v1.11.2
         if: github.ref == 'refs/heads/master'
