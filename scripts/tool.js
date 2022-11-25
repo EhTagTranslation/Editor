@@ -1,29 +1,72 @@
 // @ts-check
 import fs from 'fs-extra';
+import { createRequire } from 'node:module';
+import { rollup } from 'rollup';
+import esbuild from 'rollup-plugin-esbuild';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import json from '@rollup/plugin-json';
+import alias from '@rollup/plugin-alias';
 
-const removedPackages = ['lazysizes', 'zone.js'];
-const removedPackageHeaders = ['@angular', 'angular', '@nestjs/', 'fastify'];
+const external = ['vm2'];
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = await fs.readJSON('./package.json');
 packageJson.scripts = undefined;
 packageJson.devDependencies = undefined;
-for (const key in packageJson.dependencies) {
-    if (removedPackageHeaders.some((leading) => key.startsWith(leading)) || removedPackages.includes(key)) {
-        packageJson.dependencies[key] = undefined;
-    }
-}
+packageJson.dependencies = {};
+packageJson.resolutions = undefined;
+packageJson.browser = undefined;
+packageJson.type = 'module';
 for (const key in packageJson.imports) {
     const value = packageJson.imports[key];
     if (typeof value == 'string') {
         packageJson.imports[key] = value.replace(/^.\/dist\//, './');
     }
 }
-for (const key in /** @type {object} */ (packageJson.exports)) {
+for (const key in /** @type {object | undefined} */ (packageJson.exports)) {
     const value = packageJson.exports[key];
     if (typeof value == 'string') {
         packageJson.exports[key] = value.replace(/^.\/dist\//, './');
     }
 }
-await fs.writeJSON('./dist/package.json', packageJson);
-await fs.writeFile('./dist/index.js', 'import "./tool/index.js";');
+const require = createRequire(import.meta.url);
+for (const ext of external) {
+    /** @type {import('type-fest').PackageJson} */
+    const resolved = require(ext + '/package.json');
+    packageJson.dependencies[ext] = resolved.version;
+}
+await fs.emptyDir('./dist/tool/');
+await fs.writeJSON('./dist/tool/package.json', packageJson);
+
+const build = await rollup({
+    onwarn: (warning) => {
+        console.warn(warning.toString());
+    },
+    input: './src/tool/index.ts',
+    external,
+    plugins: [
+        nodeResolve({
+            preferBuiltins: true,
+            exportConditions: ['node'],
+        }),
+        alias({
+            entries: {
+                'string_decoder/': 'string_decoder',
+            },
+        }),
+        commonjs(),
+        json(),
+        esbuild({
+            sourceMap: false,
+            minify: true,
+            target: 'es2020',
+        }),
+    ],
+});
+await build.write({
+    format: 'esm',
+    dir: './dist/tool/',
+    compact: true,
+});
+await build.close();

@@ -27,17 +27,17 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: tool
-          path: ./dist
+          path: ./dist/tool
       - name: Test
         run: yarn test:tool
 
       - name: Prepare release
         if: github.ref == 'refs/heads/master'
         run: |
-          node ./scripts/tool.js
-          cd ./dist
+          cd ./dist/tool
           yarn install --prefer-offline
-          zip -r ../release.zip .
+          cd ../..
+          zip -r ./release.zip ./dist/tool
       - name: Publish release
         uses: ncipollo/release-action@v1.11.2
         if: github.ref == 'refs/heads/master'

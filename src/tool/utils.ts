@@ -43,8 +43,15 @@ class _GithubAction {
     }
 }
 
-Object.defineProperties(_GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsCore));
-Object.defineProperties(_GithubAction.prototype, Object.getOwnPropertyDescriptors(actionsExec));
+Object.defineProperties(_GithubAction.prototype, {
+    ...Object.getOwnPropertyDescriptors(actionsCore),
+    ...Object.getOwnPropertyDescriptors(actionsExec),
+    defaults: {
+        get() {
+            return this as unknown;
+        },
+    },
+});
 
 type ActionsCore = typeof actionsCore;
 type ActionsExec = typeof actionsExec;
