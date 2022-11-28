@@ -85,7 +85,7 @@
     "@nestjs/schematics": "~9.0.3",
     "@nestjs/testing": "~9.2.0",
     "@rollup/plugin-alias": "^4.0.2",
-    "@rollup/plugin-commonjs": "^23.0.2",
+    "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-json": "^5.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/cli-color": "~2.0.2",
