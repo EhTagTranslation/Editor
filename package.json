@@ -109,7 +109,7 @@
     "prettier": "~2.8.0",
     "resolve-typescript-plugin": "^2.0.0",
     "rimraf": "~3.0.2",
-    "rollup": "^3.4.0",
+    "rollup": "^3.5.1",
     "rollup-plugin-esbuild": "^5.0.0",
     "supertest": "~6.3.1",
     "ts-jest": "~29.0.3",
