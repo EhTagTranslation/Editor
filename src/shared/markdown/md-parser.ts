@@ -89,6 +89,7 @@ const knownHosts = new Map<string, string>([
     ['skeb.jp', 'Skeb'],
     ['fanbox.cc', 'FANBOX'],
     ['patreon.com', 'Patreon'],
+    ['fantia.jp', 'Fantia'],
     ['afdian.net', '爱发电'],
 ]);
 
