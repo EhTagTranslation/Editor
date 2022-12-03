@@ -85,9 +85,11 @@ const knownHosts = new Map<string, string>([
     ['weibo.com', '微博'],
     ['bgm.tv', 'Bangumi'],
     ['fandom.com', 'Fandom'],
-    ['fanbox.cc', 'FANBOX'],
     ['bilibili.com', '哔哩哔哩'],
     ['skeb.jp', 'Skeb'],
+    ['fanbox.cc', 'FANBOX'],
+    ['patreon.com', 'Patreon'],
+    ['afdian.net', '爱发电'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
