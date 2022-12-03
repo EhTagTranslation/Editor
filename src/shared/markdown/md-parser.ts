@@ -73,24 +73,30 @@ function normalizeUrl(url: string): {
 }
 
 const knownHosts = new Map<string, string>([
-    ['moegirl.org', '萌娘百科'],
-    ['moegirl.org.cn', '萌娘百科'],
+    // 百科
     ['zh.wikipedia.org', '维基百科'],
     ['ja.wikipedia.org', '维基百科（日语）'],
     ['en.wikipedia.org', '维基百科（英语）'],
-    ['pixiv.net', 'pixiv'],
-    ['instagram.com', 'Instagram'],
-    ['facebook.com', '脸书'],
-    ['twitter.com', 'Twitter'],
-    ['weibo.com', '微博'],
+    ['moegirl.org', '萌娘百科'],
+    ['moegirl.org.cn', '萌娘百科'],
     ['bgm.tv', 'Bangumi'],
     ['fandom.com', 'Fandom'],
+    // 内容平台
+    ['pixiv.net', 'pixiv'],
     ['bilibili.com', '哔哩哔哩'],
+    ['weibo.com', '微博'],
+    ['twitter.com', 'Twitter'],
+    ['instagram.com', 'Instagram'],
+    ['facebook.com', '脸书'],
+    // 约稿与赞助
     ['skeb.jp', 'Skeb'],
     ['fanbox.cc', 'FANBOX'],
     ['patreon.com', 'Patreon'],
     ['fantia.jp', 'Fantia'],
     ['afdian.net', '爱发电'],
+    ['azz.net', '爱赞助'],
+    ['hiccears.com', 'HicceArs'],
+    ['gumroad.com', 'Gumroad'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
