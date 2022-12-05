@@ -1514,10 +1514,10 @@
     path-to-regexp "^6.1.0"
     reusify "^1.0.4"
 
-"@fastify/static@^6.5.1":
-  version "6.5.1"
-  resolved "https://registry.npmmirror.com/@fastify/static/-/static-6.5.1.tgz#3eb38cdedce8ad45f75683fcba0b5978099654ac"
-  integrity sha512-v3XFHTiL51UenZMaFjE1oKJ8od/x3UH4rQ3+U2HWf8KJjnmjy0/ePC92ug+vc3QO6Vf548zaUsdcKeZ1LddRbg==
+"@fastify/static@^6.6.0":
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/@fastify/static/-/static-6.6.0.tgz#763244583abf7a4734bff7b1d1aef0ef445393fb"
+  integrity sha512-UiYSN2dUmDZ48M40xdIwY1dPwSSYD7c+wtoIQP8y7wyxCwcUtf1YT5/Q4n1uJsBF1fySvuo9njQZKlHeiKy4HQ==
   dependencies:
     "@fastify/accept-negotiator" "^1.0.0"
     content-disposition "^0.5.3"
