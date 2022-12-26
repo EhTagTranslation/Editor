@@ -114,7 +114,7 @@
     "supertest": "~6.3.3",
     "ts-jest": "~29.0.3",
     "tsconfig-paths": "~4.1.1",
-    "type-fest": "~3.4.0",
+    "type-fest": "~3.5.0",
     "typescript": "~4.8.4",
     "webpack-bundle-analyzer": "~4.7.0",
     "zone.js": "~0.12.0"
