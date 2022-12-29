@@ -81,7 +81,7 @@
     "@angular/platform-browser-dynamic": "^15.0.4",
     "@angular/router": "^15.0.4",
     "@angular/service-worker": "^15.0.4",
-    "@nestjs/cli": "~9.1.5",
+    "@nestjs/cli": "~9.1.8",
     "@nestjs/schematics": "~9.0.3",
     "@nestjs/testing": "~9.2.1",
     "@rollup/plugin-alias": "^4.0.2",
