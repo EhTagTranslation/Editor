@@ -3,7 +3,7 @@
 
 $app-font-family: 'Roboto, "Noto Sans", Arial, Helvetica, "Noto Sans CJK SC", "Microsoft Yahei UI", sans-serif';
 
-$app-typography: mat.define-legacy-typography-config(
+$app-typography: mat.define-typography-config(
   $font-family: $app-font-family,
 );
 
@@ -19,7 +19,17 @@ $app-accent: mat.define-palette(mat.$purple-palette, A700, A400, 900);
 $app-warn: mat.define-palette(mat.$red-palette);
 
 /* Create the theme object (a Sass map containing all of the palettes). */
-$app-theme: mat.define-light-theme($app-primary, $app-accent, $app-warn);
+$app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $app-primary,
+      accent: $app-accent,
+      warn: $app-warn,
+    ),
+    typography: $app-typography,
+    density: 0,
+  )
+);
 
 $app-foreground: map-get($app-theme, 'foreground');
 $app-background: map-get($app-theme, 'background');
