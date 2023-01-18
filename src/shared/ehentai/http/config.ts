@@ -1,8 +1,8 @@
-import type { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
+import type { RawAxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import ProxyAgent from 'proxy-agent';
 
 const agent = new ProxyAgent();
-const proxyConfig: AxiosRequestConfig<never> = {
+const proxyConfig: RawAxiosRequestConfig<never> = {
     httpAgent: agent,
     httpsAgent: agent,
     proxy: false,
@@ -24,7 +24,7 @@ const fakeHeaders: RawAxiosRequestHeaders = {
     'accept-language': 'en,en-US;q=0.9',
 };
 
-export function config(url: string, _config: AxiosRequestConfig): AxiosRequestConfig<never> {
+export function config(url: string, _config: RawAxiosRequestConfig): RawAxiosRequestConfig<never> {
     const headers = { ...fakeHeaders };
     const u = new URL(url, 'https://e-hentai.org');
     headers['origin'] = u.origin;

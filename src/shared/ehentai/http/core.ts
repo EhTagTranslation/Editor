@@ -1,10 +1,10 @@
-import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosResponse, RawAxiosRequestConfig, AxiosError } from 'axios';
 import { config as defaultConfig } from './config.js';
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function requestImpl<T = unknown, R = AxiosResponse<T>>(
-    config: AxiosRequestConfig,
+    config: RawAxiosRequestConfig,
     retry: number,
     delayTime: number,
 ): Promise<R> {
@@ -23,7 +23,7 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
     }
 }
 
-export async function request<T = unknown, R = AxiosResponse<T>>(config: AxiosRequestConfig, retry = 3): Promise<R> {
+export async function request<T = unknown, R = AxiosResponse<T>>(config: RawAxiosRequestConfig, retry = 3): Promise<R> {
     if (!config.url) throw new Error('url is required');
     const def = defaultConfig(config.url, config);
     const headers = { ...def.headers, ...config.headers };

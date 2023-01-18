@@ -1,6 +1,6 @@
-import type { AxiosRequestConfig } from 'axios';
+import type { RawAxiosRequestConfig } from 'axios';
 
-export function config(_url: string, _config: AxiosRequestConfig): AxiosRequestConfig<never> {
+export function config(_url: string, _config: RawAxiosRequestConfig): RawAxiosRequestConfig<never> {
     return {
         headers: {},
     };
