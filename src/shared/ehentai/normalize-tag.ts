@@ -9,9 +9,9 @@ const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 
 async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     const term = `${ns}:${raw}`;
-    const result = await get<string>(`https://exhentai.org/tag/${term}`);
+    const result = await get<string>(`https://e-hentai.org/tag/${term}`);
     if (!result.data || typeof result.data != 'string') {
-        throw new Error(`无法访问 https://exhentai.org/tag/${term}`);
+        throw new Error(`无法访问 https://e-hentai.org/tag/${term}`);
     }
     const tags = result.data.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
     let found = false;
