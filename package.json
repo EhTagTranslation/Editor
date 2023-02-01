@@ -82,7 +82,7 @@
     "@angular/service-worker": "^15.1.2",
     "@nestjs/cli": "~9.1.9",
     "@nestjs/schematics": "~9.0.4",
-    "@nestjs/testing": "~9.2.1",
+    "@nestjs/testing": "~9.3.1",
     "@rollup/plugin-alias": "^4.0.3",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-json": "^6.0.0",
