@@ -2,6 +2,7 @@ import type { RawTag } from '../raw-tag.js';
 import { api, ApiRequest, ResponseOf } from './http/index.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
 import { MasterTag, store, Tag } from './tag.js';
+import { STATISTICS } from './statistics.js';
 
 interface TagSuggestRequest
     extends ApiRequest<
@@ -62,13 +63,20 @@ export async function suggestTag(ns: NamespaceName | undefined, raw: string): Pr
     if (cache) return cache;
 
     try {
+        STATISTICS.tagSuggest++;
         const response = await api<TagSuggestRequest>({
             method: 'tagsuggest',
             text,
         });
         const result = expandResult(response);
-        if (result.length === 0 && raw.includes('.')) {
-            return await suggestTag(ns, raw.slice(0, raw.indexOf('.') - 1) as RawTag);
+        if (
+            result.find(
+                (t) =>
+                    (t.raw === raw && (ns == null || ns === t.namespace)) ||
+                    (t.master && t.master.raw === raw && (ns == null || ns === t.master.namespace)),
+            ) == null
+        ) {
+            return await suggestTag(ns, `${raw}$` as RawTag);
         }
         suggestCache.set(text, result);
         return result;

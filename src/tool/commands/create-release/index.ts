@@ -8,6 +8,7 @@ import { parseNamespace } from '#shared/namespace';
 import { promisify } from 'util';
 import { Database } from '#shared/database';
 import { getTagGroups, normalizeTag } from '#shared/ehentai/index';
+import { STATISTICS } from '#shared/ehentai/statistics';
 import { NamespaceName, RepoData, TagType } from '#shared/interfaces/ehtag';
 import { Context, Logger } from '#shared/markdown/index';
 import type { RawTag } from '#shared/raw-tag';
@@ -48,7 +49,7 @@ async function createRelease(db: Database, destination: string): Promise<void> {
     console.log(`  Destination: ${destination}`);
 
     const types = ['full', 'raw', 'text', 'html', 'ast'] as const;
-    const data = {} as Record<typeof types[number], RepoData<unknown>>;
+    const data = {} as Record<(typeof types)[number], RepoData<unknown>>;
     for (const k of types) {
         data[k] = await db.render(k);
     }
@@ -130,7 +131,10 @@ async function runSourceCheck(db: Database, checkedNs: readonly NamespaceName[])
         }
 
         if (!showProgress) {
-            progress(count, `完成 ${ns} 的检查`);
+            progress(
+                count,
+                `完成 ${ns} 的检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`,
+            );
             process.stderr.write(`\n`);
         }
     }
@@ -143,6 +147,7 @@ async function runSourceCheck(db: Database, checkedNs: readonly NamespaceName[])
         const nsDb = db.data[tag.namespace];
         db.logger.warn(new Context(nsDb, tag.raw), '标签在 E 站标签数据库中存在，但未找到翻译');
     }
+    console.log(`完成检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`);
     console.log('');
 
     function progress(count: number, message: string): void {

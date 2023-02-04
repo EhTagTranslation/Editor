@@ -4,11 +4,13 @@ import { isNamespaceName } from '../namespace.js';
 import { suggestTag } from './suggest-tag.js';
 import { get } from './http/index.js';
 import { Tag, tagCache } from './tag.js';
+import { STATISTICS } from './statistics.js';
 
 const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 
 async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     const term = `${ns}:${raw}`;
+    STATISTICS.tagSearch++;
     const result = await get<string>(`https://e-hentai.org/tag/${term}`);
     if (!result.data || typeof result.data != 'string') {
         throw new Error(`无法访问 https://e-hentai.org/tag/${term}`);
