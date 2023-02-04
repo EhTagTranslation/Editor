@@ -1,2 +1,2 @@
-import './translate.js';
-import './run.js';
+// import './translate.js';
+// import './run.js';

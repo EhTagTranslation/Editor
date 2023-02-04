@@ -48,7 +48,7 @@ export class TagRecord implements Tag<Cell> {
 
     static parse(line: string, namespace: NamespaceDatabaseView): [RawTag | undefined, TagRecord] | undefined {
         const match = recordRegex.exec(line);
-        if (!match || !match.groups) return undefined;
+        if (!match?.groups) return undefined;
         const { raw, name, intro, links } = match.groups;
         const record = new TagRecord(
             {

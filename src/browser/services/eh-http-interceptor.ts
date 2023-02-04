@@ -30,7 +30,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
     ) {}
 
     private handleEtag(response: HttpResponseBase): void {
-        if (!response.url || !response.url.startsWith(this.endpoints.ehTagConnectorDb())) {
+        if (!response.url?.startsWith(this.endpoints.ehTagConnectorDb())) {
             return;
         }
         const etagV = response.headers.get('etag');

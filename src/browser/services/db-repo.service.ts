@@ -1,5 +1,4 @@
 import type { NamespaceName } from '#shared/interfaces/ehtag';
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({

@@ -26,6 +26,7 @@ interface ApiSlaveTag extends ApiMasterTag {
     mtn: RawTag;
 }
 
+/** 解析响应，并设置标签缓存 */
 function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
     if (Array.isArray(response.tags)) return [];
     const tags: Tag[] = [];
@@ -55,10 +56,8 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
 
 const suggestCache = new Map<string, Tag[]>();
 
-/** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
-export async function suggestTag(ns: NamespaceName | undefined, raw: string): Promise<Tag[]> {
-    raw = raw.trim().toLowerCase();
-    const text = `${ns != null ? ns + ':' : ''}${raw}`;
+/** 调用 'tagsuggest' API，并设置缓存 */
+async function suggestTagImpl(text: string): Promise<Tag[]> {
     const cache = suggestCache.get(text);
     if (cache) return cache;
 
@@ -69,19 +68,31 @@ export async function suggestTag(ns: NamespaceName | undefined, raw: string): Pr
             text,
         });
         const result = expandResult(response);
-        if (
-            result.find(
-                (t) =>
-                    (t.raw === raw && (ns == null || ns === t.namespace)) ||
-                    (t.master && t.master.raw === raw && (ns == null || ns === t.master.namespace)),
-            ) == null
-        ) {
-            return await suggestTag(ns, `${raw}$` as RawTag);
-        }
         suggestCache.set(text, result);
         return result;
     } catch (err) {
         console.error(err);
         throw err;
     }
+}
+
+/** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
+export async function suggestTag(ns: NamespaceName | undefined, raw: string, exactMatch = false): Promise<Tag[]> {
+    raw = raw.trim().toLowerCase();
+    const text = `${ns != null ? ns + ':' : ''}${raw}${exactMatch ? '$' : ''}`;
+    const result = await suggestTagImpl(text);
+    if (
+        !exactMatch &&
+        ns &&
+        result.length > 0 &&
+        result.find(
+            (t) =>
+                (t.raw === raw && ns === t.namespace) ||
+                (t.master && t.master.raw === raw && ns === t.master.namespace),
+        ) == null
+    ) {
+        const exactResult = await suggestTag(ns, raw, true);
+        if (exactResult.length !== 0) return exactResult;
+    }
+    return result;
 }

@@ -1,4 +1,4 @@
-import { Context, parse, render } from '#shared/markdown/index';
+import { parse, render } from '#shared/markdown/index';
 import type { NamespaceName, Tag } from '#shared/interfaces/ehtag';
 import type { RawTag } from '#shared/raw-tag';
 import { parseTag } from '../tag/command.js';

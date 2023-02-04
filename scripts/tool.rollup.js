@@ -20,7 +20,6 @@ const packageJson = await fs.readJSON('./package.json');
 const imports = packageJson.imports ?? {};
 packageJson.scripts = undefined;
 packageJson.devDependencies = undefined;
-packageJson.dependencies = {};
 packageJson.resolutions = undefined;
 packageJson.browser = undefined;
 packageJson.type = 'module';
@@ -31,18 +30,25 @@ for (const key in /** @type {object | undefined} */ (packageJson.exports)) {
         packageJson.exports[key] = value.replace(/^.\/dist\//, './');
     }
 }
-const require = createRequire(import.meta.url);
-for (const ext of external) {
-    /** @type {import('type-fest').PackageJson} */
-    const resolved = require(ext + '/package.json');
-    packageJson.dependencies[ext] = resolved.version;
+if (!watch) {
+    packageJson.dependencies = {};
+    const require = createRequire(import.meta.url);
+    for (const ext of external) {
+        /** @type {import('type-fest').PackageJson} */
+        const resolved = require(ext + '/package.json');
+        packageJson.dependencies[ext] = resolved.version;
+    }
+} else {
+    for (const ext in packageJson.dependencies) {
+        external.push(ext);
+    }
 }
 await fs.emptyDir('./dist/tool/');
 await fs.writeJSON('./dist/tool/package.json', packageJson);
 
 export default defineConfig({
     input: './src/tool/index.ts',
-    external: [...ignore, ...external],
+    external: [...ignore, ...external].map((d) => new RegExp(`^${d}($|/.+)`)),
     output: {
         format: 'esm',
         dir: './dist/tool/',
@@ -70,6 +76,7 @@ export default defineConfig({
             sourceMap: !minify,
             minify: minify,
             target: 'es2020',
+            charset: 'utf8',
         }),
     ],
 });

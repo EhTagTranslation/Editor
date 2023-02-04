@@ -31,7 +31,7 @@ const props = {
     namespaceURI: new WeakMap<Node, html.NS>(),
 };
 type Props = keyof typeof props;
-type PropValue<T extends Props> = typeof props[T] extends WeakMap<object, infer V> ? V : never;
+type PropValue<T extends Props> = (typeof props)[T] extends WeakMap<object, infer V> ? V : never;
 
 function getProp<T extends Props>(node: Node, key: T): PropValue<T> | undefined {
     const map = props[key] as WeakMap<Node, PropValue<T>>;

@@ -64,7 +64,7 @@ export const NamespaceName = [
     'mixed',
     'other',
 ] as const;
-export type NamespaceName = typeof NamespaceName[number];
+export type NamespaceName = (typeof NamespaceName)[number];
 
 /** 表示一个命名空间的信息 */
 

@@ -257,7 +257,8 @@ program
             if (sourceCheck || typeof sourceCheck == 'string') {
                 const checkNs: NamespaceName[] = [];
                 if (sourceCheck && typeof sourceCheck == 'string') {
-                    for (const ns of sourceCheck.split(',')) {
+                    for (const ns of sourceCheck.split(/[,;:\s]/)) {
+                        if (!ns) continue;
                         const nsName = parseNamespace(ns);
                         if (!nsName) {
                             console.error(`无效的命名空间 ${ns}`);

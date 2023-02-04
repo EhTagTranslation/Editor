@@ -28,9 +28,14 @@ async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     return found;
 }
 
-function searchCache(ns: NamespaceName, raw: RawTag): boolean {
+function findSearchCache(ns: NamespaceName, raw: RawTag): boolean {
     const term = `${ns}:${raw}` as const;
     return tagsFoundBySearch.has(term);
+}
+
+function findTagCache(ns: NamespaceName, raw: RawTag): Tag | undefined {
+    const nsMap = tagCache.get(raw);
+    return nsMap?.get(ns);
 }
 
 /**
@@ -40,16 +45,34 @@ export async function normalizeTag(
     ns: NamespaceName | undefined,
     raw: RawTag,
 ): Promise<[NamespaceName, RawTag] | undefined> {
-    if (ns && searchCache(ns, raw)) return [ns, raw];
+    if (ns && findSearchCache(ns, raw)) return [ns, raw];
 
-    const nsMap = tagCache.get(raw);
     let match: Tag | undefined;
-    if (ns && nsMap) {
-        match = nsMap.get(ns);
+
+    if (ns) {
+        match ??= findTagCache(ns, raw);
+        if (!match) {
+            // 填充缓存
+            const words = raw.split(' ');
+            let part = '';
+            for (const word of words) {
+                if (part) part += ` ${word}`;
+                else part = word;
+
+                if (part.length > 1) {
+                    await suggestTag(undefined, part);
+                    match ??= findTagCache(ns, raw);
+                }
+                if (match) break;
+            }
+        }
     }
 
-    match ??= await find(isMatch);
-    match ??= await find(isMatchOrMove);
+    if (raw.length > 1) {
+        match ??= await find(isMatch, false);
+    }
+    match ??= await find(isMatch, true);
+    match ??= await find(isMatchOrMove, true);
 
     if (match == null) {
         // 短于 2 字符的标签、重命名为更长且包含原名的标签（abc => abcde）、作为子串出现超过 10 次的标签
@@ -68,15 +91,10 @@ export async function normalizeTag(
     return [match.namespace, match.raw];
 
     /** 使用 @see suggestTag 进行查找 */
-    async function find(matcher: (tag: Tag) => boolean): Promise<Tag | undefined> {
-        const resultGeneral = await suggestTag(undefined, raw);
-        if (resultGeneral) {
-            const match = resultGeneral.find(matcher);
-            if (match) return match;
-        }
-        const resultNs = await suggestTag(ns, raw);
-        if (resultNs != null) {
-            const match = resultNs.find(isMatchOrMove);
+    async function find(matcher: (tag: Tag) => boolean, useNs: boolean): Promise<Tag | undefined> {
+        const result = await suggestTag(useNs ? ns : undefined, raw);
+        if (result != null) {
+            const match = result.find(matcher);
             if (match) return match;
         }
         return undefined;

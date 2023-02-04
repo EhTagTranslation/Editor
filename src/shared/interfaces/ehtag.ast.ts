@@ -4,7 +4,7 @@ import type { NamespaceName } from './ehtag.js';
 export type Tree = ParaNode[];
 
 export const NodeType = ['paragraph', 'text', 'br', 'tagref', 'image', 'link', 'emphasis', 'strong'] as const;
-export type NodeType = typeof NodeType[number];
+export type NodeType = (typeof NodeType)[number];
 
 export interface Node {
     type: NodeType;

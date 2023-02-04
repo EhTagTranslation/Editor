@@ -118,7 +118,7 @@ export class GithubOauthService {
             .catch((error: unknown) => ({ token: null, error }))
             .then((token) => {
                 if (!token.token || token.error) {
-                    throw token.error || token;
+                    throw (token.error || token) as Error;
                 }
                 this.setToken(token.token);
                 return true;
