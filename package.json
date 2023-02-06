@@ -36,7 +36,7 @@
     "@nestjs/common": "~9.3.2",
     "@nestjs/config": "~2.3.0",
     "@nestjs/core": "~9.3.2",
-    "@nestjs/platform-fastify": "~9.3.2",
+    "@nestjs/platform-fastify": "~9.3.3",
     "@nestjs/swagger": "~6.1.4",
     "@octokit/auth-app": "~4.0.9",
     "@octokit/auth-oauth-app": "~5.0.5",

@@ -2654,10 +2654,10 @@
   resolved "https://registry.npmmirror.com/@nestjs/mapped-types/-/mapped-types-1.2.0.tgz#1bbdbb5c956f0adb3fd76add929137bc6ad3183f"
   integrity sha512-NTFwPZkQWsArQH8QSyFWGZvJ08gR+R4TofglqZoihn/vU+ktHEJjMqsIsADwb7XD97DhiD+TVv5ac+jG33BHrg==
 
-"@nestjs/platform-fastify@~9.3.2":
-  version "9.3.2"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/-/platform-fastify-9.3.2.tgz#f485a7079049baf7b6c4027d534c9e063f435ca8"
-  integrity sha512-olvOfz+wJLfHzuh+Alp11tg7i+yuDRB1DT44kWZMTWlhaudyTOdSur2Q24XV/J1XzhZANyE7Cz1ejcDOjs6H5w==
+"@nestjs/platform-fastify@~9.3.3":
+  version "9.3.3"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-9.3.3.tgz#65dd22cbc8656f56c2bff95d426ab94fbf3ff0ec"
+  integrity sha512-TTu1XFq7VrfKLqDCbqYhlYnXgC3NasybkjPXL+HYe5bJlDoAH1Fso8Fvqz2BC4DmzIUF6TyLnetc+Lz+vGlmNQ==
   dependencies:
     "@fastify/cors" "8.2.0"
     "@fastify/formbody" "7.4.0"
