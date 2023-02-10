@@ -2680,15 +2680,15 @@
   resolved "https://registry.npmmirror.com/@nestjs/mapped-types/-/mapped-types-1.2.2.tgz#d9ddb143776e309dbc1a518ac1607fddac1e140e"
   integrity sha512-3dHxLXs3M0GPiriAcCFFJQHoDFUuzTD5w6JDhE7TyfT89YKpe6tcCCIqOZWdXmt9AZjjK30RkHRSFF+QEnWFQg==
 
-"@nestjs/platform-fastify@~9.3.7":
-  version "9.3.7"
-  resolved "https://registry.npmmirror.com/@nestjs/platform-fastify/-/platform-fastify-9.3.7.tgz#c6660d5a76a5078b5f4086c2aca252b9c0545ebb"
-  integrity sha512-Ko8+ylO5ZsSi+Ag7BL6DT5b+KEBq2FKgBsht/WA39VudpS6eOSG7UE9skSP+JcapXq+WEfTygzdu0nQ3/kyOaA==
+"@nestjs/platform-fastify@~9.3.8":
+  version "9.3.8"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-fastify/-/platform-fastify-9.3.8.tgz#7062a947c8856928d396863a5cf903878b4d3ac7"
+  integrity sha512-NCJXxK1cxwi06/Y4G20wWlMf7f41MVbucl0IOx0LYWli8zeKpv51OLty8KF2QLlNuRzYqCMoVBN/nC9KkZ+YaQ==
   dependencies:
     "@fastify/cors" "8.2.0"
     "@fastify/formbody" "7.4.0"
     "@fastify/middie" "8.1.0"
-    fastify "4.12.0"
+    fastify "4.13.0"
     light-my-request "5.8.0"
     path-to-regexp "3.2.0"
     tslib "2.5.0"
@@ -5515,10 +5515,10 @@ fastify-plugin@^4.0.0:
   resolved "https://registry.npmmirror.com/fastify-plugin/-/fastify-plugin-4.5.0.tgz#8b853923a0bba6ab6921bb8f35b81224e6988d91"
   integrity sha512-79ak0JxddO0utAXAQ5ccKhvs6vX2MGyHHMMsmZkBANrq3hXc1CHzvNPHOcvTsVMEPl5I+NT+RO4YKMGehOfSIg==
 
-fastify@4.12.0:
-  version "4.12.0"
-  resolved "https://registry.npmmirror.com/fastify/-/fastify-4.12.0.tgz#e5330215d95702336693b38b2e66d34ee8300d3e"
-  integrity sha512-Hh2GCsOCqnOuewWSvqXlpq5V/9VA+/JkVoooQWUhrU6gryO9+/UGOoF/dprGcKSDxkM/9TkMXSffYp8eA/YhYQ==
+fastify@4.13.0:
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.13.0.tgz#5726d4c63acae1b5e34c7643e233a0be8169009a"
+  integrity sha512-p9ibdFWH3pZ7KPgmfHPKGUy2W4EWU2TEpwlcu58w4CwGyU3ARFfh2kwq6zpZ5W2ZGVbufi4tZbqHIHAlX/9Z/A==
   dependencies:
     "@fastify/ajv-compiler" "^3.3.1"
     "@fastify/error" "^3.0.0"
