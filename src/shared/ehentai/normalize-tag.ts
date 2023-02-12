@@ -8,14 +8,32 @@ import { STATISTICS } from './statistics.js';
 
 const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 
-async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
-    const term = `${ns}:${raw}`;
+let useEx = true;
+
+/** 访问搜索页面，返回文档内容 */
+async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
+    const url = `https://${useEx ? 'ex' : 'e-'}hentai.org/tag/${ns}:${raw}`;
     STATISTICS.tagSearch++;
-    const result = await get<string>(`https://e-hentai.org/tag/${term}`);
-    if (!result.data || typeof result.data != 'string') {
-        throw new Error(`无法访问 https://e-hentai.org/tag/${term}`);
+    try {
+        const result = await get<string>(url);
+        if (!result.data || typeof result.data != 'string') {
+            throw new Error(`无法访问 ${url}`);
+        }
+        return result.data;
+    } catch (ex) {
+        if (!useEx) {
+            throw ex;
+        }
+        console.warn(`Ex 访问失败，回退到 Eh`);
+        useEx = false;
+        return searchTagImpl(ns, raw);
     }
-    const tags = result.data.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
+}
+
+/** 通过搜索功能确定 tag 是否存在 */
+async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
+    const result = await searchTagImpl(ns, raw);
+    const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
     let found = false;
     for (const tag of tags) {
         const [, tNs, tRaw] = tag;
