@@ -42,8 +42,12 @@ const COOKIE = (() => {
 export function config(url: string, _config: RawAxiosRequestConfig): RawAxiosRequestConfig<never> {
     const headers = { ...fakeHeaders };
     const u = new URL(url, 'https://e-hentai.org');
-    headers['origin'] = u.origin;
-    headers['referer'] = u.origin + '/';
+    let { origin } = u;
+    if (origin.endsWith('.e-hentai.org')) {
+        origin = 'https://e-hentai.org';
+    }
+    headers['origin'] = origin;
+    headers['referer'] = origin + '/';
     if (u.hostname.endsWith('hentai.org')) {
         headers['cookie'] = COOKIE;
     }

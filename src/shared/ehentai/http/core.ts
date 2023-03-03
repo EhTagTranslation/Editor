@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, RawAxiosRequestConfig, AxiosError } from 'axios';
+import axios, { AxiosResponse, RawAxiosRequestConfig, AxiosError, isAxiosError } from 'axios';
 import { config as defaultConfig } from './config.js';
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
@@ -7,19 +7,20 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
     config: RawAxiosRequestConfig,
     retry: number,
     delayTime: number,
+    errors: AxiosError[],
 ): Promise<R> {
     try {
         return axios.request<T, R>(config);
     } catch (err) {
-        if (retry <= 0) {
+        if (!isAxiosError(err) || (err.response != null && err.response.status < 500)) {
             throw err;
         }
-        const axiosError = err as AxiosError;
-        if (axiosError.isAxiosError && (axiosError.response == null || axiosError.response.status >= 500)) {
-            await delay(delayTime);
-            return requestImpl<T, R>(config, retry - 1, delayTime * 2);
+        errors.push(err);
+        if (errors.length > retry) {
+            throw new AggregateError(errors, `Failed after ${errors.length} tries.`);
         }
-        throw err;
+        await delay(delayTime);
+        return requestImpl<T, R>(config, retry, delayTime * 5, errors);
     }
 }
 
@@ -28,5 +29,5 @@ export async function request<T = unknown, R = AxiosResponse<T>>(config: RawAxio
     const def = defaultConfig(config.url, config);
     const headers = { ...def.headers, ...config.headers };
     const cfg = { ...def, ...config, headers };
-    return requestImpl(cfg, retry, 1000);
+    return requestImpl(cfg, retry, 600, []);
 }
