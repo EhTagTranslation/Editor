@@ -7,15 +7,15 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
     config: RawAxiosRequestConfig,
     retry: number,
     delayTime: number,
-    errors: AxiosError[],
+    errors: Error[],
 ): Promise<R> {
     try {
         return axios.request<T, R>(config);
     } catch (err) {
-        if (!isAxiosError(err) || (err.response != null && err.response.status < 500)) {
+        if (isAxiosError(err) && err.response != null && err.response.status < 500) {
             throw err;
         }
-        errors.push(err);
+        errors.push(err as Error);
         if (errors.length > retry) {
             throw new AggregateError(errors, `Failed after ${errors.length} tries.`);
         }
