@@ -10,7 +10,7 @@ import json from '@rollup/plugin-json';
 import alias from '@rollup/plugin-alias';
 
 const watch = process.argv.includes('--watch');
-const minify = process.argv.includes('--minify') || !watch;
+const minify = process.argv.includes('--minify');
 
 const ignore = [];
 const external = ['proxy-agent'];
