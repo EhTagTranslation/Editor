@@ -10,7 +10,7 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
     errors: Error[],
 ): Promise<R> {
     try {
-        return axios.request<T, R>(config);
+        return await axios.request<T, R>(config);
     } catch (err) {
         if (isAxiosError(err) && err.response != null && err.response.status < 500) {
             throw err;
