@@ -220,12 +220,12 @@ export class RepoInfoDto implements RepoInfo {
                 namespace: 'reclass',
                 frontMatters: {
                     name: '重新分类',
-                    description: '用于分类出错的画廊，当某个重新分类标签权重达到 100，将移动画廊至对应分类。',
+                    description: '用于分类出错的图库，当某个重新分类标签权重达到 100，将移动图库至对应分类。',
                     key: 'reclass',
                     abbr: 'r',
                     copyright:
                         '除有特殊说明外，本文的简介文本翻译自 EHWiki，遵循原始许可协议（即 GNU 自由文档许可证）进行二次分发。\n\nCopyright (c) 2022 EhTagTranslation. Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "GNU Free Documentation License".\n\n本文的其他内容，遵循知识共享(Creative Commons) 署名-非商业性使用-相同方式共享 3.0 协议提供。\n',
-                    rules: ['参考画廊分类(https://ehwiki.org/wiki/Gallery_Categories)撰写翻译。'],
+                    rules: ['参考图库分类(https://ehwiki.org/wiki/Gallery_Categories)撰写翻译。'],
                 },
                 count: 11,
             },
@@ -243,7 +243,7 @@ export class RepoInfoDto implements RepoInfo {
                     example: {
                         raw: 'speechless',
                         name: '无言',
-                        intro: '画廊没有任何表示交谈或叙事意义的文字。设置该画廊语言为无语言(N/A)。含有拟声词或发出声音不影响此标签。不要和`text cleaned`混淆。\n',
+                        intro: '图库没有任何表示交谈或叙事意义的文字。设置该图库语言为无语言(N/A)。含有拟声词或发出声音不影响此标签。不要和`text cleaned`混淆。\n',
                         links: '(\\*)\n',
                     },
                 },

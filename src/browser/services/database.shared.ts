@@ -26,7 +26,7 @@ const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     other: { name: '其他', description: '经过确认的技术标签。' },
     reclass: {
         name: '重新分类',
-        description: '用于分类出错的画廊，当某个重新分类标签权重达到 100，将移动画廊至对应分类。',
+        description: '用于分类出错的图库，当某个重新分类标签权重达到 100，将移动图库至对应分类。',
     },
     mixed: {
         name: '混合',
