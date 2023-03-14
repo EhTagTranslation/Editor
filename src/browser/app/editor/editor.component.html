@@ -84,7 +84,7 @@
         </mat-form-field>
         <mat-hint *ngIf="(getNamespace(value('namespace')) | async)?.rules != null">
           <span>填写指南</span>
-          <p *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules" [innerHTML]="item | linkify"></p>
+          <p *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules" [innerHTML]="item | markdown"></p>
         </mat-hint>
         <mat-form-field>
           <button

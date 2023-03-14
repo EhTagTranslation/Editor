@@ -31,7 +31,7 @@ import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
 import { MarkPipe } from './shared/pipe/mark.pipe';
-import { LinkifyPipe } from './shared/pipe/linkify.pipe';
+import { MarkdownPipe } from './shared/pipe/markdown.pipe';
 import { TitleService } from '#browser/services/title.service';
 import { ehHttpInterceptorProvider } from '#browser/services/eh-http-interceptor';
 import { environment } from '../environments/environment';
@@ -44,7 +44,7 @@ import { environment } from '../environments/environment';
         EditorComponent,
         GithubCornerComponent,
         MarkPipe,
-        LinkifyPipe,
+        MarkdownPipe,
     ],
     imports: [
         AppRoutingModule,
