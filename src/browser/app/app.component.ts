@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
 import { Location } from '@angular/common';
 import { DbRepoService } from '#browser/services/db-repo.service';
@@ -13,11 +13,19 @@ export class AppComponent implements OnInit {
         private readonly ehTagConnector: EhTagConnectorService,
         private readonly location: Location,
         public readonly dbRepo: DbRepoService,
+        private readonly el: ElementRef,
+        private readonly renderer: Renderer2,
     ) {}
     ngOnInit(): void {
         this.ehTagConnector.updateHash().subscribe((_) => {
             //
         });
+        window.addEventListener('resize', () => this.updateHeight(), { passive: true });
+        this.updateHeight();
+    }
+
+    private updateHeight(): void {
+        this.renderer.setStyle(this.el.nativeElement, 'height', `${window.innerHeight}px`);
     }
 
     goBack(): void {

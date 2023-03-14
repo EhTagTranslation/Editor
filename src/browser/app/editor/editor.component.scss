@@ -81,6 +81,7 @@ $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
 
       .md-container {
         margin: 10px 0 2px 8px;
+        transition: color 0.1s;
 
         &:hover {
           color: mat.get-color-from-palette($app-foreground, text);
