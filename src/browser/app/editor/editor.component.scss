@@ -79,7 +79,7 @@ $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
     > mat-hint {
       font-size: 12px;
 
-      p {
+      .md-container {
         margin: 10px 0 2px 8px;
       }
     }
