@@ -87,7 +87,7 @@
           <div
             class="md-container"
             *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules"
-            [innerHTML]="item | markdown"
+            [innerHTML]="item | markdown | mark : '' : true"
           ></div>
         </mat-hint>
         <mat-form-field>
