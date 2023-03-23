@@ -57,7 +57,7 @@
                   "
                   target="_blank"
                   >提交 ISSUE 讨论</a
-                >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+                >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
                   >通过 PR 修改</a
                 >
               </ng-template>
@@ -77,7 +77,7 @@
               "
               target="_blank"
               >提交 ISSUE 讨论</a
-            >或<a [href]="dbRepo.code('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+            >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
               >通过 PR 修改</a
             >
           </mat-error>

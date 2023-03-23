@@ -30,4 +30,8 @@ export class DbRepoService {
     code(page: string): string {
         return this.resolve(`blob/master/${encodeURI(page)}`);
     }
+
+    edit(page: string): string {
+        return this.resolve(`edit/master/${encodeURI(page)}`);
+    }
 }
