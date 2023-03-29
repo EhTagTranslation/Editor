@@ -9,7 +9,7 @@ export const User = createParamDecorator<void, ExecutionContext, UserInfo>(
         const request = ctx.switchToHttp().getRequest<FastifyRequest>();
         const user = (request as { user?: UserInfo }).user;
         if (!user) {
-            throw new UnauthorizedException('No token.');
+            throw new UnauthorizedException('没有用户信息，请重新登录。');
         }
         return user;
     },
