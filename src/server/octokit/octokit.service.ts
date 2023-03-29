@@ -44,8 +44,8 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         [this.owner, this.repo] = db.split('/');
     }
 
-    private readonly owner: string;
-    private readonly repo: string;
+    readonly owner: string;
+    readonly repo: string;
 
     onModuleInit(): void {
         this.getAppToken().catch((err: unknown) => this.logger.error(err));

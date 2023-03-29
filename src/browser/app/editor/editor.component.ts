@@ -473,7 +473,7 @@ export class EditorComponent implements OnInit {
             this.tagForm.markAsPristine();
         } catch (ex) {
             this.snackBar
-                .open('提交过程中出现错误', '重试', snackBarConfig)
+                .open(`提交过程中出现错误：${(ex as Error).message}`, '重试', snackBarConfig)
                 .onAction()
                 .subscribe(() => {
                     void this.submit();
