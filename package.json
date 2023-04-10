@@ -107,7 +107,7 @@
     "material-design-icons": "^3.0.1",
     "prettier": "~2.8.7",
     "resolve-typescript-plugin": "^2.0.1",
-    "rimraf": "~4.4.1",
+    "rimraf": "~5.0.0",
     "rollup": "^3.20.2",
     "rollup-plugin-esbuild": "^5.0.0",
     "supertest": "~6.3.3",
