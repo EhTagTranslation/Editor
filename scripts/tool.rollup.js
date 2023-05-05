@@ -46,37 +46,60 @@ if (!watch) {
 await fs.emptyDir('./dist/tool/');
 await fs.writeJSON('./dist/tool/package.json', packageJson);
 
-export default defineConfig({
-    input: './src/tool/index.ts',
-    external: [...ignore, ...external].map((d) => new RegExp(`^${d}($|/.+)`)),
-    output: {
-        format: 'esm',
-        dir: './dist/tool/',
-        compact: minify,
-        sourcemap: !minify,
+export default defineConfig([
+    {
+        input: './src/tool/index.ts',
+        external: [...ignore, ...external].map((d) => new RegExp(`^${d}($|/.+)`)),
+        output: {
+            format: 'esm',
+            dir: './dist/tool/',
+            compact: minify,
+            sourcemap: !minify,
+        },
+        plugins: [
+            nodeResolve({
+                preferBuiltins: true,
+                exportConditions: ['node'],
+                mainFields: ['es2015', 'main', 'module'],
+            }),
+            alias({
+                entries: Object.entries(imports).map(([from, to]) => ({
+                    find: new RegExp(`^${from.replace('*', '(.+)')}$`),
+                    replacement: path.join(
+                        process.cwd(),
+                        String(to).replace('dist', 'src').replace('*', '$1').replace('.js', '.ts'),
+                    ),
+                })),
+            }),
+            commonjs(),
+            json(),
+            esbuild({
+                sourceMap: !minify,
+                minify: minify,
+                target: 'es2020',
+                charset: 'utf8',
+            }),
+        ],
     },
-    plugins: [
-        nodeResolve({
-            preferBuiltins: true,
-            exportConditions: ['node'],
-            mainFields: ['es2015', 'main', 'module'],
-        }),
-        alias({
-            entries: Object.entries(imports).map(([from, to]) => ({
-                find: new RegExp(`^${from.replace('*', '(.+)')}$`),
-                replacement: path.join(
-                    process.cwd(),
-                    String(to).replace('dist', 'src').replace('*', '$1').replace('.js', '.ts'),
-                ),
-            })),
-        }),
-        commonjs(),
-        json(),
-        esbuild({
-            sourceMap: !minify,
-            minify: minify,
-            target: 'es2020',
-            charset: 'utf8',
-        }),
-    ],
-});
+    {
+        input: './tools/flate.js',
+        external: [...ignore, ...external].map((d) => new RegExp(`^${d}($|/.+)`)),
+        output: {
+            format: 'iife',
+            dir: './dist/tool/',
+            compact: true,
+        },
+        plugins: [
+            nodeResolve({
+                preferBuiltins: true,
+                exportConditions: ['browser'],
+                mainFields: ['es2015', 'main', 'module'],
+            }),
+            esbuild({
+                minify: true,
+                target: 'es6',
+                charset: 'utf8',
+            }),
+        ],
+    },
+]);

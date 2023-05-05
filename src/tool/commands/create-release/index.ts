@@ -2,10 +2,10 @@ import { error, notice, warning } from '@actions/core';
 import clc from 'cli-color';
 import { program } from 'commander';
 import fs from 'fs-extra';
-import { gzip } from 'pako';
-import path from 'path';
+import path from 'node:path';
+import zlib from 'node:zlib';
+import { fileURLToPath } from 'node:url';
 import { parseNamespace } from '#shared/namespace';
-import { promisify } from 'util';
 import { Database } from '#shared/database';
 import { getTagGroups, normalizeTag } from '#shared/ehentai/index';
 import { STATISTICS } from '#shared/ehentai/statistics';
@@ -13,34 +13,34 @@ import { NamespaceName, RepoData, TagType } from '#shared/interfaces/ehtag';
 import { Context, Logger } from '#shared/markdown/index';
 import type { RawTag } from '#shared/raw-tag';
 import { action } from '../../utils.js';
-import pako from './pako.js';
 
-async function logFile(file: string): Promise<void> {
-    console.log(`Created: ${file} (${(await fs.stat(file)).size} bytes)`);
+function gzip(data: string): Buffer {
+    return zlib.gzipSync(data, {
+        level: zlib.constants.Z_MAX_LEVEL,
+        memLevel: zlib.constants.Z_MAX_MEMLEVEL,
+        windowBits: zlib.constants.Z_MAX_WINDOWBITS,
+        info: false,
+    });
+}
+
+async function write(filename: string, data: Buffer | string): Promise<void> {
+    if (typeof data == 'string') data = Buffer.from(data);
+    await fs.writeFile(filename, data);
+    console.log(`Created: ${filename} (${data.byteLength} bytes)`);
 }
 
 async function save(data: RepoData<unknown>, type: TagType): Promise<void> {
     const json = JSON.stringify(data);
-    await fs.writeFile(`db.${type}.json`, json);
-    await logFile(`db.${type}.json`);
+    await write(`db.${type}.json`, json);
 
     const gz = gzip(json);
-    await fs.writeFile(`db.${type}.json.gz`, gz);
-    await logFile(`db.${type}.json.gz`);
+    await write(`db.${type}.json.gz`, gz);
 
-    const jsonp = fs.createWriteStream(`db.${type}.js`);
-    const write = (data: string): Promise<void> => {
-        return new Promise<void>((resolve, reject) => {
-            jsonp.write(data, (error) => (error ? reject(error) : resolve()));
-        });
-    };
-    await write(`(function(){var d={c:'load_ehtagtranslation_db_${type}',d:'`);
-    await write(Buffer.from(gz).toString('base64'));
-    await write(`'};`);
-    await write(pako);
-    await write('})();');
-    await promisify(jsonp.end.bind(jsonp))();
-    await logFile(`db.${type}.js`);
+    const flate = await fs.readFile(path.resolve(fileURLToPath(import.meta.url), '../flate.js'), 'utf-8');
+    const jsonp = flate
+        .replace('__EH_TOOL_RELEASE_DATA__', gz.toString('base64'))
+        .replace('__EH_TOOL_RELEASE_CALLBACK__', `"load_ehtagtranslation_db_${type}"`);
+    await write(`db.${type}.js`, jsonp);
 }
 
 async function createRelease(db: Database, destination: string): Promise<void> {

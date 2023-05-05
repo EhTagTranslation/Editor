@@ -335,7 +335,7 @@ function normalizeTagRef(node: TagRefNode, context: Context): void {
     const tag = parseTag(text);
 
     if (!tag.valid) {
-        context.warn(`无效标签引用：\`${text}\` 不是一个有效的标签。`);
+        context.error(`无效标签引用：\`${text}\` 不是一个有效的标签。`);
         node.tag = '';
         node.text = text;
         return;
@@ -357,7 +357,7 @@ function normalizeTagRef(node: TagRefNode, context: Context): void {
         }
     }
     if (!record) {
-        context.warn(`无效标签引用：\`${node.text}\` 在数据库中不存在。`);
+        context.error(`无效标签引用：\`${node.text}\` 在数据库中不存在。`);
         node.tag = '';
         node.text = text;
         return;

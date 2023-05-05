@@ -30,7 +30,7 @@ export class TagRecord implements Tag<Cell> {
         const render = (cell: Cell): string => escape(cell.render('raw', context));
         const name = render(this.name);
         if (raw && !RawTag(raw)) {
-            context.warn('无效的原始标签');
+            context.error('无效的原始标签');
         }
         if (raw && !name) {
             context.error('名称为空');
