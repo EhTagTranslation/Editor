@@ -1,5 +1,5 @@
 import type { RawAxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import ProxyAgent from 'proxy-agent';
+import { ProxyAgent } from 'proxy-agent';
 
 const agent = new ProxyAgent();
 const proxyConfig: RawAxiosRequestConfig<never> = {

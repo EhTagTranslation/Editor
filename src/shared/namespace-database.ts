@@ -197,8 +197,9 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         const info = this.info();
         const data: NamespaceData<T>['data'] = {};
         const context = new Context(this);
-        for (const [raw, { record }] of this.rawMap) {
+        for (const [raw, { record, line }] of this.rawMap) {
             context.raw = raw;
+            context.line = line;
             data[raw] = record.render(type, context);
         }
         return {

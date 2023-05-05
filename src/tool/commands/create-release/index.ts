@@ -174,6 +174,7 @@ class ActionLogger extends Logger {
         this.map[logger](ActionLogger.buildMessage(logger, context, message), {
             file: `database/${context.namespace.name}.md`,
             startLine: context.line,
+            startColumn: context.line ? context.column : undefined,
         });
         if (this.setFailed[logger]) {
             process.exitCode = action.ExitCode.Failure;
@@ -213,7 +214,8 @@ class FileLogger extends Logger {
             path.resolve(this.location ?? '.', `./database/${context.namespace.name}.md`),
         );
         if (context.line) {
-            process.stderr.write(clc.underline(`${f}:${context.line}`));
+            if (context.column) process.stderr.write(clc.underline(`${f}:${context.line}:${context.column}`));
+            else process.stderr.write(clc.underline(`${f}:${context.line}`));
         } else {
             process.stderr.write(clc.underline(f));
         }

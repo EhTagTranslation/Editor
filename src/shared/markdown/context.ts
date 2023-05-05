@@ -17,8 +17,9 @@ export abstract class Logger {
 
     static buildMessage(logger: keyof Logger, context: Context, message: string): string {
         const l = context.line ? `L${context.line}:` : '';
+        const c = context.line && context.column ? `C${context.column}:` : '';
         const r = context.raw ?? '<unknown raw>';
-        return `${context.namespace.name}:${l}${r}: ${message}`;
+        return `${context.namespace.name}:${l}${c} ${r}: ${message}`;
     }
 
     static default: Logger = new (class DefaultLogger extends Logger {
@@ -50,6 +51,7 @@ export class Context {
     raw?: RawTag;
     tag?: TagRecord;
     line?: number;
+    column?: number;
     logger?: Logger;
     private get _logger(): Logger {
         return this.logger ?? (this.database as Database)?.logger ?? Logger.default;
