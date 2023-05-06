@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { EditorDenyComponent } from './editor-deny/editor-deny.component';
-import { CanActivateEditor } from './editor.can-activate';
+import { canActivate } from './editor.can-activate';
 
 const routes: Routes = [
     {
@@ -13,7 +13,11 @@ const routes: Routes = [
     {
         path: 'edit/:namespace/:raw',
         component: EditorComponent,
-        canActivate: [CanActivateEditor],
+        canActivate: [canActivate],
+    },
+    {
+        path: 'edit/:namespace',
+        redirectTo: '/edit/:namespace/*new',
     },
     {
         path: 'edit',
@@ -35,7 +39,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    providers: [CanActivateEditor],
+    providers: [],
     exports: [RouterModule],
 })
 export class AppRoutingModule {}
