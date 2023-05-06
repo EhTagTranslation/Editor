@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.8.32
 
   tool:
     needs: install
@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.8.32
       - name: Set env
         run: node ./scripts/info.js
 
@@ -72,7 +72,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.8.32
       - name: Set env
         run: node ./scripts/info.js
 
@@ -115,7 +115,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.8.32
       - name: Set env
         run: node ./scripts/info.js
 
