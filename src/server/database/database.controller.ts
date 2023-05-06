@@ -36,7 +36,7 @@ import { Format } from '../decorators/format.decorator.js';
 import type { UserInfo } from '../octokit/octokit.service.js';
 import { User } from '../decorators/user.decorator.js';
 import { DatabaseService } from './database.service.js';
-import { NsParams, TagParams, PostTagQuery, PushEvent } from './params.dto.js';
+import { NsParams, TagParams, PostTagQuery, type PushEvent } from './params.dto.js';
 
 @Controller('database')
 @ApiTags('Database')

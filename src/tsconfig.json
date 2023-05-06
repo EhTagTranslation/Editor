@@ -25,6 +25,7 @@
     "noFallthroughCasesInSwitch": false,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "importsNotUsedAsValues": "error",
     "noPropertyAccessFromIndexSignature": true,
