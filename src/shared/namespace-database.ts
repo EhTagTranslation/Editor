@@ -25,16 +25,9 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     private suffix = '';
     /** 优先使用 data 中的数据，其次使用文件 */
     async load(data?: Buffer): Promise<void> {
-        let input: NodeJS.ReadableStream;
-        if (data && data.length > 0) {
-            const bufferStream = new PassThrough();
-            bufferStream.end(data);
-            input = bufferStream;
-        } else {
-            input = fs.createReadStream(this.file);
-        }
+        const string = data?.toString('utf-8') ?? (await fs.readFile(this.file, 'utf-8'));
+        const lines = string.split('\n');
         const context = new Context(this);
-        const reader = readline.createInterface({ input });
         let state = 0;
         this.rawData = [];
         this.rawMap.clear();
@@ -43,7 +36,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         let frontMatters = '';
         let sep = '';
         let lineno = 0;
-        for await (const line of reader) {
+        for (const line of lines) {
             lineno++;
             const record = TagRecord.parse(line, this);
             [context.raw, context.tag] = record ?? [undefined, undefined];

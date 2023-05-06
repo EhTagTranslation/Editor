@@ -5,4 +5,10 @@ import './commands/tag/index.js';
 import './commands/github-actions/index.js';
 import { program } from 'commander';
 
-program.parse();
+async function main(): Promise<void> {
+    console.profile();
+    await program.parseAsync();
+    console.profileEnd();
+}
+
+void main();

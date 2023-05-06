@@ -109,6 +109,7 @@ export interface Tag<T = TagType> {
 
 /** 翻译数据序列化的类型 */
 export type TagType = 'raw' | 'ast' | 'html' | 'text' | 'full';
+export const TagType = ['full', 'raw', 'ast', 'html', 'text'] as const;
 
 interface CellTypeMap extends Record<TagType, unknown> {
     raw: string;

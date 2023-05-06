@@ -113,6 +113,18 @@ export class Database implements DatabaseView {
         };
     }
 
+    async renderAll(): Promise<Map<TagType, RepoData<TagType>>> {
+        const data = new Map<TagType, RepoData<TagType>>();
+        const info = await this.repoInfo();
+        for (const type of TagType) {
+            data.set(type, {
+                ...info,
+                data: Object.values(this.data).map((ns) => ns.render(type)),
+            });
+        }
+        return data;
+    }
+
     get(raw: RawTag): TagRecord | undefined {
         for (const ns of NamespaceName) {
             const record = this.data[ns].get(raw);
