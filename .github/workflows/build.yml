@@ -7,7 +7,19 @@ on:
       - gh-pages
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18'
+      - name: Install
+        uses: bahmutov/npm-install@v1
+
   tool:
+    needs: install
     runs-on: ubuntu-latest
 
     steps:
@@ -49,6 +61,7 @@ jobs:
           allowUpdates: true
 
   server:
+    needs: install
     runs-on: ubuntu-latest
 
     steps:
@@ -92,6 +105,7 @@ jobs:
         run: flyctl deploy --remote-only
 
   browser:
+    needs: install
     runs-on: ubuntu-latest
 
     steps:
@@ -99,7 +113,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
       - name: Install
         uses: bahmutov/npm-install@v1
       - name: Set env
