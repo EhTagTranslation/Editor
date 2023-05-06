@@ -9,14 +9,15 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
+    # this step is useless because of: https://github.com/bahmutov/npm-install/issues/175 and https://github.com/actions/toolkit/issues/1377
     steps:
       - uses: actions/checkout@v3.5.2
-      - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: '18'
-      - name: Install
-        uses: bahmutov/npm-install@v1.8.32
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v3.6.0
+      #   with:
+      #     node-version: '18'
+      # - name: Install
+      #   uses: bahmutov/npm-install@v1
 
   tool:
     needs: install
@@ -29,7 +30,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1.8.32
+        uses: bahmutov/npm-install@v1
       - name: Set env
         run: node ./scripts/info.js
 
@@ -72,7 +73,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1.8.32
+        uses: bahmutov/npm-install@v1
       - name: Set env
         run: node ./scripts/info.js
 
@@ -115,7 +116,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1.8.32
+        uses: bahmutov/npm-install@v1
       - name: Set env
         run: node ./scripts/info.js
 
