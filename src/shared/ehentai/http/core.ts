@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, RawAxiosRequestConfig, AxiosError, isAxiosError } from 'axios';
+import axios, { AxiosResponse, RawAxiosRequestConfig, isAxiosError } from 'axios';
 import { config as defaultConfig } from './config.js';
 
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));

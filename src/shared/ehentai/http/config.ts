@@ -28,7 +28,8 @@ const COOKIE = (() => {
     const value =
         (process.env['EH_COOKIE'] ?? '').trim() ||
         (process.env['eh_cookie'] ?? '').trim() ||
-        'ipb_member_id=5550882; ipb_pass_hash=8ac07d0a410dc5576c7c1c7b0e2c223b; igneous=1458eb0dc;';
+        // https://exhentai.home.blog/2021/10/24/jc01/
+        'ipb_member_id=7013610; ipb_pass_hash=1ff72e5df8f1949f2b48b49748432eca; igneous=298743a95;';
     const map = new Map<string, string>();
     for (const c of value.split(';')) {
         const match = /^\s*([^=]+?)\s*=\s*(.+?)\s*$/.exec(c);
