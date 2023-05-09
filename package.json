@@ -31,6 +31,7 @@
   "private": true,
   "dependencies": {
     "@actions/core": "~1.10.0",
+    "@actions/http-client": "~2.1.0",
     "@actions/exec": "~1.1.1",
     "@fastify/static": "^6.10.1",
     "@nestjs/common": "~9.4.0",
@@ -57,7 +58,6 @@
     "markdown-it": "~13.0.1",
     "node-cache": "~5.1.2",
     "parse5": "~7.1.2",
-    "proxy-agent": "^6.1.2",
     "reflect-metadata": "~0.1.13",
     "rxjs": "~7.8.1",
     "simple-git": "~3.18.0",

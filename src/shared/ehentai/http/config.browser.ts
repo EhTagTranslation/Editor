@@ -1,7 +1,5 @@
 import type { RawAxiosRequestConfig } from 'axios';
 
-export function config(_url: string, _config: RawAxiosRequestConfig): RawAxiosRequestConfig<never> {
-    return {
-        headers: {},
-    };
+export function config(config: RawAxiosRequestConfig): RawAxiosRequestConfig {
+    return config;
 }

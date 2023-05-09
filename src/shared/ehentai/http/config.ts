@@ -1,14 +1,7 @@
 import type { RawAxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import { ProxyAgent } from 'proxy-agent';
+import { HttpClient } from '@actions/http-client';
 
-const agent = new ProxyAgent();
-const proxyConfig: RawAxiosRequestConfig<never> = {
-    httpAgent: agent,
-    httpsAgent: agent,
-    proxy: false,
-};
-
-const fakeHeaders: RawAxiosRequestHeaders = {
+const fakeHeaders = {
     dnt: '1',
     'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"',
     'sec-ch-ua-mobile': '?0',
@@ -22,7 +15,7 @@ const fakeHeaders: RawAxiosRequestHeaders = {
     'sec-fetch-site': 'same-site',
     'accept-Encoding': 'gzip, deflate, br',
     'accept-language': 'en,en-US;q=0.9',
-};
+} satisfies RawAxiosRequestHeaders;
 
 const COOKIE = (() => {
     const value =
@@ -40,9 +33,10 @@ const COOKIE = (() => {
     return [...map].map(([k, v]) => `${k}=${v}`).join(';');
 })();
 
-export function config(url: string, _config: RawAxiosRequestConfig): RawAxiosRequestConfig<never> {
-    const headers = { ...fakeHeaders };
-    const u = new URL(url, 'https://e-hentai.org');
+const client = new HttpClient(fakeHeaders['user-agent']);
+export function config(config: RawAxiosRequestConfig): RawAxiosRequestConfig {
+    const headers: RawAxiosRequestHeaders = { ...fakeHeaders, ...config.headers };
+    const u = new URL(config.url ?? '', 'https://e-hentai.org');
     let { origin } = u;
     if (origin.endsWith('.e-hentai.org')) {
         origin = 'https://e-hentai.org';
@@ -52,8 +46,12 @@ export function config(url: string, _config: RawAxiosRequestConfig): RawAxiosReq
     if (u.hostname.endsWith('hentai.org')) {
         headers['cookie'] = COOKIE;
     }
+    const agent = client.getAgent(u.href);
     return {
-        ...proxyConfig,
+        httpAgent: agent,
+        httpsAgent: agent,
+        proxy: false,
+        ...config,
         headers,
     };
 }

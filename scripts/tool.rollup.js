@@ -13,7 +13,7 @@ const watch = process.argv.includes('--watch');
 const minify = process.argv.includes('--minify');
 
 const ignore = [];
-const external = ['proxy-agent'];
+const external = [];
 
 /** @type {import('type-fest').PackageJson} */
 const packageJson = await fs.readJSON('./package.json');
