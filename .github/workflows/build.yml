@@ -28,7 +28,6 @@ jobs:
         with:
           node-version: 18
           pnpm-version: 8
-          args: --offline
       - name: Set env
         run: node ./scripts/info.js
 
@@ -47,7 +46,7 @@ jobs:
         # zip is not working with symbolic link
         run: |
           cd ./dist/tool
-          pnpm install --prod --offline --no-lockfile --node-linker=hoisted
+          pnpm install --prod --no-lockfile --node-linker=hoisted
           zip -r ../../release.zip .
       - name: Publish release
         uses: ncipollo/release-action@v1.12.0
@@ -72,7 +71,6 @@ jobs:
         with:
           node-version: 18
           pnpm-version: 8
-          args: --offline
       - name: Set env
         run: node ./scripts/info.js
 
@@ -95,7 +93,7 @@ jobs:
         run: pnpm test:server
       - name: Install Prod
         if: github.ref == 'refs/heads/master'
-        run: pnpm install --prod --offline
+        run: pnpm install --prod
       - name: Deploy
         if: github.ref == 'refs/heads/master'
         env:
@@ -113,7 +111,6 @@ jobs:
         with:
           node-version: 18
           pnpm-version: 8
-          args: --offline
       - name: Set env
         run: node ./scripts/info.js
 
