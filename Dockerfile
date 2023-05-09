@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY / /app
 
-RUN yarn install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile
 
 ENTRYPOINT [ "node", "dist/server/main.js" ]

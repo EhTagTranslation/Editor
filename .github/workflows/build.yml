@@ -9,15 +9,13 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
-    # this step is useless because of: https://github.com/bahmutov/npm-install/issues/175 and https://github.com/actions/toolkit/issues/1377
     steps:
       - uses: actions/checkout@v3.5.2
-      # - name: Setup Node.js
-      #   uses: actions/setup-node@v3.6.0
-      #   with:
-      #     node-version: '18'
-      # - name: Install
-      #   uses: bahmutov/npm-install@v1
+      - name: Install
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+        with:
+          node-version: 18
+          pnpm-version: 8
 
   tool:
     needs: install
@@ -25,30 +23,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.5.2
-      - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+        with:
+          node-version: 18
+          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
-        run: yarn build:tool
+        run: pnpm build:tool
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: tool
           path: ./dist/tool
       - name: Test
-        run: yarn test:tool
+        run: pnpm test:tool
 
       - name: Prepare release
         if: github.ref == 'refs/heads/master'
         run: |
           cd ./dist/tool
-          yarn install --production --prefer-offline --no-bin-links
+          pnpm install --prod --prefer-offline
           zip -r ../../release.zip .
       - name: Publish release
         uses: ncipollo/release-action@v1.12.0
@@ -68,17 +65,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+        with:
+          node-version: 18
+          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
-        run: yarn build:server
+        run: pnpm build:server
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -93,12 +89,10 @@ jobs:
           APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
           DB_PATH: db
           DB_REPO: EhTagTranslation/Database
-        run: yarn test:server
+        run: pnpm test:server
       - name: Install Prod
         if: github.ref == 'refs/heads/master'
-        uses: bahmutov/npm-install@v1
-        env:
-          NODE_ENV: production
+        run: pnpm install --prod --prefer-offline
       - name: Deploy
         if: github.ref == 'refs/heads/master'
         env:
@@ -111,21 +105,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3.5.2
-      - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
-        with:
-          node-version: '18'
       - name: Install
-        uses: bahmutov/npm-install@v1
+        uses: NullVoxPopuli/action-setup-pnpm@v2
+        with:
+          node-version: 18
+          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
       - name: Build
-        run: yarn build:browser
+        run: pnpm build:browser
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: browser
           path: ./dist/browser
       - name: Test
-        run: yarn test:browser
+        run: pnpm test:browser

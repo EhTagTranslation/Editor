@@ -3,7 +3,6 @@ import Cache from 'node-cache';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Octokit } from '@octokit/rest';
-import type { OctokitOptions } from '@octokit/core/dist-types/types';
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { InjectableBase } from '../injectable-base.js';
@@ -58,7 +57,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
     }
 
-    private createOctokit(options?: OctokitOptions): Octokit {
+    private createOctokit(options: ConstructorParameters<typeof Octokit>[0]): Octokit {
         return new Octokit({
             log: {
                 debug: (message: string) => this.logger.debug(message),
