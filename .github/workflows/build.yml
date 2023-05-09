@@ -43,9 +43,10 @@ jobs:
 
       - name: Prepare release
         if: github.ref == 'refs/heads/master'
+        # zip is not working with symbolic link
         run: |
           cd ./dist/tool
-          pnpm install --prod --prefer-offline
+          pnpm install --prod --prefer-offline --no-lockfile --node-linker=hoisted
           zip -r ../../release.zip .
       - name: Publish release
         uses: ncipollo/release-action@v1.12.0
