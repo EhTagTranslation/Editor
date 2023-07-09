@@ -7,7 +7,7 @@ interface GitTag {
 }
 
 export async function lsRemoteTags(git: SimpleGit): Promise<GitTag[]> {
-    const ret = await git.listRemote({ '--tags': null, '--sort': '-creatordate' });
+    const ret = await git.listRemote({ '--tags': null, '--sort': '-version:refname' });
     return ret
         .split('\n')
         .map((s) => {
