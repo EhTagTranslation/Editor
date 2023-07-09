@@ -57,7 +57,7 @@ function normalizeUrl(url: string): {
     //                                                |              原始图片哈希（sha1）              |    原始图片信息      |后两者只有封面图有|固定
     const eh = /^(http|https):\/\/(?<domain>(ul\.)?ehgt\.org(\/t)?|(s\.)?exhentai\.org\/t)\/(?<tail>.+)$/.exec(url);
     if (eh?.groups) {
-        url = 'https://ehgt.org/t/' + eh.groups['tail'];
+        url = 'https://ehgt.org/' + eh.groups['tail'];
         return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
