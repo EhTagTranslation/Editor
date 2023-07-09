@@ -8,7 +8,10 @@ interface LocalStorageItem {
 }
 
 class LocalStorageItemImpl implements LocalStorageItem {
-    constructor(private readonly token: string, private readonly debug: DebugService) {}
+    constructor(
+        private readonly token: string,
+        private readonly debug: DebugService,
+    ) {}
 
     valueChange = new BehaviorSubject<string | null>(this.value);
     get value(): string | null {

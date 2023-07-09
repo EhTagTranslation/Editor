@@ -25,7 +25,10 @@ interface RepoInfo {
 
 @Injectable()
 export class DatabaseService extends InjectableBase implements OnModuleInit {
-    constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
+    constructor(
+        private readonly config: ConfigService,
+        private readonly octokit: OctokitService,
+    ) {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
         this.repo = this.config.get('DB_REPO', '/');

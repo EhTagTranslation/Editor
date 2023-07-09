@@ -7,7 +7,10 @@ import { map, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class RouteService {
-    constructor(private readonly router: Router, private readonly route: ActivatedRoute) {}
+    constructor(
+        private readonly router: Router,
+        private readonly route: ActivatedRoute,
+    ) {}
 
     navigate(commands: unknown[], params: Params, replaceUrl = true): void {
         void this.router.navigate(commands, {

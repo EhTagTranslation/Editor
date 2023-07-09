@@ -10,7 +10,10 @@ import { finalize } from 'rxjs/operators';
     styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-    constructor(private readonly github: GithubOauthService, private readonly release: GithubReleaseService) {}
+    constructor(
+        private readonly github: GithubOauthService,
+        private readonly release: GithubReleaseService,
+    ) {}
 
     user?: GithubUser;
 

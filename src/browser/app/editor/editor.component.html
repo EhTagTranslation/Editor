@@ -87,7 +87,7 @@
           <div
             class="md-container"
             *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules"
-            [innerHTML]="item | markdown | mark : '' : true"
+            [innerHTML]="item | markdown | mark: '' : true"
           ></div>
         </mat-hint>
         <mat-form-field>
@@ -142,7 +142,7 @@
                       <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
                       <span
                         class="hint-raw"
-                        [innerHTML]="option.suggest.raw | mark : (tagSuggestTerm | async) : false"
+                        [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async) : false"
                       ></span>
                     </span>
                     <span *ngIf="option.isSlaved">
@@ -151,7 +151,7 @@
                         <span class="hint-namespace">{{ option.master.namespace }}: </span>
                         <span
                           class="hint-raw"
-                          [innerHTML]="option.master.raw | mark : (tagSuggestTerm | async) : false"
+                          [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async) : false"
                         ></span>
                       </span>
                     </span>
@@ -249,18 +249,18 @@
         </mat-card>
         <mat-card>
           <mat-card-subtitle>名称 </mat-card-subtitle>
-          <mat-card-content class="md-container eh-name" [innerHtml]="(rendered | async)?.name | mark : '' : true">
+          <mat-card-content class="md-container eh-name" [innerHtml]="(rendered | async)?.name | mark: '' : true">
           </mat-card-content>
         </mat-card>
       </div>
       <mat-card>
         <mat-card-subtitle>描述 </mat-card-subtitle>
-        <mat-card-content class="md-container eh-intro" [innerHtml]="(rendered | async)?.intro | mark : '' : true">
+        <mat-card-content class="md-container eh-intro" [innerHtml]="(rendered | async)?.intro | mark: '' : true">
         </mat-card-content>
       </mat-card>
       <mat-card>
         <mat-card-subtitle>外部链接 </mat-card-subtitle>
-        <mat-card-content class="md-container eh-links" [innerHtml]="(rendered | async)?.links | mark : '' : true">
+        <mat-card-content class="md-container eh-links" [innerHtml]="(rendered | async)?.links | mark: '' : true">
         </mat-card-content>
       </mat-card>
     </div>

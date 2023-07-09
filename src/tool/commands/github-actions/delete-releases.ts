@@ -7,7 +7,10 @@ import { lsRemoteTags } from './utils.js';
 import type { OptionValues } from 'commander';
 
 class Main {
-    constructor(readonly KEEP_RELEASE = 3, readonly REPO_PATH = '.') {
+    constructor(
+        readonly KEEP_RELEASE = 3,
+        readonly REPO_PATH = '.',
+    ) {
         this.REPO_PATH = path.resolve(REPO_PATH);
     }
     async deleteRelease(): Promise<void> {

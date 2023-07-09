@@ -57,7 +57,11 @@ a {
 code {
   background: rgba(128, 128, 64, 0.1);
   border-radius: 4px;
-  font-family: Consolas, Courier New, Courier, monospace;
+  font-family:
+    Consolas,
+    Courier New,
+    Courier,
+    monospace;
   font-size: calc(100% - 2px);
   padding: 2px 4px;
 }

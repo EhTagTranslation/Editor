@@ -375,7 +375,10 @@ function normalizeTagRef(node: TagRefNode, context: Context): void {
 }
 
 class AstBuilder {
-    constructor(readonly src: string, readonly context: Context | undefined) {
+    constructor(
+        readonly src: string,
+        readonly context: Context | undefined,
+    ) {
         this.build();
     }
 

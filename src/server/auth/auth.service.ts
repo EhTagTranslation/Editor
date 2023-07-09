@@ -8,7 +8,10 @@ export { OAuthAppUserAuthentication as Authentication };
 
 @Injectable()
 export class AuthService extends InjectableBase {
-    constructor(private readonly config: ConfigService, private readonly octokit: OctokitService) {
+    constructor(
+        private readonly config: ConfigService,
+        private readonly octokit: OctokitService,
+    ) {
         super();
     }
 

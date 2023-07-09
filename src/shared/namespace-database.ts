@@ -16,7 +16,11 @@ interface TagLine {
 }
 
 export class NamespaceDatabase implements NamespaceDatabaseView {
-    constructor(readonly name: NamespaceName, readonly file: string, readonly database: Database) {}
+    constructor(
+        readonly name: NamespaceName,
+        readonly file: string,
+        readonly database: Database,
+    ) {}
 
     frontMatters!: FrontMatters;
     private rawData = new Array<TagLine>();

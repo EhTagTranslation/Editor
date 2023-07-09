@@ -16,7 +16,10 @@ function escape(value: string): string {
 }
 
 export class TagRecord implements Tag<Cell> {
-    constructor(data: Tag<'raw'>, readonly namespace: NamespaceDatabaseView) {
+    constructor(
+        data: Tag<'raw'>,
+        readonly namespace: NamespaceDatabaseView,
+    ) {
         this.name = new Cell(data.name.trim());
         this.intro = new Cell(data.intro.trim());
         this.links = new Cell(data.links.trim());

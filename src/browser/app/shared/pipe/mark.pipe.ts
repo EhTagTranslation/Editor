@@ -61,7 +61,10 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
     pure: true,
 })
 export class MarkPipe implements PipeTransform {
-    constructor(private readonly sanitizer: DomSanitizer, private readonly location: Location) {
+    constructor(
+        private readonly sanitizer: DomSanitizer,
+        private readonly location: Location,
+    ) {
         this.loadingImg = this.location.prepareExternalUrl('/assets/loading.gif');
     }
 

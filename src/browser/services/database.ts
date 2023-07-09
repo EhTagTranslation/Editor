@@ -3,7 +3,11 @@ import type { CacheService } from './cache.service';
 import { DatabaseInMemory as DatabaseInMemoryBase } from './database.shared';
 
 export class DatabaseInMemory extends DatabaseInMemoryBase {
-    constructor(private readonly cacheService: CacheService, storage?: RepoData<'raw'>, revision?: number) {
+    constructor(
+        private readonly cacheService: CacheService,
+        storage?: RepoData<'raw'>,
+        revision?: number,
+    ) {
         super(storage, revision);
         this.revision = revision ?? -1;
     }

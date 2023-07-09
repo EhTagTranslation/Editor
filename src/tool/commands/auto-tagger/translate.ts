@@ -9,13 +9,16 @@ import { translateByWiki } from './lib/translate-by-wiki.js';
 
 async function findJaInGalleryTitles(raw: RawTag, galleries: Gallery[], page = 1): Promise<string | undefined> {
     let found;
-    const counter = galleries.reduce((c, g) => {
-        const parody = g.parsed_jpn.parody;
-        if (parody && parody !== 'よろず') {
-            c[parody] = (c[parody] ?? 0) + 1;
-        }
-        return c;
-    }, {} as Record<string, number>);
+    const counter = galleries.reduce(
+        (c, g) => {
+            const parody = g.parsed_jpn.parody;
+            if (parody && parody !== 'よろず') {
+                c[parody] = (c[parody] ?? 0) + 1;
+            }
+            return c;
+        },
+        {} as Record<string, number>,
+    );
     for (const key in counter) {
         const splited = key.split(/(, |、)/g);
         if (splited.length >= 2) {

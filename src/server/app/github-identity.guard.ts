@@ -16,7 +16,10 @@ const DAFAULT_MIN_ACCOUNT_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class GithubIdentityGuard extends InjectableBase implements CanActivate {
-    constructor(private readonly octokit: OctokitService, private readonly config: ConfigService) {
+    constructor(
+        private readonly octokit: OctokitService,
+        private readonly config: ConfigService,
+    ) {
         super();
     }
     async isBlocked(user: UserInfo): Promise<boolean> {
