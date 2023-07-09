@@ -79,9 +79,6 @@ jobs:
           DB_PATH: db
           DB_REPO: EhTagTranslation/Database
         run: pnpm test:server
-      - name: Install Prod
-        if: github.ref == 'refs/heads/master'
-        run: pnpm install --prod
       - name: Deploy
         if: github.ref == 'refs/heads/master'
         env:
