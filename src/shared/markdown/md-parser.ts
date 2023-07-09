@@ -95,6 +95,7 @@ const knownHosts = new Map<string, string>([
     ['azz.net', '爱赞助'],
     ['hiccears.com', 'HicceArs'],
     ['gumroad.com', 'Gumroad'],
+    ['booth.pm', 'BOOTH'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
