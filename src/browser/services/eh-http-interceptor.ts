@@ -1,9 +1,9 @@
-import { Injectable, ClassProvider } from '@angular/core';
-import { mergeMap, tap, map, retryWhen } from 'rxjs/operators';
+import { Injectable, type ClassProvider } from '@angular/core';
+import { mergeMap, tap, map, retry } from 'rxjs/operators';
 import {
-    HttpEvent,
+    type HttpEvent,
     HttpHandler,
-    HttpInterceptor,
+    type HttpInterceptor,
     HttpRequest,
     HTTP_INTERCEPTORS,
     HttpEventType,
@@ -92,35 +92,33 @@ export class EhHttpInterceptor implements HttpInterceptor {
         const r = of(req).pipe(
             map((rawReq) => this.getReq(rawReq)),
             mergeMap((authReq) => next.handle(authReq)),
-            tap(
-                (response) => {
+            tap({
+                next: (response) => {
                     if (response.type === HttpEventType.Response) {
                         this.handleEtag(response);
                     }
                 },
-                (error: Error) => {
+                error: (error: Error) => {
                     this.debug.error('catchError', error);
                     if (isHttpErrorResponse(error)) {
                         this.handleEtag(error);
                         this.handleError(error);
                     }
                 },
-            ),
-            retryWhen((attempts) =>
-                attempts.pipe(
-                    mergeMap((error: Error, i) => {
-                        if (
-                            !isHttpErrorResponse(error) ||
-                            i !== 0 ||
-                            (error.status < 500 && error.status !== 401 && error.status !== 403) ||
-                            error.headers.get('X-RateLimit-Remaining') === '0'
-                        ) {
-                            return throwError(error);
-                        }
-                        return timer(1000);
-                    }),
-                ),
-            ),
+            }),
+            retry({
+                delay: (error: Error, retryCount) => {
+                    if (
+                        !isHttpErrorResponse(error) ||
+                        retryCount !== 0 ||
+                        (error.status < 500 && error.status !== 401 && error.status !== 403) ||
+                        error.headers.get('X-RateLimit-Remaining') === '0'
+                    ) {
+                        return throwError(() => error);
+                    }
+                    return timer(1000);
+                },
+            }),
         );
         return r;
     }

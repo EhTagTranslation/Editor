@@ -27,7 +27,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "noPropertyAccessFromIndexSignature": true,
 
     "emitDecoratorMetadata": true,

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { type Routes, RouterModule } from '@angular/router';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
 import { EditorDenyComponent } from './editor-deny/editor-deny.component';

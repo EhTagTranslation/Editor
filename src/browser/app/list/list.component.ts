@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import type { SortDirection } from '@angular/material/sort';
 import type { Params } from '@angular/router';
 import { Observable, Subject, combineLatest, BehaviorSubject, from } from 'rxjs';
@@ -6,7 +6,7 @@ import { map, tap, shareReplay, debounceTime, filter, mergeMap } from 'rxjs/oper
 import type { NamespaceName, Tag, RepoData } from '#shared/interfaces/ehtag';
 import { isNamespaceName } from '#shared/namespace';
 import { regexFromSearch } from '../shared/pipe/mark.pipe';
-import { editableNs, ETKey } from '../../interfaces/ehtranslation';
+import { editableNs, type ETKey } from '../../interfaces/ehtranslation';
 import { RouteService } from '#browser/services/route.service';
 import { DebugService } from '#browser/services/debug.service';
 import { TitleService } from '#browser/services/title.service';

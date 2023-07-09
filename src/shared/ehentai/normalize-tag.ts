@@ -3,7 +3,7 @@ import type { NamespaceName } from '../interfaces/ehtag.js';
 import { isNamespaceName } from '../namespace.js';
 import { suggestTag } from './suggest-tag.js';
 import { get } from './http/index.js';
-import { Tag, tagCache } from './tag.js';
+import { type Tag, tagCache } from './tag.js';
 import { STATISTICS } from './statistics.js';
 
 const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();

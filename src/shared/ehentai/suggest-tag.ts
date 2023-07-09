@@ -1,7 +1,7 @@
 import type { RawTag } from '../raw-tag.js';
-import { api, ApiRequest, ResponseOf } from './http/index.js';
+import { api, type ApiRequest, type ResponseOf } from './http/index.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
-import { MasterTag, store, Tag } from './tag.js';
+import { store, type MasterTag, type Tag } from './tag.js';
 import { STATISTICS } from './statistics.js';
 
 interface TagSuggestRequest

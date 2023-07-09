@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { createParamDecorator, type ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { __decorate } from 'tslib';

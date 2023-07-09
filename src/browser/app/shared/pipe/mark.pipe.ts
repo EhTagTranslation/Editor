@@ -1,7 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, type PipeTransform } from '@angular/core';
 import { Location } from '@angular/common';
 import escapeStringRegexp from 'escape-string-regexp';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { escapeHtml } from 'markdown-it/lib/common/utils';
 
 const parser = new DOMParser();

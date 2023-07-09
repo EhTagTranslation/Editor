@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext, BadRequestException, Header } from '@nestjs/common';
+import { createParamDecorator, type ExecutionContext, BadRequestException, Header } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 import { ApiQuery, ApiProduces } from '@nestjs/swagger';
 import { __decorate } from 'tslib';

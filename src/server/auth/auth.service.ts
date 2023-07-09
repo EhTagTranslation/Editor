@@ -4,7 +4,7 @@ import type { OAuthAppUserAuthentication, WebFlowAuthOptions } from '@octokit/au
 import { InjectableBase } from '../injectable-base.js';
 import { OctokitService } from '../octokit/octokit.service.js';
 
-export { OAuthAppUserAuthentication as Authentication };
+export type { OAuthAppUserAuthentication as Authentication };
 
 @Injectable()
 export class AuthService extends InjectableBase {

@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus, HttpServer, Logger } from '@nestjs/common';
+import { type ArgumentsHost, Catch, type ExceptionFilter, HttpStatus, type HttpServer, Logger } from '@nestjs/common';
 import { BaseExceptionFilter, AbstractHttpAdapter } from '@nestjs/core';
 
 @Catch()

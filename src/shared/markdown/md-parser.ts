@@ -4,17 +4,17 @@ import type { FixedLengthArray } from 'type-fest';
 import { Context } from './context.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
 import {
-    Tree,
-    ParaNode,
-    ContainerNode,
-    TextNode,
-    TagRefNode,
-    BreakNode,
-    ImageNode,
-    LinkNode,
+    type Tree,
+    type ParaNode,
+    type ContainerNode,
+    type TextNode,
+    type TagRefNode,
+    type BreakNode,
+    type ImageNode,
+    type LinkNode,
     isNodeType,
-    EmphasisNode,
-    StrongNode,
+    type EmphasisNode,
+    type StrongNode,
 } from '../interfaces/ehtag.ast.js';
 import { parseTag } from '../tag.js';
 

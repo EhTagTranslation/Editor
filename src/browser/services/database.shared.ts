@@ -1,12 +1,12 @@
 import {
-    Sha1Value,
-    TagType,
-    NamespaceData,
-    NamespaceInfo,
+    type Sha1Value,
+    type TagType,
+    type NamespaceData,
+    type NamespaceInfo,
     NamespaceName,
-    FrontMatters,
-    RepoData,
-    RepoInfo,
+    type FrontMatters,
+    type RepoData,
+    type RepoInfo,
 } from '#shared/interfaces/ehtag';
 import type { DatabaseView, NamespaceDatabaseView } from '#shared/interfaces/database';
 import { Context } from '#shared/markdown';

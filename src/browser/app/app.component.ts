@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, type OnInit, Renderer2 } from '@angular/core';
 import { EhTagConnectorService } from '#browser/services/eh-tag-connector.service';
 import { Location } from '@angular/common';
 import { DbRepoService } from '#browser/services/db-repo.service';

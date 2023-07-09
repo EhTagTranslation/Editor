@@ -1,5 +1,5 @@
 import { tagAbbr } from '../tag.js';
-import { Node, isNodeType, isContainer } from '../interfaces/ehtag.ast.js';
+import { type Node, isNodeType, isContainer } from '../interfaces/ehtag.ast.js';
 
 export function renderText(node: Node | readonly Node[]): string {
     if (!('type' in node)) return node.map(renderText).join('').trim();

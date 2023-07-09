@@ -1,9 +1,9 @@
 import type { AsyncReturnType } from 'type-fest';
 import Cache from 'node-cache';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Octokit } from '@octokit/rest';
-import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { InjectableBase } from '../injectable-base.js';
 import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag';

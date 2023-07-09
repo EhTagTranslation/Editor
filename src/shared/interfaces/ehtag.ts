@@ -13,7 +13,9 @@ export const Sha1Value = Object.freeze(
             return value as Sha1Value;
         },
         {
+            /** 表示空值，为全 0 的 Sha1 字符串 */
             empty: '0'.repeat(40) as Sha1Value,
+            /** 检查输入是否为一个有效的 Sha1 字符串 */
             validate(value: unknown): value is Sha1Value {
                 return typeof value == 'string' && value.length === 40 && value.trim().length === 40;
             },

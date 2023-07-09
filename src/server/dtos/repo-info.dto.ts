@@ -1,14 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, MinLength } from 'class-validator';
 import {
-    RepoInfo,
-    Commit,
-    NamespaceInfo,
-    Signature,
-    Sha1Value,
-    FrontMatters,
+    type RepoInfo,
+    type Commit,
+    type NamespaceInfo,
+    type Signature,
+    type Sha1Value,
+    type FrontMatters,
     NamespaceName,
-    Tag,
+    type Tag,
 } from '#shared/interfaces/ehtag';
 import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 

@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError, OperatorFunction } from 'rxjs';
+import { Observable, of, throwError, type OperatorFunction } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import type { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';

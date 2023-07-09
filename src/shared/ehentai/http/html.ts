@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { request } from './core.js';
-import { parse, DefaultTreeAdapterMap } from 'parse5';
+import { parse, type DefaultTreeAdapterMap } from 'parse5';
 
 export type Document = DefaultTreeAdapterMap['document'];
 export async function html(url: string): Promise<AxiosResponse<Document>> {

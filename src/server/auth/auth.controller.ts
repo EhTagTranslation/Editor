@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, Header, Headers, BadRequestException } from '@nestjs/common';
 import { ApiExcludeEndpoint } from '@nestjs/swagger';
 import { InjectableBase } from '../injectable-base.js';
-import { AuthService, Authentication } from './auth.service.js';
+import { AuthService, type Authentication } from './auth.service.js';
 
 @Controller('auth')
 export class AuthController extends InjectableBase {

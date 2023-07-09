@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
+import { Router, type CanActivateFn } from '@angular/router';
 import { parseNamespace } from '#shared/namespace';
 
 export const canActivate: CanActivateFn = (route) => {

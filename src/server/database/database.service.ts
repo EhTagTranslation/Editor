@@ -1,16 +1,16 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Octokit } from '@octokit/rest';
 import type { AsyncReturnType } from 'type-fest';
 import fs from 'fs-extra';
 import path from 'path';
 import { Database } from '#shared/database';
-import { Sha1Value, NamespaceName, Commit } from '#shared/interfaces/ehtag';
+import { type Sha1Value, NamespaceName, type Commit } from '#shared/interfaces/ehtag';
 import type { TagRecord } from '#shared/tag-record';
 import type { RawTag } from '#shared/raw-tag';
 import { Context } from '#shared/markdown/index';
 import { InjectableBase } from '../injectable-base.js';
-import { OctokitService, UserInfo } from '../octokit/octokit.service.js';
+import { OctokitService, type UserInfo } from '../octokit/octokit.service.js';
 
 type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
 
