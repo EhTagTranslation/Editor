@@ -24,7 +24,7 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
         if (!useEx) {
             throw ex;
         }
-        console.warn(`Ex 访问失败，回退到 Eh`);
+        console.warn(`Ex 访问失败，回退到 Eh: ${ex}`);
         useEx = false;
         return searchTagImpl(ns, raw);
     }
