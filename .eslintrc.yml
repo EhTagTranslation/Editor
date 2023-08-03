@@ -33,7 +33,7 @@ rules:
       argsIgnorePattern: ^_
   '@typescript-eslint/prefer-for-of': [1]
   '@typescript-eslint/prefer-function-type': [1]
-  '@typescript-eslint/prefer-nullish-coalescing': [1]
+  '@typescript-eslint/prefer-nullish-coalescing': [1, { ignorePrimitives: { string: true } }]
   '@typescript-eslint/prefer-optional-chain': [1]
   '@typescript-eslint/ban-types':
     - 1

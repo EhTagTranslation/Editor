@@ -12,7 +12,7 @@ import { InjectableBase } from '../injectable-base.js';
 import { OctokitService, type UserInfo } from '../octokit/octokit.service.js';
 
 /* 账号最少需要注册后 15 天 */
-const DAFAULT_MIN_ACCOUNT_AGE = 15 * 24 * 60 * 60 * 1000;
+const DEFAULT_MIN_ACCOUNT_AGE = 15 * 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class GithubIdentityGuard extends InjectableBase implements CanActivate {
@@ -52,7 +52,7 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
         }
         if (
             Date.parse(user.created_at) >=
-            Date.now() - Number(this.config.get('MIN_ACCOUNT_AGE', DAFAULT_MIN_ACCOUNT_AGE))
+            Date.now() - Number(this.config.get('MIN_ACCOUNT_AGE', DEFAULT_MIN_ACCOUNT_AGE))
         ) {
             throw new ForbiddenException('用户注册时间过短。');
         }
@@ -63,6 +63,10 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             value: user,
             configurable: true,
         });
+        let userInfo = `${user.name}(${user.login})`;
+        if (user.email) userInfo += `<${user.email}>`;
+        userInfo += `[${user.html_url}]`;
+        this.logger.debug(`用户 ${userInfo} 已登录`);
         return true;
     }
 }
