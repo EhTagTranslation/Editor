@@ -63,10 +63,7 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             value: user,
             configurable: true,
         });
-        let userInfo = `${user.name}(${user.login})`;
-        if (user.email) userInfo += `<${user.email}>`;
-        userInfo += `[${user.html_url}]`;
-        this.logger.debug(`用户 ${userInfo} 已登录`);
+        this.logger.debug(JSON.stringify(user));
         return true;
     }
 }
