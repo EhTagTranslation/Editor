@@ -50,6 +50,7 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
         } catch {
             throw new UnauthorizedException('用户信息无效，请重新登录。');
         }
+        this.logger.debug(JSON.stringify(user));
         if (
             Date.parse(user.created_at) >=
             Date.now() - Number(this.config.get('MIN_ACCOUNT_AGE', DEFAULT_MIN_ACCOUNT_AGE))
@@ -63,7 +64,6 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             value: user,
             configurable: true,
         });
-        this.logger.debug(JSON.stringify(user));
         return true;
     }
 }
