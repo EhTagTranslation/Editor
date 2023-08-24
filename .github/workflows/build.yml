@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Install
         uses: NullVoxPopuli/action-setup-pnpm@v2
         with:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Install
         uses: NullVoxPopuli/action-setup-pnpm@v2
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.3
+      - uses: actions/checkout@v3.6.0
       - name: Install
         uses: NullVoxPopuli/action-setup-pnpm@v2
         with:
