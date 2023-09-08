@@ -10,6 +10,9 @@ export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T,
     const response = await request<T>({
         url,
         method: 'POST',
+        headers: {
+            'content-type': typeof data == 'string' ? 'text/plain' : 'application/json',
+        },
         data,
     });
     return response;

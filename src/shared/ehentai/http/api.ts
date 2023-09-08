@@ -13,6 +13,9 @@ export async function api<T extends ApiRequest<string, unknown>>(payload: T): Pr
     const response = await request<ResponseOf<T>>({
         url: 'https://api.e-hentai.org/api.php',
         method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
         data: payload,
     });
     const data = response.data;
