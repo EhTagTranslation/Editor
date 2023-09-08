@@ -2,19 +2,20 @@ import type { RawAxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { HttpClient } from '@actions/http-client';
 
 const fakeHeaders = {
+    'accept-Encoding': 'gzip, deflate, br',
+    'accept-language': 'en,en-US;q=0.9',
+    accept: '*/*',
     dnt: '1',
-    'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"',
+    'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Microsoft Edge";v="116"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"Windows"',
-    'user-agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.53',
-    'content-type': 'application/json',
-    accept: '*/*',
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-site',
-    'accept-Encoding': 'gzip, deflate, br',
-    'accept-language': 'en,en-US;q=0.9',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69',
 } satisfies RawAxiosRequestHeaders;
 
 const COOKIE = (() => {
@@ -22,7 +23,9 @@ const COOKIE = (() => {
         (process.env['EH_COOKIE'] ?? '').trim() ||
         (process.env['eh_cookie'] ?? '').trim() ||
         // https://exhentai.home.blog/2021/10/24/jc01/
-        'ipb_member_id=7013610; ipb_pass_hash=1ff72e5df8f1949f2b48b49748432eca; igneous=298743a95;';
+        // 'ipb_member_id=7013610; ipb_pass_hash=1ff72e5df8f1949f2b48b49748432eca; igneous=298743a95;';
+        //https://level-plus.net/read.php?tid=786170
+        'ipb_member_id=5191636; ipb_pass_hash=544b6a81f07d356f3753032183d1fdfb; igneous=3fef094b8;';
     const map = new Map<string, string>();
     for (const c of value.split(';')) {
         const match = /^\s*([^=]+?)\s*=\s*(.+?)\s*$/.exec(c);
