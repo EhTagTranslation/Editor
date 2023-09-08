@@ -64,7 +64,7 @@ export class ToolsController extends InjectableBase {
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: ParsedLine })
     parse(@Body() line: string, @Format() format: TagType): ParsedLine {
-        if (line.indexOf('\n') >= 0) throw new BadRequestException('Parse one line at once');
+        if (line.includes('\n')) throw new BadRequestException('Parse one line at once');
         line = line.trim();
         const parsed = TagRecord.parse(line, this.db.data.data.other);
         if (!parsed) throw new BadRequestException('Invalid markdown table row');

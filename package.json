@@ -20,7 +20,7 @@
     "analyze:browser": "webpack-bundle-analyzer --mode=static --default-sizes=gzip --report=dist/browser/report.html dist/browser/stats.json",
     "clean": "rimraf dist",
     "format": "prettier --ignore-path .gitignore --write .",
-    "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern **/*.spec.ts -- ."
+    "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern '**/*.spec.ts' -- ."
   },
   "browser": {
     "./src/shared/ehentai/http/config.ts": "./src/shared/ehentai/http/config.browser.ts"

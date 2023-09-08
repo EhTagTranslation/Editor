@@ -23,7 +23,7 @@ async function run(db: Database, namespace?: NamespaceName, fromTag?: RawTag, si
     }
     console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
     for (const tag of tagFromEh) {
-        if ((namespace && tag.namespace !== namespace) || tag.namespace === 'temp' || tag.namespace === 'rows') {
+        if ((!!namespace && tag.namespace !== namespace) || tag.namespace === 'temp' || tag.namespace === 'rows') {
             continue;
         }
         if (fromTag && tag.raw < fromTag) {

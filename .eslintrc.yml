@@ -18,26 +18,30 @@ rules:
   '@typescript-eslint/explicit-function-return-type':
     - 2
     - allowExpressions: true
+      allowIIFEs: true
+      allowConciseArrowFunctionExpressionsStartingWithVoid: true
   '@typescript-eslint/no-extraneous-class':
     - 1
     - allowWithDecorator: true
       allowStaticOnly: true
-  '@typescript-eslint/no-parameter-properties':
+  '@typescript-eslint/no-import-type-side-effects': [2]
+  '@typescript-eslint/no-invalid-void-type': [2]
+  '@typescript-eslint/no-mixed-enums': [2]
+  '@typescript-eslint/parameter-properties':
     - 1
-    - allows: [protected readonly, private readonly, public readonly, readonly]
+    - allow: [protected readonly, private readonly, public readonly, readonly]
+      prefer: parameter-property
+  '@typescript-eslint/no-this-alias': [2, { allowedNames: ['self'] }]
   '@typescript-eslint/no-throw-literal': [2]
   'no-unused-vars': [0]
   '@typescript-eslint/no-unused-vars':
     - 1
     - varsIgnorePattern: ^_
       argsIgnorePattern: ^_
+  '@typescript-eslint/prefer-includes': [1]
   '@typescript-eslint/prefer-for-of': [1]
   '@typescript-eslint/prefer-function-type': [1]
   '@typescript-eslint/prefer-nullish-coalescing': [1, { ignorePrimitives: { string: true } }]
   '@typescript-eslint/prefer-optional-chain': [1]
-  '@typescript-eslint/ban-types':
-    - 1
-    - types:
-        object: false
   no-void: [1, { allowAsStatement: true }]
   eqeqeq: [1, smart]

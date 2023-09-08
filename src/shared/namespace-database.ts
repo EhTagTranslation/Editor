@@ -1,7 +1,5 @@
 import fs from 'fs-extra';
-import readline from 'readline';
 import { load, dump } from 'js-yaml';
-import { PassThrough } from 'stream';
 import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag.js';
 import { TagRecord } from './tag-record.js';
 import type { Database } from './database.js';

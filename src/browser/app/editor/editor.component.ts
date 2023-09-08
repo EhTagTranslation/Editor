@@ -311,14 +311,14 @@ export class EditorComponent implements OnInit {
                 return inputs;
             } else {
                 // 不要使用 inputs || original，inputs === '' 表示已经编辑
-                return inputs === null ? original : inputs;
+                return inputs ?? original;
             }
         }
 
         function mapCurrentCantEdit<T>(creating: boolean, original: T, inputs: T | null): T | null {
             if (creating) {
                 // 不要使用 inputs || original，inputs === '' 表示已经编辑
-                return inputs === null ? original : inputs;
+                return inputs ?? original;
             } else {
                 return original;
             }
