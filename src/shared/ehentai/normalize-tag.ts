@@ -34,6 +34,7 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
 
 /** 通过搜索功能确定 tag 是否存在 */
 async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
+    if (ns === 'rows') return false;
     const result = await searchTagImpl(ns, raw);
     const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
     let found = false;

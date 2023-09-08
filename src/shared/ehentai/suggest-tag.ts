@@ -78,6 +78,7 @@ async function suggestTagImpl(text: string): Promise<Tag[]> {
 
 /** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
 export async function suggestTag(ns: NamespaceName | undefined, raw: string, exactMatch = false): Promise<Tag[]> {
+    if (ns === 'rows') return [];
     raw = raw.trim().toLowerCase();
     const text = `${ns != null ? ns + ':' : ''}${raw}${exactMatch ? '$' : ''}`;
     const result = await suggestTagImpl(text);
