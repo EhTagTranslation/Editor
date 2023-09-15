@@ -10,13 +10,13 @@ import { type MasterTag, store } from './tag.js';
 export async function getTagGroups(): Promise<MasterTag[]> {
     const tags = [];
     for (let i = 0; i <= 11; i++) {
-        const response = (await get<string>(`https://repo.e-hentai.org/tools.php?act=taggroup&show=${i}`)).data;
+        const response = (await get<string>(`https://repo.e-hentai.org/tools/taggroup?show=${i}`)).data;
         const namespace = /\[<span style="font-weight:bold">(\w+)<\/span>\]/.exec(response)?.[1];
         if (!isNamespaceName(namespace)) {
             continue;
         }
         const matches = response.matchAll(
-            /<a href="https:\/\/repo\.e-hentai\.org\/tools\.php\?act=taggroup&amp;mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
+            /<a href="https:\/\/repo\.e-hentai\.org\/tools\/taggroup?mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
         );
         for (const match of matches) {
             const id = Number.parseInt(match[1]);
