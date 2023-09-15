@@ -59,6 +59,9 @@ dependencies:
   commander:
     specifier: ~11.0.0
     version: 11.0.0
+  entities:
+    specifier: ^4.5.0
+    version: 4.5.0
   escape-string-regexp:
     specifier: ~5.0.0
     version: 5.0.0
@@ -11731,7 +11734,7 @@ packages:
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.2.0
-      webpack: 5.88.2(esbuild@0.19.3)
+      webpack: 5.88.2(esbuild@0.18.17)
     dev: true
 
   /webpack-dev-middleware@6.1.1(webpack@5.88.2):
@@ -11792,7 +11795,7 @@ packages:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack: 5.88.2(esbuild@0.19.3)
+      webpack: 5.88.2(esbuild@0.18.17)
       webpack-dev-middleware: 5.3.3(webpack@5.88.2)
       ws: 8.14.1
     transitivePeerDependencies:

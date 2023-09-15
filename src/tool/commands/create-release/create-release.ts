@@ -3,7 +3,7 @@ import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
 import type { Database } from '#shared/database';
-import { RepoData, TagType } from '#shared/interfaces/ehtag';
+import { type RepoData, TagType } from '#shared/interfaces/ehtag';
 import { action } from '../../utils.js';
 
 async function gzip(data: string): Promise<Buffer> {

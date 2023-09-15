@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import { ensureEnv, action } from '../../utils.js';
 import { command } from './command.js';
 import type { OptionValues } from 'commander';

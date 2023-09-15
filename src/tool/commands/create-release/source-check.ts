@@ -2,7 +2,7 @@ import clc from 'cli-color';
 import type { Database } from '#shared/database';
 import { getTagGroups, normalizeTag } from '#shared/ehentai/index';
 import { STATISTICS } from '#shared/ehentai/statistics';
-import type { NamespaceName } from '#shared/interfaces/ehtag';
+import { NamespaceName } from '#shared/interfaces/ehtag';
 import { Context } from '#shared/markdown/index';
 import type { RawTag } from '#shared/raw-tag';
 
@@ -10,9 +10,26 @@ function clearLine(): void {
     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
 }
 
+function progress(count: number, total: number, message: string): void {
+    const sizeWidth = Math.floor(Math.log10(total)) + 1;
+    let formatted = `[${count.toString().padStart(sizeWidth)}/${total}] ${message}`;
+    if (clc.windowSize.width - 10 > formatted.length) {
+        formatted = formatted.padEnd(clc.windowSize.width - 10);
+    }
+    process.stderr.write(`${formatted} ${((count / total) * 100).toFixed(3)}%`);
+}
+
 const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other']);
 
-export async function runSourceCheck(db: Database, checkedNs: readonly NamespaceName[]): Promise<void> {
+export async function runSourceCheck(
+    db: Database,
+    options: {
+        checkedNs?: readonly NamespaceName[];
+        useSearch?: boolean;
+    },
+): Promise<void> {
+    const checkedNs = options.checkedNs ?? NamespaceName;
+    const useSearch = options.useSearch ?? true;
     /** 是否跳过 */
     function skipNs(ns: NamespaceName | 'temp'): ns is 'rows' | 'temp' {
         if (ns === 'rows' || ns === 'temp') return true;
@@ -44,7 +61,7 @@ export async function runSourceCheck(db: Database, checkedNs: readonly Namespace
             count++;
             if (showProgress) {
                 clearLine();
-                progress(count, `${ns}:${tag}`);
+                progress(count, tagFromEtt.size, `${ns}:${tag}`);
                 process.stderr.write(clc.move.lineBegin);
             }
 
@@ -54,27 +71,32 @@ export async function runSourceCheck(db: Database, checkedNs: readonly Namespace
                 return c;
             };
 
-            const normTag = await normalizeTag(ns, tag);
-            if (normTag == null) {
-                if (showProgress) {
-                    clearLine();
+            if (useSearch) {
+                const normTag = await normalizeTag(ns, tag);
+                if (normTag == null) {
+                    if (showProgress) {
+                        clearLine();
+                    }
+                    db.logger[SOURCE_CHECK_NOTICE.has(ns) ? 'info' : 'warn'](context(), '未找到标签');
+                    continue;
                 }
-                db.logger[SOURCE_CHECK_NOTICE.has(ns) ? 'info' : 'warn'](context(), '未找到标签');
-                continue;
-            }
-            if (normTag[1] !== tag) {
-                if (showProgress) {
-                    clearLine();
+                if (normTag[1] !== tag) {
+                    if (showProgress) {
+                        clearLine();
+                    }
+                    db.logger.warn(context(), `标签重命名 => ${normTag[0]}:${normTag[1]}`);
+                    continue;
                 }
-                db.logger.warn(context(), `标签重命名 => ${normTag[0]}:${normTag[1]}`);
-                continue;
             }
         }
 
         if (!showProgress) {
             progress(
                 count,
-                `完成 ${ns} 的检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`,
+                tagFromEtt.size,
+                useSearch
+                    ? `完成 ${ns} 的检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`
+                    : `完成 ${ns} 的检查`,
             );
             process.stderr.write(`\n`);
         }
@@ -88,16 +110,12 @@ export async function runSourceCheck(db: Database, checkedNs: readonly Namespace
         const nsDb = db.data[tag.namespace];
         db.logger.warn(new Context(nsDb, tag.raw), '标签在 E 站标签数据库中存在，但未找到翻译');
     }
-    console.log(`完成检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`);
-    console.log('');
 
-    function progress(count: number, message: string): void {
-        const size = tagFromEtt.size;
-        const sizeWidth = Math.floor(Math.log10(size)) + 1;
-        let formatted = `[${count.toString().padStart(sizeWidth)}/${size}] ${message}`;
-        if (clc.windowSize.width - 10 > formatted.length) {
-            formatted = formatted.padEnd(clc.windowSize.width - 10);
-        }
-        process.stderr.write(`${formatted} ${((count / size) * 100).toFixed(3)}%`);
+    if (showProgress) clearLine();
+    if (useSearch) {
+        console.log(`完成检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`);
+    } else {
+        console.log(`完成检查`);
     }
+    console.log('');
 }

@@ -1,5 +1,5 @@
-import { Option, OptionValues } from 'commander';
-import path from 'path';
+import { Option, type OptionValues } from 'commander';
+import path from 'node:path';
 import { Context } from '#shared/markdown/index';
 import { Database } from '#shared/database';
 import { getTagGroups } from '#shared/ehentai/index';

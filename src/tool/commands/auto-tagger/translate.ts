@@ -4,7 +4,7 @@ import type { RawTag } from '#shared/raw-tag';
 import { parseTag } from '../tag/command.js';
 import { command } from './command.js';
 import { searchEhWiki } from './lib/search-eh-wiki.js';
-import { Gallery, searchTag } from './lib/search-tag.js';
+import { type Gallery, searchTag } from './lib/search-tag.js';
 import { translateByWiki } from './lib/translate-by-wiki.js';
 
 async function findJaInGalleryTitles(raw: RawTag, galleries: Gallery[], page = 1): Promise<string | undefined> {

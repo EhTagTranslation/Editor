@@ -1,5 +1,5 @@
 import { decodeHTML } from 'entities';
-import { get, api, ApiRequest } from '#shared/ehentai/http/index';
+import { get, api, type ApiRequest } from '#shared/ehentai/http/index';
 import type { NamespaceName } from '#shared/interfaces/ehtag';
 import type { RawTag } from '#shared/raw-tag';
 
