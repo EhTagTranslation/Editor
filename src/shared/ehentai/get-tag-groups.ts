@@ -16,7 +16,7 @@ export async function getTagGroups(): Promise<MasterTag[]> {
             continue;
         }
         const matches = response.matchAll(
-            /<a href="https:\/\/repo\.e-hentai\.org\/tools\/taggroup?mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
+            /<a href="https:\/\/repo\.e-hentai\.org\/tools\/taggroup\?mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
         );
         for (const match of matches) {
             const id = Number.parseInt(match[1]);
