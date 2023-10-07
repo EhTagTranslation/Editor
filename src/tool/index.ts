@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import './commands/auto-tagger/index.js';
 import './commands/create-release/index.js';
 import './commands/parse.js';
