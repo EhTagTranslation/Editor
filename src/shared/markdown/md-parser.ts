@@ -79,9 +79,12 @@ const knownHosts = new Map<string, string>([
     ['moegirl.org.cn', '萌娘百科'],
     ['bgm.tv', 'Bangumi'],
     ['fandom.com', 'Fandom'],
+    ['baike.baidu.com', '百度百科'],
+    ['wiki.biligame.com', 'BILIGAME WIKI'],
     // 内容平台
     ['pixiv.net', 'pixiv'],
     ['bilibili.com', '哔哩哔哩'],
+    ['youtube.com', 'YouTube'],
     ['weibo.com', '微博'],
     ['twitter.com', 'Twitter'],
     ['instagram.com', 'Instagram'],
@@ -96,6 +99,7 @@ const knownHosts = new Map<string, string>([
     ['hiccears.com', 'HicceArs'],
     ['gumroad.com', 'Gumroad'],
     ['booth.pm', 'BOOTH'],
+    ['dlsite.com', 'DLsite'],
 ]);
 
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
