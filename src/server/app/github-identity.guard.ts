@@ -35,6 +35,25 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
         }
     }
 
+    async isFlagged(user: UserInfo, token: string): Promise<boolean> {
+        try {
+            await this.octokit.forApp.users.getByUsername({
+                username: user.login,
+            });
+        } catch (ex) {
+            // logger 无法显示错误的自定义信息，所以这里直接 console.log
+            console.log(ex);
+        }
+        try {
+            await this.octokit.forUser(token).users.getByUsername({
+                username: user.login,
+            });
+        } catch (ex) {
+            console.log(ex);
+        }
+        return true;
+    }
+
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const http = context.switchToHttp();
         const request = http.getRequest<FastifyRequest>();
@@ -60,6 +79,11 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
         if (await this.isBlocked(user)) {
             throw new ForbiddenException('用户已被封禁。');
         }
+        await this.isFlagged(user, token);
+        // if (await this.isFlagged(user)) {
+        //     throw new ForbiddenException('用户已被 GitHub 标记。');
+        // }
+
         Object.defineProperty(request, 'user', {
             value: user,
             configurable: true,

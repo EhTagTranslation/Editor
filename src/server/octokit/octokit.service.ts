@@ -119,11 +119,16 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         });
         return (await this.appToken).token;
     }
+    forUser(userToken: string): Octokit {
+        return this.createOctokit({
+            auth: userToken,
+        });
+    }
     async user(userToken: string): Promise<UserInfo> {
         const cache = this.userInfoCache.get<UserInfo>(userToken);
         if (cache) return cache;
 
-        const user = Object.freeze((await this.createOctokit({ auth: userToken }).users.getAuthenticated()).data);
+        const user = Object.freeze((await this.forUser(userToken).users.getAuthenticated()).data);
         this.userInfoCache.set(userToken, user);
         return user;
     }
