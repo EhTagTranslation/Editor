@@ -1,14 +1,18 @@
-<button class="user-button" mat-button *ngIf="user && !loading" [matMenuTriggerFor]="userMenu">
-  <img [src]="user.avatar_url" alt="用户头像" />
-  <span>{{ user.name }}</span>
-</button>
-<button class="user-button" mat-button *ngIf="!user && !loading" (click)="logIn()">
-  <span class="iconfont" style="font-size: 1.8em">&#xe709; </span> 登录
-</button>
-<button class="user-button" mat-button *ngIf="loading">
+@if (loading) {
+<button class="user-button" mat-button>
   <mat-spinner id="loading" [diameter]="32"></mat-spinner>
   正在登录
 </button>
+} @else if (user) {
+<button class="user-button" mat-button [matMenuTriggerFor]="userMenu">
+  <img [src]="user.avatar_url" alt="用户头像" />
+  <span>{{ user.name }}</span>
+</button>
+} @else {
+<button class="user-button" mat-button (click)="logIn()">
+  <span class="iconfont" style="font-size: 1.8em">&#xe709; </span> 登录
+</button>
+}
 
 <mat-menu #userMenu="matMenu" xPosition="before">
   <ng-template matMenuContent>

@@ -6,8 +6,8 @@
     <a mat-icon-button matTooltip="查看参与翻译指南" [href]="dbRepo.resolve('wiki/参与翻译')" target="_blank">
       <mat-icon>help</mat-icon>
     </a>
+    @if (!(create | async)) {
     <a
-      *ngIf="!(create | async)"
       mat-icon-button
       matTooltip="以此为模板新建标签"
       [routerLink]="['/edit', forms.namespace | async, '*new']"
@@ -20,6 +20,7 @@
     >
       <mat-icon>content_copy</mat-icon>
     </a>
+    }
   </header>
   <section [@slide]="narrowPreviewing ? 'right' : 'left'">
     <div id="form-container">
@@ -31,39 +32,36 @@
               <span class="ns-name">{{ (getNamespace(value('namespace')) | async)?.name }}</span
               ><span class="ns-raw">{{ value('namespace') }}</span>
             </mat-select-trigger>
-            <mat-option *ngFor="let ns of nsOptions" [value]="ns" class="ns-option">
+            @for (ns of nsOptions; track ns) {
+            <mat-option [value]="ns" class="ns-option">
               <span class="ns-name">{{ (getNamespace(ns) | async)?.name }}</span
               ><span class="ns-raw">{{ ns }}</span>
               <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async)?.description }}</span>
             </mat-option>
+            }
           </mat-select>
           <mat-hint>
-            <ng-template [ngIf]="enabled('namespace')" [ngIfElse]="nsDisabled">标签所在的命名空间</ng-template>
-            <ng-template #nsDisabled>
-              <ng-template [ngIf]="isEditableNs | async" [ngIfElse]="nsNotAllowed">
-                修改标签时无法更改此项
-              </ng-template>
-              <ng-template #nsNotAllowed>
-                该命名空间的标签暂不支持从此处修改，请<a
-                  [href]="
-                    dbRepo.issue(
-                      value('raw'),
-                      value('namespace'),
-                      (create | async) || undefined,
-                      value('name'),
-                      value('intro'),
-                      value('links')
-                    )
-                  "
-                  target="_blank"
-                  >提交 ISSUE 讨论</a
-                >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
-                  >通过 PR 修改</a
-                >
-              </ng-template>
-            </ng-template>
+            @if (enabled('namespace')) {标签所在的命名空间 } @else if (isEditableNs | async) { 修改标签时无法更改此项 }
+            @else { 该命名空间的标签暂不支持从此处修改，请<a
+              [href]="
+                dbRepo.issue(
+                  value('raw'),
+                  value('namespace'),
+                  (create | async) || undefined,
+                  value('name'),
+                  value('intro'),
+                  value('links')
+                )
+              "
+              target="_blank"
+              >提交 ISSUE 讨论</a
+            >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+              >通过 PR 修改</a
+            >
+            }
           </mat-hint>
-          <mat-error *ngIf="hasError('namespace', 'editableNs')"
+          @if (hasError('namespace', 'editableNs')) {
+          <mat-error
             >该命名空间的标签暂不支持从此处修改，请<a
               [href]="
                 dbRepo.issue(
@@ -81,18 +79,19 @@
               >通过 PR 修改</a
             >
           </mat-error>
+          }
         </mat-form-field>
-        <mat-hint *ngIf="(getNamespace(value('namespace')) | async)?.rules != null">
+        @if ((getNamespace(value('namespace')) | async)?.rules != null) {
+        <mat-hint>
           <span>填写指南</span>
-          <div
-            class="md-container"
-            *ngFor="let item of (getNamespace(value('namespace')) | async)?.rules"
-            [innerHTML]="item | markdown | mark: '' : true"
-          ></div>
+          @for (item of (getNamespace(value('namespace')) | async)?.rules; track item) {
+          <div class="md-container" [innerHTML]="item | markdown | mark: '' : true"></div>
+          }
         </mat-hint>
+        }
         <mat-form-field>
+          @if (forms.raw | async) {
           <button
-            *ngIf="forms.raw | async"
             mat-icon-button
             matSuffix
             matTooltip="搜索"
@@ -121,6 +120,7 @@
               </ng-template>
             </mat-menu>
           </button>
+          }
           <mat-label>原始标签</mat-label>
           <input
             matInput
@@ -131,55 +131,58 @@
             #tagSuggestTrigger="matAutocompleteTrigger"
           />
           <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
-            <mat-option *ngIf="(tagSuggests | async)?.loading; else completions" disabled>
+            @if ((tagSuggests | async)?.loading) {
+            <mat-option disabled>
               <mat-spinner diameter="20"></mat-spinner>
             </mat-option>
-            <ng-template #completions>
-              <mat-option *ngFor="let option of (tagSuggests | async)?.suggestion" [value]="option">
-                <div class="hint">
-                  <span class="hint-original">
-                    <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
-                      <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
+            } @else { @for (option of (tagSuggests | async)?.suggestion; track option) {
+            <mat-option [value]="option">
+              <div class="hint">
+                <span class="hint-original">
+                  <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
+                    <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
+                    <span
+                      class="hint-raw"
+                      [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async) : false"
+                    ></span>
+                  </span>
+                  @if (option.isSlaved) {
+                  <span>
+                    ➜
+                    <span class="hint-tag hint-master">
+                      <span class="hint-namespace">{{ option.master.namespace }}: </span>
                       <span
                         class="hint-raw"
-                        [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async) : false"
+                        [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async) : false"
                       ></span>
                     </span>
-                    <span *ngIf="option.isSlaved">
-                      ➜
-                      <span class="hint-tag hint-master">
-                        <span class="hint-namespace">{{ option.master.namespace }}: </span>
-                        <span
-                          class="hint-raw"
-                          [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async) : false"
-                        ></span>
-                      </span>
-                    </span>
                   </span>
-                  <span *ngIf="option.translation() | async" class="hint-translation">
-                    <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
-                    >：<span [innerHTML]="(option.translation() | async)?.name"></span>
-                  </span>
-                </div>
-              </mat-option>
-            </ng-template>
+                  }
+                </span>
+                @if (option.translation() | async) {
+                <span class="hint-translation">
+                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
+                  >：<span [innerHTML]="(option.translation() | async)?.name"></span>
+                </span>
+                }
+              </div>
+            </mat-option>
+            } }
           </mat-autocomplete>
           <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
-          <mat-error *ngIf="hasError('raw', 'required')">必须填写</mat-error>
-          <mat-error *ngIf="hasError('raw', 'minlength', 'required')">至少包含两个字母 </mat-error>
-          <mat-error *ngIf="hasError('raw', 'pattern', ['minlength', 'required'])"> 不能以空格开始或结束</mat-error>
-          <mat-error *ngIf="hasError('raw', 'raw', ['pattern', 'minlength', 'required'])">
-            只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error
-          >
+          @if (hasError('raw', 'required')) {
+          <mat-error>必须填写</mat-error>
+          } @else if (hasError('raw', 'minlength', 'required')) {
+          <mat-error>至少包含两个字母 </mat-error>
+          } @else if (hasError('raw', 'pattern', ['minlength', 'required'])) {
+          <mat-error> 不能以空格开始或结束</mat-error>
+          } @else if (hasError('raw', 'raw', ['pattern', 'minlength', 'required'])) {
+          <mat-error> 只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error>
+          }
         </mat-form-field>
         <mat-form-field class="markdown">
-          <button
-            *ngIf="forms.name | async"
-            mat-icon-button
-            matSuffix
-            matTooltip="搜索"
-            [matMenuTriggerFor]="searchMenu"
-          >
+          @if (forms.name | async) {
+          <button mat-icon-button matSuffix matTooltip="搜索" [matMenuTriggerFor]="searchMenu">
             <mat-icon>search</mat-icon>
             <mat-menu #searchMenu="matMenu" xPosition="before">
               <ng-template matMenuContent>
@@ -192,6 +195,7 @@
               </ng-template>
             </mat-menu>
           </button>
+          }
           <mat-label>名称</mat-label>
           <input
             matInput
@@ -200,7 +204,9 @@
             required
           />
           <mat-hint>输入标签的中文翻译</mat-hint>
-          <mat-error *ngIf="hasError('name', ['pattern', 'required'])">必须填写</mat-error>
+          @if (hasError('name', ['pattern', 'required'])) {
+          <mat-error>必须填写</mat-error>
+          }
         </mat-form-field>
         <mat-form-field class="markdown">
           <mat-label>描述</mat-label>
@@ -291,10 +297,9 @@
         (focus)="preSubmit()"
         color="accent"
       >
-        <ng-container *ngIf="!(submitting | async); else submittingspinner">提交</ng-container>
-        <ng-template #submittingspinner>
-          <mat-spinner class="loading" [diameter]="24"></mat-spinner>
-        </ng-template>
+        @if (submitting | async) {
+        <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+        } @else { 提交 }
       </button>
     </div>
   </footer>
