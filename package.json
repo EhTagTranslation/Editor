@@ -22,9 +22,6 @@
     "format": "prettier --ignore-path .gitignore --write .",
     "lint": "eslint --ext .ts --ignore-path .gitignore --ignore-pattern '**/*.spec.ts' -- ."
   },
-  "browser": {
-    "./src/shared/ehentai/http/config.ts": "./src/shared/ehentai/http/config.browser.ts"
-  },
   "imports": {
     "#*": "./dist/*.js"
   },
@@ -67,10 +64,9 @@
     "tslib": "~2.6.2"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^16.0.1",
     "@angular-devkit/build-angular": "^17.0.0",
     "@angular/animations": "^17.0.2",
-    "@angular/cdk": "^17.0.0",
+    "@angular/cdk": "^16.2.12",
     "@angular/cli": "^17.0.0",
     "@angular/common": "^17.0.2",
     "@angular/compiler": "^17.0.2",

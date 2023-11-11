@@ -8,24 +8,15 @@
     "eh-tag-editor": {
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "maximumError": "5mb",
-                  "maximumWarning": "2mb",
-                  "type": "initial"
-                },
-                {
-                  "maximumError": "10kb",
-                  "maximumWarning": "6kb",
-                  "type": "anyComponentStyle"
-                }
-              ],
-              "buildOptimizer": true,
               "extractLicenses": true,
               "fileReplacements": [
+                {
+                  "replace": "src/shared/ehentai/http/config.ts",
+                  "with": "src/shared/ehentai/http/config.browser.ts"
+                },
                 {
                   "replace": "src/browser/environments/environment.ts",
                   "with": "src/browser/environments/environment.prod.ts"
@@ -36,42 +27,42 @@
             }
           },
           "options": {
-            "customWebpackConfig": {
-              "path": "./angular.webpack.config.js"
-            },
             "allowedCommonJsDependencies": ["markdown-it", "linkify-it", "parse5", "axios", "validator", "form-data"],
             "assets": ["src/browser/favicon.ico", "src/browser/favicon.svg", "src/browser/assets"],
-            "buildOptimizer": false,
             "extractLicenses": false,
             "index": "src/browser/index.html",
-            "main": "src/browser/main.ts",
+            "browser": "src/browser/main.ts",
             "namedChunks": true,
             "optimization": false,
-            "outputPath": "dist/browser",
-            "polyfills": "src/browser/polyfills.ts",
+            "outputPath": "dist",
+            "polyfills": ["src/browser/polyfills.ts"],
             "scripts": [],
             "sourceMap": true,
             "statsJson": true,
             "stylePreprocessorOptions": {
               "includePaths": ["src/browser/styles"]
             },
+            "fileReplacements": [
+              {
+                "replace": "src/shared/ehentai/http/config.ts",
+                "with": "src/shared/ehentai/http/config.browser.ts"
+              }
+            ],
             "styles": ["src/browser/styles/index.scss"],
             "tsConfig": "src/browser/tsconfig.json",
-            "vendorChunk": true,
             "webWorkerTsConfig": "src/browser/tsconfig.worker.json",
-            "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json"
+            "serviceWorker": "ngsw-config.json"
           }
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "eh-tag-editor:build:production"
+              "buildTarget": "eh-tag-editor:build:production"
             }
           },
           "options": {
-            "browserTarget": "eh-tag-editor:build"
+            "buildTarget": "eh-tag-editor:build"
           }
         }
       },
