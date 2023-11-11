@@ -2,12 +2,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { defineConfig } from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
-import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import json from '@rollup/plugin-json';
-import alias from '@rollup/plugin-alias';
+import esbuild from 'esbuild';
 
 const watch = process.argv.includes('--watch');
 const minify = process.argv.includes('--minify');
