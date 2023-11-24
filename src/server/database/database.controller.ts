@@ -115,8 +115,8 @@ export class DatabaseController extends InjectableBase {
         const rec = q.before
             ? dic.add(p.raw, tag, 'before', q.before)
             : q.after
-            ? dic.add(p.raw, tag, 'after', q.after)
-            : dic.add(p.raw, tag);
+              ? dic.add(p.raw, tag, 'after', q.after)
+              : dic.add(p.raw, tag);
         await this.service.commitAndPush(p.namespace, user, {
             nk: p.raw,
             nv: rec,
@@ -143,8 +143,8 @@ export class DatabaseController extends InjectableBase {
         const rec = q.before
             ? dic.add(undefined, tag, 'before', q.before)
             : q.after
-            ? dic.add(undefined, tag, 'after', q.after)
-            : dic.add(undefined, tag);
+              ? dic.add(undefined, tag, 'after', q.after)
+              : dic.add(undefined, tag);
         await this.service.commitAndPush(p.namespace, user, {
             nv: rec,
         });

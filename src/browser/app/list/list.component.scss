@@ -45,6 +45,7 @@ header {
   display: flex;
   flex-wrap: wrap;
   padding: 16px 16px 0;
+  align-items: center;
 
   > * {
     user-select: none;
@@ -52,10 +53,11 @@ header {
 
   > mat-form-field {
     margin: 0 8px;
+    margin-top: 2px;
   }
 
   > mat-chip-list {
-    margin: 6px 8px;
+    margin: 0 8px;
   }
 
   #search {

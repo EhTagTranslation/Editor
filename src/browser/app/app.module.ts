@@ -17,7 +17,10 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import {
+    MatLegacyPaginatorModule as MatPaginatorModule,
+    MatLegacyPaginatorIntl,
+} from '@angular/material/legacy-paginator';
 import { MatLegacyProgressBarModule as MatProgressBarModule } from '@angular/material/legacy-progress-bar';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { MatSortModule } from '@angular/material/sort';
@@ -80,7 +83,33 @@ import { environment } from '../environments/environment';
             registrationStrategy: 'registerWhenStable:30000',
         }),
     ],
-    providers: [ehHttpInterceptorProvider, TitleService],
+    providers: [
+        ehHttpInterceptorProvider,
+        TitleService,
+        {
+            provide: MatLegacyPaginatorIntl,
+            useFactory: () => {
+                const i = new MatLegacyPaginatorIntl();
+                i.itemsPerPageLabel = '每页条数';
+                i.nextPageLabel = '下一页';
+                i.previousPageLabel = '上一页';
+                i.firstPageLabel = '首页';
+                i.lastPageLabel = '尾页';
+                i.getRangeLabel = (page, pageSize, length) => {
+                    if (length === 0 || pageSize === 0) {
+                        return `0 / ${length}`;
+                    }
+                    length = Math.max(length, 0);
+                    const startIndex = page * pageSize;
+                    // If the start index exceeds the list length, do not try and fix the end index to the end.
+                    const endIndex =
+                        startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+                    return `${startIndex + 1} - ${endIndex} / ${length}`;
+                };
+                return i;
+            },
+        },
+    ],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

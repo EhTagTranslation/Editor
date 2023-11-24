@@ -11,20 +11,22 @@
         autocomplete="off"
         (paste)="pasting($event)"
       />
-      @if (search | async) { @if ((usingRegex | async) ) {
-      <span matSuffix class="mat-hint" matTooltip="正在使用正则表达式进行匹配" matTooltipPosition="above">.*</span>
-      } @else{
-      <span matSuffix class="mat-hint" matTooltip="正在使用普通文本进行匹配" matTooltipPosition="above">ab</span>
-      } }@else {
-      <span matSuffix class="mat-hint"></span>
-      }
+      <div matSuffix class="mat-hint">
+        @if (search | async) {
+          @if (usingRegex | async) {
+            <span matTooltip="正在使用正则表达式进行匹配" matTooltipPosition="above">.*</span>
+          } @else {
+            <span matTooltip="正在使用普通文本进行匹配" matTooltipPosition="above">ab</span>
+          }
+        }
+      </div>
     </mat-form-field>
     <mat-chip-list class="filter-list">
       @if (namespace | async) {
-      <mat-chip [removable]="true" [selectable]="false" (removed)="setNs()">
-        命名空间：{{ namespace | async }}
-        <mat-icon matChipRemove>cancel</mat-icon>
-      </mat-chip>
+        <mat-chip [removable]="true" [selectable]="false" (removed)="setNs()">
+          命名空间：{{ namespace | async }}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
       }
     </mat-chip-list>
     <span style="flex: 1 1 auto"></span>
@@ -73,13 +75,13 @@
           <td mat-cell *matCellDef="let row">
             <div class="eh-raw">
               @if (row.namespace === 'rows' && row.raw !== 'temp') {
-              <a
-                (click)="setNs(row.raw)"
-                [routerLink]="['/list', row.raw]"
-                [innerHTML]="row.raw | mark: (search | async)"
-              ></a>
+                <a
+                  (click)="setNs(row.raw)"
+                  [routerLink]="['/list', row.raw]"
+                  [innerHTML]="row.raw | mark: (search | async)"
+                ></a>
               } @else {
-              <span [innerHTML]="row.raw | mark: (search | async)"></span>
+                <span [innerHTML]="row.raw | mark: (search | async)"></span>
               }
             </div>
           </td>
@@ -146,9 +148,9 @@
       </table>
     </div>
     @if (loading | async) {
-    <div class="spinner">
-      <mat-spinner></mat-spinner>
-    </div>
+      <div class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
     }
   </section>
 </div>

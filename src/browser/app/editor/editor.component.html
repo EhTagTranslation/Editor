@@ -7,19 +7,19 @@
       <mat-icon>help</mat-icon>
     </a>
     @if (!(create | async)) {
-    <a
-      mat-icon-button
-      matTooltip="以此为模板新建标签"
-      [routerLink]="['/edit', forms.namespace | async, '*new']"
-      [queryParams]="{
-        raw: value('raw'),
-        name: value('name'),
-        intro: value('intro'),
-        links: value('links')
-      }"
-    >
-      <mat-icon>content_copy</mat-icon>
-    </a>
+      <a
+        mat-icon-button
+        matTooltip="以此为模板新建标签"
+        [routerLink]="['/edit', forms.namespace | async, '*new']"
+        [queryParams]="{
+          raw: value('raw'),
+          name: value('name'),
+          intro: value('intro'),
+          links: value('links')
+        }"
+      >
+        <mat-icon>content_copy</mat-icon>
+      </a>
     }
   </header>
   <section [@slide]="narrowPreviewing ? 'right' : 'left'">
@@ -33,93 +33,97 @@
               ><span class="ns-raw">{{ value('namespace') }}</span>
             </mat-select-trigger>
             @for (ns of nsOptions; track ns) {
-            <mat-option [value]="ns" class="ns-option">
-              <span class="ns-name">{{ (getNamespace(ns) | async)?.name }}</span
-              ><span class="ns-raw">{{ ns }}</span>
-              <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async)?.description }}</span>
-            </mat-option>
+              <mat-option [value]="ns" class="ns-option">
+                <span class="ns-name">{{ (getNamespace(ns) | async)?.name }}</span
+                ><span class="ns-raw">{{ ns }}</span>
+                <span class="mat-caption ns-intro">{{ (getNamespace(ns) | async)?.description }}</span>
+              </mat-option>
             }
           </mat-select>
           <mat-hint>
-            @if (enabled('namespace')) {标签所在的命名空间 } @else if (isEditableNs | async) { 修改标签时无法更改此项 }
-            @else { 该命名空间的标签暂不支持从此处修改，请<a
-              [href]="
-                dbRepo.issue(
-                  value('raw'),
-                  value('namespace'),
-                  (create | async) || undefined,
-                  value('name'),
-                  value('intro'),
-                  value('links')
-                )
-              "
-              target="_blank"
-              >提交 ISSUE 讨论</a
-            >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
-              >通过 PR 修改</a
-            >
+            @if (enabled('namespace')) {
+              标签所在的命名空间
+            } @else if (isEditableNs | async) {
+              修改标签时无法更改此项
+            } @else {
+              该命名空间的标签暂不支持从此处修改，请<a
+                [href]="
+                  dbRepo.issue(
+                    value('raw'),
+                    value('namespace'),
+                    (create | async) || undefined,
+                    value('name'),
+                    value('intro'),
+                    value('links')
+                  )
+                "
+                target="_blank"
+                >提交 ISSUE 讨论</a
+              >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+                >通过 PR 修改</a
+              >
             }
           </mat-hint>
           @if (hasError('namespace', 'editableNs')) {
-          <mat-error
-            >该命名空间的标签暂不支持从此处修改，请<a
-              [href]="
-                dbRepo.issue(
-                  value('raw'),
-                  value('namespace'),
-                  create | async,
-                  value('name'),
-                  value('intro'),
-                  value('links')
-                )
-              "
-              target="_blank"
-              >提交 ISSUE 讨论</a
-            >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
-              >通过 PR 修改</a
-            >
-          </mat-error>
+            <mat-error
+              >该命名空间的标签暂不支持从此处修改，请<a
+                [href]="
+                  dbRepo.issue(
+                    value('raw'),
+                    value('namespace'),
+                    create | async,
+                    value('name'),
+                    value('intro'),
+                    value('links')
+                  )
+                "
+                target="_blank"
+                >提交 ISSUE 讨论</a
+              >或<a [href]="dbRepo.edit('database/' + (value('namespace') || 'rows') + '.md')" target="_blank"
+                >通过 PR 修改</a
+              >
+            </mat-error>
           }
         </mat-form-field>
         @if ((getNamespace(value('namespace')) | async)?.rules != null) {
-        <mat-hint>
-          <span>填写指南</span>
-          @for (item of (getNamespace(value('namespace')) | async)?.rules; track item) {
-          <div class="md-container" [innerHTML]="item | markdown | mark: '' : true"></div>
-          }
-        </mat-hint>
+          <mat-hint>
+            <span>填写指南</span>
+            @for (item of (getNamespace(value('namespace')) | async)?.rules; track item) {
+              <div class="md-container" [innerHTML]="item | markdown | mark: '' : true"></div>
+            }
+          </mat-hint>
         }
         <mat-form-field>
           @if (forms.raw | async) {
-          <button
-            mat-icon-button
-            matSuffix
-            matTooltip="搜索"
-            (menuOpened)="tagSuggestTrigger.autocompleteDisabled = true"
-            (menuClosed)="tagSuggestTrigger.autocompleteDisabled = false"
-            [matMenuTriggerFor]="searchMenu"
-          >
-            <mat-icon>search</mat-icon>
-            <mat-menu #searchMenu="matMenu" xPosition="before">
-              <ng-template matMenuContent>
-                <button mat-menu-item (click)="searchExternal('https://e-hentai.org/?f_search=%mns%22%raw$%22')">
-                  <span>在表站搜索标签</span>
-                </button>
-                <button mat-menu-item (click)="searchExternal('https://exhentai.org/?f_search=%mns%22%raw$%22')">
-                  <span>在里站搜索标签</span>
-                </button>
-                <button mat-menu-item (click)="searchExternal('https://ehwiki.org/index.php?search=%raw')">
-                  <span>在 EHWiki 搜索标签</span>
-                </button>
-                <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%raw')">
-                  <span>在维基百科搜索标签</span>
-                </button>
-                <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org.cn/index.php?search=%raw')">
-                  <span>在萌娘百科搜索标签</span>
-                </button>
-              </ng-template>
-            </mat-menu>
-          </button>
+            <button
+              mat-icon-button
+              matSuffix
+              matTooltip="搜索"
+              (menuOpened)="tagSuggestTrigger.autocompleteDisabled = true"
+              (menuClosed)="tagSuggestTrigger.autocompleteDisabled = false"
+              [matMenuTriggerFor]="searchMenu"
+            >
+              <mat-icon>search</mat-icon>
+              <mat-menu #searchMenu="matMenu" xPosition="before">
+                <ng-template matMenuContent>
+                  <button mat-menu-item (click)="searchExternal('https://e-hentai.org/?f_search=%mns%22%raw$%22')">
+                    <span>在表站搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://exhentai.org/?f_search=%mns%22%raw$%22')">
+                    <span>在里站搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://ehwiki.org/index.php?search=%raw')">
+                    <span>在 EHWiki 搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%raw')">
+                    <span>在维基百科搜索标签</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org.cn/index.php?search=%raw')">
+                    <span>在萌娘百科搜索标签</span>
+                  </button>
+                </ng-template>
+              </mat-menu>
+            </button>
           }
           <mat-label>原始标签</mat-label>
           <input
@@ -132,69 +136,71 @@
           />
           <mat-autocomplete #tagSuggest="matAutocomplete" (optionSelected)="$event.option.value.navigate()">
             @if ((tagSuggests | async)?.loading) {
-            <mat-option disabled>
-              <mat-spinner diameter="20"></mat-spinner>
-            </mat-option>
-            } @else { @for (option of (tagSuggests | async)?.suggestion; track option) {
-            <mat-option [value]="option">
-              <div class="hint">
-                <span class="hint-original">
-                  <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
-                    <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
-                    <span
-                      class="hint-raw"
-                      [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async) : false"
-                    ></span>
-                  </span>
-                  @if (option.isSlaved) {
-                  <span>
-                    ➜
-                    <span class="hint-tag hint-master">
-                      <span class="hint-namespace">{{ option.master.namespace }}: </span>
-                      <span
-                        class="hint-raw"
-                        [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async) : false"
-                      ></span>
+              <mat-option disabled>
+                <mat-spinner diameter="20"></mat-spinner>
+              </mat-option>
+            } @else {
+              @for (option of (tagSuggests | async)?.suggestion; track option) {
+                <mat-option [value]="option">
+                  <div class="hint">
+                    <span class="hint-original">
+                      <span class="hint-tag" [class]="[option.isSlaved ? 'hint-slaved' : 'hint-master']">
+                        <span class="hint-namespace">{{ option.suggest.namespace }}: </span>
+                        <span
+                          class="hint-raw"
+                          [innerHTML]="option.suggest.raw | mark: (tagSuggestTerm | async) : false"
+                        ></span>
+                      </span>
+                      @if (option.isSlaved) {
+                        <span>
+                          ➜
+                          <span class="hint-tag hint-master">
+                            <span class="hint-namespace">{{ option.master.namespace }}: </span>
+                            <span
+                              class="hint-raw"
+                              [innerHTML]="option.master.raw | mark: (tagSuggestTerm | async) : false"
+                            ></span>
+                          </span>
+                        </span>
+                      }
                     </span>
-                  </span>
-                  }
-                </span>
-                @if (option.translation() | async) {
-                <span class="hint-translation">
-                  <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
-                  >：<span [innerHTML]="(option.translation() | async)?.name"></span>
-                </span>
-                }
-              </div>
-            </mat-option>
-            } }
+                    @if (option.translation() | async) {
+                      <span class="hint-translation">
+                        <span class="hint-namespace">{{ (getNamespace(option.master.namespace) | async)?.name }}</span
+                        >：<span [innerHTML]="(option.translation() | async)?.name"></span>
+                      </span>
+                    }
+                  </div>
+                </mat-option>
+              }
+            }
           </mat-autocomplete>
           <mat-hint>{{ enabled('raw') ? '输入原始的标签内容' : '修改标签时无法更改此项' }}</mat-hint>
           @if (hasError('raw', 'required')) {
-          <mat-error>必须填写</mat-error>
+            <mat-error>必须填写</mat-error>
           } @else if (hasError('raw', 'minlength', 'required')) {
-          <mat-error>至少包含两个字母 </mat-error>
+            <mat-error>至少包含两个字母 </mat-error>
           } @else if (hasError('raw', 'pattern', ['minlength', 'required'])) {
-          <mat-error> 不能以空格开始或结束</mat-error>
+            <mat-error> 不能以空格开始或结束</mat-error>
           } @else if (hasError('raw', 'raw', ['pattern', 'minlength', 'required'])) {
-          <mat-error> 只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error>
+            <mat-error> 只能包含字母、数字、空格、‘.’ 和 ‘-’</mat-error>
           }
         </mat-form-field>
         <mat-form-field class="markdown">
           @if (forms.name | async) {
-          <button mat-icon-button matSuffix matTooltip="搜索" [matMenuTriggerFor]="searchMenu">
-            <mat-icon>search</mat-icon>
-            <mat-menu #searchMenu="matMenu" xPosition="before">
-              <ng-template matMenuContent>
-                <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%name')">
-                  <span>在维基百科搜索名称</span>
-                </button>
-                <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org.cn/index.php?search=%name')">
-                  <span>在萌娘百科搜索名称</span>
-                </button>
-              </ng-template>
-            </mat-menu>
-          </button>
+            <button mat-icon-button matSuffix matTooltip="搜索" [matMenuTriggerFor]="searchMenu">
+              <mat-icon>search</mat-icon>
+              <mat-menu #searchMenu="matMenu" xPosition="before">
+                <ng-template matMenuContent>
+                  <button mat-menu-item (click)="searchExternal('https://zh.wikipedia.org/w/index.php?search=%name')">
+                    <span>在维基百科搜索名称</span>
+                  </button>
+                  <button mat-menu-item (click)="searchExternal('https://zh.moegirl.org.cn/index.php?search=%name')">
+                    <span>在萌娘百科搜索名称</span>
+                  </button>
+                </ng-template>
+              </mat-menu>
+            </button>
           }
           <mat-label>名称</mat-label>
           <input
@@ -205,7 +211,7 @@
           />
           <mat-hint>输入标签的中文翻译</mat-hint>
           @if (hasError('name', ['pattern', 'required'])) {
-          <mat-error>必须填写</mat-error>
+            <mat-error>必须填写</mat-error>
           }
         </mat-form-field>
         <mat-form-field class="markdown">
@@ -235,12 +241,12 @@
               ((inputs.namespace | async) || (original.namespace | async)) === 'artist'
                 ? '画师的微博、pixiv、Twitter 或个人主页'
                 : ((inputs.namespace | async) || (original.namespace | async)) === 'group'
-                ? '社团或公司的官方网站'
-                : ((inputs.namespace | async) || (original.namespace | async)) === 'parody'
-                ? '作品的维基或萌百页面'
-                : ((inputs.namespace | async) || (original.namespace | async)) === 'character'
-                ? '角色的百科页面'
-                : ' EhWiki 页面或萌百词条'
+                  ? '社团或公司的官方网站'
+                  : ((inputs.namespace | async) || (original.namespace | async)) === 'parody'
+                    ? '作品的维基或萌百页面'
+                    : ((inputs.namespace | async) || (original.namespace | async)) === 'character'
+                      ? '角色的百科页面'
+                      : ' EhWiki 页面或萌百词条'
             }}的链接</mat-hint
           >
         </mat-form-field>
@@ -281,12 +287,12 @@
         !(github.tokenChange | async)
           ? '请先登录'
           : !(isEditableNs | async)
-          ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改'
-          : tagForm.invalid
-          ? '请检查填写的内容'
-          : tagForm.pristine
-          ? '没有更改'
-          : ''
+            ? '该命名空间的标签暂不支持从此处修改，请提交 ISSUE 讨论或通过 PR 修改'
+            : tagForm.invalid
+              ? '请检查填写的内容'
+              : tagForm.pristine
+                ? '没有更改'
+                : ''
       "
       (mouseenter)="preSubmit()"
     >
@@ -298,8 +304,10 @@
         color="accent"
       >
         @if (submitting | async) {
-        <mat-spinner class="loading" [diameter]="24"></mat-spinner>
-        } @else { 提交 }
+          <mat-spinner class="loading" [diameter]="24"></mat-spinner>
+        } @else {
+          提交
+        }
       </button>
     </div>
   </footer>
