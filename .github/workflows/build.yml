@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: pnpm build:tool
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tool
           path: ./dist/tool
@@ -65,7 +65,7 @@ jobs:
       - name: Build
         run: pnpm build:server
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: server
           path: ./dist
@@ -101,7 +101,7 @@ jobs:
       - name: Build
         run: pnpm build:browser
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: browser
           path: ./dist/browser
