@@ -2,7 +2,23 @@ import { Pipe, type PipeTransform } from '@angular/core';
 import { Location } from '@angular/common';
 import escapeStringRegexp from 'escape-string-regexp';
 import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
-import { escapeHtml } from 'markdown-it/lib/common/utils';
+
+const HTML_ESCAPE_TEST_RE = /[&<>"]/;
+const HTML_ESCAPE_REPLACE_RE = /[&<>"]/g;
+const HTML_REPLACEMENTS: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+};
+
+/** escapeHtml */
+function escapeHtml(str: string): string {
+    if (HTML_ESCAPE_TEST_RE.test(str)) {
+        return str.replace(HTML_ESCAPE_REPLACE_RE, (ch) => HTML_REPLACEMENTS[ch]);
+    }
+    return str;
+}
 
 const parser = new DOMParser();
 
