@@ -39,7 +39,7 @@ jobs:
           pnpm install --prod --no-lockfile --node-linker=hoisted
           zip -r ../../release.zip .
       - name: Publish release
-        uses: ncipollo/release-action@v1.13.0
+        uses: ncipollo/release-action@v1.14.0
         if: github.ref == 'refs/heads/master'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
