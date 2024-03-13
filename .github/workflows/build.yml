@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
         with:
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.2
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
         with:
