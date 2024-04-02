@@ -120,7 +120,11 @@ export class DatabaseInMemory implements DatabaseView {
         this.revision = revision ?? -1;
         const data = {} as { [key in NamespaceName]: NamespaceDatabaseInMemory };
         for (const key of NamespaceName) {
-            data[key] = new NamespaceDatabaseInMemory(this, key, storage?.data.find((d) => d.namespace === key));
+            data[key] = new NamespaceDatabaseInMemory(
+                this,
+                key,
+                storage?.data.find((d) => d.namespace === key),
+            );
         }
         this.data = data;
     }

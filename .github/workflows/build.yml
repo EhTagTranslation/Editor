@@ -14,10 +14,6 @@ jobs:
       - uses: actions/checkout@v4.1.2
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
-        with:
-          node-version: 20
-          node-version-file: ''
-          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
@@ -57,10 +53,6 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
-        with:
-          node-version: 20
-          node-version-file: ''
-          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
@@ -94,10 +86,6 @@ jobs:
       - uses: actions/checkout@v4.1.2
       - name: Install
         uses: wyvox/action-setup-pnpm@v3
-        with:
-          node-version: 20
-          node-version-file: ''
-          pnpm-version: 8
       - name: Set env
         run: node ./scripts/info.js
 
