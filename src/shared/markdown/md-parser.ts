@@ -61,11 +61,6 @@ function normalizeUrl(url: string): {
         return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
-    const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
-    if (px?.groups) {
-        url = 'https://i.pixiv.cat/' + px.groups['tail'];
-        return { url };
-    }
     for (const [reg, rep] of konwnPermlinks) {
         url = url.replace(reg, rep);
     }
