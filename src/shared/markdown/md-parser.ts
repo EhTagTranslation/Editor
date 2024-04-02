@@ -61,11 +61,13 @@ function normalizeUrl(url: string): {
         return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
-    // pixiv 图片使用反代
     const px = /^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/.exec(url);
     if (px?.groups) {
         url = 'https://i.pixiv.cat/' + px.groups['tail'];
         return { url };
+    }
+    for (const [reg, rep] of konwnPermlinks) {
+        url = url.replace(reg, rep);
     }
     return { url };
 }
@@ -75,7 +77,6 @@ const knownHosts = new Map<string, string>([
     ['zh.wikipedia.org', '维基百科'],
     ['ja.wikipedia.org', '维基百科（日语）'],
     ['en.wikipedia.org', '维基百科（英语）'],
-    ['moegirl.org', '萌娘百科'],
     ['moegirl.org.cn', '萌娘百科'],
     ['bgm.tv', 'Bangumi'],
     ['fandom.com', 'Fandom'],
@@ -89,6 +90,7 @@ const knownHosts = new Map<string, string>([
     ['twitter.com', 'Twitter'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
+    ['tumblr.com', 'Tumblr'],
     // 约稿与赞助
     ['skeb.jp', 'Skeb'],
     ['fanbox.cc', 'FANBOX'],
@@ -102,9 +104,28 @@ const knownHosts = new Map<string, string>([
     ['dlsite.com', 'DLsite'],
 ]);
 
+const konwnPermlinks: ReadonlyArray<[RegExp, string]> = [
+    // pixiv 图片使用反代
+    [/^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/, 'https://i.pixiv.cat/$<tail>'],
+    // wikipedia 手机版使用桌面版
+    [/^(http|https):\/\/(?<lang>\w+)\.m\.wikipedia\.org\/(?<tail>.+)$/, 'https://$<lang>.wikipedia.org/$<tail>'],
+    // 中文维基百科不指定变体
+    [
+        /^(http|https):\/\/zh\.wikipedia\.org\/(?<variant>zh(-\w+)?)\/(?<tail>.+)$/,
+        'https://zh.wikipedia.org/wiki/$<tail>',
+    ],
+    // 萌娘百科手机版使用使用桌面版
+    [/^(http|https):\/\/(mzh|zh)\.moegirl\.org\.cn\/(?<tail>.+)$/, 'https://zh.moegirl.org.cn/$<tail>'],
+    // 萌娘百科不指定变体
+    [
+        /^(http|https):\/\/(?<lang>\w+)\.moegirl\.org\.cn\/(?<variant>zh(-\w+)?)\/(?<tail>.+)$/,
+        'https://$<lang>.moegirl.org.cn/$<tail>',
+    ],
+];
+
 const knownImageExtensions = new Set<string>(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']);
 
-function normalizeLink(node: LinkNode): void {
+function normalizeLink(node: LinkNode, context: Context | undefined): void {
     // 规格化 URL
     const href = node.url;
     const { url, nsfw } = normalizeUrl(href);
@@ -113,7 +134,7 @@ function normalizeLink(node: LinkNode): void {
     // 不进一步处理复杂内容节点
     if (node.content.length !== 1) return;
     const contentNode = node.content[0];
-    if (!isNodeType(contentNode, 'text') || contentNode.text !== href) return;
+    if (!isNodeType(contentNode, 'text')) return;
 
     try {
         const hrefUrl = new URL(href);
@@ -133,12 +154,18 @@ function normalizeLink(node: LinkNode): void {
         const host = hrefUrl.host.toLowerCase();
         for (const [k, v] of knownHosts) {
             if (host === k || (host.endsWith(k) && host[host.length - k.length - 1] === '.')) {
-                contentNode.text = v;
+                if (
+                    !contentNode.text ||
+                    contentNode.text === href ||
+                    contentNode.text.toLowerCase() === v.toLowerCase()
+                ) {
+                    contentNode.text = v;
+                }
                 break;
             }
         }
     } catch (ex) {
-        console.log(ex);
+        context ? context.error(`无效链接：\`${href}\` 不是一个有效的 URL。`) : console.log(ex);
     }
 }
 
@@ -466,7 +493,7 @@ class AstBuilder {
                     };
                     start = this.buildInlineTokens(tokens, start + 1, link, content.level + 1);
                     this.expectToken(tokens[start], 'link_close');
-                    normalizeLink(link);
+                    normalizeLink(link, this.context);
                     start++;
                     parent.content.push(link);
                     break;
