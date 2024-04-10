@@ -75,7 +75,9 @@ function parseTitle(title: string): ParsedTitle {
 }
 
 export async function searchTag(ns: NamespaceName, raw: RawTag, page = 0): Promise<Gallery[]> {
-    const content = (await get<string>(`https://exhentai.org/tag/${ns}:${raw}/${page}`)).data;
+    const content = (
+        await get<string>(`https://exhentai.org/tag/${ns}:${raw}/${page}?f_cats=0&f_sft=on&f_sfu=on&f_sfl=on`)
+    ).data;
     const gidlist = [
         ...new Map(
             [...content.matchAll(/<a href="https:\/\/exhentai\.org\/g\/(\d+)\/(\w+)\/">/g)].map(([, gid, gtoken]) => [
