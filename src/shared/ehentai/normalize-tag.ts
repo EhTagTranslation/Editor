@@ -13,7 +13,7 @@ let useEx = true;
 /** 访问搜索页面，返回文档内容 */
 async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
     const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/tag`;
-    const search = `f_sfl=on&f_sfu=on&f_sft=on`;
+    const search = `f_cats=0&f_sfl=on&f_sfu=on&f_sft=on`;
     const url = `${base}/${ns}:${encodeURIComponent(raw)}?${search}`;
     STATISTICS.tagSearch++;
     try {
