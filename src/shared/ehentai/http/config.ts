@@ -24,7 +24,7 @@ const COOKIE = (() => {
         (process.env['eh_cookie'] ?? '').trim() ||
         // https://exhentai.home.blog/2021/10/24/jc01/
         // 'ipb_member_id=7013610; ipb_pass_hash=1ff72e5df8f1949f2b48b49748432eca; igneous=298743a95;';
-        //https://level-plus.net/read.php?tid=786170
+        // https://level-plus.net/read.php?tid=786170
         'ipb_member_id=5191636; ipb_pass_hash=544b6a81f07d356f3753032183d1fdfb; igneous=3fef094b8;';
     const map = new Map<string, string>();
     for (const c of value.split(';')) {
