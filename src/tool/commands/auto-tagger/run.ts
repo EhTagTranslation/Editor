@@ -1,4 +1,4 @@
-import { Option, type OptionValues } from 'commander';
+import { Option, type OptionValues } from '@commander-js/extra-typings';
 import path from 'node:path';
 import { Context } from '#shared/markdown/index';
 import { Database } from '#shared/database';

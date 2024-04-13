@@ -1,4 +1,4 @@
-import type { AxiosResponse } from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { request } from './core.js';
 
 export * from './api.js';
@@ -18,10 +18,11 @@ export async function post<T, D>(url: string, data: D): Promise<AxiosResponse<T,
     return response;
 }
 
-export async function get<T>(url: string): Promise<AxiosResponse<T>> {
+export async function get<T>(url: string, options?: AxiosRequestConfig<never>): Promise<AxiosResponse<T>> {
     const response = await request<T>({
         url,
         method: 'GET',
+        ...options,
     });
     return response;
 }

@@ -1,4 +1,4 @@
-import { program } from 'commander';
+import { program } from '@commander-js/extra-typings';
 import { TagRecord } from '#shared/tag-record';
 import { Database } from '#shared/database';
 import { Context } from '#shared/markdown/index';
@@ -18,7 +18,7 @@ const opts = async (): Promise<{
     ns: NamespaceName;
     outType: TagType;
 }> => {
-    const { context, outType, ns } = parse.opts<{ context: string; outType: string; ns: string }>();
+    const { context, outType, ns } = parse.opts();
     return {
         db: await Database.create(String(context ?? '.')),
         outType: String(outType ?? 'raw').toLowerCase() as TagType,

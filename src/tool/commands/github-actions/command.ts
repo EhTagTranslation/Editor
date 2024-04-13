@@ -1,5 +1,5 @@
-import { program } from 'commander';
-export { Command } from 'commander';
+import { program } from '@commander-js/extra-typings';
+export { Command } from '@commander-js/extra-typings';
 
 export const command = program
     .command('github-actions')

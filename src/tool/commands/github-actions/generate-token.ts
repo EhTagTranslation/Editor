@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest';
 import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import { ensureEnv, action } from '../../utils.js';
 import { command } from './command.js';
-import type { OptionValues } from 'commander';
+import type { OptionValues } from '@commander-js/extra-typings';
 
 async function main(envName?: string): Promise<void> {
     const APP_ID = ensureEnv('APP_ID', Number.parseInt);

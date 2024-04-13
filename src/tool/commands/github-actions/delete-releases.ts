@@ -4,7 +4,7 @@ import { Octokit } from '@octokit/rest';
 import { action } from '../../utils.js';
 import { command } from './command.js';
 import { lsRemoteTags } from './utils.js';
-import type { OptionValues } from 'commander';
+import type { OptionValues } from '@commander-js/extra-typings';
 
 class Main {
     constructor(
