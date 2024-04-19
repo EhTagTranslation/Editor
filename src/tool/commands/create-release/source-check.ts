@@ -19,6 +19,20 @@ function progress(count: number, total: number, message: string): void {
     process.stderr.write(`${formatted} ${((count / total) * 100).toFixed(3)}%`);
 }
 
+export const SOURCE_CHECK_NS: readonly NamespaceName[] = [
+    'rows',
+    'reclass',
+    'male',
+    'female',
+    'mixed',
+    'other',
+    'language',
+    'cosplayer',
+    'artist',
+    'group',
+    'parody',
+    'character',
+] as const satisfies { length: (typeof NamespaceName)['length'] };
 const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other']);
 
 export async function runSourceCheck(
@@ -52,8 +66,7 @@ export async function runSourceCheck(
     console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
     let count = 0;
     const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
-    for (const k in db.data) {
-        const ns = k as NamespaceName;
+    for (const ns of SOURCE_CHECK_NS) {
         if (skipNs(ns)) continue;
 
         const nsDb = db.data[ns];
