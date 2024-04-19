@@ -11,15 +11,22 @@ const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 let useEx = true;
 
 /** 访问搜索页面，返回文档内容 */
-async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
-    const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/tag`;
-    const search = `f_cats=0&f_sfl=on&f_sfu=on&f_sft=on`;
-    const url = `${base}/${ns}:${encodeURIComponent(raw)}?${search}`;
+async function searchTagImpl(raw: RawTag, setExtendView = false): Promise<string> {
+    // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
+    const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/`;
+    const search =
+        `f_search=${encodeURIComponent(`"${raw}"`)}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` +
+        (setExtendView ? '&inline_set=dm_e' : '');
+    const url = `${base}?${search}`;
     STATISTICS.tagSearch++;
     try {
         const result = await get<string>(url);
         if (!result.data || typeof result.data != 'string') {
             throw new Error(`无法访问 ${url}`);
+        }
+        const isExtendView = result.data.includes('<option value="e" selected="selected">');
+        if (!isExtendView && !setExtendView) {
+            return searchTagImpl(raw, true);
         }
         return result.data;
     } catch (ex) {
@@ -28,14 +35,14 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag): Promise<string> {
         }
         console.warn(`Ex 访问失败，回退到 Eh: ${String(ex)}`);
         useEx = false;
-        return searchTagImpl(ns, raw);
+        return searchTagImpl(raw, true);
     }
 }
 
 /** 通过搜索功能确定 tag 是否存在 */
 async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     if (ns === 'rows') return false;
-    const result = await searchTagImpl(ns, raw);
+    const result = await searchTagImpl(raw, false);
     const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
     let found = false;
     for (const tag of tags) {
