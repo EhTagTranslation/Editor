@@ -53,7 +53,7 @@ export class EhTagConnectorService {
 
     updateHash(): Observable<void> {
         const endpoint = this.endpoints.ehTagConnectorDb();
-        return this.http.head<void>(endpoint);
+        return this.http.head<undefined>(endpoint);
     }
 
     getTag<T extends TagType = 'raw'>(key: ETKey, format: T = 'raw' as T): Observable<Tag<T> | null> {
@@ -95,7 +95,7 @@ export class EhTagConnectorService {
     }
     deleteTag(key: ETKey): Observable<boolean> {
         const endpoint = this.getEndpoint(key, 'full');
-        return this.http.delete<void>(endpoint).pipe(
+        return this.http.delete<undefined>(endpoint).pipe(
             map((_) => true),
             mapStatusCodeTo(404, false),
         );

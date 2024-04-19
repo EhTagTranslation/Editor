@@ -31,8 +31,8 @@ function getFromHeader(accept: string): TagType {
     return 'full';
 }
 
-export const Format = createParamDecorator<void, ExecutionContext, TagType>(
-    (_: void, ctx: ExecutionContext) => {
+export const Format = createParamDecorator<unknown, ExecutionContext, TagType>(
+    (_: unknown, ctx: ExecutionContext) => {
         const request = ctx.switchToHttp().getRequest<FastifyRequest>();
         const format = (request.query as Record<string, string>)['format'] as unknown;
         if (format && typeof format == 'string') return getFromQuery(format);

@@ -15,8 +15,8 @@ interface CacheMap {
 })
 export class CacheService {
     async get<T extends keyof CacheMap>(key: T): Promise<CacheMap[T] | undefined>;
-    async get(key: string): Promise<unknown | undefined>;
-    async get(key: string): Promise<unknown | undefined> {
+    async get(key: string): Promise<unknown>;
+    async get(key: string): Promise<unknown> {
         return idb.get<unknown>(key);
     }
 

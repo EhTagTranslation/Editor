@@ -82,7 +82,7 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
             }),
             mergeMap((sent) => (sent ? of('') : next.handle())),
             catchError((err: unknown) => {
-                if (err instanceof HttpException && err.getStatus() === HttpStatus.NOT_FOUND) {
+                if (err instanceof HttpException && (err.getStatus() as HttpStatus) === HttpStatus.NOT_FOUND) {
                     return setEtag().pipe(mergeMap(() => throwError(() => err)));
                 }
                 return throwError(() => err);
