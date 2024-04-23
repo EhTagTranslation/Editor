@@ -87,8 +87,8 @@
     "@types/markdown-it": "~14.0.1",
     "@types/node": "~20.12.7",
     "@types/supertest": "~6.0.2",
-    "@typescript-eslint/eslint-plugin": "~7.7.0",
-    "@typescript-eslint/parser": "~7.7.0",
+    "@typescript-eslint/eslint-plugin": "~7.7.1",
+    "@typescript-eslint/parser": "~7.7.1",
     "dotenv": "^16.4.5",
     "esbuild": "^0.20.2",
     "eslint": "~8.57.0",
@@ -102,7 +102,7 @@
     "rimraf": "~5.0.5",
     "supertest": "~6.3.4",
     "ts-jest": "~29.1.2",
-    "type-fest": "~4.15.0",
+    "type-fest": "~4.16.0",
     "typescript": "~5.4.5",
     "zone.js": "~0.14.4"
   }
