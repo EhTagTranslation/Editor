@@ -13,6 +13,7 @@ let useEx = true;
 /** 访问搜索页面，返回文档内容 */
 async function searchTagImpl(raw: RawTag, setExtendView = false): Promise<string> {
     // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
+    // eg: artist:incognitymous
     const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/`;
     const search =
         `f_search=${encodeURIComponent(`"${raw}"`)}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` +
