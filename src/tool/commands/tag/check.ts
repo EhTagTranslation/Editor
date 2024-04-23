@@ -33,7 +33,7 @@ command
                 }
             }
         } else {
-            const result = (await normalizeTag(namespace, raw)) ?? (await normalizeTag(undefined, raw));
+            const result = await normalizeTag(namespace, raw);
             if (result) {
                 print(result);
                 found = true;

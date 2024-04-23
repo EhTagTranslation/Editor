@@ -102,7 +102,8 @@ export async function normalizeTag(
         const candidates = source.filter((t) => t.raw === raw);
         if (ns) {
             match = candidates.find((t) => t.namespace === ns);
-        } else if (candidates.length === 1 && source.length < 10) {
+        }
+        if (match == null && candidates.length === 1 && source.length < 10) {
             // 只有一个结果，且原始结果完整
             match = candidates[0];
         }

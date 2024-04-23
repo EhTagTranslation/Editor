@@ -92,6 +92,7 @@ export async function suggestTag(ns: NamespaceName | undefined, raw: string, exa
                 (t.master && t.master.raw === raw && ns === t.master.namespace),
         ) == null
     ) {
+        // 没有正确匹配时升级为精确搜索
         const exactResult = await suggestTag(ns, raw, true);
         if (exactResult.length !== 0) return exactResult;
     }
