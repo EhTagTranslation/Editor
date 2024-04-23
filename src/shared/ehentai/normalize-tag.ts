@@ -96,11 +96,20 @@ export async function normalizeTag(
         }
     }
 
-    if (raw.length > 1) {
-        match ??= await find(isMatch, false);
+    if (raw.length > 1 && match == null) {
+        const source = await suggestTag(undefined, raw);
+        const candidates = source.filter((t) => t.raw === raw);
+        if (ns) {
+            match = candidates.find((t) => t.namespace === ns);
+        } else if (candidates.length === 1 && source.length < 10) {
+            // 只有一个结果，且原始结果完整
+            match = candidates[0];
+        }
     }
-    match ??= await find(isMatch, true);
-    match ??= await find(isMatchOrMove, true);
+    if (ns && match == null) {
+        match ??= await find(isMatch);
+        match ??= await find(isMatchOrMove);
+    }
 
     if (match == null) {
         // 短于 2 字符的标签、重命名为更长且包含原名的标签（abc => abcde）、作为子串出现超过 10 次的标签
@@ -119,8 +128,8 @@ export async function normalizeTag(
     return [match.namespace, match.raw];
 
     /** 使用 @see suggestTag 进行查找 */
-    async function find(matcher: (tag: Tag) => boolean, useNs: boolean): Promise<Tag | undefined> {
-        const result = await suggestTag(useNs ? ns : undefined, raw);
+    async function find(matcher: (tag: Tag) => boolean): Promise<Tag | undefined> {
+        const result = await suggestTag(ns, raw);
         if (result != null) {
             const match = result.find(matcher);
             if (match) return match;
