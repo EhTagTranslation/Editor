@@ -5,7 +5,7 @@
   "engines": {
     "node": "^20.11.0"
   },
-  "packageManager": "pnpm@9.0.4",
+  "packageManager": "pnpm@9.0.6",
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
