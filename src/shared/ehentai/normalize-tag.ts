@@ -11,12 +11,10 @@ const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
 let useEx = true;
 
 /** 访问搜索页面，返回文档内容 */
-async function searchTagImpl(raw: RawTag, setExtendView = false): Promise<string> {
-    // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
-    // eg: artist:incognitymous
+async function searchTagImpl(ns: NamespaceName | undefined, raw: RawTag, setExtendView: boolean): Promise<string> {
     const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/`;
     const search =
-        `f_search=${encodeURIComponent(`"${raw}"`)}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` +
+        `f_search=${encodeURIComponent(ns ? `${ns}:"${raw}"` : `"${raw}"`)}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` +
         (setExtendView ? '&inline_set=dm_e' : '');
     const url = `${base}?${search}`;
     STATISTICS.tagSearch++;
@@ -27,7 +25,7 @@ async function searchTagImpl(raw: RawTag, setExtendView = false): Promise<string
         }
         const isExtendView = result.data.includes('<option value="e" selected="selected">');
         if (!isExtendView && !setExtendView) {
-            return searchTagImpl(raw, true);
+            return searchTagImpl(ns, raw, true);
         }
         return result.data;
     } catch (ex) {
@@ -36,25 +34,31 @@ async function searchTagImpl(raw: RawTag, setExtendView = false): Promise<string
         }
         console.warn(`Ex 访问失败，回退到 Eh: ${String(ex)}`);
         useEx = false;
-        return searchTagImpl(raw, true);
+        return searchTagImpl(ns, raw, true);
     }
 }
 
 /** 通过搜索功能确定 tag 是否存在 */
-async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
+async function searchTag(ns: NamespaceName, raw: RawTag, useNs = true): Promise<boolean> {
     if (ns === 'rows') return false;
-    const result = await searchTagImpl(raw, false);
+    const result = await searchTagImpl(useNs ? ns : undefined, raw, false);
     const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
     let found = false;
     for (const tag of tags) {
         const [, tNs, tRaw] = tag;
-        if (!isNamespaceName(tNs) || !isRawTag(tRaw)) continue;
+        if (!isNamespaceName(tNs) || !isRawTag(tRaw)) {
+            continue;
+        }
         if (tRaw === raw && tNs === ns) {
             found = true;
         }
         tagsFoundBySearch.add(`${tNs}:${tRaw}`);
     }
-    return found;
+    if (found || !useNs) return found;
+
+    // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
+    // eg: artist:incognitymous
+    return await searchTag(ns, raw, false);
 }
 
 function findSearchCache(ns: NamespaceName, raw: RawTag): boolean {
