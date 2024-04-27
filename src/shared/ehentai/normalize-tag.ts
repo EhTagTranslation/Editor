@@ -51,10 +51,11 @@ function getSearchTerm(ns: NamespaceName | undefined, raw: RawTag, exact: boolea
 }
 
 /** 通过搜索功能确定 tag 是否存在 */
-async function searchTagImpl(ns: NamespaceName, raw: RawTag, useNs: boolean, exact: boolean): Promise<boolean> {
+async function searchTagImpl(ns: NamespaceName, raw: RawTag, useNs: boolean): Promise<boolean> {
     // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
     // eg: artist:incognitymous
-    const term = getSearchTerm(useNs ? ns : undefined, raw, exact);
+    const term = getSearchTerm(useNs ? ns : undefined, raw, useNs);
+    console.log(term);
     const result = await getSearchPage(term);
     let found = false;
     const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
@@ -79,11 +80,7 @@ async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     // 对短标签优先使用命名空间
     const preferUseNs = raw.length <= 5;
 
-    return (
-        (await searchTagImpl(ns, raw, preferUseNs, false)) ||
-        (await searchTagImpl(ns, raw, !preferUseNs, false)) ||
-        (await searchTagImpl(ns, raw, true, true))
-    );
+    return (await searchTagImpl(ns, raw, preferUseNs)) || (await searchTagImpl(ns, raw, !preferUseNs));
 }
 
 function findSearchCache(ns: NamespaceName, raw: RawTag): boolean {
