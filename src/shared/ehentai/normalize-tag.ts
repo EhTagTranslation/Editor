@@ -55,7 +55,6 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag, useNs: boolean): Pr
     // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
     // eg: artist:incognitymous
     const term = getSearchTerm(useNs ? ns : undefined, raw, useNs);
-    console.log(term);
     const result = await getSearchPage(term);
     let found = false;
     const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
