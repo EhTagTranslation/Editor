@@ -260,4 +260,9 @@ describe('AppController (e2e)', () => {
             links: '萌娘百科',
         });
     });
+
+    it('GET /octokit/release', async () => {
+        const _ = await supertest(app.getHttpServer()).get('/octokit/release').expect(HttpStatus.OK);
+        expect(_.body.assets).toBeInstanceOf(Array);
+    });
 });
