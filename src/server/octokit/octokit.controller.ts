@@ -25,7 +25,7 @@ export class OctokitController extends InjectableBase {
         this.releaseCache = response.data;
         setTimeout(() => {
             this.releaseCache = null;
-        }, 1000);
+        }, 10_000);
         return this.releaseCache;
     }
 }
