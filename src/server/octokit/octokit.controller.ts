@@ -1,4 +1,4 @@
-import { Controller, HttpCode, HttpStatus, Get } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Get, Header } from '@nestjs/common';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OctokitService } from './octokit.service.js';
@@ -14,6 +14,7 @@ export class OctokitController extends InjectableBase {
     @Get('release')
     @ApiOperation({ summary: '获取最新版本', description: '代理 GitHub API' })
     @HttpCode(HttpStatus.OK)
+    @Header('Cache-Control', 'public, max-age=10, s-maxage=10')
     async release(): Promise<unknown> {
         if (this.releaseCache) {
             return this.releaseCache;
