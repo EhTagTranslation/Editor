@@ -16,8 +16,10 @@ export async function runCoverage(db: Database): Promise<void> {
         { responseType: 'stream' },
     );
 
-    let all = 0;
-    let covered = 0;
+    let allFreq = 0;
+    let coveredFreq = 0;
+    let allCount = 0;
+    let coveredCount = 0;
     const uncovered: Array<[NamespaceName, RawTag, number]> = [];
     for await (const line of createInterface((ref.data as NodeJS.ReadableStream).pipe(createGunzip()))) {
         if (!line) continue;
@@ -39,14 +41,18 @@ export async function runCoverage(db: Database): Promise<void> {
         if (!db.data[ns].get(raw)) {
             uncovered.push([ns, raw, count]);
         } else {
-            covered += count;
+            coveredFreq += count;
+            coveredCount++;
         }
-        all += count;
+        allFreq += count;
+        allCount++;
     }
 
     uncovered.sort((a, b) => b[2] - a[2]);
-    console.log(`标签覆盖：${covered}/${all} (${((covered / all) * 100).toFixed(2)}%)`);
-    console.log(`未覆盖 TOP 50 of ${uncovered.length}：`);
+    const toCoverageStr = (dividend: number, divisor: number): string =>
+        `${dividend}/${divisor} (${((dividend / divisor) * 100).toFixed(2)}%)`;
+    console.log(`标签覆盖 数量：${toCoverageStr(coveredCount, allCount)} 频率：${toCoverageStr(coveredFreq, allFreq)}`);
+    console.log(`未覆盖 TOP 50/${uncovered.length}：`);
     for (let i = 0; i < uncovered.length && i < 50; i++) {
         const [ns, raw, count] = uncovered[i];
         const norm = await normalizeTag(ns, raw);
