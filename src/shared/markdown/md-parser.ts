@@ -100,8 +100,10 @@ const knownHosts = new Map<string, string>([
 ]);
 
 const knownPermalinks: ReadonlyArray<[RegExp, string]> = [
-    // twitter 的 ** 新名字
-    [/^(http|https):\/\/twitter.com\/(?<tail>.+)$/, 'https://x.com/$<tail>'],
+    // pixiv 链接使用语言无关
+    [/^(http|https):\/\/(www\.)?pixiv\.net\/(en\/)?(?<tail>.+)$/, 'https://www.pixiv.net/$<tail>'],
+    // twitter 的 ** 新名字，使用桌面版
+    [/^(http|https):\/\/(mobile\.)?(twitter|x)\.com\/(?<tail>.+)$/, 'https://x.com/$<tail>'],
     // pixiv 图片使用反代
     [/^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/, 'https://i.pixiv.cat/$<tail>'],
     // wikipedia 手机版使用桌面版
