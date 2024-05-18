@@ -60,7 +60,7 @@ function normalizeUrl(url: string): {
         return { url, nsfw: eh.groups['domain'].includes('exhentai') ? 'R18' : undefined };
     }
 
-    for (const [reg, rep] of konwnPermlinks) {
+    for (const [reg, rep] of knownPermalinks) {
         url = url.replace(reg, rep);
     }
     return { url };
@@ -81,7 +81,7 @@ const knownHosts = new Map<string, string>([
     ['bilibili.com', '哔哩哔哩'],
     ['youtube.com', 'YouTube'],
     ['weibo.com', '微博'],
-    ['twitter.com', 'Twitter'],
+    ['x.com', 'X'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
     ['tumblr.com', 'Tumblr'],
@@ -98,7 +98,9 @@ const knownHosts = new Map<string, string>([
     ['dlsite.com', 'DLsite'],
 ]);
 
-const konwnPermlinks: ReadonlyArray<[RegExp, string]> = [
+const knownPermalinks: ReadonlyArray<[RegExp, string]> = [
+    // twitter 的 ** 新名字
+    [/^(http|https):\/\/twitter.com\/(?<tail>.+)$/, 'https://x.com/$<tail>'],
     // pixiv 图片使用反代
     [/^(http|https):\/\/i\.pximg\.net\/(?<tail>.+)$/, 'https://i.pixiv.cat/$<tail>'],
     // wikipedia 手机版使用桌面版
