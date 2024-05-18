@@ -82,6 +82,7 @@ const knownHosts = new Map<string, string>([
     ['youtube.com', 'YouTube'],
     ['weibo.com', '微博'],
     ['x.com', 'X'],
+    ['twitter.com', 'X'],
     ['instagram.com', 'Instagram'],
     ['facebook.com', '脸书'],
     ['tumblr.com', 'Tumblr'],
@@ -138,6 +139,7 @@ function normalizeLink(node: LinkNode, context: Context | undefined): void {
         const pathname = hrefUrl.pathname.toLowerCase();
         for (const k of knownImageExtensions) {
             if (pathname.endsWith(k)) {
+                // 强行转换为图片节点
                 const imgNode = node as LinkNode | ImageNode as ImageNode;
                 imgNode.type = 'image';
                 imgNode.content = [];
@@ -151,8 +153,11 @@ function normalizeLink(node: LinkNode, context: Context | undefined): void {
         for (const [k, v] of knownHosts) {
             if (host === k || (host.endsWith(k) && host[host.length - k.length - 1] === '.')) {
                 if (
+                    // 没有指定文本
                     !contentNode.text ||
+                    // 文本与链接一致
                     contentNode.text === href ||
+                    // 文本与已知的站点名称只有大小写不同
                     contentNode.text.toLowerCase() === v.toLowerCase()
                 ) {
                     contentNode.text = v;
