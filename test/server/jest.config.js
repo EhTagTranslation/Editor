@@ -15,10 +15,6 @@ const config = {
 
     collectCoverage: true,
     coverageProvider: 'v8',
-
-    moduleNameMapper: {
-        '^#(.*)$': '<rootDir>/dist/$1.js',
-    },
 };
 
 export default config;
