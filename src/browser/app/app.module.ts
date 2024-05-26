@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
@@ -53,7 +53,6 @@ import { environment } from '../environments/environment';
         AppRoutingModule,
         BrowserModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         MatAutocompleteModule,
         MatButtonModule,
         MatButtonToggleModule,
@@ -109,6 +108,7 @@ import { environment } from '../environments/environment';
                 return i;
             },
         },
+        provideHttpClient(withInterceptorsFromDi()),
     ],
     bootstrap: [AppComponent],
 })

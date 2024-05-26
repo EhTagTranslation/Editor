@@ -8,7 +8,7 @@
     "eh-tag-editor": {
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular/build:application",
           "configurations": {
             "production": {
               "extractLicenses": true,
@@ -55,7 +55,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "eh-tag-editor:build:production"
