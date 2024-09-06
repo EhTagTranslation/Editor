@@ -56,8 +56,10 @@ export async function createRelease(db: Database, destination: string): Promise<
     const old = process.cwd();
     await fs.ensureDir(destination);
     process.chdir(destination);
-    action.isAction() ? action.startGroup('files') : console.log(``);
-    await Promise.all(TagType.map((k) => save(data.get(k) as RepoData, k)));
-    action.isAction() ? action.endGroup() : console.log(``);
+    if (action.isAction()) action.startGroup('files');
+    else console.log(``);
+    await Promise.all(TagType.map(async (k) => save(data.get(k)!, k)));
+    if (action.isAction()) action.endGroup();
+    else console.log(``);
     process.chdir(old);
 }

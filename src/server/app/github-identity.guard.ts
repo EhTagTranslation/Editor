@@ -57,7 +57,7 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const http = context.switchToHttp();
         const request = http.getRequest<FastifyRequest>();
-        let token = request.headers['authorization'] ?? (request.query as Record<string, string>)['access_token'];
+        let token = request.headers.authorization ?? (request.query as Record<string, string>)['access_token'];
         if (!token) return true;
         if (typeof token != 'string') throw new UnauthorizedException('用户 TOKEN 无效，请重新登录。');
         token = token.trim();

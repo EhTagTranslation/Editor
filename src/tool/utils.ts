@@ -55,7 +55,6 @@ Object.defineProperties(_GithubAction.prototype, {
 
 type ActionsCore = typeof actionsCore;
 type ActionsExec = typeof actionsExec;
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 type GithubAction = _GithubAction & ActionsCore & ActionsExec;
 
 export const action = new _GithubAction() as GithubAction;
