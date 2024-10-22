@@ -1,4 +1,4 @@
-import { serialize, type SerializerOptions, type TreeAdapterTypeMap, type TreeAdapter, html, Token } from 'parse5';
+import { serialize, type SerializerOptions, type TreeAdapterTypeMap, type TreeAdapter, html, type Token } from 'parse5';
 import {
     type BreakNode,
     type ContainerNode,
@@ -93,64 +93,6 @@ type MyTreeAdapterTypeMap = TreeAdapterTypeMap<
     never
 >;
 
-const ELEMENT_MAP: Record<string, (attrs: Token.Attribute[]) => Node> = {
-    a(attrs): LinkNode {
-        return {
-            type: 'link',
-            content: [],
-            title: getAttr(attrs, 'title') ?? '',
-            url: getAttr(attrs, 'href') ?? '',
-        };
-    },
-    img(attrs): ImageNode {
-        let title = getAttr(attrs, 'title') ?? '';
-        let src = getAttr(attrs, 'src') ?? '';
-        let nsfw: ImageNode['nsfw'] = false;
-        const alt = getAttr(attrs, 'alt');
-        if (/^https?:\/\/.+/i.test(title)) {
-            if (src === '#') {
-                nsfw = 'R18';
-                src = title;
-                title = '';
-            } else if (src === '##') {
-                nsfw = 'R18G';
-                src = title;
-                title = '';
-            }
-        }
-        const node: ImageNode = {
-            type: 'image',
-            content: [],
-            title: title,
-            url: src,
-            nsfw: nsfw,
-        };
-        if (alt) {
-            node.content.push({ type: 'text', text: alt } as TextNode);
-        }
-        return node;
-    },
-    strong(): StrongNode {
-        return { type: 'strong', content: [] };
-    },
-    em(): EmphasisNode {
-        return { type: 'emphasis', content: [] };
-    },
-    br(): BreakNode {
-        return { type: 'br' };
-    },
-    code(): TagRefNode {
-        return { type: 'tagref' } as TagRefNode;
-    },
-    p(): ParaNode {
-        return { type: 'paragraph', content: [] };
-    },
-    template(): Node {
-        return {
-            type: TEMPLATE_NODE,
-        } as __Template as unknown as Node;
-    },
-};
 const ATTR_MAP: {
     [T in NodeType]: undefined | ((node: NodeMap[T]) => Token.Attribute[]);
 } = {
@@ -205,41 +147,29 @@ const TAG_NAME_MAP: {
 };
 
 class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
-    constructor(
-        private readonly _ELEMENT_MAP: typeof ELEMENT_MAP,
-        private readonly _ATTR_MAP: typeof ATTR_MAP,
-        private readonly _TAG_NAME_MAP: typeof TAG_NAME_MAP,
-    ) {}
-    updateNodeSourceCodeLocation(_node: Node, _location: Partial<Token.ElementLocation>): void {
+    updateNodeSourceCodeLocation(node: Node, location: Partial<Token.ElementLocation>): void {
         throw new Error('Method not implemented.');
     }
-    adoptAttributes(_recipient: Node, _attrs: Token.Attribute[]): void {
+    adoptAttributes(recipient: Node, attrs: Token.Attribute[]): void {
         throw new Error('Method not implemented.');
     }
     appendChild(parentNode: ContainerNode, newNode: InlineNode): void {
-        parentNode.content = parentNode.content ?? [];
-        setProp(newNode, 'parent', parentNode);
-        parentNode.content.push(newNode);
+        throw new Error('Method not implemented.');
     }
     createCommentNode(data: string): __CommentNode {
-        return { type: COMMENT_NODE, text: data };
+        throw new Error('Method not implemented.');
     }
     createDocument(): __Document {
-        return { type: DOCUMENT_NODE, content: [] };
+        throw new Error('Method not implemented.');
     }
     createDocumentFragment(): DocumentFragment {
-        return { type: FRAGMENT_NODE, content: [] };
+        throw new Error('Method not implemented.');
+    }
+    createTextNode(value: string): TextNode {
+        throw new Error('Method not implemented.');
     }
     createElement(tagName: string, namespaceURI: html.NS, attrs: Token.Attribute[]): Node {
-        const creater = this._ELEMENT_MAP[tagName];
-        const node: Node = creater
-            ? creater(attrs)
-            : ({
-                  type: tagName,
-                  attrs,
-              } as __UnknownNode as Node);
-        setProp(node, 'namespaceURI', namespaceURI);
-        return node;
+        throw new Error('Method not implemented.');
     }
     detachNode(node: InlineNode): void {
         const parent = getProp(node, 'parent');
@@ -251,7 +181,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     }
     getAttrList(element: Node): Token.Attribute[] {
         if ('attrs' in element) return (element as __UnknownNode).attrs ?? [];
-        const attrList = this._ATTR_MAP[element.type];
+        const attrList = ATTR_MAP[element.type];
         if (attrList) return attrList(element as never);
         return [];
     }
@@ -285,10 +215,10 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
         throw new Error('Method not implemented.');
     }
     getParentNode(node: Node): ContainerNode {
-        return getProp(node, 'parent') as ContainerNode;
+        return getProp(node, 'parent')!;
     }
     getTagName(element: Node): string {
-        return this._TAG_NAME_MAP[element.type] ?? element.type;
+        return TAG_NAME_MAP[element.type] ?? element.type;
     }
     getTextNodeContent(textNode: TextNode): string {
         return textNode.text;
@@ -341,7 +271,7 @@ class SerializeTreeAdapter implements TreeAdapter<MyTreeAdapterTypeMap> {
     }
 }
 const options: SerializerOptions<MyTreeAdapterTypeMap> = {
-    treeAdapter: new SerializeTreeAdapter(ELEMENT_MAP, ATTR_MAP, TAG_NAME_MAP),
+    treeAdapter: new SerializeTreeAdapter(),
 };
 export function renderHtml(node: Node | Tree): string {
     const frag: DocumentFragment = {
