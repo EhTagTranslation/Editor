@@ -1,17 +1,10 @@
 import { serialize, type SerializerOptions, type TreeAdapterTypeMap, type TreeAdapter, html, type Token } from 'parse5';
 import {
-    type BreakNode,
     type ContainerNode,
     type InlineNode,
     type Node,
     type Tree,
     type TextNode,
-    type ParaNode,
-    type LinkNode,
-    type ImageNode,
-    type StrongNode,
-    type EmphasisNode,
-    type TagRefNode,
     type NodeMap,
     isContainer,
     NodeType,
@@ -45,11 +38,6 @@ function setProp<T extends keyof typeof props>(node: Node, key: T, value?: PropV
     } else {
         map.set(node, value);
     }
-}
-
-function getAttr(attrs: Token.Attribute[], name: string): string | undefined {
-    const attr = attrs.find((a) => a.name === name);
-    return attr?.value;
 }
 
 const COMMENT_NODE = '#comment';
