@@ -14,13 +14,20 @@ export function setupSwagger(app: INestApplication): void {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/swagger', app, document);
     app.getHttpAdapter().get('/', (req, res: FastifyReply) => {
-        void res.redirect(302, '/swagger');
+        void res.redirect('/swagger', 302);
     });
 }
 
 export function enableCors(app: INestApplication): void {
     app.enableCors({
-        origin: true,
+        origin: (requestOrigin, callback) => {
+            requestOrigin = requestOrigin.trim();
+            if (!requestOrigin || requestOrigin === 'null') {
+                callback(null, '*');
+            } else {
+                callback(null, requestOrigin);
+            }
+        },
         credentials: false,
         methods: ['OPTIONS', 'HEAD', 'GET', 'PUT', 'POST', 'DELETE'],
         allowedHeaders: ['If-Match', 'If-None-Match', 'Content-Type', 'Authorization'],
