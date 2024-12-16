@@ -75,6 +75,7 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
 @Pipe({
     name: 'mark',
     pure: true,
+    standalone: false
 })
 export class MarkPipe implements PipeTransform {
     constructor(

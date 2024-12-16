@@ -5,5 +5,6 @@ import { Component } from '@angular/core';
     templateUrl: './editor-deny.component.html',
     styleUrls: ['./editor-deny.component.scss'],
     animations: [],
+    standalone: false
 })
 export class EditorDenyComponent {}

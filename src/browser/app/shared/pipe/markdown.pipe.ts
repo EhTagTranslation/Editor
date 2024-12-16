@@ -4,6 +4,7 @@ import { Pipe, type PipeTransform } from '@angular/core';
 @Pipe({
     name: 'markdown',
     pure: true,
+    standalone: false
 })
 export class MarkdownPipe implements PipeTransform {
     transform(value: string | null): string {
