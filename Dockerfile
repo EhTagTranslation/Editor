@@ -1,5 +1,7 @@
 FROM node:lts-alpine
 
+RUN npm install -g corepack@latest npm@latest
+
 WORKDIR /app
 
 COPY / /app
