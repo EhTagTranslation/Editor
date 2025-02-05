@@ -62,7 +62,7 @@ type ShowImgType = 'all' | 'no-r18' | 'no-r18g' | 'none';
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class ListComponent implements OnInit {
     constructor(

@@ -8,7 +8,7 @@ import { finalize } from 'rxjs/operators';
     selector: 'app-user',
     templateUrl: './user.component.html',
     styleUrls: ['./user.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class UserComponent implements OnInit {
     constructor(

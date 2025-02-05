@@ -4,7 +4,7 @@ import { Component, Input } from '@angular/core';
     selector: 'app-github-corner',
     templateUrl: './github-corner.component.html',
     styleUrls: ['./github-corner.component.scss'],
-    standalone: false
+    standalone: false,
 })
 export class GithubCornerComponent {
     @Input() href!: string;

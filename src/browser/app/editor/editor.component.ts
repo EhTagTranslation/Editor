@@ -85,7 +85,7 @@ function isEditableNs(control: AbstractControl): ValidationErrors | null {
             transition('* => *', [animate('0.3s ease-in-out')]),
         ]),
     ],
-    standalone: false
+    standalone: false,
 })
 export class EditorComponent implements OnInit {
     constructor(
