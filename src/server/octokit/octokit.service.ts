@@ -53,7 +53,9 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             else throw new Error(`Failed to get app info`);
         });
         this._botUserInfo = this._appInfo
-            .then((appInfo) => this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }))
+            .then(async (appInfo) =>
+                this.forApp.users.getByUsername({ username: `${appInfo.slug ?? appInfo.name}[bot]` }),
+            )
             .then((userInfoReq) => Object.freeze(userInfoReq.data));
     }
 
@@ -157,7 +159,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             repo: this.repo,
             path,
         });
-        const data = res.data;
+        const { data } = res;
         if (Array.isArray(data) || data.type !== 'file' || !('encoding' in data)) {
             throw new Error(`${path} is not a file.`);
         }
@@ -187,7 +189,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             sha: oldSha,
             author,
         });
-        const data = res.data;
+        const { data } = res;
         return {
             file: {
                 path: data.content?.path ?? path,
@@ -211,7 +213,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
             repo: this.repo,
             branch: 'master',
         });
-        const commit = res.data.commit;
+        const { commit } = res.data;
         return {
             sha: commit.sha as Sha1Value,
             message: commit.commit.message,

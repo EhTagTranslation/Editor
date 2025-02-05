@@ -113,14 +113,14 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         let updatedFiles: string[];
         if (oldInfo.head.sha.length !== 40) {
             updatedFiles = await Promise.all(
-                ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map((f) => pullFile(f)),
+                ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map(async (f) => pullFile(f)),
             );
             this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
         } else {
             const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
             if (comparison.files && comparison.files.length > 0) {
                 updatedFiles = await Promise.all(
-                    comparison.files.map((f) => pullFile(f.filename, f.status === 'removed')),
+                    comparison.files.map(async (f) => pullFile(f.filename, f.status === 'removed')),
                 );
             } else {
                 updatedFiles = [];
@@ -143,8 +143,8 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     ): Promise<void> {
         const content = await this.data.data[ns].save();
         let msg: string;
-        const oldContext = new Context((message.ov ?? message.nv) as TagRecord, message.ok);
-        const newContext = new Context((message.nv ?? message.ov) as TagRecord, message.nk);
+        const oldContext = new Context((message.ov ?? message.nv)!, message.ok);
+        const newContext = new Context((message.nv ?? message.ov)!, message.nk);
         if (message.ov && message.nv) {
             msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
 |        | 原始标签 | 名称 | 描述 | 外部链接 |
@@ -181,5 +181,5 @@ ${message.nv.stringify(newContext)}
     readonly path: string;
     readonly repo: string;
 
-    public data!: Database;
+    data!: Database;
 }
