@@ -20,7 +20,7 @@ export function setupSwagger(app: INestApplication): void {
 
 export function enableCors(app: INestApplication): void {
     app.enableCors({
-        origin: (requestOrigin: string | undefined, callback) => {
+        origin: (requestOrigin: string | undefined, callback: (err: Error | null, origin: string | null) => void) => {
             requestOrigin = requestOrigin?.trim();
             if (!requestOrigin || requestOrigin === 'null') {
                 callback(null, '*');
