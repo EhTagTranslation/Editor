@@ -78,11 +78,11 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         });
     }
 
-    async pull(): Promise<string[] | undefined> {
+    async pull(force = false): Promise<string[] | undefined> {
         const oldInfo = this.info;
         const headCommit = await this.octokit.getHead();
         const blob = { ...oldInfo.blob } as RepoInfo['blob'];
-        if (oldInfo.head.sha === headCommit.sha) {
+        if (!force && oldInfo.head.sha === headCommit.sha) {
             this.logger.verbose(`Up to date. Sha: ${headCommit.sha}`);
             return undefined;
         }
@@ -111,7 +111,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         };
 
         let updatedFiles: string[];
-        if (oldInfo.head.sha.length !== 40) {
+        if (force || oldInfo.head.sha.length !== 40) {
             updatedFiles = await Promise.all(
                 ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map(async (f) => pullFile(f)),
             );

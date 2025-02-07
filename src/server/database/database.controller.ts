@@ -61,7 +61,7 @@ export class DatabaseController extends InjectableBase {
     @ApiOperation({ summary: '查询数据库基本情况' })
     @ApiIfNoneMatchHeader()
     @ApiOkResponse({ type: RepoInfoDto })
-    getInfo(): Promise<RepoInfoDto> {
+    async getInfo(): Promise<RepoInfoDto> {
         return this.service.data.info();
     }
 
