@@ -152,9 +152,8 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
     }
 
     async getFile(path: string): Promise<File> {
-        const res = await (
-            await this.forRepo()
-        ).repos.getContent({
+        const api = await this.forRepo();
+        const res = await api.repos.getContent({
             owner: this.owner,
             repo: this.repo,
             path,
@@ -163,10 +162,27 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         if (Array.isArray(data) || data.type !== 'file' || !('encoding' in data)) {
             throw new Error(`${path} is not a file.`);
         }
-        if (data.encoding !== 'base64') throw new Error(`Unsupported encoding ${data.encoding}.`);
+        let content;
+        if (data.encoding === 'none' && !data.content) {
+            // large file, use raw media type
+            const res = await api.repos.getContent({
+                owner: this.owner,
+                repo: this.repo,
+                path: path,
+                headers: { accept: 'application/vnd.github.raw+json' },
+            });
+            content = Buffer.from(res.data as unknown as string);
+        } else if (data.encoding === 'base64') {
+            content = Buffer.from(data.content, 'base64');
+        } else {
+            throw new Error(`Unsupported encoding ${data.encoding}.`);
+        }
+        if (content.length !== data.size) {
+            throw new Error(`File size mismatch: ${content.length} !== ${data.size}`);
+        }
         return {
             path: data.path,
-            content: Buffer.from(data.content, 'base64'),
+            content,
             sha: data.sha as Sha1Value,
         };
     }
