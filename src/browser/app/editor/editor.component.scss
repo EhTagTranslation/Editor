@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
-@import 'theme';
+@use 'theme';
 
-$label-color: mat.get-color-from-palette($app-foreground, secondary-text);
+$label-color: mat.get-color-from-palette(theme.$app-foreground, secondary-text);
 
 :host {
   display: flex;
@@ -84,7 +84,7 @@ $label-color: mat.get-color-from-palette($app-foreground, secondary-text);
         transition: color 0.1s;
 
         &:hover {
-          color: mat.get-color-from-palette($app-foreground, text);
+          color: mat.get-color-from-palette(theme.$app-foreground, text);
         }
       }
     }
@@ -159,12 +159,12 @@ mat-option .hint {
   }
 
   .hint-namespace {
-    color: mat.get-color-from-palette($app-primary, 700);
+    color: mat.get-color-from-palette(theme.$app-primary, 700);
   }
 
   .hint-translation {
     .hint-namespace {
-      color: mat.get-color-from-palette($app-primary, 300);
+      color: mat.get-color-from-palette(theme.$app-primary, 300);
     }
 
     font-size: 70%;

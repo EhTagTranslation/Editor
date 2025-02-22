@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '@angular/material' as mat;
 /* Plus imports for other components in your app. */
 
@@ -31,5 +32,5 @@ $app-theme: mat.define-light-theme(
   )
 );
 
-$app-foreground: map-get($app-theme, 'foreground');
-$app-background: map-get($app-theme, 'background');
+$app-foreground: map.get($app-theme, 'foreground');
+$app-background: map.get($app-theme, 'background');

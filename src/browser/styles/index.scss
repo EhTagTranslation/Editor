@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-
+@use 'sass:map';
 @use '@angular/material' as mat;
-@import 'theme';
+@use 'theme';
 
 /* 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -16,7 +16,7 @@
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy($app-typography);`
-@include mat.all-legacy-component-typographies($app-typography);
+@include mat.all-legacy-component-typographies(theme.$app-typography);
 @include mat.legacy-core();
 
 /* 
@@ -24,14 +24,13 @@
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 */
-@include mat.all-legacy-component-themes($app-theme);
+@include mat.all-legacy-component-themes(theme.$app-theme);
 
 @import 'material-design-icons/iconfont/material-icons.css';
-
 @import 'iconfont.css';
 
 html {
-  font-family: #{$app-font-family};
+  font-family: #{theme.$app-font-family};
   min-width: 320px;
   overflow: hidden;
 }
@@ -41,7 +40,7 @@ body {
 }
 
 a {
-  color: mat.get-color-from-palette(map-get($app-theme, primary));
+  color: mat.get-color-from-palette(map.get(theme.$app-theme, primary));
   text-decoration: none;
 
   &[href^='http://'], &[href^='https://']
@@ -50,7 +49,7 @@ a {
   }
 
   &:hover {
-    color: mat.get-color-from-palette(map-get($app-theme, accent));
+    color: mat.get-color-from-palette(map.get(theme.$app-theme, accent));
   }
 }
 
