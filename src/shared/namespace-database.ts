@@ -21,8 +21,8 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     ) {}
 
     frontMatters!: FrontMatters;
-    private rawData = new Array<TagLine>();
-    private rawMap = new Map<RawTag, TagLine>();
+    private rawData: TagLine[] = [];
+    private readonly rawMap = new Map<RawTag, TagLine>();
     private prefix = '';
     private suffix = '';
     /** 优先使用 data 中的数据，其次使用文件 */

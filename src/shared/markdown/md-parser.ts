@@ -168,14 +168,18 @@ function normalizeLink(node: LinkNode, context: Context | undefined): void {
             }
         }
     } catch (ex) {
-        context ? context.error(`无效链接：\`${href}\` 不是一个有效的 URL。`) : console.log(ex);
+        if (context) {
+            context.error(`无效链接：\`${href}\` 不是一个有效的 URL。`);
+        } else {
+            // eslint-disable-next-line no-console
+            console.error(ex);
+        } 
     }
 }
 
 function normalizeImage(node: ImageNode): void {
     let src = node.url;
-    let title = node.title;
-    let nsfw = node.nsfw;
+    let {title,nsfw} = node; 
     if (src.startsWith('#') && /^https?:\/\/[^/]+/.test(title)) {
         if (src === '#') {
             src = title;

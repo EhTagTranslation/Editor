@@ -1,6 +1,6 @@
 import clc from 'cli-color';
 import path from 'node:path';
-import { Context, Logger } from '#shared/markdown/index';
+import { type Context, Logger } from '#shared/markdown/index';
 
 export class FileLogger extends Logger {
     constructor(readonly location: string) {

@@ -1,6 +1,6 @@
 import { NamespaceName } from './interfaces/ehtag.js';
 
-const nsDic: { [k: string]: NamespaceName } = {
+const nsDic: Record<string, NamespaceName> = {
     rows: 'rows',
 
     x: 'mixed',

@@ -120,9 +120,7 @@ const ATTR_MAP: {
     text: undefined,
 };
 
-const TAG_NAME_MAP: {
-    [T in NodeType | typeof TEMPLATE_NODE]: string | undefined;
-} = {
+const TAG_NAME_MAP: Record<NodeType | typeof TEMPLATE_NODE, string | undefined> = {
     [TEMPLATE_NODE]: 'template',
     tagref: 'abbr',
     paragraph: 'p',

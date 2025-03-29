@@ -28,7 +28,7 @@ export interface NamespaceDatabaseView {
 
 export interface DatabaseView {
     readonly version: number;
-    readonly data: { readonly [key in NamespaceName]: NamespaceDatabaseView };
+    readonly data: Readonly<Record<NamespaceName, NamespaceDatabaseView>>;
 
     info(): Promise<RepoInfo>;
 

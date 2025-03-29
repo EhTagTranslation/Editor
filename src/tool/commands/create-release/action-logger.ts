@@ -1,5 +1,5 @@
 import { error, notice, warning } from '@actions/core';
-import { Context, Logger } from '#shared/markdown/index';
+import { type Context, Logger } from '#shared/markdown/index';
 import { action } from '../../utils.js';
 
 export class ActionLogger extends Logger {
