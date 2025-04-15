@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - '@scarf/scarf'
+  - es5-ext
+  - esbuild
+  - lmdb
+  - msgpackr-extract
