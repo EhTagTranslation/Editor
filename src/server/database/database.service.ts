@@ -70,7 +70,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
                 blob: {},
             };
         }
-        await this.pull();
+        await this.pull(true);
         this.data = await Database.create(this.path, {
             head: () => this.info.head,
             repo: () => `https://github.com/${this.repo}.git`,
