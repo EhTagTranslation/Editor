@@ -43,10 +43,8 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         return this._info;
     }
     private set info(value: RepoInfo) {
-        if (this._info?.head.sha !== value.head.sha) {
-            this._info = value;
-            fs.writeJSONSync(this.infoFile, value);
-        }
+        this._info = value;
+        fs.writeJSONSync(this.infoFile, value);
     }
 
     async onModuleInit(): Promise<void> {
