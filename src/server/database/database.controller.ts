@@ -15,6 +15,7 @@ import {
     BadRequestException,
     Headers,
     HttpException,
+    InternalServerErrorException,
 } from '@nestjs/common';
 import {
     ApiTags,
@@ -28,6 +29,7 @@ import {
 } from '@nestjs/swagger';
 import type { TagType } from '#shared/interfaces/ehtag';
 import { Context } from '#shared/markdown/index';
+import type { TagRecord } from '#shared/tag-record';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
 import { EtagInterceptor } from '../app/etag.interceptor.js';
@@ -107,20 +109,24 @@ export class DatabaseController extends InjectableBase {
         @Body() tag: TagDto,
         @User() user: UserInfo,
     ): Promise<TagResponseDto> {
-        const dic = this.service.data.data[p.namespace];
-        if (dic.has(p.raw)) throw new ConflictException();
-        if (q.before && q.after) throw new BadRequestException('Before and after cannot be applied at the same time.');
-        if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
-        if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
-        const rec = q.before
-            ? dic.add(p.raw, tag, 'before', q.before)
-            : q.after
-              ? dic.add(p.raw, tag, 'after', q.after)
-              : dic.add(p.raw, tag);
-        await this.service.commitAndPush(p.namespace, user, {
-            nk: p.raw,
-            nv: rec,
+        let rec: TagRecord | undefined;
+        await this.service.apply(user, p.namespace, (dic) => {
+            if (dic.has(p.raw)) throw new ConflictException();
+            if (q.before && q.after)
+                throw new BadRequestException('Before and after cannot be applied at the same time.');
+            if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
+            if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
+            rec = q.before
+                ? dic.add(p.raw, tag, 'before', q.before)
+                : q.after
+                  ? dic.add(p.raw, tag, 'after', q.after)
+                  : dic.add(p.raw, tag);
+            return {
+                nk: p.raw,
+                nv: rec,
+            };
         });
+        if (!rec) throw new InternalServerErrorException('Failed to create new tag record.');
         return rec.render(format, new Context(rec, p.raw));
     }
 
@@ -135,19 +141,23 @@ export class DatabaseController extends InjectableBase {
         @Body() tag: LooseTagDto,
         @User() user: UserInfo,
     ): Promise<TagResponseDto> {
-        const dic = this.service.data.data[p.namespace];
-        if (q.before && q.after) throw new BadRequestException('Before and after cannot be applied at the same time.');
-        if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
-        if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
-        if (!q.before && !q.after) throw new BadRequestException('Must set before or after for comment line.');
-        const rec = q.before
-            ? dic.add(undefined, tag, 'before', q.before)
-            : q.after
-              ? dic.add(undefined, tag, 'after', q.after)
-              : dic.add(undefined, tag);
-        await this.service.commitAndPush(p.namespace, user, {
-            nv: rec,
+        let rec: TagRecord | undefined;
+        await this.service.apply(user, p.namespace, (dic) => {
+            if (q.before && q.after)
+                throw new BadRequestException('Before and after cannot be applied at the same time.');
+            if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
+            if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
+            if (!q.before && !q.after) throw new BadRequestException('Must set before or after for comment line.');
+            rec = q.before
+                ? dic.add(undefined, tag, 'before', q.before)
+                : q.after
+                  ? dic.add(undefined, tag, 'after', q.after)
+                  : dic.add(undefined, tag);
+            return {
+                nv: rec,
+            };
         });
+        if (!rec) throw new InternalServerErrorException('Failed to create new tag record.');
         return rec.render(format, new Context(rec));
     }
 
@@ -163,23 +173,26 @@ export class DatabaseController extends InjectableBase {
         @Body() tag: TagDto,
         @User() user: UserInfo,
     ): Promise<TagResponseDto> {
-        const dic = this.service.data.data[p.namespace];
-        const oldRec = dic.get(p.raw);
-        if (!oldRec) throw new NotFoundException();
-        const context = new Context(oldRec, p.raw);
-        const newRec = dic.set(p.raw, tag);
-        const oldRaw = oldRec.render('raw', context);
-        const newRaw = newRec.render('raw', context);
-        if (oldRaw.name === newRaw.name && oldRaw.intro === newRaw.intro && oldRaw.links === newRaw.links) {
-            throw new HttpException('请求内容与数据库内容一致，未进行修改', HttpStatus.NO_CONTENT);
-        }
-        await this.service.commitAndPush(p.namespace, user, {
-            ok: p.raw,
-            ov: oldRec,
-            nk: p.raw,
-            nv: newRec,
+        let newRec: TagRecord | undefined;
+        await this.service.apply(user, p.namespace, (dic) => {
+            const oldRec = dic.get(p.raw);
+            if (!oldRec) throw new NotFoundException();
+            const context = new Context(oldRec, p.raw);
+            const newRec = dic.set(p.raw, tag);
+            const oldRaw = oldRec.render('raw', context);
+            const newRaw = newRec.render('raw', context);
+            if (oldRaw.name === newRaw.name && oldRaw.intro === newRaw.intro && oldRaw.links === newRaw.links) {
+                throw new HttpException('请求内容与数据库内容一致，未进行修改', HttpStatus.NO_CONTENT);
+            }
+            return {
+                ok: p.raw,
+                ov: oldRec,
+                nk: p.raw,
+                nv: newRec,
+            };
         });
-        return newRec.render(format, context);
+        if (!newRec) throw new InternalServerErrorException('Failed to create new tag record.');
+        return newRec.render(format, new Context(newRec, p.raw));
     }
 
     @Delete(':namespace/:raw')
@@ -188,12 +201,13 @@ export class DatabaseController extends InjectableBase {
     @ApiNotFoundResponse({ description: '条目不存在' })
     @ApiOkResponse()
     async deleteTag(@Param() p: TagParams, @User() user: UserInfo): Promise<void> {
-        const dic = this.service.data.data[p.namespace];
-        const rec = dic.delete(p.raw);
-        if (!rec) throw new NotFoundException();
-        await this.service.commitAndPush(p.namespace, user, {
-            ok: p.raw,
-            ov: rec,
+        await this.service.apply(user, p.namespace, (dic) => {
+            const rec = dic.delete(p.raw);
+            if (!rec) throw new NotFoundException();
+            return {
+                ok: p.raw,
+                ov: rec,
+            };
         });
     }
 

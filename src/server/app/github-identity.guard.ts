@@ -40,15 +40,19 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             await this.octokit.forApp.users.getByUsername({
                 username: user.login,
             });
+            return false;
         } catch (ex) {
             // logger 无法显示错误的自定义信息，所以这里直接 console.log
+            // eslint-disable-next-line no-console
             console.log(ex);
         }
         try {
             await this.octokit.forUser(token).users.getByUsername({
                 username: user.login,
             });
+            return false;
         } catch (ex) {
+            // eslint-disable-next-line no-console
             console.log(ex);
         }
         return true;
@@ -79,10 +83,9 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
         if (await this.isBlocked(user)) {
             throw new ForbiddenException('用户已被封禁。');
         }
-        await this.isFlagged(user, token);
-        // if (await this.isFlagged(user)) {
-        //     throw new ForbiddenException('用户已被 GitHub 标记。');
-        // }
+        if (await this.isFlagged(user, token)) {
+            throw new ForbiddenException('用户已被 GitHub 标记。');
+        }
 
         Object.defineProperty(request, 'user', {
             value: user,

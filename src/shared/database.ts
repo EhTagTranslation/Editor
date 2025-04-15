@@ -56,19 +56,19 @@ export class Database implements DatabaseView {
         files: ReadonlyArray<readonly [NamespaceName, string]>,
         private readonly repoInfoProvider?: RepoInfoProvider,
     ) {
-        const data = {} as { [key in NamespaceName]: NamespaceDatabase };
+        const data = {} as Record<NamespaceName, NamespaceDatabase>;
         for (const [ns, file] of files) {
             data[ns] = new NamespaceDatabase(ns, file, this);
         }
         this.data = data;
     }
-    readonly data: { readonly [key in NamespaceName]: NamespaceDatabase };
+    readonly data: Readonly<Record<NamespaceName, NamespaceDatabase>>;
 
     async load(): Promise<void> {
-        await Promise.all(Object.values(this.data).map((n) => n.load()));
+        await Promise.all(Object.values(this.data).map(async (n) => n.load()));
     }
     async save(): Promise<void> {
-        await Promise.all(Object.values(this.data).map((n) => n.save()));
+        await Promise.all(Object.values(this.data).map(async (n) => n.save()));
     }
 
     async sha(): Promise<Sha1Value> {
@@ -85,7 +85,7 @@ export class Database implements DatabaseView {
             url.username = '';
             url.password = '';
             repo = url.href;
-        } else if (/^git@/.test(repo)) {
+        } else if (repo.startsWith('git@')) {
             const match = /^git@([^:]+):(.+)$/.exec(repo);
             if (match) {
                 const [_, host, path] = match;
