@@ -58,3 +58,11 @@ export async function getTagInfo(ns: NamespaceName, tag: RawTag): Promise<TagInf
     if (!record) return undefined;
     return parseRecord(record);
 }
+
+export async function getTagsInfo(tag: RawTag): Promise<TagInfo[]> {
+    const db = await init();
+    const records = db.prepare('SELECT * FROM tag_aggregate WHERE tag = ?').all(tag) as Array<
+        Record<keyof TagInfo, string>
+    >;
+    return records.map(parseRecord);
+}

@@ -5,7 +5,7 @@ import { command, parseTag, formatTag } from './command.js';
 command
     .command('search <[namespace:]tag>')
     .option('-e, --exact', '精确搜索')
-    .description('搜索标签')
+    .description('使用 E 站 API 搜索标签')
     .action(async (tag, { exact }) => {
         const [namespace, raw] = parseTag(tag);
         const result = await suggestTag(namespace, raw, exact);

@@ -4,7 +4,7 @@ import { isNamespaceName } from '#shared/namespace';
 import { get } from '#shared/ehentai/http/index';
 import { STATISTICS } from '#shared/ehentai/statistics';
 import { findTagCache, suggestTag, listGalleries, type Tag, putTagCache } from '#shared/ehentai/index';
-import { getTagInfo } from './tag-dump-db';
+import { getTagInfo, getTagsInfo } from './tag-dump-db';
 
 /** 开始时默认使用 ex，访问失败时回退到 eh，之后都使用 eh */
 let useEx = true;
@@ -125,11 +125,19 @@ export async function normalizeTag(
         match ??= await find(isMatchOrMove);
     }
 
-    if (ns && match == null) {
-        const dumpTag = await getTagInfo(ns, raw);
-        if (dumpTag) {
-            await listGalleries(dumpTag.galleries);
-            match = findTagCache(ns, raw);
+    if (match == null) {
+        if (ns) {
+            const dumpTag = await getTagInfo(ns, raw);
+            if (dumpTag) {
+                await listGalleries(dumpTag.galleries);
+                match = findTagCache(ns, raw);
+            }
+        } else {
+            const dumpTags = await getTagsInfo(raw);
+            for (const dumpTag of dumpTags) {
+                await listGalleries(dumpTag.galleries);
+                match ??= findTagCache(dumpTag.namespace, raw);
+            }
         }
     }
 
