@@ -278,7 +278,7 @@ export class EditorComponent implements OnInit {
                 debounceTime(100),
                 mergeMap(async ([ns, raw]): Promise<[string, TagSuggest[]]> => {
                     if (!raw) return [raw, []];
-                    const suggestion = await suggestTag(undefined, raw);
+                    const suggestion = Array.from(await suggestTag(undefined, raw));
                     suggestion.sort((a, b) => {
                         const aNs = a.master?.namespace ?? a.namespace;
                         const bNs = b.master?.namespace ?? b.namespace;

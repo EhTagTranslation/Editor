@@ -1,10 +1,12 @@
 import clc from 'cli-color';
 import type { Database } from '#shared/database';
-import { getTagGroups, normalizeTag } from '#shared/ehentai/index';
-import { STATISTICS } from '#shared/ehentai/statistics';
+import { getTagGroups, listGalleries } from '#shared/ehentai/index';
 import { NamespaceName } from '#shared/interfaces/ehtag';
 import { Context } from '#shared/markdown/index';
 import type { RawTag } from '#shared/raw-tag';
+import { withStatistics } from './statistics';
+import { getTagInfo } from '../../tag-dump-db';
+import { normalizeTag } from '#tool/normalize-tag';
 
 function clearLine(): void {
     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
@@ -39,10 +41,6 @@ function showProgress(): boolean {
     return process.stderr.isTTY && clc.windowSize.width > 0;
 }
 
-function statistics(): string {
-    return `调用标签建议 ${STATISTICS.tagSuggest} 次，调用图库信息 ${STATISTICS.galleryList} 次，标签搜索 ${STATISTICS.tagSearch} 次`;
-}
-
 async function searchCheck(
     db: Database,
     tagFromEtt: Set<`${NamespaceName}:${RawTag}`>,
@@ -66,7 +64,10 @@ async function searchCheck(
                 c.line = tagLine.line;
                 return c;
             };
-
+            const dumpTag = await getTagInfo(ns, tag);
+            if (dumpTag != null) {
+                await listGalleries(dumpTag.galleries);
+            }
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
                 if (showProgress()) {
@@ -85,7 +86,7 @@ async function searchCheck(
         }
 
         if (!showProgress()) {
-            progress(count, tagFromEtt.size, `完成 ${ns} 的检查，${statistics()}`);
+            progress(count, tagFromEtt.size, withStatistics(`完成 ${ns} 的检查`));
             process.stderr.write(`\n`);
         }
     }
@@ -107,7 +108,7 @@ export async function runSourceCheck(
         return false;
     }
 
-    console.log('\n从 E 站标签数据库检查标签...\n');
+    console.log('\n开始 Source Check\n从 E 站标签数据库检查标签...\n');
     const tagFromEh = await getTagGroups();
     console.log(`从 E 站 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
     const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
@@ -135,10 +136,6 @@ export async function runSourceCheck(
     }
 
     if (showProgress()) clearLine();
-    if (useSearch) {
-        console.log(`完成检查，${statistics()}`);
-    } else {
-        console.log(`完成检查`);
-    }
+    console.log(withStatistics(`完成 Source Check`));
     console.log('');
 }

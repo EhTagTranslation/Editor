@@ -13,13 +13,18 @@ export interface SlaveTag {
 }
 export type Tag = MasterTag | SlaveTag;
 
-export const tagCache = new Map<RawTag, Map<NamespaceName | 'temp', Tag>>();
+const tagCache = new Map<RawTag, Map<NamespaceName | 'temp', Tag>>();
 
-export function store(tag: Tag): void {
+export function putTagCache(tag: Tag): void {
     const raw = tagCache.get(tag.raw);
     if (raw) {
         raw.set(tag.namespace, tag);
     } else {
         tagCache.set(tag.raw, new Map([[tag.namespace, tag]]));
     }
+}
+
+export function findTagCache(ns: NamespaceName, raw: RawTag): Tag | undefined {
+    const nsMap = tagCache.get(raw);
+    return nsMap?.get(ns);
 }

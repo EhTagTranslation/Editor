@@ -1,10 +1,10 @@
 import { DatabaseSync } from 'node:sqlite';
-import { get } from '#shared/ehentai/http/index';
 import { createGunzip } from 'node:zlib';
 import path from 'node:path';
 import os from 'node:os';
 import { createWriteStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
+import { get } from '#shared/ehentai/http/index';
 import type { NamespaceName } from '#shared/interfaces/ehtag';
 import type { RawTag } from '#shared/raw-tag';
 import type { GalleryId } from '#shared/ehentai/list-galleries';

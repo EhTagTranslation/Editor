@@ -1,7 +1,7 @@
 import { isRawTag } from '../raw-tag.js';
 import { isNamespaceName } from '../namespace.js';
 import { get } from './http/index.js';
-import { type MasterTag, store } from './tag.js';
+import { type MasterTag, putTagCache } from './tag.js';
 
 /**
  * 通过 https://repo.e-hentai.org/tools.php?act=taggroup
@@ -30,7 +30,7 @@ export async function getTagGroups(): Promise<MasterTag[]> {
                 namespace: ns,
                 raw: tag,
             };
-            store(current);
+            putTagCache(current);
             tags.push(current);
         }
     }

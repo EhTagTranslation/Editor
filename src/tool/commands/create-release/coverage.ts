@@ -1,14 +1,17 @@
 import type { Database } from '#shared/database';
 import type { RawTag } from '#shared/raw-tag';
 import type { NamespaceName } from '#shared/interfaces/ehtag';
-import { normalizeTag } from '#shared/ehentai/normalize-tag';
-import { getAllTagInfo } from './tag-db.js';
+import { normalizeTag } from '../../normalize-tag.js';
+import { getAllTagInfo } from '../../tag-dump-db.js';
+import { withStatistics } from './statistics.js';
 
 const CHECK_THRESHOLD = 500;
 
 /** 计算标签覆盖 */
 export async function runCoverage(db: Database): Promise<void> {
+    console.log('计算标签覆盖率...');
     const ref = await getAllTagInfo();
+    console.log(`从 E 站 Api Dump 加载了 ${ref.length} 个标签`);
 
     let allFreq = 0;
     let coveredFreq = 0;
@@ -53,4 +56,5 @@ export async function runCoverage(db: Database): Promise<void> {
             console.log(`  [INVALID] ${ns}:${raw} (${count})`);
         }
     }
+    console.log(withStatistics('标签覆盖率计算完成'));
 }

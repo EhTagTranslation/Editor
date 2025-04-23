@@ -1,12 +1,10 @@
-import { isRawTag, type RawTag } from '../raw-tag.js';
-import type { NamespaceName } from '../interfaces/ehtag.js';
-import { isNamespaceName } from '../namespace.js';
-import { suggestTag } from './suggest-tag.js';
-import { get } from './http/index.js';
-import { type Tag, tagCache } from './tag.js';
-import { STATISTICS } from './statistics.js';
-
-const tagsFoundBySearch = new Set<`${NamespaceName}:${RawTag}`>();
+import { isRawTag, type RawTag } from '#shared/raw-tag';
+import type { NamespaceName } from '#shared/interfaces/ehtag';
+import { isNamespaceName } from '#shared/namespace';
+import { get } from '#shared/ehentai/http/index';
+import { STATISTICS } from '#shared/ehentai/statistics';
+import { findTagCache, suggestTag, listGalleries, type Tag, putTagCache } from '#shared/ehentai/index';
+import { getTagInfo } from './tag-dump-db';
 
 /** 开始时默认使用 ex，访问失败时回退到 eh，之后都使用 eh */
 let useEx = true;
@@ -66,7 +64,7 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag, useNs: boolean): Pr
         if (tRaw === raw && tNs === ns) {
             found = true;
         }
-        tagsFoundBySearch.add(`${tNs}:${tRaw}`);
+        putTagCache({ namespace: tNs, raw: tRaw });
     }
     return found;
 }
@@ -82,16 +80,6 @@ async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
     return (await searchTagImpl(ns, raw, preferUseNs)) || (await searchTagImpl(ns, raw, !preferUseNs));
 }
 
-function findSearchCache(ns: NamespaceName, raw: RawTag): boolean {
-    const term = `${ns}:${raw}` as const;
-    return tagsFoundBySearch.has(term);
-}
-
-function findTagCache(ns: NamespaceName, raw: RawTag): Tag | undefined {
-    const nsMap = tagCache.get(raw);
-    return nsMap?.get(ns);
-}
-
 /**
  * 从 E 站标签数据库查找该标签是否存在，并找到对应主标签
  */
@@ -99,8 +87,6 @@ export async function normalizeTag(
     ns: NamespaceName | undefined,
     raw: RawTag,
 ): Promise<[NamespaceName, RawTag] | undefined> {
-    if (ns && findSearchCache(ns, raw)) return [ns, raw];
-
     let match: Tag | undefined;
 
     if (ns) {
@@ -133,9 +119,18 @@ export async function normalizeTag(
             match = candidates[0];
         }
     }
+
     if (ns && match == null) {
         match ??= await find(isMatch);
         match ??= await find(isMatchOrMove);
+    }
+
+    if (ns && match == null) {
+        const dumpTag = await getTagInfo(ns, raw);
+        if (dumpTag) {
+            await listGalleries(dumpTag.galleries);
+            match = findTagCache(ns, raw);
+        }
     }
 
     if (match == null) {

@@ -1,7 +1,7 @@
 import type { RawTag } from '../raw-tag.js';
 import { api, type ApiRequest } from './http/index.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
-import { store } from './tag.js';
+import { putTagCache } from './tag.js';
 import { STATISTICS } from './statistics.js';
 import { parseTag } from '#shared/tag';
 
@@ -42,7 +42,7 @@ export async function listGalleries(list: readonly GalleryId[]): Promise<Gallery
         for (const tag of meta.tags) {
             const parsed = parseTag(tag);
             if (!parsed.valid || !parsed.ns) continue;
-            store({
+            putTagCache({
                 namespace: parsed.ns,
                 raw: parsed.raw,
             });

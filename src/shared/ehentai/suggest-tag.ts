@@ -1,7 +1,7 @@
 import type { RawTag } from '../raw-tag.js';
 import { api, type ApiRequest, type ResponseOf } from './http/index.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
-import { store, type MasterTag, type Tag } from './tag.js';
+import { putTagCache, type MasterTag, type Tag } from './tag.js';
 import { STATISTICS } from './statistics.js';
 
 interface TagSuggestRequest
@@ -39,7 +39,7 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
                 namespace: tag.mns ?? 'other',
                 raw: tag.mtn,
             };
-            store(master);
+            putTagCache(master);
         }
         const current: Tag = {
             namespace: tag.ns ?? 'other',
@@ -47,15 +47,15 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
             master,
         };
         tags.push(current);
-        store(current);
+        putTagCache(current);
     }
     return tags;
 }
 
-const suggestCache = new Map<string, Tag[]>();
+const suggestCache = new Map<string, readonly Tag[]>();
 
 /** 调用 'tagsuggest' API，并设置缓存 */
-async function suggestTagImpl(text: string): Promise<Tag[]> {
+async function suggestTagImpl(text: string): Promise<readonly Tag[]> {
     const cache = suggestCache.get(text);
     if (cache) return cache;
 
@@ -75,7 +75,11 @@ async function suggestTagImpl(text: string): Promise<Tag[]> {
 }
 
 /** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
-export async function suggestTag(ns: NamespaceName | undefined, raw: string, exactMatch = false): Promise<Tag[]> {
+export async function suggestTag(
+    ns: NamespaceName | undefined,
+    raw: string,
+    exactMatch = false,
+): Promise<readonly Tag[]> {
     if (ns === 'rows') return [];
     raw = raw.trim().toLowerCase();
     const text = `${ns != null ? ns + ':' : ''}${raw}${exactMatch ? '$' : ''}`;

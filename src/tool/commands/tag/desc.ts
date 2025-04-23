@@ -1,11 +1,11 @@
 import type { AxiosError } from 'axios';
 import clc from 'cli-color';
 import type { Tag } from '#shared/interfaces/ehtag';
-import { normalizeTag } from '#shared/ehentai/index';
 import { get } from '#shared/ehentai/http/index';
 import { command, parseTag, formatTag } from './command.js';
 import { Cell } from '#shared/cell';
 import type { Node, NodeMap, NodeType } from '#shared/interfaces/ehtag.ast';
+import { normalizeTag } from '#tool/normalize-tag';
 
 const LS = clc.blackBright('[');
 const RS = clc.blackBright(']');
