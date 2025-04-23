@@ -1,4 +1,4 @@
-import { isRawTag, RawTag } from '../raw-tag.js';
+import { isRawTag, type RawTag } from '../raw-tag.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
 import { isNamespaceName } from '../namespace.js';
 import { suggestTag } from './suggest-tag.js';

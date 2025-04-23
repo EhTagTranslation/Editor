@@ -22,7 +22,7 @@ command
     .option('--mirror-sha <sha>', '镜像 commit 的 sha')
     .action(async (options: OptionValues) => {
         const head = await new GitRepoInfoProvider(process.cwd()).head();
-        let message = head.message;
+        let { message } = head;
         action.exportVariable('RELEASE_NAME', head.message.split('\n', 1)[0]);
         const info = { message } as Record<string, string>;
         const git = SimpleGit();

@@ -17,6 +17,7 @@
     "start:browser": "ng serve",
     "build:browser": "ng build --configuration production",
     "test:browser": "echo no test",
+    "check": "tsc --build --noEmit",
     "clean": "rimraf dist",
     "format": "prettier --ignore-path .gitignore --write .",
     "lint": "eslint"

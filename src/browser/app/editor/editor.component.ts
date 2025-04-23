@@ -291,7 +291,11 @@ export class EditorComponent implements OnInit {
                         const nsSuggestion = await suggestTag(ns, raw);
                         suggestion.unshift(
                             ...nsSuggestion.filter((s) =>
-                                suggestion.every((sug) => sug.id !== s.id && sug.master?.id !== s.id),
+                                suggestion.every(
+                                    (sug) =>
+                                        (sug.raw !== s.raw || sug.namespace !== s.namespace) &&
+                                        (sug.master?.raw !== s.raw || sug.master?.namespace !== s.namespace),
+                                ),
                             ),
                         );
                     }

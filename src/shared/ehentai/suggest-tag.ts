@@ -36,14 +36,12 @@ function expandResult(response: ResponseOf<TagSuggestRequest>): Tag[] {
         let master: MasterTag | undefined;
         if ('mid' in tag) {
             master = {
-                id: tag.mid,
                 namespace: tag.mns ?? 'other',
                 raw: tag.mtn,
             };
             store(master);
         }
         const current: Tag = {
-            id: Number.parseInt(key),
             namespace: tag.ns ?? 'other',
             raw: tag.tn,
             master,

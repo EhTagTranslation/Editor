@@ -18,7 +18,7 @@ export async function api<T extends ApiRequest<string, unknown>>(payload: T): Pr
         },
         data: payload,
     });
-    const data = response.data;
+    const { data } = response;
     if (typeof data == 'object' && 'error' in (data as object)) {
         let err = (data as { error: string }).error;
         if (typeof err != 'string') err = JSON.stringify(err);

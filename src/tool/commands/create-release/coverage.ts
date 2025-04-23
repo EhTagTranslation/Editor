@@ -11,10 +11,9 @@ const CHECK_THRESHOLD = 500;
 
 /** 计算标签覆盖 */
 export async function runCoverage(db: Database): Promise<void> {
-    const ref = await get(
-        'https://github.com/mokurin000/e-hentai-tag-count/releases/latest/download//tid_count_tag.csv.gz',
-        { responseType: 'stream' },
-    );
+    const ref = await get('https://github.com/EhTagTranslation/EhTagDb/releases/latest/download/aggregated.sqlite.gz', {
+        responseType: 'stream',
+    });
 
     let allFreq = 0;
     let coveredFreq = 0;

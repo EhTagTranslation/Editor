@@ -2,13 +2,11 @@ import type { NamespaceName } from '../interfaces/ehtag.js';
 import type { RawTag } from '../raw-tag.js';
 
 export interface MasterTag {
-    id: number;
     namespace: NamespaceName | 'temp';
     raw: RawTag;
     master?: undefined;
 }
 export interface SlaveTag {
-    id: number;
     namespace: NamespaceName | 'temp';
     raw: RawTag;
     master: MasterTag;

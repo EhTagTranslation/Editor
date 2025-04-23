@@ -1,7 +1,7 @@
 import axios, { type AxiosResponse, type RawAxiosRequestConfig, isAxiosError } from 'axios';
 import { config as defaultConfig } from './config.js';
 
-const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = async (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function requestImpl<T = unknown, R = AxiosResponse<T>>(
     config: RawAxiosRequestConfig,

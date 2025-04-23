@@ -19,7 +19,7 @@ export async function getTagGroups(): Promise<MasterTag[]> {
             /<a href="https:\/\/repo\.e-hentai\.org\/tools\/taggroup\?mastertag=(\d+)">(\w+):([-. \w]+)<\/a>/g,
         );
         for (const match of matches) {
-            const id = Number.parseInt(match[1]);
+            // const id = Number.parseInt(match[1]);
             const ns = match[2];
             const tag = match[3];
             if (!isRawTag(tag) || !isNamespaceName(ns)) {
@@ -27,7 +27,6 @@ export async function getTagGroups(): Promise<MasterTag[]> {
                 continue;
             }
             const current: MasterTag = {
-                id,
                 namespace: ns,
                 raw: tag,
             };
