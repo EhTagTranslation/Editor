@@ -35,6 +35,62 @@ export const SOURCE_CHECK_NS: readonly NamespaceName[] = [
 ] as const satisfies { length: (typeof NamespaceName)['length'] };
 const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other']);
 
+function showProgress(): boolean {
+    return process.stderr.isTTY && clc.windowSize.width > 0;
+}
+
+function statistics(): string {
+    return `调用标签建议 ${STATISTICS.tagSuggest} 次，调用图库信息 ${STATISTICS.galleryList} 次，标签搜索 ${STATISTICS.tagSearch} 次`;
+}
+
+async function searchCheck(
+    db: Database,
+    tagFromEtt: Set<`${NamespaceName}:${RawTag}`>,
+    skipNs: (ns: NamespaceName) => boolean,
+): Promise<void> {
+    let count = 0;
+    for (const ns of SOURCE_CHECK_NS) {
+        if (skipNs(ns)) continue;
+
+        const nsDb = db.data[ns];
+        for (const [tag, tagLine] of nsDb.raw()) {
+            count++;
+            if (showProgress()) {
+                clearLine();
+                progress(count, tagFromEtt.size, `${ns}:${tag}`);
+                process.stderr.write(clc.move.lineBegin);
+            }
+
+            const context = (): Context => {
+                const c = new Context(tagLine.record, tag);
+                c.line = tagLine.line;
+                return c;
+            };
+
+            const normTag = await normalizeTag(ns, tag);
+            if (normTag == null) {
+                if (showProgress()) {
+                    clearLine();
+                }
+                db.logger[SOURCE_CHECK_NOTICE.has(ns) ? 'info' : 'warn'](context(), '未找到标签');
+                continue;
+            }
+            if (normTag[1] !== tag) {
+                if (showProgress()) {
+                    clearLine();
+                }
+                db.logger.warn(context(), `标签重命名 => ${normTag[0]}:${normTag[1]}`);
+                continue;
+            }
+        }
+
+        if (!showProgress()) {
+            progress(count, tagFromEtt.size, `完成 ${ns} 的检查，${statistics()}`);
+            process.stderr.write(`\n`);
+        }
+    }
+}
+
 export async function runSourceCheck(
     db: Database,
     options: {
@@ -53,7 +109,7 @@ export async function runSourceCheck(
 
     console.log('\n从 E 站标签数据库检查标签...\n');
     const tagFromEh = await getTagGroups();
-    console.log(`从 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
+    console.log(`从 E 站 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
     const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
     for (const k in db.data) {
         const ns = k as NamespaceName;
@@ -64,55 +120,9 @@ export async function runSourceCheck(
         }
     }
     console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
-    let count = 0;
-    const showProgress = process.stderr.isTTY && clc.windowSize.width > 0;
-    for (const ns of SOURCE_CHECK_NS) {
-        if (skipNs(ns)) continue;
 
-        const nsDb = db.data[ns];
-        for (const [tag, tagLine] of nsDb.raw()) {
-            count++;
-            if (showProgress) {
-                clearLine();
-                progress(count, tagFromEtt.size, `${ns}:${tag}`);
-                process.stderr.write(clc.move.lineBegin);
-            }
-
-            const context = (): Context => {
-                const c = new Context(tagLine.record, tag);
-                c.line = tagLine.line;
-                return c;
-            };
-
-            if (useSearch) {
-                const normTag = await normalizeTag(ns, tag);
-                if (normTag == null) {
-                    if (showProgress) {
-                        clearLine();
-                    }
-                    db.logger[SOURCE_CHECK_NOTICE.has(ns) ? 'info' : 'warn'](context(), '未找到标签');
-                    continue;
-                }
-                if (normTag[1] !== tag) {
-                    if (showProgress) {
-                        clearLine();
-                    }
-                    db.logger.warn(context(), `标签重命名 => ${normTag[0]}:${normTag[1]}`);
-                    continue;
-                }
-            }
-        }
-
-        if (!showProgress) {
-            progress(
-                count,
-                tagFromEtt.size,
-                useSearch
-                    ? `完成 ${ns} 的检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`
-                    : `完成 ${ns} 的检查`,
-            );
-            process.stderr.write(`\n`);
-        }
+    if (useSearch) {
+        await searchCheck(db, tagFromEtt, skipNs);
     }
 
     for (const tag of tagFromEh) {
@@ -124,9 +134,9 @@ export async function runSourceCheck(
         db.logger.warn(new Context(nsDb, tag.raw), '标签在 E 站标签数据库中存在，但未找到翻译');
     }
 
-    if (showProgress) clearLine();
+    if (showProgress()) clearLine();
     if (useSearch) {
-        console.log(`完成检查，调用标签建议 ${STATISTICS.tagSuggest} 次，标签搜索 ${STATISTICS.tagSearch} 次`);
+        console.log(`完成检查，${statistics()}`);
     } else {
         console.log(`完成检查`);
     }

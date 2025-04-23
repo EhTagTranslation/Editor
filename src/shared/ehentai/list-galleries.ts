@@ -24,7 +24,7 @@ interface GalleryMetadata {
     tags: Array<`${NamespaceName}:${RawTag}`>;
 }
 
-type GalleryId = [id: number, token: string];
+export type GalleryId = [id: number, token: string];
 
 /** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
 export async function listGalleries(list: readonly GalleryId[]): Promise<GalleryMetadata[]> {
