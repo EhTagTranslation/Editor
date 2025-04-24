@@ -18,10 +18,20 @@ async function getSearchPage(term: string): Promise<string> {
     const url = `${base}?${search}`;
     STATISTICS.tagSearch++;
     try {
-        const result = await get<string>(url);
-        if (!result.data || typeof result.data != 'string') {
-            throw new Error(`${result.statusText}(${result.status})：无法访问 ${url}，${JSON.stringify(result.data)}`);
-        }
+        const result = await get<string>(url, {
+            transformResponse: (data, headers, status) => {
+                if (!status || status < 200 || status >= 300) {
+                    throw new Error(`状态码无效：${status} ${JSON.stringify(data)}`);
+                }
+                if (typeof data !== 'string') {
+                    throw new Error(`返回数据类型错误：${status} ${typeof data}`);
+                }
+                if (!data) {
+                    throw new Error(`返回数据为空：${status}`);
+                }
+                return data;
+            },
+        });
         const isExtendView = result.data.includes('<option value="e" selected="selected">');
         if (!isExtendView && !setExtendView) {
             setExtendView = true;
