@@ -20,7 +20,7 @@ async function getSearchPage(term: string): Promise<string> {
     try {
         const result = await get<string>(url);
         if (!result.data || typeof result.data != 'string') {
-            throw new Error(`无法访问 ${url}`);
+            throw new Error(`${result.statusText}(${result.status})：无法访问 ${url}，${JSON.stringify(result.data)}`);
         }
         const isExtendView = result.data.includes('<option value="e" selected="selected">');
         if (!isExtendView && !setExtendView) {

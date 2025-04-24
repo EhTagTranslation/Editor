@@ -1,4 +1,4 @@
-import { DatabaseSync } from 'node:sqlite';
+import type { DatabaseSync } from 'node:sqlite';
 import { createGunzip } from 'node:zlib';
 import path from 'node:path';
 import os from 'node:os';
@@ -13,12 +13,16 @@ let db: DatabaseSync | undefined;
 async function init(): Promise<DatabaseSync> {
     if (db) return db;
 
+    console.log(`加载 E 站 Api Dump 数据库...`);
+    const { DatabaseSync } = await import('node:sqlite');
     const res = await get('https://github.com/EhTagTranslation/EhTagDb/releases/latest/download/aggregated.sqlite.gz', {
         responseType: 'stream',
     });
     const tmp = path.join(os.tmpdir(), 'ehdb.sqlite');
     await pipeline(res.data as NodeJS.ReadableStream, createGunzip(), createWriteStream(tmp));
     db = new DatabaseSync(tmp, { readOnly: true });
+    const count = db.prepare('SELECT count(*) FROM tag_aggregate').get()!['count'] as number;
+    console.log(`从 E 站 Api Dump 数据库加载了 ${count} 个标签`);
     return db;
 }
 

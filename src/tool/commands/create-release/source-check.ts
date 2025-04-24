@@ -1,12 +1,12 @@
 import clc from 'cli-color';
 import type { Database } from '#shared/database';
-import { getTagGroups, listGalleries } from '#shared/ehentai/index';
 import { NamespaceName } from '#shared/interfaces/ehtag';
 import { Context } from '#shared/markdown/index';
 import type { RawTag } from '#shared/raw-tag';
-import { withStatistics } from './statistics';
-import { getTagInfo } from '../../tag-dump-db';
-import { normalizeTag } from '#tool/normalize-tag';
+import { withStatistics } from './statistics.js';
+import { normalizeTag } from '../../normalize-tag.js';
+import { getTagGroups } from '../../tag-groups-db.js';
+import { getTagInfo } from '#tool/tag-dump-db';
 
 function clearLine(): void {
     process.stderr.write(``.padEnd(clc.windowSize.width - 1) + clc.move.lineBegin);
@@ -64,10 +64,6 @@ async function searchCheck(
                 c.line = tagLine.line;
                 return c;
             };
-            const dumpTag = await getTagInfo(ns, tag);
-            if (dumpTag != null) {
-                await listGalleries(dumpTag.galleries);
-            }
             const normTag = await normalizeTag(ns, tag);
             if (normTag == null) {
                 if (showProgress()) {
@@ -101,6 +97,8 @@ export async function runSourceCheck(
 ): Promise<void> {
     const checkedNs = options.checkedNs ?? NamespaceName;
     const useSearch = options.useSearch ?? true;
+    console.log('\n开始 Source Check');
+
     /** 是否跳过 */
     function skipNs(ns: NamespaceName | 'temp'): ns is 'rows' | 'temp' {
         if (ns === 'rows' || ns === 'temp') return true;
@@ -108,9 +106,7 @@ export async function runSourceCheck(
         return false;
     }
 
-    console.log('\n开始 Source Check\n从 E 站标签数据库检查标签...\n');
-    const tagFromEh = await getTagGroups();
-    console.log(`从 E 站 tag group 工具预加载了 ${tagFromEh.length} 个标签`);
+    const dbs = [getTagInfo('language', 'chinese' as RawTag), getTagGroups()] as const;
     const tagFromEtt = new Set<`${NamespaceName}:${RawTag}`>();
     for (const k in db.data) {
         const ns = k as NamespaceName;
@@ -121,6 +117,8 @@ export async function runSourceCheck(
         }
     }
     console.log(`从数据库加载了 ${tagFromEtt.size} 个标签`);
+
+    const [, tagFromEh] = await Promise.all(dbs);
 
     if (useSearch) {
         await searchCheck(db, tagFromEtt, skipNs);

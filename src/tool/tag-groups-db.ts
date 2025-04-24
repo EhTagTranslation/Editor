@@ -1,13 +1,14 @@
-import { isRawTag } from '../raw-tag.js';
-import { isNamespaceName } from '../namespace.js';
-import { get } from './http/index.js';
-import { type MasterTag, putTagCache } from './tag.js';
+import { isRawTag } from '#shared/raw-tag';
+import { isNamespaceName } from '#shared/namespace';
+import { get } from '#shared/ehentai/http/index';
+import { type MasterTag, putTagCache } from '#shared/ehentai/tag';
 
 /**
  * 通过 https://repo.e-hentai.org/tools.php?act=taggroup
  * 加载所有主标签，并设置缓存
  */
 export async function getTagGroups(): Promise<MasterTag[]> {
+    console.log('加载 E 站 tag group 工具数据...');
     const tags = [];
     for (let i = 0; i <= 11; i++) {
         const response = (await get<string>(`https://repo.e-hentai.org/tools/taggroup?show=${i}`)).data;
@@ -34,5 +35,6 @@ export async function getTagGroups(): Promise<MasterTag[]> {
             tags.push(current);
         }
     }
+    console.log(`从 E 站 tag group 工具加载了 ${tags.length} 个标签`);
     return tags;
 }

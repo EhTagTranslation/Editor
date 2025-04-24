@@ -11,7 +11,6 @@ const CHECK_THRESHOLD = 500;
 export async function runCoverage(db: Database): Promise<void> {
     console.log('计算标签覆盖率...');
     const ref = await getAllTagInfo();
-    console.log(`从 E 站 Api Dump 加载了 ${ref.length} 个标签`);
 
     let allFreq = 0;
     let coveredFreq = 0;

@@ -26,8 +26,8 @@ interface GalleryMetadata {
 
 export type GalleryId = [id: number, token: string];
 
-/** 通过 'tagsuggest' API 搜索标签，并设置缓存 */
-export async function listGalleries(list: readonly GalleryId[]): Promise<GalleryMetadata[]> {
+/** 通过 'gdata' API 查询画廊元数据，并设置标签缓存 */
+async function listGalleriesPage(list: readonly GalleryId[]): Promise<GalleryMetadata[]> {
     STATISTICS.galleryList++;
     const response = await api<GalleryListRequest>({
         method: 'gdata',
@@ -47,6 +47,21 @@ export async function listGalleries(list: readonly GalleryId[]): Promise<Gallery
                 raw: parsed.raw,
             });
         }
+    }
+    return galleries;
+}
+
+const PAGE_SIZE = 25;
+/** 通过 'gdata' API 查询画廊元数据，并设置标签缓存 */
+export async function listGalleries(list: readonly GalleryId[]): Promise<GalleryMetadata[]> {
+    if (!Array.isArray(list) || list.length === 0) return [];
+    if (list.length <= PAGE_SIZE) return listGalleriesPage(list);
+
+    const galleries: GalleryMetadata[] = [];
+    for (let i = 0; i < list.length; i += PAGE_SIZE) {
+        const page = list.slice(i, i + PAGE_SIZE);
+        const result = await listGalleriesPage(page);
+        galleries.push(...result);
     }
     return galleries;
 }
