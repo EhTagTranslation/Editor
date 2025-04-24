@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import { load, dump } from 'js-yaml';
-import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData, Tag } from './interfaces/ehtag.js';
+import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData } from './interfaces/ehtag.js';
 import { TagRecord } from './tag-record.js';
 import type { Database } from './database.js';
 import type { RawTag } from './raw-tag.js';
@@ -221,28 +221,31 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         return this.rawMap.has(raw);
     }
 
-    set(raw: RawTag, record: Tag<'raw'>, newRaw?: RawTag): TagRecord {
+    set(raw: RawTag, record: TagRecord, newRaw?: RawTag): void {
         const line = this.rawMap.get(raw);
         if (line == null) throw new Error(`'${raw}' not found in namespace ${this.name}`);
         if (newRaw && this.rawMap.has(newRaw))
             throw new Error(`'${newRaw}' is already defined in namespace ${this.name}`);
+        if (record.namespace !== this)
+            throw new Error(`record namespace mismatch: ${record.namespace.name} != ${this.name}`);
 
-        line.record = new TagRecord(record, this);
+        line.record = record;
         if (newRaw) {
             line.raw = newRaw;
             this.rawMap.delete(raw);
             this.rawMap.set(newRaw, line);
         }
         this.database.revision++;
-        return line.record;
     }
 
-    add(raw: RawTag | undefined, record: Tag<'raw'>): TagRecord;
-    add(raw: RawTag | undefined, record: Tag<'raw'>, pos: 'before' | 'after', ref: RawTag): TagRecord;
-    add(raw: RawTag | undefined, record: Tag<'raw'>, pos?: 'before' | 'after', ref?: RawTag): TagRecord {
+    add(raw: RawTag | undefined, record: TagRecord): void;
+    add(raw: RawTag | undefined, record: TagRecord, pos: 'before' | 'after', ref: RawTag): void;
+    add(raw: RawTag | undefined, record: TagRecord, pos?: 'before' | 'after', ref?: RawTag): void {
         if (raw && this.rawMap.has(raw)) throw new Error(`'${raw}' exists in namespace ${this.name}`);
+        if (record.namespace !== this)
+            throw new Error(`record namespace mismatch: ${record.namespace.name} != ${this.name}`);
 
-        const line = { raw, record: new TagRecord(record, this) };
+        const line = { raw, record };
         if (pos) {
             if (!ref) throw new Error(`adding with position needs a ref tag`);
             const refLine = this.rawMap.get(ref);
@@ -254,7 +257,6 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         }
         if (raw) this.rawMap.set(raw, line);
         this.database.revision++;
-        return line.record;
     }
 
     delete(raw: RawTag): TagRecord | undefined {

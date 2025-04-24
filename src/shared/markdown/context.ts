@@ -3,7 +3,10 @@ import type { RawTag } from '../raw-tag.js';
 import type { NamespaceDatabaseView, DatabaseView } from '../interfaces/database.js';
 import type { Database } from '../database.js';
 
-export abstract class Logger {
+export const LoggerType = ['info', 'warn', 'error'] as const;
+export type LoggerType = (typeof LoggerType)[number];
+
+export abstract class Logger implements Record<LoggerType, (context: Context, message: string) => void> {
     info(context: Context, message: string): void {
         this.log('info', context, message);
     }
@@ -13,9 +16,9 @@ export abstract class Logger {
     error(context: Context, message: string): void {
         this.log('error', context, message);
     }
-    protected abstract log(logger: keyof Logger, context: Context, message: string): void;
+    protected abstract log(logger: LoggerType, context: Context, message: string): void;
 
-    static buildMessage(logger: keyof Logger, context: Context, message: string): string {
+    static buildMessage(logger: LoggerType, context: Context, message: string): string {
         const l = context.line ? `L${context.line}:` : '';
         const c = context.line && context.column ? `C${context.column}:` : '';
         const r = context.raw ?? '<unknown raw>';

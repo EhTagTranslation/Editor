@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, Param, BadRequestException } from '@nestjs/common';
-import { TagResponseDto, LooseTagDto } from '../dtos/repo-info.dto.js';
+import { LooseTagDto } from '../dtos/repo-info.dto.js';
 import { Format } from '../decorators/format.decorator.js';
 import type { TagType } from '#shared/interfaces/ehtag';
 import { TagRecord } from '#shared/tag-record';
@@ -7,8 +7,9 @@ import { InjectableBase } from '../injectable-base.js';
 import { DatabaseService } from '../database/database.service.js';
 import { RawTag } from '#shared/raw-tag';
 import { ApiOperation, ApiConsumes, ApiTags, ApiProduces, ApiOkResponse, ApiBody } from '@nestjs/swagger';
-import { TagParams, ParsedLine } from './tools.dto.js';
+import { TagParams, ParsedLine, TagNsParams, TagResponseLogDto } from './tools.dto.js';
 import { Context } from '#shared/markdown/index';
+import { LoggerCollector } from '../utils/context-logger.js';
 
 @ApiTags('Tools')
 @Controller('tools')
@@ -17,16 +18,23 @@ export class ToolsController extends InjectableBase {
         super();
     }
 
-    @Post('normalize')
+    private readonly collector = new LoggerCollector();
+
+    @Post('normalize/:namespace')
     @ApiOperation({ summary: '格式化条目', description: '使用此 API 在不修改数据库的情况下格式化条目' })
     @HttpCode(HttpStatus.OK)
-    @ApiOkResponse({ type: TagResponseDto })
-    normalize(@Body() tag: LooseTagDto, @Format() format: TagType): TagResponseDto {
-        const record = new TagRecord(tag, this.db.data.data.other);
-        return record.render(format, new Context(record));
+    @ApiOkResponse({ type: TagResponseLogDto })
+    normalize(@Param() p: TagNsParams, @Body() tag: LooseTagDto, @Format() format: TagType): TagResponseLogDto {
+        const record = new TagRecord(tag, this.db.data.data[p.namespace]);
+        const context = new Context(record, undefined, this.collector);
+        const response = record.render(format, context);
+        return {
+            ...response,
+            logs: this.collector.collect(context),
+        };
     }
 
-    @Post('serialize/:raw')
+    @Post('serialize/:namespace/:raw')
     @ApiOperation({
         summary: '序列化条目',
         description: '使用此 API 在不修改数据库的情况下将条目序列化为 MarkDown 表格行',
@@ -46,11 +54,11 @@ export class ToolsController extends InjectableBase {
     })
     @HttpCode(HttpStatus.OK)
     serialize(@Param() p: TagParams, @Body() tag: LooseTagDto): string {
-        const record = new TagRecord(tag, this.db.data.data.other);
+        const record = new TagRecord(tag, this.db.data.data[p.namespace]);
         return record.stringify(new Context(record, RawTag(p.raw)));
     }
 
-    @Post('parse')
+    @Post('parse/:namespace')
     @ApiOperation({ summary: '解析 MarkDown 条目', description: '使用此 API 解析数据库中的 MarkDown 表格行' })
     @ApiBody({
         schema: {
@@ -63,14 +71,17 @@ export class ToolsController extends InjectableBase {
     @ApiConsumes('text/plain')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: ParsedLine })
-    parse(@Body() line: string, @Format() format: TagType): ParsedLine {
+    parse(@Param() p: TagNsParams, @Body() line: string, @Format() format: TagType): ParsedLine {
         if (line.includes('\n')) throw new BadRequestException('Parse one line at once');
         line = line.trim();
-        const parsed = TagRecord.parse(line, this.db.data.data.other);
+        const parsed = TagRecord.parse(line, this.db.data.data[p.namespace]);
         if (!parsed) throw new BadRequestException('Invalid markdown table row');
+        const context = new Context(parsed[1], parsed[0], this.collector);
+        const response = parsed[1].render(format, context);
         return {
             raw: parsed[0],
-            ...parsed[1].render(format, new Context(parsed[1], parsed[0])),
+            ...response,
+            logs: this.collector.collect(context),
         };
     }
 }

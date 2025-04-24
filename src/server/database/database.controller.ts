@@ -26,7 +26,10 @@ import {
     ApiOkResponse,
     ApiCreatedResponse,
 } from '@nestjs/swagger';
-import type { TagType } from '#shared/interfaces/ehtag';
+import type { NamespaceDatabase } from '#shared/namespace-database';
+import type { Tag, TagType } from '#shared/interfaces/ehtag';
+import type { RawTag } from '#shared/raw-tag';
+import { TagRecord } from '#shared/tag-record';
 import { Context } from '#shared/markdown/index';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
@@ -35,6 +38,7 @@ import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } fr
 import { Format } from '../decorators/format.decorator.js';
 import type { UserInfo } from '../octokit/octokit.service.js';
 import { User } from '../decorators/user.decorator.js';
+import { LoggerCollector } from '../utils/context-logger.js';
 import { DatabaseService } from './database.service.js';
 import { NsParams, TagParams, PostTagQuery, type PushEvent } from './params.dto.js';
 
@@ -44,6 +48,23 @@ import { NsParams, TagParams, PostTagQuery, type PushEvent } from './params.dto.
 export class DatabaseController extends InjectableBase {
     constructor(private readonly service: DatabaseService) {
         super();
+    }
+    private readonly collector = new LoggerCollector();
+
+    private prepareTag(
+        dic: NamespaceDatabase,
+        raw: RawTag | undefined,
+        tag: Tag<'raw'>,
+        format: TagType,
+    ): [TagRecord, TagResponseDto] {
+        const record = new TagRecord(tag, dic);
+        const context = new Context(record, raw, this.collector);
+        const response = record.render(format, context);
+        const logs = this.collector.collect(context);
+        if (logs.length > 0) {
+            throw new BadRequestException(logs.map((log) => `${log.logger}: ${log.message}`).join('\n'));
+        }
+        return [record, response];
     }
 
     @Head()
@@ -114,12 +135,14 @@ export class DatabaseController extends InjectableBase {
                 throw new BadRequestException('Before and after cannot be applied at the same time.');
             if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
             if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
-            const rec = q.before
-                ? dic.add(p.raw, tag, 'before', q.before)
-                : q.after
-                  ? dic.add(p.raw, tag, 'after', q.after)
-                  : dic.add(p.raw, tag);
-            ret = rec.render(format, new Context(rec, p.raw));
+
+            let rec;
+            [rec, ret] = this.prepareTag(dic, p.raw, tag, format);
+
+            if (q.before) dic.add(p.raw, rec, 'before', q.before);
+            else if (q.after) dic.add(p.raw, rec, 'after', q.after);
+            else dic.add(p.raw, rec);
+
             return {
                 nk: p.raw,
                 nv: rec,
@@ -146,12 +169,14 @@ export class DatabaseController extends InjectableBase {
             if (q.before && !dic.has(q.before)) throw new BadRequestException(`Before tag '${q.before}' not found.`);
             if (q.after && !dic.has(q.after)) throw new BadRequestException(`Before tag '${q.after}' not found.`);
             if (!q.before && !q.after) throw new BadRequestException('Must set before or after for comment line.');
-            const rec = q.before
-                ? dic.add(undefined, tag, 'before', q.before)
-                : q.after
-                  ? dic.add(undefined, tag, 'after', q.after)
-                  : dic.add(undefined, tag);
-            ret = rec.render(format, new Context(rec));
+
+            let rec;
+            [rec, ret] = this.prepareTag(dic, undefined, tag, format);
+
+            if (q.before) dic.add(undefined, rec, 'before', q.before);
+            else if (q.after) dic.add(undefined, rec, 'after', q.after);
+            else dic.add(undefined, rec);
+
             return {
                 nv: rec,
             };
@@ -175,14 +200,16 @@ export class DatabaseController extends InjectableBase {
         await this.service.apply(user, p.namespace, (dic) => {
             const oldRec = dic.get(p.raw);
             if (!oldRec) throw new NotFoundException();
-            const context = new Context(oldRec, p.raw);
-            const newRec = dic.set(p.raw, tag);
+            let newRec;
+            [newRec, ret] = this.prepareTag(dic, p.raw, tag, format);
+
+            const context = new Context(dic, p.raw);
             const oldRaw = oldRec.render('raw', context);
             const newRaw = newRec.render('raw', context);
             if (oldRaw.name === newRaw.name && oldRaw.intro === newRaw.intro && oldRaw.links === newRaw.links) {
                 throw new HttpException('请求内容与数据库内容一致，未进行修改', HttpStatus.NO_CONTENT);
             }
-            ret = newRec.render(format, new Context(newRec, p.raw));
+            dic.set(p.raw, newRec);
             return {
                 ok: p.raw,
                 ov: oldRec,
