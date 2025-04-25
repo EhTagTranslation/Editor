@@ -21,7 +21,7 @@ async function init(): Promise<DatabaseSync> {
     const tmp = path.join(os.tmpdir(), 'ehdb.sqlite');
     await pipeline(res.data as NodeJS.ReadableStream, createGunzip(), createWriteStream(tmp));
     db = new DatabaseSync(tmp, { readOnly: true });
-    const count = db.prepare('SELECT count(*) FROM tag_aggregate').get()!['count'] as number;
+    const count = db.prepare('SELECT count(*) as size FROM tag_aggregate').get()!['size'] as number;
     console.log(`从 E 站 Api Dump 数据库加载了 ${count} 个标签`);
     return db;
 }
