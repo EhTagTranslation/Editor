@@ -210,9 +210,9 @@ describe('AppController (e2e)', () => {
             .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('GET /tools/parse raw+json', async () => {
+    it('GET /tools/parse/parody raw+json', async () => {
         const _ = await supertest(app.getHttpServer())
-            .post('/tools/parse')
+            .post('/tools/parse/parody')
             .type('text/plain')
             .send(
                 `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://s.exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
@@ -224,12 +224,18 @@ describe('AppController (e2e)', () => {
             name: '[http://a.com](http://a.com) [link](http://a.com "name") [link2](http://a.com) *test1* **test2** ``x`xx` `` a!',
             intro: '![](# "https://ehgt.org/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg") ![图](http://xx.com "aaa") ![图2](http://xx.com)',
             links: '[萌娘百科](https://zh.moegirl.org.cn/密涅瓦%28公主连结%29)',
+            logs: [
+                {
+                    logger: 'error',
+                    message: '无效标签引用：`x`xx`` 不是一个有效的标签。',
+                },
+            ],
         });
     });
 
-    it('GET /tools/parse html+json', async () => {
+    it('GET /tools/parse/parody html+json', async () => {
         const _ = await supertest(app.getHttpServer())
-            .post('/tools/parse')
+            .post('/tools/parse/parody')
             .type('text/plain')
             .send(
                 `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://s.exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
@@ -241,12 +247,18 @@ describe('AppController (e2e)', () => {
             name: '<p><a href="http://a.com">http://a.com</a> <a href="http://a.com" title="name">link</a> <a href="http://a.com">link2</a> <em>test1</em> <strong>test2</strong> <abbr>x`xx`</abbr> a!</p>',
             intro: '<p><img src="https://ehgt.org/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg" nsfw="R18"> <img src="http://xx.com" title="aaa" alt="图"> <img src="http://xx.com" alt="图2"></p>',
             links: '<p><a href="https://zh.moegirl.org.cn/密涅瓦%28公主连结%29">萌娘百科</a></p>',
+            logs: [
+                {
+                    logger: 'error',
+                    message: '无效标签引用：`x`xx`` 不是一个有效的标签。',
+                },
+            ],
         });
     });
 
-    it('GET /tools/parse text.json', async () => {
+    it('GET /tools/parse/parody text.json', async () => {
         const _ = await supertest(app.getHttpServer())
-            .post('/tools/parse')
+            .post('/tools/parse/parody')
             .type('text/plain')
             .send(
                 `a | http://a.com [link](http://a.com "name") [link2]( http://a.com ) *test1* __test2__ \`\`\`x\`xx\`  \`\`\` a! | ![](https://s.exhentai.org/t/56/ab/56abfaf1c30726478ded049645d3b074891315be-933888-4140-6070-jpg_l.jpg) ![图](http://xx.com "aaa") ![图2]( http://xx.com) | https://zh.moegirl.org.cn/%E5%AF%86%E6%B6%85%E7%93%A6(%E5%85%AC%E4%B8%BB%E8%BF%9E%E7%BB%93)`,
@@ -258,6 +270,12 @@ describe('AppController (e2e)', () => {
             name: 'http://a.com link link2 test1 test2 x`xx` a!',
             intro: '',
             links: '萌娘百科',
+            logs: [
+                {
+                    logger: 'error',
+                    message: '无效标签引用：`x`xx`` 不是一个有效的标签。',
+                },
+            ],
         });
     });
 
