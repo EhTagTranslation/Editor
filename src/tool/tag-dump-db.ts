@@ -46,13 +46,14 @@ function parseRecord(record: Record<string, unknown>): TagInfo {
         }),
     } satisfies TagInfo;
 }
-
+/** 获取所有 Api Dump 数据 */
 export async function getAllTagInfo(): Promise<TagInfo[]> {
     const db = await init();
     const records = db.prepare('SELECT * FROM tag_aggregate').all();
     return records.map(parseRecord);
 }
 
+/** 查询 Api Dump 数据 */
 export async function getTagInfo(ns: NamespaceName, tag: RawTag): Promise<TagInfo | undefined> {
     const db = await init();
     const record = db.prepare('SELECT * FROM tag_aggregate WHERE namespace = ? AND tag = ?').get(ns, tag) as Record<
@@ -63,6 +64,7 @@ export async function getTagInfo(ns: NamespaceName, tag: RawTag): Promise<TagInf
     return parseRecord(record);
 }
 
+/** 查询 Api Dump 数据 */
 export async function getTagsInfo(tag: RawTag): Promise<TagInfo[]> {
     const db = await init();
     const records = db.prepare('SELECT * FROM tag_aggregate WHERE tag = ?').all(tag) as Array<

@@ -101,20 +101,37 @@ export async function normalizeTag(
 
     if (ns) {
         match ??= findTagCache(ns, raw);
-        if (!match) {
-            // 填充缓存
-            const words = raw.split(' ');
-            let part = '';
-            for (const word of words) {
-                if (part) part += ` ${word}`;
-                else part = word;
+    }
 
-                if (part.length > 1) {
-                    await suggestTag(undefined, part);
-                    match ??= findTagCache(ns, raw);
-                }
-                if (match) break;
+    if (match == null) {
+        if (ns) {
+            const dumpTag = await getTagInfo(ns, raw);
+            if (dumpTag) {
+                await listGalleries(dumpTag.galleries);
+                match = findTagCache(ns, raw);
             }
+        } else {
+            const dumpTags = await getTagsInfo(raw);
+            for (const dumpTag of dumpTags) {
+                await listGalleries(dumpTag.galleries);
+                match ??= findTagCache(dumpTag.namespace, raw);
+            }
+        }
+    }
+
+    if (ns && match == null) {
+        // 填充缓存
+        const words = raw.split(' ');
+        let part = '';
+        for (const word of words) {
+            if (part) part += ` ${word}`;
+            else part = word;
+
+            if (part.length > 1) {
+                await suggestTag(undefined, part);
+                match ??= findTagCache(ns, raw);
+            }
+            if (match) break;
         }
     }
 
@@ -133,22 +150,6 @@ export async function normalizeTag(
     if (ns && match == null) {
         match ??= await find(isMatch);
         match ??= await find(isMatchOrMove);
-    }
-
-    if (match == null) {
-        if (ns) {
-            const dumpTag = await getTagInfo(ns, raw);
-            if (dumpTag) {
-                await listGalleries(dumpTag.galleries);
-                match = findTagCache(ns, raw);
-            }
-        } else {
-            const dumpTags = await getTagsInfo(raw);
-            for (const dumpTag of dumpTags) {
-                await listGalleries(dumpTag.galleries);
-                match ??= findTagCache(dumpTag.namespace, raw);
-            }
-        }
     }
 
     if (match == null) {
