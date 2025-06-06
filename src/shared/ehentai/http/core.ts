@@ -17,7 +17,10 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
         }
         errors.push(err as Error);
         if (errors.length > retry) {
-            throw new AggregateError(errors, `Failed after ${errors.length} tries.`);
+            throw new AggregateError(
+                errors,
+                `Failed after ${errors.length} tries.\n${errors.map((e) => e.message).join('\n')}`,
+            );
         }
         await delay(delayTime);
         return requestImpl<T, R>(config, retry, delayTime * 5, errors);
