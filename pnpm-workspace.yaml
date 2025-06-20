@@ -6,3 +6,4 @@ ignoredBuiltDependencies:
   - esbuild
   - lmdb
   - msgpackr-extract
+  - unrs-resolver
