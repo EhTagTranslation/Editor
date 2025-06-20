@@ -103,22 +103,6 @@ export async function normalizeTag(
         match ??= findTagCache(ns, raw);
     }
 
-    if (match == null) {
-        if (ns) {
-            const dumpTag = await getTagInfo(ns, raw);
-            if (dumpTag) {
-                await listGalleries(dumpTag.galleries);
-                match = findTagCache(ns, raw);
-            }
-        } else {
-            const dumpTags = await getTagsInfo(raw);
-            for (const dumpTag of dumpTags) {
-                await listGalleries(dumpTag.galleries);
-                match ??= findTagCache(dumpTag.namespace, raw);
-            }
-        }
-    }
-
     if (ns && match == null) {
         // 填充缓存
         const words = raw.split(' ');
@@ -150,6 +134,22 @@ export async function normalizeTag(
     if (ns && match == null) {
         match ??= await find(isMatch);
         match ??= await find(isMatchOrMove);
+    }
+
+    if (match == null) {
+        if (ns) {
+            const dumpTag = await getTagInfo(ns, raw);
+            if (dumpTag) {
+                await listGalleries(dumpTag.galleries);
+                match = findTagCache(ns, raw);
+            }
+        } else {
+            const dumpTags = await getTagsInfo(raw);
+            for (const dumpTag of dumpTags) {
+                await listGalleries(dumpTag.galleries);
+                match ??= findTagCache(dumpTag.namespace, raw);
+            }
+        }
     }
 
     if (match == null) {
