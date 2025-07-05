@@ -5,16 +5,18 @@ import { get } from '#shared/ehentai/http/index';
 import { STATISTICS } from '#shared/ehentai/statistics';
 import { findTagCache, suggestTag, listGalleries, type Tag, putTagCache } from '#shared/ehentai/index';
 import { getTagInfo, getTagsInfo } from './tag-dump-db';
+import type { MasterTag } from '#shared/ehentai/tag';
 
-/** 开始时默认使用 ex，访问失败时回退到 eh，之后都使用 eh */
-let useEx = true;
+const TAG_REGEX = /<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g;
+
 /** 第一次访问设置 extend view */
-let setExtendView = true;
+const setExtendView: Record<`${boolean}`, boolean> = { true: true, false: true };
 
 /** 访问搜索页面，返回文档内容 */
-async function getSearchPage(term: string): Promise<string> {
+async function getSearchPageTags(term: string, useEx: boolean): Promise<void> {
     const base = `https://${useEx ? 'ex' : 'e-'}hentai.org/`;
-    const search = `f_search=${term}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` + (setExtendView ? '&inline_set=dm_e' : '');
+    const search =
+        `f_search=${term}&f_cats=0&f_sfl=on&f_sfu=on&f_sft=on` + (setExtendView[`${useEx}`] ? '&inline_set=dm_e' : '');
     const url = `${base}?${search}`;
     STATISTICS.tagSearch++;
     try {
@@ -33,20 +35,24 @@ async function getSearchPage(term: string): Promise<string> {
             },
         });
         const isExtendView = result.data.includes('<option value="e" selected="selected">');
-        if (!isExtendView && !setExtendView) {
-            setExtendView = true;
-            return getSearchPage(term);
+        if (!isExtendView && !setExtendView[`${useEx}`]) {
+            setExtendView[`${useEx}`] = true;
+            return getSearchPageTags(term, useEx);
         }
-        setExtendView = false;
-        return result.data;
+        setExtendView[`${useEx}`] = false;
+        const { data } = result;
+        const tags = data.matchAll(TAG_REGEX);
+        for (const tag of tags) {
+            const [, tNs, tRaw] = tag;
+            if (!isNamespaceName(tNs) || !isRawTag(tRaw)) {
+                continue;
+            }
+            const tTag: MasterTag = { namespace: tNs, raw: tRaw };
+            putTagCache(tTag);
+        }
     } catch (ex) {
-        if (!useEx) {
-            throw ex;
-        }
-        console.warn(`Ex 访问失败，回退到 Eh: ${String(ex)}`);
-        useEx = false;
-        setExtendView = true;
-        return getSearchPage(term);
+        setExtendView[`${useEx}`] = true;
+        throw ex;
     }
 }
 
@@ -63,26 +69,28 @@ async function searchTagImpl(ns: NamespaceName, raw: RawTag, useNs: boolean): Pr
     // workaround for blocked keywords https://ehwiki.org/wiki/Gallery_Searching#Search_Limitations
     // eg: artist:incognitymous
     const term = getSearchTerm(useNs ? ns : undefined, raw, useNs);
-    const result = await getSearchPage(term);
-    let found = false;
-    const tags = result.matchAll(/<div class="gtl?" title="([a-z]+):([-a-z0-9. ]+)">/g);
-    for (const tag of tags) {
-        const [, tNs, tRaw] = tag;
-        if (!isNamespaceName(tNs) || !isRawTag(tRaw)) {
-            continue;
-        }
-        if (tRaw === raw && tNs === ns) {
-            found = true;
-        }
-        putTagCache({ namespace: tNs, raw: tRaw });
+    try {
+        await getSearchPageTags(term, false);
+    } catch (ex) {
+        console.warn(`在 eh 搜索 ${term} 失败: ${String(ex)}`);
     }
-    return found;
+    if (findTagCache(ns, raw)) {
+        return true;
+    }
+    try {
+        await getSearchPageTags(term, true);
+    } catch (ex) {
+        console.warn(`在 ex 搜索 ${term} 失败: ${String(ex)}`);
+    }
+    if (findTagCache(ns, raw)) {
+        return true;
+    }
+    return false;
 }
 
 /** 通过搜索功能确定 tag 是否存在 */
 async function searchTag(ns: NamespaceName, raw: RawTag): Promise<boolean> {
-    if (ns === 'rows') return false;
-    if (ns === 'reclass' && raw === 'private') return false;
+    if (ns === 'rows' || ns === 'reclass') return false;
 
     // 对短标签优先使用命名空间
     const preferUseNs = raw.length <= 5;
