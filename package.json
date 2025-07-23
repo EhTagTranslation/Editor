@@ -40,7 +40,7 @@
     "@octokit/auth-oauth-app": "~9.0.1",
     "@octokit/request-error": "^7.0.0",
     "@octokit/rest": "~22.0.0",
-    "axios": "~1.10.0",
+    "axios": "~1.11.0",
     "class-transformer": "~0.5.1",
     "class-validator": "~0.14.2",
     "cli-color": "~2.0.4",
