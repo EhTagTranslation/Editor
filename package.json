@@ -3,9 +3,9 @@
   "version": "3.0.0",
   "type": "module",
   "engines": {
-    "node": "^22.11.0"
+    "node": "^22.18.0 || ^24.3.0"
   },
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@10.14.0",
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
