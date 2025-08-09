@@ -13,7 +13,7 @@ export default [
         rules: {
             'no-undef': 0,
             eqeqeq: [1, 'smart'],
-            'no-console': 1,
+            'no-console': 0,
         },
     },
 

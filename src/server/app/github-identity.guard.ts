@@ -43,7 +43,6 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             return false;
         } catch (ex) {
             // logger 无法显示错误的自定义信息，所以这里直接 console.log
-            // eslint-disable-next-line no-console
             console.log(ex);
         }
         try {
@@ -52,7 +51,6 @@ export class GithubIdentityGuard extends InjectableBase implements CanActivate {
             });
             return false;
         } catch (ex) {
-            // eslint-disable-next-line no-console
             console.log(ex);
         }
         return true;

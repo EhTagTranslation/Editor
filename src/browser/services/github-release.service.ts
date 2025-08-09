@@ -45,7 +45,7 @@ export class GithubReleaseService {
             });
     }
 
-    private refreshEvent = new EventEmitter<number>(true);
+    private readonly refreshEvent = new EventEmitter<number>(true);
 
     private readonly tagsData = new BehaviorSubject<DatabaseInMemory>(new DatabaseInMemory(this.cache));
 
@@ -53,9 +53,9 @@ export class GithubReleaseService {
 
     private getReleasePromise?: Promise<GithubRelease>;
     private getRelease(): Observable<GithubRelease> {
-        const get = (): Promise<GithubRelease> => {
+        const get = async (): Promise<GithubRelease> => {
             const endpoint = this.endpoints.github('repos/EhTagTranslation/Database/releases/latest');
-            return lastValueFrom(this.http.get<GithubRelease>(endpoint));
+            return await lastValueFrom(this.http.get<GithubRelease>(endpoint));
         };
         if (this.getReleasePromise) {
             return from(this.getReleasePromise);

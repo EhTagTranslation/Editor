@@ -17,7 +17,7 @@ export class Cell {
             this.revision = revision;
             return undefined;
         }
-        const cache = this.cache;
+        const { cache } = this;
         if (target === 'full') {
             if (cache.ast && cache.html && cache.raw && cache.text) {
                 return cache as CellType<T>;

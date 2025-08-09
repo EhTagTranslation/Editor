@@ -172,7 +172,6 @@ function normalizeLink(node: LinkNode, context: Context | undefined): void {
         if (context) {
             context.error(`无效链接：\`${href}\` 不是一个有效的 URL。`);
         } else {
-            // eslint-disable-next-line no-console
             console.error(ex);
         }
     }

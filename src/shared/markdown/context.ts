@@ -27,7 +27,6 @@ export abstract class Logger implements Record<LoggerType, (context: Context, me
 
     static default: Logger = new (class DefaultLogger extends Logger {
         protected log(logger: keyof Logger, context: Context, message: string): void {
-            // eslint-disable-next-line no-console
             console[logger](Logger.buildMessage(logger, context, message));
         }
     })();

@@ -53,7 +53,7 @@ export class GithubOauthService {
      * @see https://developer.github.com/v3/users/#get-the-authenticated-user
      */
     getCurrentUser(): Observable<GithubUser | undefined> {
-        const token = this.token;
+        const { token } = this;
         if (!token) {
             return of(undefined);
         }
