@@ -118,7 +118,7 @@ export class DatabaseInMemory implements DatabaseView {
         revision?: number,
     ) {
         this.revision = revision ?? -1;
-        const data = {} as { [key in NamespaceName]: NamespaceDatabaseInMemory };
+        const data = {} as Record<NamespaceName, NamespaceDatabaseInMemory>;
         for (const key of NamespaceName) {
             data[key] = new NamespaceDatabaseInMemory(
                 this,
@@ -131,9 +131,9 @@ export class DatabaseInMemory implements DatabaseView {
     get version(): number {
         return this.storage?.version ?? 6;
     }
-    readonly data: { readonly [key in NamespaceName]: NamespaceDatabaseInMemory };
+    readonly data: Readonly<Record<NamespaceName, NamespaceDatabaseInMemory>>;
 
-    info(): Promise<RepoInfo> {
+    async info(): Promise<RepoInfo> {
         return Promise.resolve({ ...(this.storage ?? info), data: Object.values(this.data).map((d) => d.info()) });
     }
 

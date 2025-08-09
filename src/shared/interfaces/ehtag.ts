@@ -99,7 +99,7 @@ export interface FrontMatters {
 
 /** 表示一个命名空间的数据 */
 export interface NamespaceData<T = TagType> extends NamespaceInfo {
-    data: { [raw: string]: Tag<T> };
+    data: Record<string, Tag<T>>;
 }
 
 /** 表示一条翻译的内容 */

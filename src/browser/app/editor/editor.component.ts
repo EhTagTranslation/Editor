@@ -160,7 +160,7 @@ export class EditorComponent implements OnInit {
                         intro: intro ?? '',
                         links: links ?? '',
                     },
-                    namespace as NamespaceName,
+                    namespace!,
                     'html',
                 )
                 .pipe(
@@ -336,7 +336,7 @@ export class EditorComponent implements OnInit {
             )
             .subscribe((v) => {
                 this.getControl('namespace').setValue(v);
-                this.isEditableNs.next(editableNs.includes(v as NamespaceName));
+                this.isEditableNs.next(editableNs.includes(v!));
             });
         combineLatest([this.create, this.original.raw, this.inputs.raw])
             .pipe(

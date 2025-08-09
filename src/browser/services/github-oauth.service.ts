@@ -109,9 +109,9 @@ export class GithubOauthService {
             });
             window.addEventListener('message', onMessage);
         })
-            .then(({ code, state }) => {
+            .then(async ({ code, state }) => {
                 if (state !== myState) throw new Error('Wrong state');
-                return lastValueFrom(
+                return await lastValueFrom(
                     this.httpClient.get<TokenData>(`https://ehtt.fly.dev/auth/${code}?state=${state}`),
                 );
             })

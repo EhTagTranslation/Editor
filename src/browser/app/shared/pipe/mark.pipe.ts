@@ -85,7 +85,7 @@ export class MarkPipe implements PipeTransform {
         this.loadingImg = this.location.prepareExternalUrl('/assets/loading.gif');
     }
 
-    private loadingImg: string;
+    private readonly loadingImg: string;
 
     private markTextNode(node: Text, regexp: RegExp | undefined | null): void {
         // 文本节点
@@ -95,7 +95,6 @@ export class MarkPipe implements PipeTransform {
         const text = node.textContent ?? '';
         const normalText = text.split(regexp);
         if (normalText.length === 1) return;
-        // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
         const markedText = text.match(regexp);
         if (!markedText) return;
 

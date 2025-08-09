@@ -24,7 +24,7 @@ async function main(envName?: string): Promise<void> {
     const tokenRes = await octokit.apps.createInstallationAccessToken({
         installation_id: APP_INSTALLATION_ID,
     });
-    const token = tokenRes.data.token;
+    const { token } = tokenRes.data;
     action.setSecret(token);
     action.exportVariable(envName ?? 'APP_TOKEN', token);
 }

@@ -14,7 +14,11 @@ export class TitleService {
     }
     set title(value: string | undefined) {
         value = (value ?? '').trim();
-        value ? this.titleService.setTitle(value + ' - EhTag Editor') : this.titleService.setTitle('EhTag Editor');
+        if (value) {
+            this.titleService.setTitle(value + ' - EhTag Editor');
+        } else {
+            this.titleService.setTitle('EhTag Editor');
+        }
         this._title = value;
     }
 }

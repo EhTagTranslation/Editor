@@ -137,6 +137,15 @@ export default [
         ...prettier,
     },
     {
-        ignores: ['node_modules/', 'dist/', 'coverage/', 'test/', 'tools/', 'scripts/', '*.config.{js,ts}'],
+        ignores: [
+            'node_modules/',
+            'dist/',
+            'coverage/',
+            'test/',
+            'tools/',
+            'scripts/',
+            '*.config.{js,ts}',
+            '.angular/',
+        ],
     },
 ];

@@ -108,13 +108,13 @@ export class GithubReleaseService {
             await this.set(dbData);
             return;
         }
-        const sha = (
+        const { sha } = (
             await lastValueFrom(
                 this.http.get<{ commit: { sha: string } }>(
                     this.endpoints.github('repos/EhTagTranslation/DatabaseReleases/branches/master'),
                 ),
             )
-        ).commit.sha;
+        ).commit;
         const data = await lastValueFrom(
             this.http.get<RepoData<'raw'>>(
                 `https://cdn.jsdelivr.net/gh/EhTagTranslation/DatabaseReleases@${sha}/db.raw.json`,

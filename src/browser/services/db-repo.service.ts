@@ -21,9 +21,9 @@ export class DbRepoService {
     ): string {
         const query = new URLSearchParams('template=tag-translation.yml');
         query.set('title', `${isNew ? '添加' : '更改'}标签 - ${ns ? `${ns}:${raw}` : raw}`);
-        name && query.set('name', name);
-        intro && query.set('intro', intro);
-        links && query.set('links', links);
+        if (name) query.set('name', name);
+        if (intro) query.set('intro', intro);
+        if (links) query.set('links', links);
         return this.resolve(`issues/new?${query.toString()}`);
     }
 

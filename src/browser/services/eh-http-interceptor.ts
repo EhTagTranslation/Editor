@@ -65,7 +65,7 @@ export class EhHttpInterceptor implements HttpInterceptor {
         if (!mod.setHeaders || !mod.setParams) {
             return req;
         }
-        const token = this.githubOauth.token;
+        const { token } = this.githubOauth;
         if (req.url.startsWith(this.endpoints.github())) {
             mod.setHeaders['Accept'] = `application/vnd.github.v3+json`;
             if (token) {

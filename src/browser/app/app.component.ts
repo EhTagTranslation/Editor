@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
     constructor(
         private readonly ehTagConnector: EhTagConnectorService,
         private readonly location: Location,
-        public readonly dbRepo: DbRepoService,
+        readonly dbRepo: DbRepoService,
         private readonly el: ElementRef,
         private readonly renderer: Renderer2,
     ) {}
