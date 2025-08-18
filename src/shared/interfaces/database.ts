@@ -10,6 +10,8 @@ import type {
 import type { RawTag } from '../raw-tag.js';
 import type { TagRecord } from '../tag-record.js';
 
+export const SUPPORTED_REPO_VERSION = 7;
+
 export interface NamespaceDatabaseView {
     readonly name: NamespaceName;
     readonly database: DatabaseView;

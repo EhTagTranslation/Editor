@@ -11,7 +11,7 @@ import {
     type Tag,
 } from '#shared/interfaces/ehtag';
 import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-import { SUPPORTED_REPO_VERSION } from '#shared/database';
+import { SUPPORTED_REPO_VERSION } from '#shared/interfaces/database';
 
 export class SignatureDto implements Signature {
     @ApiProperty({ type: String, description: '签名名称', example: 'user' })

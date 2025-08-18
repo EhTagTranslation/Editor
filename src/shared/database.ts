@@ -1,14 +1,13 @@
 import fs from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 import { NamespaceDatabase } from './namespace-database.js';
 import { NamespaceName, type RepoInfo, type Sha1Value, type RepoData, TagType } from './interfaces/ehtag.js';
 import type { TagRecord } from './tag-record.js';
 import type { RawTag } from './raw-tag.js';
-import type { DatabaseView } from './interfaces/database.js';
+import { SUPPORTED_REPO_VERSION, type DatabaseView } from './interfaces/database.js';
 import { Logger } from './markdown/index.js';
 import { GitRepoInfoProvider, type RepoInfoProvider } from './repo-info-provider.js';
 
-export const SUPPORTED_REPO_VERSION = 7;
 export class Database implements DatabaseView {
     static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider, logger?: Logger): Promise<Database> {
         const resolvedPath = path.resolve(repoPath);

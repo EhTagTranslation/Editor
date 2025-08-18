@@ -8,11 +8,10 @@ import {
     type RepoData,
     type RepoInfo,
 } from '#shared/interfaces/ehtag';
-import type { DatabaseView, NamespaceDatabaseView } from '#shared/interfaces/database';
+import { SUPPORTED_REPO_VERSION, type DatabaseView, type NamespaceDatabaseView } from '#shared/interfaces/database';
 import { Context } from '#shared/markdown';
 import type { RawTag } from '#shared/raw-tag';
 import { TagRecord } from '#shared/tag-record';
-import { SUPPORTED_REPO_VERSION } from '#shared/database';
 
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },
