@@ -12,6 +12,7 @@ import type { DatabaseView, NamespaceDatabaseView } from '#shared/interfaces/dat
 import { Context } from '#shared/markdown';
 import type { RawTag } from '#shared/raw-tag';
 import { TagRecord } from '#shared/tag-record';
+import { SUPPORTED_REPO_VERSION } from '#shared/database';
 
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },
@@ -32,11 +33,15 @@ const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
         name: '混合',
         description: '两性/中性的恋物标签。',
     },
+    location: {
+        name: '地点',
+        description: '与性行为相关的场景。',
+    },
 };
 
 const info = {
     repo: 'https://github.com/EhTagTranslation/Database.git',
-    version: 6,
+    version: SUPPORTED_REPO_VERSION,
     head: {
         sha: '000000000000000000000000000' as Sha1Value,
         message: '',
@@ -129,7 +134,7 @@ export class DatabaseInMemory implements DatabaseView {
         this.data = data;
     }
     get version(): number {
-        return this.storage?.version ?? 6;
+        return this.storage?.version ?? 7;
     }
     readonly data: Readonly<Record<NamespaceName, NamespaceDatabaseInMemory>>;
 

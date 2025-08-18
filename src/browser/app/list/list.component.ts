@@ -32,6 +32,7 @@ const nsScore: Record<NamespaceName, number> = {
     female: 5,
     male: 4.995,
     mixed: 4.5,
+    location: 4,
     language: 1,
     other: 1.5,
     artist: 3,

@@ -11,6 +11,7 @@ import {
     type Tag,
 } from '#shared/interfaces/ehtag';
 import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { SUPPORTED_REPO_VERSION } from '#shared/database';
 
 export class SignatureDto implements Signature {
     @ApiProperty({ type: String, description: '签名名称', example: 'user' })
@@ -200,7 +201,7 @@ export class RepoInfoDto implements RepoInfo {
     repo!: string;
     @ApiProperty({ type: CommitDto, description: '当前提交' })
     head!: CommitDto;
-    @ApiProperty({ type: Number, description: '数据库版本', example: 6 })
+    @ApiProperty({ type: Number, description: '数据库版本', example: SUPPORTED_REPO_VERSION })
     version!: number;
     @ApiProperty({
         type: [NamespaceInfoDto],
@@ -452,6 +453,28 @@ export class RepoInfoDto implements RepoInfo {
                     },
                 },
                 count: 56,
+            },
+            {
+                namespace: 'location',
+                frontMatters: {
+                    name: '地点',
+                    description: '与性行为相关的场景。',
+                    key: 'location',
+                    abbr: 'loc',
+                    copyright:
+                        '除有特殊说明外，本文的简介文本翻译自 EHWiki，遵循原始许可协议（即 GNU 自由文档许可证）进行二次分发。\n\nCopyright (c) 2022 EhTagTranslation. Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "GNU Free Documentation License".\n\n对于标有(*)的条目，其简介文本复制/翻译自维基百科，遵循原始许可协议（即知识共享(Creative Commons) 署名-相同方式共享 3.0协议）进行二次分发。\n\n对于标有(**)的条目，其简介文本复制/翻译自萌娘百科，遵循原始许可协议（即知识共享(Creative Commons) 署名-非商业性使用-相同方式共享 3.0 协议）进行二次分发。\n\n本文的其他内容，遵循知识共享(Creative Commons) 署名-非商业性使用-相同方式共享 3.0 协议提供。\n',
+                    rules: [
+                        '为方便查找理解同类性癖的标签，请尽量按恋物标签分类(https://ehwiki.org/wiki/Fetish_Listing)归类存放，将类别写成注释。',
+                        '若有属于多个分类的，放入最相关的那一个分类。',
+                    ],
+                    example: {
+                        raw: 'beach',
+                        name: '沙滩',
+                        intro: '一个或多个参与者在沙滩上裸体或发生性行为。仅计算发生在户外的场景（例如，不在海滨别墅或洞穴内）。\n',
+                        links: '',
+                    },
+                },
+                count: 5,
             },
         ],
     })

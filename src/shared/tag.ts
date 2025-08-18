@@ -58,7 +58,8 @@ export const namespaceMapToSearch: Readonly<Record<NamespaceName, string>> = Obj
     male: 'm:',
     female: 'f:',
     mixed: 'x:',
-    other: 'o',
+    other: 'o:',
+    location: 'loc:',
     cosplayer: 'cos:',
     rows: 'rows:',
 });

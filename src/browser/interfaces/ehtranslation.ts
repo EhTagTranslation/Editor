@@ -10,6 +10,7 @@ export const notEditableNs: readonly NamespaceName[] = [
     'language',
     'male',
     'female',
+    'location',
     'mixed',
     'other',
 ];

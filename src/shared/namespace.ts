@@ -42,6 +42,9 @@ const nsDic: Record<string, NamespaceName> = {
 
     o: 'other',
     other: 'other',
+
+    loc: 'location',
+    location: 'location',
 };
 
 export function parseNamespace(ns: string | null | undefined): NamespaceName | undefined {

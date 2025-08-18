@@ -8,7 +8,7 @@ import type { DatabaseView } from './interfaces/database.js';
 import { Logger } from './markdown/index.js';
 import { GitRepoInfoProvider, type RepoInfoProvider } from './repo-info-provider.js';
 
-const SUPPORTED_REPO_VERSION = 6;
+export const SUPPORTED_REPO_VERSION = 7;
 export class Database implements DatabaseView {
     static async create(repoPath: string, repoInfoProvider?: RepoInfoProvider, logger?: Logger): Promise<Database> {
         const resolvedPath = path.resolve(repoPath);

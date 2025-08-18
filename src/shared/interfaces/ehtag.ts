@@ -65,6 +65,7 @@ export const NamespaceName = [
     'female',
     'mixed',
     'other',
+    'location',
 ] as const;
 export type NamespaceName = (typeof NamespaceName)[number];
 
