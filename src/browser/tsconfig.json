@@ -8,7 +8,7 @@
       "#*": ["./*"]
     }
   },
-  "angularCompilerOptions": {e
+  "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "strictTemplates": true
