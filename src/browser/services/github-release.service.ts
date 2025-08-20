@@ -111,14 +111,12 @@ export class GithubReleaseService {
         const { sha } = (
             await lastValueFrom(
                 this.http.get<{ commit: { sha: string } }>(
-                    this.endpoints.github('repos/EhTagTranslation/DatabaseReleases/branches/master'),
+                    this.endpoints.github('repos/EhTagTranslation/Database/branches/release'),
                 ),
             )
         ).commit;
         const data = await lastValueFrom(
-            this.http.get<RepoData<'raw'>>(
-                `https://cdn.jsdelivr.net/gh/EhTagTranslation/DatabaseReleases@${sha}/db.raw.json`,
-            ),
+            this.http.get<RepoData<'raw'>>(`https://cdn.jsdelivr.net/gh/EhTagTranslation/Database@${sha}/db.raw.json`),
         );
         this.debug.log('release: load end with remote data', { hash: data.head.sha });
         await this.set(data);
