@@ -8,7 +8,7 @@ import { withStatistics } from './statistics.js';
 const CHECK_THRESHOLD = 500;
 
 /** 计算标签覆盖 */
-export async function runCoverage(db: Database): Promise<void> {
+export async function runCoverage(db: Database, checkNs: readonly NamespaceName[]): Promise<void> {
     console.log('计算标签覆盖率...');
     const ref = await getAllTagInfo();
 
@@ -19,6 +19,7 @@ export async function runCoverage(db: Database): Promise<void> {
     const uncovered: Array<[NamespaceName, RawTag, number]> = [];
     for (const record of ref) {
         const { count, namespace, tag } = record;
+        if (!checkNs.includes(namespace)) continue;
         let [ns, raw] = [namespace, tag];
         if (count > CHECK_THRESHOLD && !db.data[ns].get(raw)) {
             const norm = await normalizeTag(ns, raw);

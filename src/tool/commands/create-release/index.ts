@@ -24,13 +24,18 @@ program
         source = path.resolve(source ?? '.');
         destination = path.resolve(destination ?? path.join(source, 'publish'));
         const { strict, rewrite, sourceCheck, search, coverage } = options;
+        if (!sourceCheck && coverage) {
+            console.error('请指定 --source-check 选项以启用标签覆盖率计算');
+            process.exitCode = 2;
+            return;
+        }
         const db = await Database.create(
             source,
             undefined,
             action.isAction() ? new ActionLogger(strict ? 'warn' : 'error') : new FileLogger(source),
         );
+        const checkNs: NamespaceName[] = [];
         if (sourceCheck || typeof sourceCheck == 'string') {
-            const checkNs: NamespaceName[] = [];
             if (sourceCheck && typeof sourceCheck == 'string') {
                 for (const ns of sourceCheck.split(/[,;:\s]/)) {
                     if (!ns) continue;
@@ -52,7 +57,7 @@ program
             });
         }
         if (coverage) {
-            await runCoverage(db);
+            await runCoverage(db, checkNs);
         }
         await createRelease(db, destination);
         if (rewrite) {
