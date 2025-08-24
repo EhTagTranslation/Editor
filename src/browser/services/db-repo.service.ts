@@ -1,11 +1,12 @@
 import type { NamespaceName } from '#shared/interfaces/ehtag';
 import { Injectable } from '@angular/core';
+import { DB_REPO } from './database.shared';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DbRepoService {
-    readonly root = 'https://github.com/EhTagTranslation/Database/';
+    readonly root = `https://github.com/${DB_REPO}/`;
 
     resolve(path: string): string {
         return new URL(path, this.root).href;

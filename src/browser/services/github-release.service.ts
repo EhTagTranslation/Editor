@@ -9,6 +9,7 @@ import { map, tap, mergeMap, catchError, filter, finalize, throttleTime } from '
 import { CacheService } from './cache.service';
 import type { DatabaseView } from '#shared/interfaces/database';
 import { DatabaseInMemory } from './database';
+import { DB_REPO } from './database.shared';
 
 function notUndef<T>(v: T | undefined): v is Exclude<T, undefined> {
     return v !== undefined;
@@ -54,7 +55,7 @@ export class GithubReleaseService {
     private getReleasePromise?: Promise<GithubRelease>;
     private getRelease(): Observable<GithubRelease> {
         const get = async (): Promise<GithubRelease> => {
-            const endpoint = this.endpoints.github('repos/EhTagTranslation/Database/releases/latest');
+            const endpoint = this.endpoints.github(`repos/${DB_REPO}/releases/latest`);
             return await lastValueFrom(this.http.get<GithubRelease>(endpoint));
         };
         if (this.getReleasePromise) {
@@ -110,13 +111,11 @@ export class GithubReleaseService {
         }
         const { sha } = (
             await lastValueFrom(
-                this.http.get<{ commit: { sha: string } }>(
-                    this.endpoints.github('repos/EhTagTranslation/Database/branches/release'),
-                ),
+                this.http.get<{ commit: { sha: string } }>(this.endpoints.github(`repos/${DB_REPO}/branches/release`)),
             )
         ).commit;
         const data = await lastValueFrom(
-            this.http.get<RepoData<'raw'>>(`https://cdn.jsdelivr.net/gh/EhTagTranslation/Database@${sha}/db.raw.json`),
+            this.http.get<RepoData<'raw'>>(`https://cdn.jsdelivr.net/gh/${DB_REPO}@${sha}/db.raw.json`),
         );
         this.debug.log('release: load end with remote data', { hash: data.head.sha });
         await this.set(data);

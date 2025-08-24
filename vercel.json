@@ -1,5 +1,8 @@
 {
-  "github": {
-    "silent": true
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build:browser && pnpm test:browser",
+  "devCommand": "pnpm start:browser --port $PORT",
+  "outputDirectory": "dist/browser"
 }

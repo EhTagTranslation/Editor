@@ -197,7 +197,7 @@ export class NamespaceInfoDto implements NamespaceInfo {
 }
 
 export class RepoInfoDto implements RepoInfo {
-    @ApiProperty({ type: String, description: '仓库 URL', example: 'https://github.com/EhTagTranslation/Database.git' })
+    @ApiProperty({ type: String, description: '仓库 URL', example: `https://github.com/${process.env['DB_REPO']}.git` })
     repo!: string;
     @ApiProperty({ type: CommitDto, description: '当前提交' })
     head!: CommitDto;

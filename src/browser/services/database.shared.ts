@@ -13,6 +13,8 @@ import { Context } from '#shared/markdown';
 import type { RawTag } from '#shared/raw-tag';
 import { TagRecord } from '#shared/tag-record';
 
+export const DB_REPO: `${string}/${string}` = 'EhTagTranslation/Database';
+
 const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
     rows: { name: '行名', description: '标签列表的行名，即标签的命名空间。' },
     artist: { name: '艺术家', description: '绘画作者/写手。' },
@@ -39,7 +41,7 @@ const fallback: Record<NamespaceName, Omit<FrontMatters, 'key'>> = {
 };
 
 const info = {
-    repo: 'https://github.com/EhTagTranslation/Database.git',
+    repo: `https://github.com/${DB_REPO}.git`,
     version: SUPPORTED_REPO_VERSION,
     head: {
         sha: '000000000000000000000000000' as Sha1Value,
