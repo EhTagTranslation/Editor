@@ -38,7 +38,7 @@ interface SearchTerm {
 
 const noSearchTerm: NoSearchTerm = { data: '', isRegex: undefined };
 let regexFromSearchCache: NoSearchTerm | SearchTerm = noSearchTerm;
-export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTerm {
+export function regexFromSearch(search: string | null, flags: string): NoSearchTerm | SearchTerm {
     if (!search) {
         return noSearchTerm;
     }
@@ -54,9 +54,9 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
             return (regexFromSearchCache = {
                 data: search,
                 isRegex: true,
-                regex: new RegExp(exp, 'ig'),
-                startRegex: new RegExp(startExp, 'ig'),
-                fullRegex: new RegExp(fullExp, 'ig'),
+                regex: new RegExp(exp, flags),
+                startRegex: new RegExp(startExp, flags),
+                fullRegex: new RegExp(fullExp, flags),
             });
         } catch {
             //
@@ -66,9 +66,9 @@ export function regexFromSearch(search?: string | null): NoSearchTerm | SearchTe
     return (regexFromSearchCache = {
         data: search,
         isRegex: false,
-        regex: new RegExp(escaped, 'ig'),
-        startRegex: new RegExp('^' + escaped, 'ig'),
-        fullRegex: new RegExp('^' + escaped + '$', 'ig'),
+        regex: new RegExp(escaped, flags),
+        startRegex: new RegExp('^' + escaped, flags),
+        fullRegex: new RegExp('^' + escaped + '$', flags),
     });
 }
 
@@ -153,7 +153,7 @@ export class MarkPipe implements PipeTransform {
         if (!search && !inputAsHtml) {
             return value;
         }
-        const regexp = search ? regexFromSearch(search).regex : undefined;
+        const regexp = search ? regexFromSearch(search, 'ig').regex : undefined;
         if (inputAsHtml) {
             const dom = parser.parseFromString(value, 'text/html');
             const root = dom.body;

@@ -241,7 +241,7 @@ export class ListComponent implements OnInit {
         search: string,
     ): readonly RenderedETItem[] {
         this.debug.log('list: filtering', { data, ns, search });
-        const regex = regexFromSearch(search);
+        const regex = regexFromSearch(search, 'i');
         if (ns) {
             data = data.filter((v) => v.namespace === ns);
         }
