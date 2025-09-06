@@ -10,7 +10,7 @@ import { type MasterTag, putTagCache } from '#shared/ehentai/tag';
 export async function getTagGroups(): Promise<MasterTag[]> {
     console.log('加载 E 站 tag group 工具数据...');
     const tags = [];
-    for (let i = 0; i <= 11; i++) {
+    for (let i = 0; i <= 12; i++) {
         const response = (await get<string>(`https://repo.e-hentai.org/tools/taggroup?show=${i}`)).data;
         const namespace = /\[<span style="font-weight:bold">(\w+)<\/span>\]/.exec(response)?.[1];
         if (!isNamespaceName(namespace)) {
