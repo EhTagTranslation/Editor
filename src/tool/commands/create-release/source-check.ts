@@ -21,6 +21,10 @@ function progress(count: number, total: number, message: string): void {
     process.stderr.write(`${formatted} ${((count / total) * 100).toFixed(3)}%`);
 }
 
+/**
+ * 定义 source-check 的顺序
+ * 优先检查稳定的命名空间
+ */
 export const SOURCE_CHECK_NS: readonly NamespaceName[] = [
     'rows',
     'reclass',
@@ -36,6 +40,9 @@ export const SOURCE_CHECK_NS: readonly NamespaceName[] = [
     'parody',
     'character',
 ] as const satisfies { length: (typeof NamespaceName)['length'] };
+/**
+ * 稳定的命名空间，这些标签优先从 EH 数据库中检查
+ */
 export const SOURCE_CHECK_NOTICE = new Set<NamespaceName>([
     'rows',
     'reclass',
