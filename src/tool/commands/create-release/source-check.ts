@@ -36,7 +36,15 @@ export const SOURCE_CHECK_NS: readonly NamespaceName[] = [
     'parody',
     'character',
 ] as const satisfies { length: (typeof NamespaceName)['length'] };
-const SOURCE_CHECK_NOTICE = new Set<NamespaceName>(['rows', 'reclass', 'male', 'female', 'mixed', 'other', 'location']);
+export const SOURCE_CHECK_NOTICE = new Set<NamespaceName>([
+    'rows',
+    'reclass',
+    'male',
+    'female',
+    'mixed',
+    'other',
+    'location',
+]);
 
 function showProgress(): boolean {
     return process.stderr.isTTY && clc.windowSize.width > 0;

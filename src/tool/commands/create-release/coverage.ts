@@ -4,6 +4,7 @@ import type { NamespaceName } from '#shared/interfaces/ehtag';
 import { normalizeTag } from '../../normalize-tag.js';
 import { getAllTagInfo } from '../../tag-dump-db.js';
 import { withStatistics } from './statistics.js';
+import { SOURCE_CHECK_NOTICE } from './source-check.js';
 
 const CHECK_THRESHOLD = 500;
 
@@ -17,9 +18,16 @@ export async function runCoverage(db: Database, checkNs: readonly NamespaceName[
     let allCount = 0;
     let coveredCount = 0;
     const uncovered: Array<[NamespaceName, RawTag, number]> = [];
+    const checkNsSet = new Set(checkNs);
+    for (const ns of checkNs) {
+        if (SOURCE_CHECK_NOTICE.has(ns)) {
+            // 由 source-check 单独处理
+            checkNsSet.delete(ns);
+        }
+    }
     for (const record of ref) {
         const { count, namespace, tag } = record;
-        if (!checkNs.includes(namespace)) continue;
+        if (!checkNsSet.has(namespace)) continue;
         let [ns, raw] = [namespace, tag];
         if (count > CHECK_THRESHOLD && !db.data[ns].get(raw)) {
             const norm = await normalizeTag(ns, raw);
