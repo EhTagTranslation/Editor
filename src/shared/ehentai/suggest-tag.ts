@@ -91,7 +91,7 @@ export async function suggestTag(
         result.find(
             (t) =>
                 (t.raw === raw && ns === t.namespace) ||
-                (t.master && t.master.raw === raw && ns === t.master.namespace),
+                (t.master?.raw === raw && ns === t.master.namespace),
         ) == null
     ) {
         // 没有正确匹配时升级为精确搜索

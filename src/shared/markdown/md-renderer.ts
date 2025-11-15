@@ -19,8 +19,7 @@ const renderers: { [T in NodeType]: (node: NodeMap[T], parent?: ContainerNode, i
             escaped.endsWith('!') &&
             parent &&
             index != null &&
-            parent.content[index + 1] &&
-            parent.content[index + 1].type === 'link'
+            parent.content[index + 1]?.type === 'link'
         ) {
             escaped = escaped.slice(0, escaped.length - 1) + '\\!';
         }
