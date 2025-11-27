@@ -65,7 +65,7 @@
     "@angular/build": "^20.3.10",
     "@angular/cdk": "^16.2.14",
     "@angular/cli": "^20.3.10",
-    "@angular/common": "^20.3.12",
+    "@angular/common": "^20.3.14",
     "@angular/compiler": "^20.3.12",
     "@angular/compiler-cli": "^20.3.12",
     "@angular/core": "^20.3.12",
