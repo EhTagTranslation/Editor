@@ -1,7 +1,4 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true
-  },
   "files": [],
   "references": [
     { "path": "./src/browser/tsconfig.json" },

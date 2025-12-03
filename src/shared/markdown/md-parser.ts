@@ -1,4 +1,5 @@
-import MarkdownIt, { type Token } from 'markdown-it';
+import MarkdownIt from 'markdown-it';
+import type Token from 'markdown-it/lib/token.mjs';
 import type { FixedLengthArray } from 'type-fest';
 import { Context } from './context.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';

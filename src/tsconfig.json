@@ -11,7 +11,7 @@
     "declaration": false,
 
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "importHelpers": true,
     "target": "ES2022",
     "useDefineForClassFields": false,
