@@ -2,6 +2,11 @@
 /.angular/cache
 /db
 
+# git
+/.git
+/.gitignore
+/.github/
+
 # dependencies
 /node_modules
 
@@ -31,4 +36,4 @@ coverage/
 *.launch
 .settings/
 *.sublime-workspace
-.vscode/*
+.vscode/

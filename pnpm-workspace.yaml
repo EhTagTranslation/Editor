@@ -7,3 +7,5 @@ ignoredBuiltDependencies:
   - lmdb
   - msgpackr-extract
   - unrs-resolver
+
+shellEmulator: true

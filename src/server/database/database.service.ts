@@ -2,8 +2,9 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Octokit } from '@octokit/rest';
 import type { AsyncReturnType } from 'type-fest';
-import fs from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
+import { writeFile } from 'node:fs/promises';
+import { readJSONSync, writeJSONSync, ensureDir, pathExists, remove } from 'fs-extra/esm';
 import { Database } from '#shared/database';
 import type { NamespaceDatabase } from '#shared/namespace-database';
 import { type Sha1Value, NamespaceName, type Commit } from '#shared/interfaces/ehtag';
@@ -39,17 +40,17 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     private readonly infoFile: string;
     private _info?: RepoInfo;
     private get info(): RepoInfo {
-        this._info ??= fs.readJSONSync(this.infoFile) as RepoInfo;
+        this._info ??= readJSONSync(this.infoFile) as RepoInfo;
         return this._info;
     }
     private set info(value: RepoInfo) {
         this._info = value;
-        fs.writeJSONSync(this.infoFile, value);
+        writeJSONSync(this.infoFile, value);
     }
 
     async onModuleInit(): Promise<void> {
-        await fs.ensureDir(this.path);
-        if (!(await fs.pathExists(this.infoFile))) {
+        await ensureDir(this.path);
+        if (!(await pathExists(this.infoFile))) {
             this.info = {
                 head: {
                     sha: '' as Sha1Value,
@@ -103,19 +104,19 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             const pullFile = async (filename: string, removed = false): Promise<string> => {
                 const filePath = path.join(this.path, filename);
                 if (removed) {
-                    await fs.remove(filePath);
+                    await remove(filePath);
                     blob[filename] = undefined;
                 } else {
                     const file = await this.octokit.getFile(filename);
+                    await ensureDir(path.dirname(filePath));
+                    await writeFile(filePath, file.content);
                     if (this.data && file.path.startsWith('database/')) {
                         const ns = /^database\/(.+)\.md$/.exec(file.path)?.[1] as NamespaceName;
                         if (NamespaceName.includes(ns)) {
-                            await this.data.data[ns].load(file.content);
+                            await this.data.data[ns].load();
                             this.data.revision++;
                         }
                     }
-                    await fs.ensureDir(path.dirname(filePath));
-                    await fs.writeFile(filePath, file.content);
                     blob[filename] = undefined;
                     filename = file.path;
                     blob[filename] = file.sha;

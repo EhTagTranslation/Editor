@@ -1,5 +1,6 @@
-import fs from 'fs-extra';
+import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathExists } from 'fs-extra/esm';
 import { NamespaceDatabase } from './namespace-database.js';
 import { NamespaceName, type RepoInfo, type Sha1Value, type RepoData, TagType } from './interfaces/ehtag.js';
 import type { TagRecord } from './tag-record.js';
@@ -42,7 +43,7 @@ export class Database implements DatabaseView {
 
         const info =
             repoInfoProvider ??
-            ((await fs.pathExists(path.join(repoPath, '.git'))) ? new GitRepoInfoProvider(repoPath) : undefined);
+            ((await pathExists(path.join(repoPath, '.git'))) ? new GitRepoInfoProvider(repoPath) : undefined);
         const db = new Database(repoPath, version, files, info);
         if (logger) db.logger = logger;
         await db.load();

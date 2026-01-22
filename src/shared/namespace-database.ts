@@ -1,4 +1,6 @@
-import fs from 'fs-extra';
+import { createReadStream } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { createInterface } from 'node:readline/promises';
 import { load, dump } from 'js-yaml';
 import type { NamespaceName, FrontMatters, NamespaceInfo, TagType, NamespaceData } from './interfaces/ehtag.js';
 import { TagRecord } from './tag-record.js';
@@ -25,10 +27,8 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
     private readonly rawMap = new Map<RawTag, TagLine>();
     private prefix = '';
     private suffix = '';
-    /** 优先使用 data 中的数据，其次使用文件 */
-    async load(data?: Buffer): Promise<void> {
-        const string = data?.toString('utf-8') ?? (await fs.readFile(this.file, 'utf-8'));
-        const lines = string.split('\n');
+    /** 重新加载文件 */
+    async load(): Promise<void> {
         const context = new Context(this);
         let state = 0;
         this.rawData = [];
@@ -38,7 +38,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         let frontMatters = '';
         let sep = '';
         let lineno = 0;
-        for (const line of lines) {
+        for await (const line of createInterface(createReadStream(this.file))) {
             lineno++;
             const record = TagRecord.parse(line, this);
             [context.raw, context.tag] = record ?? [undefined, undefined];
@@ -176,7 +176,7 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
 
         // 一次性写入，防止写一半爆炸导致数据丢失
         const buffer = Buffer.from(content, 'utf-8');
-        await fs.writeFile(this.file, buffer);
+        await writeFile(this.file, buffer);
         return buffer;
     }
 
