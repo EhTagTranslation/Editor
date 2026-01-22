@@ -4,13 +4,10 @@ import type { NamespaceName } from '../interfaces/ehtag.js';
 import { putTagCache, type MasterTag, type Tag } from './tag.js';
 import { STATISTICS } from './statistics.js';
 
-interface TagSuggestRequest
-    extends ApiRequest<
-        'tagsuggest',
-        {
-            tags: Record<number, ApiMasterTag | ApiSlaveTag> | [];
-        }
-    > {
+interface TagSuggestRequest extends ApiRequest<
+    'tagsuggest',
+    { tags: Record<number, ApiMasterTag | ApiSlaveTag> | [] }
+> {
     text: string;
 }
 
@@ -89,9 +86,7 @@ export async function suggestTag(
         ns &&
         result.length > 0 &&
         result.find(
-            (t) =>
-                (t.raw === raw && ns === t.namespace) ||
-                (t.master?.raw === raw && ns === t.master.namespace),
+            (t) => (t.raw === raw && ns === t.namespace) || (t.master?.raw === raw && ns === t.master.namespace),
         ) == null
     ) {
         // 没有正确匹配时升级为精确搜索

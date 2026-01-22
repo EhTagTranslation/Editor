@@ -15,12 +15,7 @@ const renderers: { [T in NodeType]: (node: NodeMap[T], parent?: ContainerNode, i
     },
     text(node, parent, index) {
         let escaped = node.text.replace(/([_*`])/gi, '\\$1');
-        if (
-            escaped.endsWith('!') &&
-            parent &&
-            index != null &&
-            parent.content[index + 1]?.type === 'link'
-        ) {
+        if (escaped.endsWith('!') && parent && index != null && parent.content[index + 1]?.type === 'link') {
             escaped = escaped.slice(0, escaped.length - 1) + '\\!';
         }
         return escaped;

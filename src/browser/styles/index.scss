@@ -43,8 +43,8 @@ a {
   color: mat.get-color-from-palette(map.get(theme.$app-theme, primary));
   text-decoration: none;
 
-  &[href^='http://'], &[href^='https://']
-  {
+  &[href^='http://'],
+  &[href^='https://'] {
     text-decoration: underline;
   }
 

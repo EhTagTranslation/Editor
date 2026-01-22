@@ -104,16 +104,16 @@ export class GithubReleaseService {
 
         this.debug.log('release: load start', { hash: release.target_commitish });
         const dbData = await this.cache.get('REPO_DATA_RAW');
-        if (dbData && dbData.head.sha === release.target_commitish) {
+        if (dbData?.head.sha === release.target_commitish) {
             this.debug.log('release: load end with db data', { hash: dbData.head.sha });
             await this.set(dbData);
             return;
         }
-        const { sha } = (
-            await lastValueFrom(
-                this.http.get<{ commit: { sha: string } }>(this.endpoints.github(`repos/${DB_REPO}/branches/release`)),
-            )
-        ).commit;
+        const {
+            commit: { sha },
+        } = await lastValueFrom(
+            this.http.get<{ commit: { sha: string } }>(this.endpoints.github(`repos/${DB_REPO}/branches/release`)),
+        );
         const data = await lastValueFrom(
             this.http.get<RepoData<'raw'>>(`https://cdn.jsdelivr.net/gh/${DB_REPO}@${sha}/db.raw.json`),
         );

@@ -5,13 +5,7 @@ import { putTagCache } from './tag.js';
 import { STATISTICS } from './statistics.js';
 import { parseTag } from '#shared/tag';
 
-interface GalleryListRequest
-    extends ApiRequest<
-        'gdata',
-        {
-            gmetadata: Array<GalleryMetadata | GalleryMetadataError>;
-        }
-    > {
+interface GalleryListRequest extends ApiRequest<'gdata', { gmetadata: Array<GalleryMetadata | GalleryMetadataError> }> {
     gidlist: readonly GalleryId[];
     namespace: 1;
 }
