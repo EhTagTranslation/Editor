@@ -20,9 +20,9 @@ export class TagRecord implements Tag<Cell> {
         data: Tag<'raw'>,
         readonly namespace: NamespaceDatabaseView,
     ) {
-        this.name = new Cell(data.name);
-        this.intro = new Cell(data.intro);
-        this.links = new Cell(data.links);
+        this.name = new Cell(data.name.trim());
+        this.intro = new Cell(data.intro.trim());
+        this.links = new Cell(data.links.trim());
     }
     readonly name: Cell;
     readonly intro: Cell;
