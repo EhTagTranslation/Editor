@@ -39,4 +39,4 @@ FROM base AS production
 
 COPY --from=builder /app /app
 
-ENTRYPOINT [ "node", "main.js" ]
+ENTRYPOINT [ "/bin/sh", "entrypoint.sh" ]
