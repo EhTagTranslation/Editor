@@ -1,19 +1,11 @@
-FROM oven/bun:alpine AS base
+FROM node:lts-alpine
+
+RUN npm install -g corepack@latest npm@latest
 
 WORKDIR /app
-
-FROM base AS builder
-
-RUN bun install -g pnpm@latest
 
 COPY / /app
 
-RUN pnpm install --prod --frozen-lockfile
+RUN corepack pnpm install --prod --frozen-lockfile
 
-FROM base AS runner
-
-WORKDIR /app
-
-COPY --from=builder /app /app
-
-ENTRYPOINT [ "bun", "dist/server/main.js" ]
+ENTRYPOINT [ "node", "dist/server/main.js" ]
