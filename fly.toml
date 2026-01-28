@@ -22,26 +22,22 @@ source = "ehtt_db_machines"
 destination = "/db"
 processes = ["app"]
 
-[[services]]
-protocol = "tcp"
+[http_service]
 internal_port = 8080
+force_https = true
+auto_stop_machines = "off"
+auto_start_machines = false
+min_machines_running = 1
 processes = ["app"]
 
-[[services.ports]]
-port = 80
-handlers = ["http"]
-force_https = true
-
-[[services.ports]]
-port = 443
-handlers = ["tls", "http"]
-[services.concurrency]
-type = "connections"
-hard_limit = 25
+[http_service.concurrency]
+type = "requests"
 soft_limit = 20
 
-[[services.tcp_checks]]
-interval = "15s"
-timeout = "2s"
-grace_period = "10s"
-restart_limit = 0
+
+[[http_service.checks]]
+grace_period = "30s"
+interval = "30s"
+method = "HEAD"
+timeout = "5s"
+path = "/database"

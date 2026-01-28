@@ -5,7 +5,7 @@
   "engines": {
     "node": "^22.18.0 || ^24.3.0"
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
@@ -29,7 +29,7 @@
   "dependencies": {
     "@actions/core": "~2.0.2",
     "@actions/exec": "~2.0.0",
-    "@actions/http-client": "~3.0.1",
+    "@actions/http-client": "~3.0.2",
     "@fastify/static": "^9.0.0",
     "@nestjs/common": "~11.1.12",
     "@nestjs/config": "~4.0.2",
@@ -40,13 +40,13 @@
     "@octokit/auth-oauth-app": "~9.0.3",
     "@octokit/request-error": "^7.1.0",
     "@octokit/rest": "~22.0.1",
-    "axios": "~1.13.2",
+    "axios": "~1.13.4",
     "class-transformer": "~0.5.1",
     "class-validator": "~0.14.3",
     "cli-color": "~2.0.4",
     "commander": "~14.0.2",
     "escape-string-regexp": "~5.0.0",
-    "fastify": "^5.7.1",
+    "fastify": "^5.7.2",
     "fs-extra": "~11.3.3",
     "idb-keyval": "~6.2.2",
     "js-yaml": "~4.1.1",
@@ -64,7 +64,7 @@
     "@angular/animations": "^21.1.1",
     "@angular/build": "^21.1.1",
     "@angular/cdk": "^16.2.14",
-    "@angular/cli": "^21.1.0",
+    "@angular/cli": "^21.1.1",
     "@angular/common": "^21.1.1",
     "@angular/compiler": "^21.1.1",
     "@angular/compiler-cli": "^21.1.1",
@@ -100,9 +100,9 @@
     "rimraf": "~6.1.2",
     "supertest": "~7.2.2",
     "ts-jest": "~29.4.6",
-    "type-fest": "~5.4.1",
+    "type-fest": "~5.4.2",
     "typescript": "~5.9.3",
-    "typescript-eslint": "~8.53.1",
+    "typescript-eslint": "~8.54.0",
     "zone.js": "~0.16.0"
   }
 }
