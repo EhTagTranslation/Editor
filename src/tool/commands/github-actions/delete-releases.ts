@@ -20,6 +20,7 @@ class Main {
             repo: action.repo,
         });
         console.log(`Found ${releases.length} releases`);
+        releases.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         const releases_to_delete = releases.slice(this.KEEP_RELEASE);
         for (let i = 0; i < releases_to_delete.length; i++) {
             const release = releases_to_delete[i];
