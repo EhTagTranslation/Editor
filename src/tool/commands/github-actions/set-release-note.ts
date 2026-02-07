@@ -11,8 +11,8 @@ function compareInfo(before: string, after: string): string {
 }
 
 function mirrorInfo(sha: string): string {
-    const link = `\`${action.repository}Releases@${sha.slice(0, 7)}\``;
-    const url = `https://github.com/${action.repository}Releases/tree/${sha}`;
+    const link = `\`${action.repository}@${sha.slice(0, 7)}\``;
+    const url = `https://github.com/${action.repository}/tree/${sha}`;
     return `也可以从 [${link}](${url}) 获取`;
 }
 
