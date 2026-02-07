@@ -78,6 +78,8 @@ const knownHosts = new Map<string, string>([
     ['baike.baidu.com', '百度百科'],
     ['wiki.biligame.com', 'BILIGAME WIKI'],
     ['huijiwiki.com', '灰机wiki'],
+    ['wiki.52poke.com', '神奇宝贝百科'],
+    ['thwiki.cc', 'THBWiki'],
     // 内容平台
     ['pixiv.net', 'pixiv'],
     ['bilibili.com', '哔哩哔哩'],
