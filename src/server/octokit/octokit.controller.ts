@@ -1,10 +1,10 @@
+import { brotliCompress } from 'node:zlib';
+import { promisify } from 'node:util';
 import { Controller, HttpStatus, Get, Req, Res } from '@nestjs/common';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OctokitService } from './octokit.service.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { brotliCompress } from 'node:zlib';
-import { promisify } from 'node:util';
 
 const brotliCompressAsync = promisify(brotliCompress);
 
@@ -13,42 +13,37 @@ const brotliCompressAsync = promisify(brotliCompress);
 export class OctokitController extends InjectableBase {
     constructor(private readonly octokit: OctokitService) {
         super();
+        void this.fetchRelease().catch((err: unknown) => this.logger.error(err));
+        setInterval(() => {
+            void this.fetchRelease().catch((err: unknown) => this.logger.error(err));
+        }, 10_000);
     }
 
-    private releaseFetchPromise: Promise<{ json: string; br: Buffer }> | null = null;
-    private releaseCacheTimer: ReturnType<typeof setTimeout> | null = null;
-
-    private async fetchRelease(): Promise<{ json: string; br: Buffer }> {
+    private releaseCache: { json: string; br: Buffer } | null = null;
+    private async fetchRelease(): Promise<void> {
         const response = await this.octokit.forApp.repos.getLatestRelease({
             owner: this.octokit.owner,
             repo: this.octokit.repo,
         });
         const json = JSON.stringify(response.data);
         const br = await brotliCompressAsync(Buffer.from(json));
-        return { json, br };
+        this.releaseCache = { json, br };
     }
 
     @Get('release')
     @ApiOperation({ summary: '获取最新版本', description: '代理 GitHub API' })
-    async release(@Req() req: FastifyRequest, @Res() res: FastifyReply): Promise<void> {
-        if (!this.releaseFetchPromise) {
-            const promise = this.fetchRelease();
-            this.releaseFetchPromise = promise;
-            void promise.then(() => {
-                if (this.releaseFetchPromise !== promise) return;
-                if (this.releaseCacheTimer) clearTimeout(this.releaseCacheTimer);
-                this.releaseCacheTimer = setTimeout(() => {
-                    if (this.releaseFetchPromise === promise) this.releaseFetchPromise = null;
-                    this.releaseCacheTimer = null;
-                }, 10_000);
-            });
-            void promise.catch(() => {
-                if (this.releaseFetchPromise === promise) this.releaseFetchPromise = null;
-            });
+    release(@Req() req: FastifyRequest, @Res() res: FastifyReply): void {
+        if (!this.releaseCache) {
+            void res
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .send({ error: 'Release information is not available yet. Please try again later.' });
+            return;
         }
-
-        const { json, br } = await this.releaseFetchPromise;
-        const acceptEncoding = req.headers['accept-encoding'] ?? '';
+        const { json, br } = this.releaseCache;
+        const acceptEncoding = (req.headers['accept-encoding'] ?? '')
+            .toLowerCase()
+            .split(',')
+            .map((enc) => enc.trim());
         const reply = res
             .status(HttpStatus.OK)
             .header('Cache-Control', 'public, max-age=10, s-maxage=10')
