@@ -5,7 +5,7 @@ import supertest from 'supertest';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
 import { AppModule } from '#server/app/app.module';
-import { setupSwagger, enableCors } from '#server/setup';
+import { setupSwagger, enableCors, enableCompression } from '#server/setup';
 
 jest.setTimeout(30_000);
 
@@ -21,9 +21,10 @@ describe('AppController (e2e)', () => {
         app = moduleFixture.createNestApplication(new FastifyAdapter(), {});
         enableCors(app);
         setupSwagger(app);
+        await enableCompression(app);
         await app.init();
-        /** @type {FastifyAdapter} */
-        const adapter = app.getHttpAdapter();
+
+        const adapter = /** @type {FastifyAdapter} */ app.getHttpAdapter();
         await adapter.getInstance().ready();
     });
 
@@ -279,8 +280,27 @@ describe('AppController (e2e)', () => {
         });
     });
 
+    it('GET /octokit/release (raw)', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/octokit/release')
+            .set('accept-encoding', '')
+            .expect(HttpStatus.OK);
+        expect(_.header['content-encoding']).toBe(undefined);
+        expect(_.body.assets).toBeInstanceOf(Array);
+    });
+
     it('GET /octokit/release', async () => {
         const _ = await supertest(app.getHttpServer()).get('/octokit/release').expect(HttpStatus.OK);
+        expect(_.header['content-encoding']).toBe('gzip');
+        expect(_.body.assets).toBeInstanceOf(Array);
+    });
+
+    it('GET /octokit/release (br)', async () => {
+        const _ = await supertest(app.getHttpServer())
+            .get('/octokit/release')
+            .set('Accept-Encoding', 'br')
+            .expect(HttpStatus.OK);
+        expect(_.header['content-encoding']).toBe('br');
         expect(_.body.assets).toBeInstanceOf(Array);
     });
 });

@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app/app.module.js';
-import { setupSwagger, enableCors } from './setup.js';
+import { setupSwagger, enableCors, enableCompression } from './setup.js';
 
 const logger = new Logger('Main', { timestamp: true });
 /**
@@ -15,6 +15,7 @@ async function bootstrap(): Promise<void> {
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {});
     enableCors(app);
     setupSwagger(app);
+    await enableCompression(app);
 
     const config = app.get(ConfigService);
     const port = Number.parseInt(config.get<string>('PORT', '3000'));

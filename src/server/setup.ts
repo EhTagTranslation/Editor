@@ -1,6 +1,8 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import compression from '@fastify/compress';
 import type { INestApplication } from '@nestjs/common';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 
 export function setupSwagger(app: INestApplication): void {
     const adapter = app.getHttpAdapter();
@@ -42,4 +44,8 @@ export function enableCors(app: INestApplication): void {
         exposedHeaders: ['ETag', 'Location'],
         maxAge: 60 * 60 * 24,
     });
+}
+
+export async function enableCompression(app: NestFastifyApplication): Promise<void> {
+    await app.register(compression, { encodings: ['zstd', 'gzip', 'deflate', 'identity'], inflateIfDeflated: true });
 }

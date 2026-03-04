@@ -9,7 +9,7 @@
   "scripts": {
     "start:server": "nest start --debug --watch",
     "build:server": "nest build",
-    "test:server": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --config ./test/server/jest.config.js",
+    "test:server": "NODE_USE_ENV_PROXY=1 NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --config ./test/server/jest.config.js",
     "start:tool": "node scripts/tool.js --watch",
     "build:tool": "node scripts/tool.js --minify",
     "test:tool": "pnpm tool --help",
@@ -78,6 +78,8 @@
     "@angular/service-worker": "^21.2.0",
     "@commander-js/extra-typings": "^14.0.0",
     "@eslint/js": "^10.0.1",
+    "@fastify/compress": "^8.3.1",
+    "@jest/globals": "^30.2.0",
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.14",
