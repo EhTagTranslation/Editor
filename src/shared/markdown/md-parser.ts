@@ -9,7 +9,6 @@ import {
     type ContainerNode,
     type TextNode,
     type TagRefNode,
-    type BreakNode,
     type ImageNode,
     type LinkNode,
     isNodeType,
@@ -585,7 +584,7 @@ class AstBuilder {
         } else if (token.type === 'softbreak' || token.type === 'hardbreak') {
             parent.content.push({
                 type: 'br',
-            } as BreakNode);
+            });
         } else if (token.type === 'image') {
             const node: ImageNode = {
                 type: 'image',

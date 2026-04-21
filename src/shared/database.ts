@@ -36,7 +36,7 @@ export class Database implements DatabaseView {
                     await fs.access(file);
                 } catch (e) {
                     const p = path.join(repoPath, 'database', `${ns}.md`);
-                    throw new Error(`无法访问 "${p}"，"${repoPath}" 可能不是一个有效的数据库\n${String(e)}`);
+                    throw new Error(`无法访问 "${p}"，"${repoPath}" 可能不是一个有效的数据库\n${String(e)}`, {cause: e});
                 }
             }),
         );

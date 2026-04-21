@@ -95,7 +95,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         return this.schedule(async () => {
             const oldInfo = this.info;
             const headCommit = await this.octokit.getHead();
-            const blob = { ...oldInfo.blob } as RepoInfo['blob'];
+            const blob: RepoInfo['blob'] = { ...oldInfo.blob };
             if (!force && oldInfo.head.sha === headCommit.sha) {
                 this.logger.verbose(`Up to date. Sha: ${headCommit.sha}`);
                 return undefined;

@@ -408,7 +408,7 @@ export class EditorComponent implements OnInit {
             return (v.value ?? '') as Item[F];
         }
         if (field === 'namespace') {
-            return 'other' as Item[F];
+            return 'other';
         }
         return '' as Item[F];
     }

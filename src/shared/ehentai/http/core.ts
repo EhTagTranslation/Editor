@@ -20,6 +20,7 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
             throw new AggregateError(
                 errors,
                 `Failed after ${errors.length} tries.\n${errors.map((e) => e.message).join('\n')}`,
+                { cause: err }
             );
         }
         await delay(delayTime);

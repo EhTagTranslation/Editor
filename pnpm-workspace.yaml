@@ -9,3 +9,4 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 shellEmulator: true
+dedupePeers: true
