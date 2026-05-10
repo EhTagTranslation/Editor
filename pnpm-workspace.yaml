@@ -1,12 +1,15 @@
-ignoredBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - '@scarf/scarf'
-  - es5-ext
-  - esbuild
-  - lmdb
-  - msgpackr-extract
-  - unrs-resolver
-
 shellEmulator: true
 dedupePeers: true
+
+allowBuilds:
+  '@nestjs/core': false
+  '@parcel/watcher': false
+  '@scarf/scarf': false
+  es5-ext: false
+  esbuild: false
+  lmdb: false
+  msgpackr-extract: false
+  unrs-resolver: false
+
+publicHoistPattern:
+  - fastify
