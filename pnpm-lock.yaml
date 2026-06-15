@@ -111,7 +111,7 @@ importers:
         version: 20.3.20(@angular/core@20.3.20)
       '@angular/build':
         specifier: ^20.3.25
-        version: 20.3.25(@angular/compiler-cli@20.3.20)(@angular/compiler@20.3.20)(@angular/core@20.3.20)(@angular/platform-browser@20.3.20)(@angular/service-worker@20.3.20)(@types/node@25.6.2)(chokidar@4.0.3)(postcss@8.5.14)(terser@5.47.1)(tslib@2.8.1)(typescript@5.9.3)
+        version: 20.3.25(@angular/compiler-cli@20.3.20)(@angular/compiler@20.3.20)(@angular/core@20.3.20)(@angular/platform-browser@20.3.20)(@angular/service-worker@20.3.22)(@types/node@25.6.2)(chokidar@4.0.3)(postcss@8.5.14)(terser@5.47.1)(tslib@2.8.1)(typescript@5.9.3)
       '@angular/cdk':
         specifier: ^16.2.14
         version: 16.2.14(@angular/common@20.3.20)(@angular/core@20.3.20)(rxjs@7.8.2)
@@ -149,8 +149,8 @@ importers:
         specifier: ^20.3.20
         version: 20.3.20(@angular/common@20.3.20)(@angular/core@20.3.20)(@angular/platform-browser@20.3.20)(rxjs@7.8.2)
       '@angular/service-worker':
-        specifier: ^20.3.20
-        version: 20.3.20(@angular/core@20.3.20)(rxjs@7.8.2)
+        specifier: ^20.3.22
+        version: 20.3.22(@angular/core@20.3.20)(rxjs@7.8.2)
       '@commander-js/extra-typings':
         specifier: ^14.0.0
         version: 14.0.0(commander@14.0.3)
@@ -351,6 +351,7 @@ packages:
   '@angular/animations@20.3.20':
     resolution: {integrity: sha512-pUb+fhYAzi36htMZRFBj2acrgj1ou/vdlOQ99bGrN16/OtKVhGiOeorONrUVJRAlDALDgE+XBMt+6M4jhL+36g==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/animations is deprecated. Use `animate.enter` and `animate.leave` instead. For more information see: https://v22.angular.dev/guide/animations.'
     peerDependencies:
       '@angular/core': 20.3.20
 
@@ -500,12 +501,12 @@ packages:
       '@angular/platform-browser': 20.3.20
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@angular/service-worker@20.3.20':
-    resolution: {integrity: sha512-9oBdj3Phe+JmeoQBDdx59WDEhKV5cWmdAt3IY7NawPGF4LPdHjEvB+UMSyUKjV0yanjAOoJR7x9jPcOgdN8/sg==}
+  '@angular/service-worker@20.3.22':
+    resolution: {integrity: sha512-blPaYrajRvF881iqikTV7Mm8dpvcrP1Glo+sXBFJBwyA9S9Rj/0G6YdvKnr11tBTOXK2/kfRengUi+XwhQiqTg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
-      '@angular/core': 20.3.20
+      '@angular/core': 20.3.22
       rxjs: ^6.5.3 || ^7.4.0
 
   '@babel/code-frame@7.29.0':
@@ -3611,7 +3612,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -4650,8 +4651,8 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-is@19.2.6:
-    resolution: {integrity: sha512-XjBR15BhXuylgWGuslhDKqlSayuqvqBX91BP8pauG8kd1zY8kotkNWbXksTCNRarse4kuGbe2kIY05ARtwNIvw==}
+  react-is@19.2.7:
+    resolution: {integrity: sha512-kZFnouyVv7eP/Phmrlo9FK+zcAdriZJvzxXHF1Sl1P377WSGe2G/JxVolhTrB/jeV47lKImhNUsijjHAAbcl/A==}
 
   readable-stream@2.3.8:
     resolution: {integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==}
@@ -5608,7 +5609,7 @@ snapshots:
       '@angular/core': 20.3.20(@angular/compiler@20.3.20)(rxjs@7.8.2)(zone.js@0.15.1)
       tslib: 2.8.1
 
-  '@angular/build@20.3.25(@angular/compiler-cli@20.3.20)(@angular/compiler@20.3.20)(@angular/core@20.3.20)(@angular/platform-browser@20.3.20)(@angular/service-worker@20.3.20)(@types/node@25.6.2)(chokidar@4.0.3)(postcss@8.5.14)(terser@5.47.1)(tslib@2.8.1)(typescript@5.9.3)':
+  '@angular/build@20.3.25(@angular/compiler-cli@20.3.20)(@angular/compiler@20.3.20)(@angular/core@20.3.20)(@angular/platform-browser@20.3.20)(@angular/service-worker@20.3.22)(@types/node@25.6.2)(chokidar@4.0.3)(postcss@8.5.14)(terser@5.47.1)(tslib@2.8.1)(typescript@5.9.3)':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.2003.25(chokidar@4.0.3)
@@ -5643,7 +5644,7 @@ snapshots:
     optionalDependencies:
       '@angular/core': 20.3.20(@angular/compiler@20.3.20)(rxjs@7.8.2)(zone.js@0.15.1)
       '@angular/platform-browser': 20.3.20(@angular/animations@20.3.20)(@angular/common@20.3.20)(@angular/core@20.3.20)
-      '@angular/service-worker': 20.3.20(@angular/core@20.3.20)(rxjs@7.8.2)
+      '@angular/service-worker': 20.3.22(@angular/core@20.3.20)(rxjs@7.8.2)
       lmdb: 3.4.2
       postcss: 8.5.14
     transitivePeerDependencies:
@@ -5820,7 +5821,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@angular/service-worker@20.3.20(@angular/core@20.3.20)(rxjs@7.8.2)':
+  '@angular/service-worker@20.3.22(@angular/core@20.3.20)(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 20.3.20(@angular/compiler@20.3.20)(rxjs@7.8.2)(zone.js@0.15.1)
       rxjs: 7.8.2
@@ -10628,7 +10629,7 @@ snapshots:
       '@jest/schemas': 30.4.1
       ansi-styles: 5.2.0
       react-is-18: react-is@18.3.1
-      react-is-19: react-is@19.2.6
+      react-is-19: react-is@19.2.7
 
   proc-log@5.0.0: {}
 
@@ -10690,7 +10691,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-is@19.2.6: {}
+  react-is@19.2.7: {}
 
   readable-stream@2.3.8:
     dependencies:
