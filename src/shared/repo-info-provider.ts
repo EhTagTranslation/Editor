@@ -1,4 +1,4 @@
-import simpleGit, { type Options } from 'simple-git';
+import { simpleGit, type Options } from 'simple-git';
 import type { RepoInfo, Sha1Value } from './interfaces/ehtag.js';
 import { gitEnvironment } from './git-environment.js';
 
@@ -10,7 +10,9 @@ export interface RepoInfoProvider {
 
 export class GitRepoInfoProvider implements RepoInfoProvider {
     constructor(readonly repoPath: string) {}
-    private readonly git = simpleGit({ baseDir: this.repoPath }).env(gitEnvironment());
+    private readonly git = simpleGit({ baseDir: this.repoPath, allowEnvironment: ['GIT_TERMINAL_PROMPT'] }).env(
+        gitEnvironment(),
+    );
     async head(): Promise<RepoInfo['head']> {
         const [commit] = await this.log({ '--max-count': '1' });
         if (!commit) throw new Error('Invalid git log');

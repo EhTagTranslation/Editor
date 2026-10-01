@@ -1,5 +1,5 @@
 import { action } from '../../utils.js';
-import SimpleGit from 'simple-git';
+import { simpleGit as SimpleGit } from 'simple-git';
 import { command } from './command.js';
 import { GitRepoInfoProvider } from '#shared/repo-info-provider';
 import { Sha1Value } from '#shared/interfaces/ehtag';

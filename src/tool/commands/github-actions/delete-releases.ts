@@ -1,5 +1,5 @@
 import path from 'path';
-import Git from 'simple-git';
+import { simpleGit as Git } from 'simple-git';
 import { Octokit } from '@octokit/rest';
 import { action } from '../../utils.js';
 import { command } from './command.js';

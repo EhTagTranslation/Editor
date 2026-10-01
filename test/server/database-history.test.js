@@ -2,7 +2,7 @@
 import { jest } from '@jest/globals';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 import { pathExists } from 'fs-extra/esm';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
@@ -228,7 +228,9 @@ describe('Git database synchronization and line history', () => {
                 service.onModuleInit.mockRestore();
                 const pull = service.pull.bind(service);
                 jest.spyOn(service, 'pull').mockImplementationOnce(async (force) => {
-                    await simpleGit(service.path).env(gitEnvironment()).remote(['set-url', 'origin', remote]);
+                    await simpleGit({ baseDir: service.path, allowEnvironment: ['GIT_TERMINAL_PROMPT'] })
+                        .env(gitEnvironment())
+                        .remote(['set-url', 'origin', remote]);
                     return pull(force);
                 });
                 await service.onModuleInit();

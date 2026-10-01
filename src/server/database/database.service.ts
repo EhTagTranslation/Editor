@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, type OnModuleInit } from '@nestjs/common
 import { ConfigService } from '@nestjs/config';
 import path from 'node:path';
 import { ensureDir, pathExists } from 'fs-extra/esm';
-import simpleGit, { type SimpleGit } from 'simple-git';
+import { simpleGit, type SimpleGit } from 'simple-git';
 import { Database } from '#shared/database';
 import type { NamespaceDatabase } from '#shared/namespace-database';
 import { NamespaceName, type Commit } from '#shared/interfaces/ehtag';
@@ -34,7 +34,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
     async onModuleInit(): Promise<void> {
         await ensureDir(this.path);
-        this.git = simpleGit({ baseDir: this.path }).env(gitEnvironment());
+        this.git = simpleGit({ baseDir: this.path, allowEnvironment: ['GIT_TERMINAL_PROMPT'] }).env(gitEnvironment());
         // 可直接接管旧版 API 同步留下的非空数据库目录。
         await this.git.init(['--initial-branch=master']);
         const remote = `https://github.com/${this.repo}.git`;
@@ -175,6 +175,16 @@ ${message.nv.stringify(newContext)}
                 // 凭据只传入子进程环境，不写入 remote URL 或磁盘配置。
                 const writer = simpleGit({
                     baseDir: this.path,
+                    allowEnvironment: [
+                        'GIT_TERMINAL_PROMPT',
+                        'GIT_CONFIG_COUNT',
+                        'GIT_CONFIG_KEY_0',
+                        'GIT_CONFIG_VALUE_0',
+                        'GIT_AUTHOR_NAME',
+                        'GIT_AUTHOR_EMAIL',
+                        'GIT_COMMITTER_NAME',
+                        'GIT_COMMITTER_EMAIL',
+                    ],
                     // 下方固定一个 extraheader，允许通过环境变量传递该配置。
                     unsafe: { allowUnsafeConfigEnvCount: true },
                 }).env({

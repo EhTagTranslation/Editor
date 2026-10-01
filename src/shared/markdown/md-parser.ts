@@ -1,5 +1,4 @@
-import MarkdownIt from 'markdown-it';
-import type Token from 'markdown-it/lib/token.mjs';
+import MarkdownIt, { type Token } from 'markdown-it';
 import type { FixedLengthArray } from 'type-fest';
 import { Context } from './context.js';
 import type { NamespaceName } from '../interfaces/ehtag.js';
@@ -523,8 +522,8 @@ class AstBuilder {
                 case 'link_open': {
                     const link: LinkNode = {
                         type: 'link',
-                        url: content.attrGet('href') ?? '',
-                        title: content.attrGet('title') ?? '',
+                        url: String(content.attrGet('href') ?? ''),
+                        title: String(content.attrGet('title') ?? ''),
                         content: [],
                     };
                     start = this.buildInlineTokens(tokens, start + 1, link, content.level + 1);
@@ -589,8 +588,8 @@ class AstBuilder {
             const node: ImageNode = {
                 type: 'image',
                 content: [],
-                url: token.attrGet('src') ?? '',
-                title: token.attrGet('title') ?? '',
+                url: String(token.attrGet('src') ?? ''),
+                title: String(token.attrGet('title') ?? ''),
                 nsfw: false,
             };
             this.buildInline(token, node);

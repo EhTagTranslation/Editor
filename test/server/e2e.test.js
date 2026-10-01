@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 import { AppModule } from '#server/app/app.module';
 import { DatabaseService } from '#server/database/database.service';
 import { setupSwagger, enableCors, enableCompression } from '#server/setup';
