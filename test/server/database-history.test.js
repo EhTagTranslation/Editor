@@ -68,6 +68,7 @@ describe('Git database synchronization and line history', () => {
             return pull(force);
         });
         await service.onModuleInit();
+        await service.blame('female', raw);
         jest.spyOn(service, 'onModuleInit').mockResolvedValue(undefined);
         jest.spyOn(service.logger, 'error').mockImplementation(() => undefined);
 
@@ -100,6 +101,62 @@ describe('Git database synchronization and line history', () => {
         expect(service.data.data.female.has(raw)).toBe(true);
         expect(await service.pull()).toBeUndefined();
         expect(await readFile(path.join(service.path, '.info'), 'utf8')).toBe('{}');
+    });
+
+    it('serves the latest database while initial full-history fetching is still pending', async () => {
+        const changed = await upstreamCommit(header + row.replace('描述', '更新描述'), '修改标签');
+        const migrating = new DatabaseService(
+            new ConfigService({ DB_PATH: path.join(root, 'migrating'), DB_REPO: 'fixture/database' }),
+            {},
+        );
+        jest.spyOn(migrating.logger, 'error').mockImplementation(() => undefined);
+        let release;
+        let started;
+        const blocked = new Promise((resolve) => {
+            release = resolve;
+        });
+        const fetching = new Promise((resolve) => {
+            started = resolve;
+        });
+        const pull = migrating.pull.bind(migrating);
+        jest.spyOn(migrating, 'pull').mockImplementationOnce(async (force) => {
+            await migrating.git.remote(['set-url', 'origin', remote]);
+            const fetch = migrating.git.fetch.bind(migrating.git);
+            jest.spyOn(migrating.git, 'fetch').mockImplementation(async (...args) => {
+                if (args[2]?.includes('--unshallow')) {
+                    started();
+                    await blocked;
+                }
+                return fetch(...args);
+            });
+            return pull(force);
+        });
+        let historyApp;
+        try {
+            await migrating.onModuleInit();
+            await fetching;
+            expect(await pathExists(path.join(migrating.path, '.git', 'shallow'))).toBe(true);
+            jest.spyOn(migrating, 'onModuleInit').mockResolvedValue(undefined);
+            const fixture = await Test.createTestingModule({
+                controllers: [DatabaseController],
+                providers: [{ provide: DatabaseService, useValue: migrating }, EtagInterceptor],
+            }).compile();
+            historyApp = fixture.createNestApplication(new FastifyAdapter());
+            await historyApp.init();
+            await historyApp.getHttpAdapter().getInstance().ready();
+            await supertest(historyApp.getHttpServer()).head('/database').expect(200);
+            const response = await supertest(historyApp.getHttpServer()).get('/database').expect(200);
+            expect(response.body.head.sha).toBe(changed);
+            await supertest(historyApp.getHttpServer()).get('/database/female/test.tag').expect(200);
+            release();
+            const history = await migrating.blame('female', raw);
+            expect(history.map((entry) => entry.sha)).toEqual([changed, initial]);
+            expect(await pathExists(path.join(migrating.path, '.git', 'shallow'))).toBe(false);
+        } finally {
+            release();
+            await migrating._repoActing;
+            await historyApp?.close();
+        }
     });
 
     it('tracks only the target line across moved rows, preserving authors, dates and notes', async () => {
@@ -137,8 +194,20 @@ describe('Git database synchronization and line history', () => {
         const shallow = path.join(service.path, '.git', 'shallow');
         expect(await pathExists(shallow)).toBe(true);
         await service.pull();
-        expect(await pathExists(shallow)).toBe(false);
+        expect(await pathExists(shallow)).toBe(true);
         expect((await service.blame('female', raw)).map((entry) => entry.sha)).toEqual([changed, initial]);
+        expect(await pathExists(shallow)).toBe(false);
+    });
+
+    it('retries failed history fetching without returning truncated history or breaking reads', async () => {
+        const changed = await upstreamCommit(header + row.replace('描述', '更新描述'), '修改标签');
+        await simpleGit(service.path).fetch('origin', 'master', ['--depth=1']);
+        await service.pull();
+        const fetch = jest.spyOn(service.git, 'fetch').mockRejectedValueOnce(new Error('history fetch failed'));
+        await expect(service.blame('female', raw)).rejects.toThrow('history fetch failed');
+        await supertest(app.getHttpServer()).get('/database/female/test.tag').expect(200);
+        expect((await service.blame('female', raw)).map((entry) => entry.sha)).toEqual([changed, initial]);
+        expect(fetch).toHaveBeenCalledTimes(2);
     });
 
     function changeTag(db) {

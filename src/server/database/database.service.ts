@@ -47,6 +47,8 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
             head: () => this.head,
             repo: () => `https://github.com/${this.repo}.git`,
         });
+        // 完整历史可能需要较长时间，不能阻塞 HTTP 服务启动。
+        void this.schedule(async () => this.ensureHistory()).catch(() => undefined);
     }
 
     private _repoActing: Promise<unknown> = Promise.resolve();
@@ -69,8 +71,9 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     }
 
     private async sync(force = false): Promise<string[] | undefined> {
-        const shallow = await pathExists(path.join(this.path, '.git', 'shallow'));
-        await this.git.fetch('origin', 'master', ['--no-tags', ...(shallow ? ['--unshallow'] : [])]);
+        const branches = await this.git.branch(['--remotes']);
+        const initial = !branches.all.includes('origin/master');
+        await this.git.fetch('origin', 'master', ['--no-tags', ...(initial ? ['--depth=1'] : [])]);
         const sha = (await this.git.revparse(['origin/master'])).trim();
         if (!force && this.head?.sha === sha) return undefined;
         const files =
@@ -98,12 +101,21 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         return files;
     }
 
+    private async ensureHistory(): Promise<void> {
+        if (!(await pathExists(path.join(this.path, '.git', 'shallow')))) return;
+        this.logger.log('Fetching complete database history in the background');
+        await this.git.fetch('origin', 'master', ['--no-tags', '--unshallow']);
+        this.logger.log('Complete database history is ready');
+    }
+
     /** 查询当前条目的完整行历史，不包含其他条目的修改。 */
     async blame(namespace: NamespaceName, raw: RawTag): Promise<Commit[]> {
         return this.schedule(async () => {
             for (const [key, { line }] of this.data.data[namespace].raw()) {
                 if (key !== raw) continue;
                 if (line == null) throw new Error('条目尚未保存，无法查询编辑日志');
+                // 后台拉取失败后允许重试，不能把浅仓库的截断历史当作完整结果。
+                await this.ensureHistory();
                 return new GitRepoInfoProvider(this.path).log({
                     [this.head.sha]: null,
                     [`-L${line},${line}:database/${namespace}.md`]: null,
