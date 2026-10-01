@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+
+  mat-card-subtitle {
+    margin: 0;
+    user-select: none;
+  }
+}
+
+.history-entry {
+  margin-top: 16px;
+  overflow-wrap: anywhere;
+
+  .history-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-bottom: 4px;
+  }
+
+  details {
+    margin-top: 8px;
+
+    summary {
+      cursor: pointer;
+    }
+  }
+
+  .history-body {
+    margin-top: 8px;
+    white-space: pre-wrap;
+  }
+}

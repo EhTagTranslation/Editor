@@ -12,6 +12,7 @@ import { Context } from './markdown/index.js';
 interface TagLine {
     raw?: RawTag;
     record: TagRecord;
+    /** 文件中的行号，从 1 开始；新增条目在保存成功后获得行号。 */
     line?: number;
 }
 
@@ -160,7 +161,10 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         lineno += this.countLines(this.prefix) + 1;
 
         const context = new Context(this);
-        for (const { raw, record } of this.rawData) {
+        const lines = new Map<TagLine, number>();
+        for (const tagLine of this.rawData) {
+            const { raw, record } = tagLine;
+            lines.set(tagLine, lineno);
             context.raw = raw;
             context.line = lineno;
             write(record.stringify(context));
@@ -177,6 +181,9 @@ export class NamespaceDatabase implements NamespaceDatabaseView {
         // 一次性写入，防止写一半爆炸导致数据丢失
         const buffer = Buffer.from(content, 'utf-8');
         await writeFile(this.file, buffer);
+        for (const [tagLine, line] of lines) {
+            tagLine.line = line;
+        }
         return buffer;
     }
 

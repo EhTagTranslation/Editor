@@ -275,6 +275,9 @@
         <mat-card-content class="md-container eh-links" [innerHtml]="(rendered | async)?.links | mark: '' : true">
         </mat-card-content>
       </mat-card>
+      @if (!(create | async)) {
+        <app-tag-history [namespace]="original.namespace | async" [raw]="original.raw | async"></app-tag-history>
+      }
     </div>
   </section>
   <footer>

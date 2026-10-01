@@ -1,8 +1,8 @@
 import type * as Ast from './ehtag.ast.js';
-import type { Opaque } from 'type-fest';
+import type { Tagged } from 'type-fest';
 
 /** 表示一个 SHA1 字符串，用来记录 Git 版本 */
-export type Sha1Value = Opaque<string, Commit>;
+export type Sha1Value = Tagged<string, 'Commit'>;
 export const Sha1Value = Object.freeze(
     Object.assign(
         (value: string): Sha1Value | undefined => {

@@ -37,6 +37,8 @@ EOF
 
 FROM base AS production
 
+RUN apk add --no-cache git
+
 COPY --from=builder /app /app
 
 ENTRYPOINT [ "node", "main.js" ]

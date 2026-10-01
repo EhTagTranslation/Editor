@@ -34,7 +34,14 @@ import { Context } from '#shared/markdown/index';
 import { InjectableBase } from '../injectable-base.js';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
 import { EtagInterceptor } from '../app/etag.interceptor.js';
-import { RepoInfoDto, TagDto, TagResponseDto, LooseTagDto, NamespaceInfoDto } from '../dtos/repo-info.dto.js';
+import {
+    CommitDto,
+    RepoInfoDto,
+    TagDto,
+    TagResponseDto,
+    LooseTagDto,
+    NamespaceInfoDto,
+} from '../dtos/repo-info.dto.js';
 import { Format } from '../decorators/format.decorator.js';
 import type { UserInfo } from '../octokit/octokit.service.js';
 import { User } from '../decorators/user.decorator.js';
@@ -114,6 +121,18 @@ export class DatabaseController extends InjectableBase {
         const rec = dic.get(p.raw);
         if (!rec) throw new NotFoundException();
         return rec.render(format, new Context(rec, p.raw));
+    }
+
+    @Get(':namespace/:raw/blame')
+    @ApiOperation({
+        summary: '查询某一条目的编辑日志',
+        description: '使用 git log -L 追溯条目，按从新到旧的顺序返回提交。',
+    })
+    @ApiIfNoneMatchHeader()
+    @ApiNotFoundResponse({ description: '条目不存在' })
+    @ApiOkResponse({ type: CommitDto, isArray: true })
+    async getBlame(@Param() p: TagParams): Promise<CommitDto[]> {
+        return this.service.blame(p.namespace, p.raw);
     }
 
     @Post(':namespace/:raw')

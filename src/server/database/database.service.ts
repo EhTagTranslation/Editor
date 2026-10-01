@@ -1,28 +1,20 @@
-import { Injectable, type OnModuleInit } from '@nestjs/common';
+import { Injectable, NotFoundException, type OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { Octokit } from '@octokit/rest';
-import type { AsyncReturnType } from 'type-fest';
 import path from 'node:path';
-import { writeFile } from 'node:fs/promises';
-import { readJSONSync, writeJSONSync, ensureDir, pathExists, remove } from 'fs-extra/esm';
+import { ensureDir, pathExists } from 'fs-extra/esm';
+import simpleGit, { type SimpleGit } from 'simple-git';
 import { Database } from '#shared/database';
 import type { NamespaceDatabase } from '#shared/namespace-database';
-import { type Sha1Value, NamespaceName, type Commit } from '#shared/interfaces/ehtag';
+import { NamespaceName, type Commit } from '#shared/interfaces/ehtag';
 import type { TagRecord } from '#shared/tag-record';
 import type { RawTag } from '#shared/raw-tag';
 import { Context } from '#shared/markdown/index';
+import { GitRepoInfoProvider } from '#shared/repo-info-provider';
 import { InjectableBase } from '../injectable-base.js';
 import { OctokitService, type UserInfo } from '../octokit/octokit.service.js';
 
-type User = AsyncReturnType<Octokit['users']['getByUsername']>['data'];
-
-function userEmail(user: User): string {
+function userEmail(user: Pick<UserInfo, 'id' | 'login'>): string {
     return `${Number(user.id)}+${String(user.login)}@users.noreply.github.com`;
-}
-
-interface RepoInfo {
-    head: Commit;
-    blob: Record<string, Sha1Value | undefined>;
 }
 
 @Injectable()
@@ -34,44 +26,25 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         super();
         this.path = path.resolve(this.config.get('DB_PATH', './db'));
         this.repo = this.config.get('DB_REPO', '/');
-        this.infoFile = path.join(this.path, '.info');
     }
 
-    private readonly infoFile: string;
-    private _info?: RepoInfo;
-    private get info(): RepoInfo {
-        this._info ??= readJSONSync(this.infoFile) as RepoInfo;
-        return this._info;
-    }
-    private set info(value: RepoInfo) {
-        this._info = value;
-        writeJSONSync(this.infoFile, value);
-    }
+    private git!: SimpleGit;
+    private head!: Commit;
 
     async onModuleInit(): Promise<void> {
         await ensureDir(this.path);
-        if (!(await pathExists(this.infoFile))) {
-            this.info = {
-                head: {
-                    sha: '' as Sha1Value,
-                    message: '',
-                    author: {
-                        name: 'author',
-                        email: 'author@example.com',
-                        when: new Date(0),
-                    },
-                    committer: {
-                        name: 'committer',
-                        email: 'committer@example.com',
-                        when: new Date(0),
-                    },
-                },
-                blob: {},
-            };
+        this.git = simpleGit({ baseDir: this.path });
+        // 可直接接管旧版 API 同步留下的非空数据库目录。
+        await this.git.init(['--initial-branch=master']);
+        const remote = `https://github.com/${this.repo}.git`;
+        if ((await this.git.getRemotes()).some((value) => value.name === 'origin')) {
+            await this.git.remote(['set-url', 'origin', remote]);
+        } else {
+            await this.git.addRemote('origin', remote);
         }
         await this.pull(true);
         this.data = await Database.create(this.path, {
-            head: () => this.info.head,
+            head: () => this.head,
             repo: () => `https://github.com/${this.repo}.git`,
         });
     }
@@ -92,57 +65,52 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
     /** 拉取最新的数据库 */
     async pull(force = false): Promise<string[] | undefined> {
-        return this.schedule(async () => {
-            const oldInfo = this.info;
-            const headCommit = await this.octokit.getHead();
-            const blob: RepoInfo['blob'] = { ...oldInfo.blob };
-            if (!force && oldInfo.head.sha === headCommit.sha) {
-                this.logger.verbose(`Up to date. Sha: ${headCommit.sha}`);
-                return undefined;
-            }
+        return this.schedule(async () => this.sync(force));
+    }
 
-            const pullFile = async (filename: string, removed = false): Promise<string> => {
-                const filePath = path.join(this.path, filename);
-                if (removed) {
-                    await remove(filePath);
-                    blob[filename] = undefined;
-                } else {
-                    const file = await this.octokit.getFile(filename);
-                    await ensureDir(path.dirname(filePath));
-                    await writeFile(filePath, file.content);
-                    if (this.data && file.path.startsWith('database/')) {
-                        const ns = /^database\/(.+)\.md$/.exec(file.path)?.[1] as NamespaceName;
-                        if (NamespaceName.includes(ns)) {
-                            await this.data.data[ns].load();
-                            this.data.revision++;
-                        }
-                    }
-                    blob[filename] = undefined;
-                    filename = file.path;
-                    blob[filename] = file.sha;
-                }
-                return filename;
-            };
-
-            let updatedFiles: string[];
-            if (force || oldInfo.head.sha.length !== 40) {
-                updatedFiles = await Promise.all(
-                    ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)].map(async (f) => pullFile(f)),
-                );
-                this.logger.verbose(`Reconstruction of database. Updated files: ${updatedFiles.join(', ')}`);
+    private async sync(force = false): Promise<string[] | undefined> {
+        const shallow = await pathExists(path.join(this.path, '.git', 'shallow'));
+        await this.git.fetch('origin', 'master', ['--no-tags', ...(shallow ? ['--unshallow'] : [])]);
+        const sha = (await this.git.revparse(['origin/master'])).trim();
+        if (!force && this.head?.sha === sha) return undefined;
+        const files =
+            !force && this.head
+                ? (await this.git.diff(['--name-only', this.head.sha, sha])).trim().split('\n').filter(Boolean)
+                : ['version', ...NamespaceName.map((ns) => `database/${ns}.md`)];
+        await this.git.reset(['--hard', sha]);
+        if (this.data) {
+            if (files.includes('version')) {
+                this.data = await Database.create(this.path, {
+                    head: () => this.head,
+                    repo: () => `https://github.com/${this.repo}.git`,
+                });
             } else {
-                const comparison = await this.octokit.compare(this.info.head.sha, headCommit.sha);
-                if (comparison.files && comparison.files.length > 0) {
-                    updatedFiles = await Promise.all(
-                        comparison.files.map(async (f) => pullFile(f.filename, f.status === 'removed')),
-                    );
-                } else {
-                    updatedFiles = [];
-                }
-                this.logger.verbose(`Update database. Updated files: ${updatedFiles.join(', ')}`);
+                await Promise.all(
+                    NamespaceName.filter((ns) => files.includes(`database/${ns}.md`)).map(async (ns) => {
+                        await this.data.data[ns].load();
+                    }),
+                );
+                this.data.revision++;
             }
-            this.info = { head: headCommit, blob };
-            return updatedFiles;
+        }
+        this.head = await new GitRepoInfoProvider(this.path).head();
+        this.logger.verbose(`Update database. Sha: ${sha}. Updated files: ${files.join(', ')}`);
+        return files;
+    }
+
+    /** 查询当前条目的完整行历史，不包含其他条目的修改。 */
+    async blame(namespace: NamespaceName, raw: RawTag): Promise<Commit[]> {
+        return this.schedule(async () => {
+            for (const [key, { line }] of this.data.data[namespace].raw()) {
+                if (key !== raw) continue;
+                if (line == null) throw new Error('条目尚未保存，无法查询编辑日志');
+                return new GitRepoInfoProvider(this.path).log({
+                    [this.head.sha]: null,
+                    [`-L${line},${line}:database/${namespace}.md`]: null,
+                    '--no-patch': null,
+                });
+            }
+            throw new NotFoundException('条目不存在');
         });
     }
 
@@ -159,43 +127,67 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     ): Promise<void> {
         return this.schedule(async () => {
             const nsDb = this.data.data[ns];
-            const message = action(nsDb);
-            const content = await nsDb.save();
-            let msg: string;
-            const oldContext = new Context((message.ov ?? message.nv)!, message.ok);
-            const newContext = new Context((message.nv ?? message.ov)!, message.nk);
-            if (message.ov && message.nv) {
-                msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
+            const oldHead = this.head;
+            try {
+                const message = action(nsDb);
+                await nsDb.save();
+                let msg: string;
+                const oldContext = new Context((message.ov ?? message.nv)!, message.ok);
+                const newContext = new Context((message.nv ?? message.ov)!, message.nk);
+                if (message.ov && message.nv) {
+                    msg = `修改 ${ns}:${message.nk ?? message.ok ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
 |        | 原始标签 | 名称 | 描述 | 外部链接 |
 | ------ | -------- | ---- | ---- | -------- |
 | 修改前 ${message.ov.stringify(oldContext)}
 | 修改后 ${message.nv.stringify(newContext)}
             `;
-            } else if (message.ov) {
-                msg = `删除 ${ns}:${message.ok ?? '(注释)'} - ${message.ov.name.render('text', oldContext)}
+                } else if (message.ov) {
+                    msg = `删除 ${ns}:${message.ok ?? '(注释)'} - ${message.ov.name.render('text', oldContext)}
 | 原始标签 | 名称 | 描述 | 外部链接 |
 | -------- | ---- | ---- | -------- |
 ${message.ov.stringify(oldContext)}
 `;
-            } else if (message.nv) {
-                msg = `添加 ${ns}:${message.nk ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
+                } else if (message.nv) {
+                    msg = `添加 ${ns}:${message.nk ?? '(注释)'} - ${message.nv.name.render('text', newContext)}
 | 原始标签 | 名称 | 描述 | 外部链接 |
 | -------- | ---- | ---- | -------- |
 ${message.nv.stringify(newContext)}
 `;
-            } else {
-                throw new Error('Invalid message');
+                } else {
+                    throw new Error('Invalid message');
+                }
+                const file = `database/${ns}.md`;
+                const bot = await this.octokit.botUserInfo();
+                const token = await this.octokit.getAppToken();
+                const { GIT_PAGER: _gitPager, PAGER: _pager, ...gitEnv } = process.env;
+                // 凭据只传入子进程环境，不写入 remote URL 或磁盘配置。
+                const writer = simpleGit({
+                    baseDir: this.path,
+                    // 下方固定一个 extraheader，允许通过环境变量传递该配置。
+                    unsafe: { allowUnsafeConfigEnvCount: true },
+                }).env({
+                    ...gitEnv,
+                    GIT_TERMINAL_PROMPT: '0',
+                    GIT_CONFIG_COUNT: '1',
+                    GIT_CONFIG_KEY_0: 'http.https://github.com/.extraheader',
+                    GIT_CONFIG_VALUE_0: `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}`,
+                    GIT_AUTHOR_NAME: String(user.login),
+                    GIT_AUTHOR_EMAIL: userEmail(user),
+                    GIT_COMMITTER_NAME: String(bot.login),
+                    GIT_COMMITTER_EMAIL: userEmail(bot),
+                });
+                await writer.add(file);
+                await writer.commit(msg, { '--no-gpg-sign': null });
+                const head = await new GitRepoInfoProvider(this.path).head();
+                await writer.push('origin', 'HEAD:master');
+                this.head = head;
+            } catch (error) {
+                // 保存或推送失败时恢复本地文件和内存，避免留下未提交的修改。
+                await this.git.reset(['--hard', oldHead.sha]);
+                await nsDb.load();
+                this.data.revision++;
+                throw error;
             }
-            const file = `database/${ns}.md`;
-            const blob = { ...this.info.blob };
-            const sha = blob[file];
-            if (!sha) throw new Error(`Unknown blob sha of ${file}`);
-            const result = await this.octokit.updateFile(file, sha, content, msg, {
-                name: String(user.login),
-                email: userEmail(user),
-            });
-            blob[file] = result.file.sha;
-            this.info = { head: result.commit, blob };
         });
     }
     readonly path: string;

@@ -6,29 +6,10 @@ import { Octokit } from '@octokit/rest';
 import { createAppAuth, type StrategyOptions } from '@octokit/auth-app';
 import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
 import { InjectableBase } from '../injectable-base.js';
-import type { Sha1Value, Commit, Signature } from '#shared/interfaces/ehtag';
 
 export type AppInfo = NonNullable<Readonly<AsyncReturnType<Octokit['apps']['getAuthenticated']>['data']>>;
 export type UserInfo = Readonly<AsyncReturnType<Octokit['users']['getByUsername']>['data']>;
 
-export interface Author {
-    name: string;
-    email: string;
-}
-
-export interface File {
-    path: string;
-    content: Buffer;
-    sha: Sha1Value;
-}
-
-function makeSignature({ name, email, date }: { name?: string; email?: string; date?: string } = {}): Signature {
-    return {
-        name: name ?? '',
-        email: email ?? '',
-        when: date ? new Date(date) : new Date(0),
-    };
-}
 type ApiData<T1 extends keyof Octokit, T2 extends keyof Octokit[T1]> = Octokit[T1][T2] extends () => Promise<{
     data: infer U;
 }>
@@ -96,13 +77,6 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         clientSecret: this.EDITOR_CLIENT_SECRET,
     });
 
-    private _forRepo?: Octokit;
-    async forRepo(): Promise<Octokit> {
-        await this.getAppToken();
-        if (this._forRepo) return this._forRepo;
-        throw new Error('Failed to get app token');
-    }
-
     private appToken?: Promise<ApiData<'apps', 'createInstallationAccessToken'>>;
     async getAppToken(): Promise<string> {
         const currentQuery = await this.appToken;
@@ -113,12 +87,7 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
         const tokenReq = this.forApp.apps.createInstallationAccessToken({
             installation_id: this.APP_INSTALLATION_ID,
         });
-        this.appToken = tokenReq.then((token) => {
-            this._forRepo = this.createOctokit({
-                auth: token.data.token,
-            });
-            return token.data;
-        });
+        this.appToken = tokenReq.then((token) => token.data);
         return (await this.appToken).token;
     }
     forUser(userToken: string): Octokit {
@@ -149,104 +118,5 @@ export class OctokitService extends InjectableBase implements OnModuleInit {
 
     async botUserInfo(): Promise<UserInfo> {
         return this._botUserInfo;
-    }
-
-    async getFile(path: string): Promise<File> {
-        const api = await this.forRepo();
-        const res = await api.repos.getContent({
-            owner: this.owner,
-            repo: this.repo,
-            path,
-        });
-        const { data } = res;
-        if (Array.isArray(data) || data.type !== 'file' || !('encoding' in data)) {
-            throw new Error(`${path} is not a file.`);
-        }
-        let content;
-        if (data.encoding === 'none' && !data.content) {
-            // large file, use raw media type
-            const res = await api.repos.getContent({
-                owner: this.owner,
-                repo: this.repo,
-                path: path,
-                headers: { accept: 'application/vnd.github.raw+json' },
-            });
-            content = Buffer.from(res.data as unknown as string);
-        } else if (data.encoding === 'base64') {
-            content = Buffer.from(data.content, 'base64');
-        } else {
-            throw new Error(`Unsupported encoding ${data.encoding}.`);
-        }
-        if (content.length !== data.size) {
-            throw new Error(`File size mismatch: ${content.length} !== ${data.size}`);
-        }
-        return {
-            path: data.path,
-            content,
-            sha: data.sha as Sha1Value,
-        };
-    }
-
-    async updateFile(
-        path: string,
-        oldSha: Sha1Value,
-        content: Buffer,
-        message: string,
-        author: Author,
-    ): Promise<{ file: File; commit: Commit }> {
-        const res = await (
-            await this.forRepo()
-        ).repos.createOrUpdateFileContents({
-            owner: this.owner,
-            repo: this.repo,
-            path,
-            message,
-            content: content.toString('base64'),
-            sha: oldSha,
-            author,
-        });
-        const { data } = res;
-        return {
-            file: {
-                path: data.content?.path ?? path,
-                content,
-                sha: data.content?.sha as Sha1Value,
-            },
-            commit: {
-                message: data.commit.message ?? '',
-                sha: data.commit.sha as Sha1Value,
-                author: makeSignature(data.commit.author),
-                committer: makeSignature(data.commit.committer),
-            },
-        };
-    }
-
-    async getHead(): Promise<Commit> {
-        const res = await (
-            await this.forRepo()
-        ).repos.getBranch({
-            owner: this.owner,
-            repo: this.repo,
-            branch: 'master',
-        });
-        const { commit } = res.data;
-        return {
-            sha: commit.sha as Sha1Value,
-            message: commit.commit.message,
-            author: makeSignature({ ...commit.commit.author }),
-            committer: makeSignature({ ...commit.commit.committer }),
-        };
-    }
-
-    async compare(base: Sha1Value, head: Sha1Value): Promise<ApiData<'repos', 'compareCommits'>> {
-        const res = await (
-            await this.forRepo()
-        ).repos.compareCommits({
-            owner: this.owner,
-            repo: this.repo,
-            base,
-            head,
-        });
-        return res.data;
     }
 }

@@ -1,0 +1,43 @@
+<mat-card>
+  <div class="history-header">
+    <mat-card-subtitle>编辑日志</mat-card-subtitle>
+    @switch (state) {
+      @case ('idle') {
+        <button mat-button (click)="load()">加载</button>
+      }
+      @case ('loading') {
+        <mat-spinner diameter="24" aria-label="正在加载编辑日志"></mat-spinner>
+      }
+      @case ('error') {
+        <button mat-button (click)="load()">重试</button>
+      }
+    }
+  </div>
+  @if (state === 'error') {
+    <mat-card-content role="alert">编辑日志加载失败，请重试。</mat-card-content>
+  } @else if (state === 'success') {
+    <mat-card-content>
+      @for (entry of entries; track entry.sha) {
+        <article class="history-entry">
+          <div class="history-meta">
+            @if (entry.authorUrl) {
+              <a [href]="entry.authorUrl" target="_blank" rel="noopener noreferrer">{{ entry.authorName }}</a>
+            } @else {
+              <span [matTooltip]="entry.author.email">{{ entry.authorName }}</span>
+            }
+            <time [attr.datetime]="entry.author.when">{{ entry.author.when | date: 'yyyy-MM-dd HH:mm' }}</time>
+          </div>
+          <a [href]="entry.commitUrl" target="_blank" rel="noopener noreferrer">{{ entry.subject }}</a>
+          @if (entry.body) {
+            <details>
+              <summary>提交备注</summary>
+              <div class="history-body">{{ entry.body }}</div>
+            </details>
+          }
+        </article>
+      } @empty {
+        <span>暂无编辑日志。</span>
+      }
+    </mat-card-content>
+  }
+</mat-card>

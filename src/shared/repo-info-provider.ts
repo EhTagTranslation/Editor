@@ -1,4 +1,4 @@
-import simpleGit from 'simple-git';
+import simpleGit, { type Options } from 'simple-git';
 import type { RepoInfo, Sha1Value } from './interfaces/ehtag.js';
 
 export interface RepoInfoProvider {
@@ -11,10 +11,15 @@ export class GitRepoInfoProvider implements RepoInfoProvider {
     constructor(readonly repoPath: string) {}
     private readonly git = simpleGit({ baseDir: this.repoPath });
     async head(): Promise<RepoInfo['head']> {
-        if (!this.git) throw new Error('This is not a git repo');
-        const commit = (
+        const [commit] = await this.log({ '--max-count': '1' });
+        if (!commit) throw new Error('Invalid git log');
+        return commit;
+    }
+
+    async log(options: Options): Promise<Array<RepoInfo['head']>> {
+        const commits = (
             await this.git.log({
-                '--max-count': '1',
+                ...options,
                 format: {
                     sha: '%H',
                     message: '%B',
@@ -26,9 +31,8 @@ export class GitRepoInfoProvider implements RepoInfoProvider {
                     'committer.when': '%cI',
                 },
             })
-        ).latest;
-        if (!commit) throw new Error('Invalid git log');
-        return {
+        ).all;
+        return commits.map((commit) => ({
             sha: commit.sha as Sha1Value,
             message: commit.message,
             author: {
@@ -41,7 +45,7 @@ export class GitRepoInfoProvider implements RepoInfoProvider {
                 email: commit['committer.email'],
                 when: new Date(commit['committer.when']),
             },
-        };
+        }));
     }
 
     async repo(): Promise<RepoInfo['repo']> {

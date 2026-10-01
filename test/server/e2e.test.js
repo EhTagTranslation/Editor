@@ -4,7 +4,9 @@ import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { HttpStatus } from '@nestjs/common';
+import simpleGit from 'simple-git';
 import { AppModule } from '#server/app/app.module';
+import { DatabaseService } from '#server/database/database.service';
 import { setupSwagger, enableCors, enableCompression } from '#server/setup';
 
 jest.setTimeout(30_000);
@@ -12,6 +14,10 @@ jest.setTimeout(30_000);
 describe('AppController (e2e)', () => {
     /** @type {import('@nestjs/platform-fastify').NestFastifyApplication} */
     let app;
+    /** @type {DatabaseService} */
+    let database;
+    /** @type {import('type-fest').Jsonify<import('#shared/interfaces/ehtag').RepoInfo>} */
+    let databaseInfo;
 
     beforeAll(async () => {
         const moduleFixture = await Test.createTestingModule({
@@ -26,10 +32,13 @@ describe('AppController (e2e)', () => {
 
         const adapter = /** @type {FastifyAdapter} */ app.getHttpAdapter();
         await adapter.getInstance().ready();
-    });
+        database = app.get(DatabaseService);
+        const response = await supertest(app.getHttpServer()).get('/database').expect(HttpStatus.OK);
+        databaseInfo = response.body;
+    }, 180_000);
 
     afterAll(async () => {
-        await app.close();
+        await app?.close();
     });
 
     it('HEAD /database', async () => {
@@ -162,6 +171,95 @@ describe('AppController (e2e)', () => {
                 html: '<p><a href="https://github.com/EhTagTranslation/Database/blob/master/database/female.md">数据库页面</a></p>',
                 //  ast: [],
             },
+        });
+    });
+
+    describe('GET /database/:namespace/:raw/blame', () => {
+        it('returns complete line history with authors, dates and commit messages', async () => {
+            const response = await supertest(app.getHttpServer())
+                .get('/database/rows/female/blame')
+                .expect(HttpStatus.OK)
+                .expect('Content-Type', /json/)
+                .expect('ETag', `"${databaseInfo.head.sha}"`);
+            expect(response.body).toBeInstanceOf(Array);
+            expect(response.body.length).toBeGreaterThan(0);
+
+            // 用独立的 Git 正则行选择核对完整提交序列，而非调用服务的 blame 方法。
+            const git = simpleGit(database.path);
+            const history = await git.raw([
+                'log',
+                '--format=%H',
+                '--no-patch',
+                '-L/^[|][[:space:]]*female[[:space:]]*[|]/,+1:database/rows.md',
+                databaseInfo.head.sha,
+            ]);
+            expect(response.body.map((entry) => entry.sha)).toEqual(history.trim().split('\n'));
+            for (const entry of response.body) {
+                expect(entry).toMatchObject({
+                    sha: expect.stringMatching(/^[a-f0-9]{40}$/),
+                    message: expect.any(String),
+                    author: { name: expect.any(String), email: expect.any(String), when: expect.any(String) },
+                    committer: { name: expect.any(String), email: expect.any(String), when: expect.any(String) },
+                });
+                expect(new Date(entry.author.when).toISOString()).toBe(entry.author.when);
+                expect(new Date(entry.committer.when).toISOString()).toBe(entry.committer.when);
+            }
+
+            const latest = response.body[0];
+            const details = await git.raw([
+                'show',
+                '--no-patch',
+                '--format=%an%x00%ae%x00%aI%x00%cn%x00%ce%x00%cI%x00%B',
+                latest.sha,
+            ]);
+            const [author, authorEmail, authoredAt, committer, committerEmail, committedAt, message] =
+                details.split('\0');
+            expect(latest).toMatchObject({
+                author: { name: author, email: authorEmail, when: new Date(authoredAt).toISOString() },
+                committer: { name: committer, email: committerEmail, when: new Date(committedAt).toISOString() },
+            });
+            expect(latest.message.trim()).toBe(message.trim());
+        });
+
+        it('returns 304 without a body for a matching ETag', async () => {
+            const response = await supertest(app.getHttpServer())
+                .get('/database/rows/female/blame')
+                .set('If-None-Match', `"${databaseInfo.head.sha}"`)
+                .expect(HttpStatus.NOT_MODIFIED);
+            expect(response.text).toBe('');
+        });
+
+        it('returns history for a stale ETag', async () => {
+            const response = await supertest(app.getHttpServer())
+                .get('/database/rows/female/blame')
+                .set('If-None-Match', `"${'0'.repeat(40)}"`)
+                .expect(HttpStatus.OK);
+            expect(response.body.length).toBeGreaterThan(0);
+        });
+
+        it('accepts URL-encoded tags containing spaces', async () => {
+            const raw = Array.from(database.data.data.character.raw()).find(([tag]) => tag.includes(' '))?.[0];
+            if (!raw) throw new Error('数据库中没有包含空格的角色标签');
+            const response = await supertest(app.getHttpServer())
+                .get(`/database/character/${encodeURIComponent(raw)}/blame`)
+                .expect(HttpStatus.OK);
+            expect(response.body.length).toBeGreaterThan(0);
+        });
+
+        it.each([
+            ['/database/invalid/female/blame', 'namespace'],
+            ['/database/rows/invalid%2Ftag/blame', 'raw'],
+        ])('rejects invalid parameters: %s', async (url, field) => {
+            const response = await supertest(app.getHttpServer()).get(url).expect(HttpStatus.BAD_REQUEST);
+            expect(response.body.statusCode).toBe(HttpStatus.BAD_REQUEST);
+            expect(response.body.message).toEqual(expect.arrayContaining([expect.stringContaining(field)]));
+        });
+
+        it('returns 404 for a missing tag', async () => {
+            await supertest(app.getHttpServer())
+                .get('/database/rows/ehtt e2e nonexistent tag/blame')
+                .expect(HttpStatus.NOT_FOUND)
+                .expect('ETag', `"${databaseInfo.head.sha}"`);
         });
     });
 

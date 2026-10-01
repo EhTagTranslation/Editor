@@ -32,6 +32,7 @@ import { AppComponent } from './app.component';
 import { UserComponent } from './user/user.component';
 import { ListComponent } from './list/list.component';
 import { EditorComponent } from './editor/editor.component';
+import { TagHistoryComponent } from './editor/tag-history/tag-history.component';
 import { GithubCornerComponent } from './github-corner/github-corner.component';
 import { MarkPipe } from './shared/pipe/mark.pipe';
 import { MarkdownPipe } from './shared/pipe/markdown.pipe';
@@ -45,6 +46,7 @@ import { environment } from '../environments/environment';
         UserComponent,
         ListComponent,
         EditorComponent,
+        TagHistoryComponent,
         GithubCornerComponent,
         MarkPipe,
         MarkdownPipe,
