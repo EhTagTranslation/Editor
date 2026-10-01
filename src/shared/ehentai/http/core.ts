@@ -3,14 +3,14 @@ import { config as defaultConfig } from './config.js';
 
 const delay = async (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function requestImpl<T = unknown, R = AxiosResponse<T>>(
+async function requestImpl<T = unknown>(
     config: RawAxiosRequestConfig,
     retry: number,
     delayTime: number,
     errors: Error[],
-): Promise<R> {
+): Promise<AxiosResponse<T>> {
     try {
-        return await axios.request<T, R>(config);
+        return await axios.request<T>(config);
     } catch (err) {
         if (isAxiosError(err) && err.response != null && err.response.status < 500) {
             throw err;
@@ -24,11 +24,11 @@ async function requestImpl<T = unknown, R = AxiosResponse<T>>(
             );
         }
         await delay(delayTime);
-        return requestImpl<T, R>(config, retry, delayTime * 5, errors);
+        return requestImpl<T>(config, retry, delayTime * 5, errors);
     }
 }
 
-export async function request<T = unknown, R = AxiosResponse<T>>(config: RawAxiosRequestConfig, retry = 5): Promise<R> {
+export async function request<T = unknown>(config: RawAxiosRequestConfig, retry = 5): Promise<AxiosResponse<T>> {
     if (!config.url) throw new Error('url is required');
     const cfg = defaultConfig(config);
     return requestImpl(cfg, retry, 600, []);

@@ -10,7 +10,6 @@ import {
     NamespaceName,
     type Tag,
 } from '#shared/interfaces/ehtag';
-import type { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { SUPPORTED_REPO_VERSION } from '#shared/interfaces/database';
 
 export class SignatureDto implements Signature {
@@ -75,7 +74,7 @@ export class TagAndRawDto extends TagDto {
     raw!: string;
 }
 
-const Cell: SchemaObject[] = [
+const Cell = [
     {
         type: 'string',
         description: '原始文本',
