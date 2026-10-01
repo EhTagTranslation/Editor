@@ -15,6 +15,7 @@ import { EtagInterceptor } from '#server/app/etag.interceptor';
 import { NamespaceName } from '#shared/interfaces/ehtag';
 import { RawTag } from '#shared/raw-tag';
 import { TagRecord } from '#shared/tag-record';
+import { gitEnvironment } from '#shared/git-environment';
 
 jest.setTimeout(30_000);
 
@@ -216,6 +217,33 @@ describe('Git database synchronization and line history', () => {
         db.set(raw, next);
         return { ok: raw, ov: previous, nk: raw, nv: next };
     }
+
+    it.each(['', 'missing-interactive-program'])(
+        'ignores inherited askpass and pager variables during startup, edits and history (%j)',
+        async (value) => {
+            const keys = ['GIT_ASKPASS', 'SSH_ASKPASS', 'GIT_PAGER', 'PAGER'];
+            const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+            for (const key of keys) process.env[key] = value;
+            try {
+                service.onModuleInit.mockRestore();
+                const pull = service.pull.bind(service);
+                jest.spyOn(service, 'pull').mockImplementationOnce(async (force) => {
+                    await simpleGit(service.path).env(gitEnvironment()).remote(['set-url', 'origin', remote]);
+                    return pull(force);
+                });
+                await service.onModuleInit();
+                await service.apply({ id: 3, login: 'editor' }, 'female', changeTag);
+                const history = await service.blame('female', raw);
+                expect(history.map((entry) => entry.author.name)).toEqual(['editor', 'original-author']);
+                for (const key of keys) expect(process.env[key]).toBe(value);
+            } finally {
+                for (const key of keys) {
+                    if (previous[key] === undefined) delete process.env[key];
+                    else process.env[key] = previous[key];
+                }
+            }
+        },
+    );
 
     it('pushes edits with the user as author and App bot as committer', async () => {
         await service.apply({ id: 3, login: 'editor' }, 'female', changeTag);

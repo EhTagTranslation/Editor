@@ -175,12 +175,18 @@ describe('AppController (e2e)', () => {
     });
 
     describe('GET /database/:namespace/:raw/blame', () => {
-        it('returns complete line history with authors, dates and commit messages', async () => {
-            const response = await supertest(app.getHttpServer())
+        let response;
+
+        beforeAll(async () => {
+            // 冷启动需下载并解包约 200 MB 历史，单独留出准备时间。
+            response = await supertest(app.getHttpServer())
                 .get('/database/rows/female/blame')
                 .expect(HttpStatus.OK)
                 .expect('Content-Type', /json/)
                 .expect('ETag', `"${databaseInfo.head.sha}"`);
+        }, 600_000);
+
+        it('returns complete line history with authors, dates and commit messages', async () => {
             expect(response.body).toBeInstanceOf(Array);
             expect(response.body.length).toBeGreaterThan(0);
 
@@ -244,7 +250,7 @@ describe('AppController (e2e)', () => {
                 .get(`/database/character/${encodeURIComponent(raw)}/blame`)
                 .expect(HttpStatus.OK);
             expect(response.body.length).toBeGreaterThan(0);
-        });
+        }, 180_000);
 
         it.each([
             ['/database/invalid/female/blame', 'namespace'],

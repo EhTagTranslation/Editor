@@ -10,6 +10,7 @@ import type { TagRecord } from '#shared/tag-record';
 import type { RawTag } from '#shared/raw-tag';
 import { Context } from '#shared/markdown/index';
 import { GitRepoInfoProvider } from '#shared/repo-info-provider';
+import { gitEnvironment } from '#shared/git-environment';
 import { InjectableBase } from '../injectable-base.js';
 import { OctokitService, type UserInfo } from '../octokit/octokit.service.js';
 
@@ -33,7 +34,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
     async onModuleInit(): Promise<void> {
         await ensureDir(this.path);
-        this.git = simpleGit({ baseDir: this.path });
+        this.git = simpleGit({ baseDir: this.path }).env(gitEnvironment());
         // 可直接接管旧版 API 同步留下的非空数据库目录。
         await this.git.init(['--initial-branch=master']);
         const remote = `https://github.com/${this.repo}.git`;
@@ -171,15 +172,13 @@ ${message.nv.stringify(newContext)}
                 const file = `database/${ns}.md`;
                 const bot = await this.octokit.botUserInfo();
                 const token = await this.octokit.getAppToken();
-                const { GIT_PAGER: _gitPager, PAGER: _pager, ...gitEnv } = process.env;
                 // 凭据只传入子进程环境，不写入 remote URL 或磁盘配置。
                 const writer = simpleGit({
                     baseDir: this.path,
                     // 下方固定一个 extraheader，允许通过环境变量传递该配置。
                     unsafe: { allowUnsafeConfigEnvCount: true },
                 }).env({
-                    ...gitEnv,
-                    GIT_TERMINAL_PROMPT: '0',
+                    ...gitEnvironment(),
                     GIT_CONFIG_COUNT: '1',
                     GIT_CONFIG_KEY_0: 'http.https://github.com/.extraheader',
                     GIT_CONFIG_VALUE_0: `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}`,
