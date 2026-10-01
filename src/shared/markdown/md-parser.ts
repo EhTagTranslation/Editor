@@ -466,7 +466,7 @@ class AstBuilder {
 
     private build(): void {
         const tokens = md.parse(this.src, {});
-        for (let index = 0; index < tokens.length; ) {
+        for (let index = 0; index < tokens.length;) {
             const element = tokens[index];
             switch (element.type) {
                 case 'paragraph_open': {

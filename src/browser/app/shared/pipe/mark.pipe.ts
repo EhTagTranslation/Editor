@@ -135,7 +135,7 @@ export class MarkPipe implements PipeTransform {
         if (!elem) return;
 
         const nodes = elem.childNodes;
-        for (let i = nodes.length; i--; ) {
+        for (let i = nodes.length; i--;) {
             const node = nodes[i];
             switch (node.nodeType) {
                 case node.TEXT_NODE:
