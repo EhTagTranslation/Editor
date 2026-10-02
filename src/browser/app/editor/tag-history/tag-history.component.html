@@ -15,6 +15,8 @@
   </div>
   @if (state === 'error') {
     <mat-card-content role="alert">编辑日志加载失败，请重试。</mat-card-content>
+  } @else if (state === 'not-found') {
+    <mat-card-content class="history-content" role="status">{{ notFoundMessage }}</mat-card-content>
   } @else if (state === 'success') {
     <mat-card-content class="history-content">
       @if (entries.length) {

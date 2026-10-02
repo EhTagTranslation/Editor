@@ -1,4 +1,5 @@
 import { Component, Input, type OnChanges, type OnDestroy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import type { Subscription } from 'rxjs';
@@ -59,13 +60,15 @@ export class TagHistoryComponent implements OnChanges, OnDestroy {
     @Input() namespace: NamespaceName | null = null;
     @Input() raw: string | null = null;
 
-    state: 'idle' | 'loading' | 'error' | 'success' = 'idle';
+    state: 'idle' | 'loading' | 'error' | 'not-found' | 'success' = 'idle';
     entries: HistoryEntry[] = [];
+    notFoundMessage = '';
     private request?: Subscription;
 
     ngOnChanges(): void {
         this.request?.unsubscribe();
         this.entries = [];
+        this.notFoundMessage = '';
         this.state = 'idle';
     }
 
@@ -103,8 +106,14 @@ export class TagHistoryComponent implements OnChanges, OnDestroy {
                 });
                 this.state = 'success';
             },
-            error: () => {
-                this.state = 'error';
+            error: (error: unknown) => {
+                if (error instanceof HttpErrorResponse && error.status === 404) {
+                    const message = (error.error as { message?: unknown } | null)?.message;
+                    this.notFoundMessage = typeof message === 'string' && message.trim() ? message : '条目不存在';
+                    this.state = 'not-found';
+                } else {
+                    this.state = 'error';
+                }
             },
         });
     }

@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { Subject } from 'rxjs';
 import '@angular/compiler';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Edit page history card', () => {
     let Component;
@@ -127,17 +128,44 @@ describe('Edit page history card', () => {
         expect(snackBar.open).toHaveBeenLastCalledWith('复制失败，请手动复制提交编号', '关闭', { duration: 3000 });
     });
 
-    it('allows a retry only after failure, including empty successful history', () => {
+    it.each([new Error('请求失败'), new HttpErrorResponse({ status: 503 })])(
+        'allows retrying unexpected failures, including empty successful history (%s)',
+        (error) => {
+            component.load();
+            response.error(error);
+            expect(component.state).toBe('error');
+            response = new Subject();
+            component.load();
+            expect(connector.getBlame).toHaveBeenCalledTimes(2);
+            response.next([]);
+            expect(component.state).toBe('success');
+            component.load();
+            expect(connector.getBlame).toHaveBeenCalledTimes(2);
+        },
+    );
+
+    it.each([
+        [{ message: '条目不存在' }, '条目不存在'],
+        [{ message: '条目已被删除，无法查询编辑日志' }, '条目已被删除，无法查询编辑日志'],
+        [{}, '条目不存在'],
+    ])('shows the expected 404 message without retrying (%j)', (body, message) => {
         component.load();
-        response.error(new Error('请求失败'));
-        expect(component.state).toBe('error');
+        response.error(new HttpErrorResponse({ status: 404, error: body }));
+        expect(component.state).toBe('not-found');
+        expect(component.notFoundMessage).toBe(message);
+        expect(component.entries).toEqual([]);
+        component.load();
+        expect(connector.getBlame).toHaveBeenCalledTimes(1);
+
+        component.raw = 'other';
+        component.ngOnChanges();
+        expect(component.state).toBe('idle');
+        expect(component.notFoundMessage).toBe('');
         response = new Subject();
         component.load();
-        expect(connector.getBlame).toHaveBeenCalledTimes(2);
+        expect(connector.getBlame).toHaveBeenLastCalledWith({ namespace: 'female', raw: 'other' });
         response.next([]);
         expect(component.state).toBe('success');
-        component.load();
-        expect(connector.getBlame).toHaveBeenCalledTimes(2);
     });
 
     it('cancels stale requests on tag changes and waits for the next click', () => {
