@@ -16,6 +16,7 @@ import { NamespaceName } from '#shared/interfaces/ehtag';
 import { RawTag } from '#shared/raw-tag';
 import { TagRecord } from '#shared/tag-record';
 import { gitEnvironment } from '#shared/git-environment';
+import { GitRepoInfoProvider } from '#shared/repo-info-provider';
 
 jest.setTimeout(30_000);
 
@@ -102,6 +103,55 @@ describe('Git database synchronization and line history', () => {
         expect(service.data.data.female.has(raw)).toBe(true);
         expect(await service.pull()).toBeUndefined();
         expect(await readFile(path.join(service.path, '.info'), 'utf8')).toBe('{}');
+    });
+
+    it('caches repeated requests and shares queued queries while keeping namespaces separate', async () => {
+        const log = jest.spyOn(GitRepoInfoProvider.prototype, 'log');
+        const female = await service.blame('female', raw);
+        expect(log).not.toHaveBeenCalled();
+        const histories = await Promise.all([service.blame('male', raw), service.blame('male', raw)]);
+        expect(histories).toEqual([female, female]);
+        expect(log).toHaveBeenCalledTimes(1);
+        expect(log.mock.calls[0][0]).toHaveProperty(['-L3,3:database/male.md']);
+
+        await service.pull();
+        await service.blame('female', raw);
+        expect(log).toHaveBeenCalledTimes(1);
+    });
+
+    it('evicts the least recently used history after 100 entries', async () => {
+        const tags = Array.from({ length: 101 }, (_, index) => RawTag(`cache-${index}`));
+        await upstreamCommit(header + tags.map((tag) => row.replace('test.tag', tag)).join(''), '创建缓存测试标签');
+        await service.pull();
+        // 只替换昂贵的 Git 历史查询，标签查找和缓存仍走真实服务路径。
+        const log = jest.spyOn(GitRepoInfoProvider.prototype, 'log').mockResolvedValue([]);
+        for (const tag of tags.slice(0, 100)) await service.blame('female', tag);
+        expect(log).toHaveBeenCalledTimes(100);
+        await service.blame('female', tags[0]);
+        await service.blame('female', tags[100]);
+        expect(log).toHaveBeenCalledTimes(101);
+        await service.blame('female', tags[0]);
+        expect(log).toHaveBeenCalledTimes(101);
+        await service.blame('female', tags[1]);
+        expect(log).toHaveBeenCalledTimes(102);
+    });
+
+    it('retries failed Git history queries instead of caching errors', async () => {
+        const log = jest
+            .spyOn(GitRepoInfoProvider.prototype, 'log')
+            .mockRejectedValueOnce(new Error('history query failed'));
+        await expect(service.blame('male', raw)).rejects.toThrow('history query failed');
+        expect((await service.blame('male', raw)).map((entry) => entry.sha)).toEqual([initial]);
+        await service.blame('male', raw);
+        expect(log).toHaveBeenCalledTimes(2);
+    });
+
+    it('uses the new HEAD when a pull is queued ahead of a cached history request', async () => {
+        const changed = await upstreamCommit(header + row.replace('描述', '更新描述'), '修改标签');
+        const pulling = service.pull();
+        const history = service.blame('female', raw);
+        await pulling;
+        expect((await history).map((entry) => entry.sha)).toEqual([changed, initial]);
     });
 
     it('serves the latest database while initial full-history fetching is still pending', async () => {

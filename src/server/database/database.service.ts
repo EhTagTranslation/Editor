@@ -14,6 +14,8 @@ import { gitEnvironment } from '#shared/git-environment';
 import { InjectableBase } from '../injectable-base.js';
 import { OctokitService, type UserInfo } from '../octokit/octokit.service.js';
 
+const BLAME_CACHE_SIZE = 100;
+
 function userEmail(user: Pick<UserInfo, 'id' | 'login'>): string {
     return `${Number(user.id)}+${String(user.login)}@users.noreply.github.com`;
 }
@@ -31,6 +33,7 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
     private git!: SimpleGit;
     private head!: Commit;
+    private readonly blameCache = new Map<string, Commit[]>();
 
     async onModuleInit(): Promise<void> {
         await ensureDir(this.path);
@@ -112,16 +115,29 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
     /** 查询当前条目的完整行历史，不包含其他条目的修改。 */
     async blame(namespace: NamespaceName, raw: RawTag): Promise<Commit[]> {
         return this.schedule(async () => {
+            // 在队列内读取 HEAD，避免与拉取、编辑交错时返回旧版本的缓存。
+            const cacheKey = `${this.head.sha}:${namespace}:${raw}`;
+            const cached = this.blameCache.get(cacheKey);
+            if (cached) {
+                this.blameCache.delete(cacheKey);
+                this.blameCache.set(cacheKey, cached);
+                return cached;
+            }
             for (const [key, { line }] of this.data.data[namespace].raw()) {
                 if (key !== raw) continue;
                 if (line == null) throw new Error('条目尚未保存，无法查询编辑日志');
                 // 后台拉取失败后允许重试，不能把浅仓库的截断历史当作完整结果。
                 await this.ensureHistory();
-                return new GitRepoInfoProvider(this.path).log({
+                const history = await new GitRepoInfoProvider(this.path).log({
                     [this.head.sha]: null,
                     [`-L${line},${line}:database/${namespace}.md`]: null,
                     '--no-patch': null,
                 });
+                this.blameCache.set(cacheKey, history);
+                if (this.blameCache.size > BLAME_CACHE_SIZE) {
+                    this.blameCache.delete(this.blameCache.keys().next().value!);
+                }
+                return history;
             }
             throw new NotFoundException('条目不存在');
         });
