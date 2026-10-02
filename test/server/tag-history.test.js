@@ -11,6 +11,8 @@ describe('Edit page history card', () => {
     let component;
     let response;
     let connector;
+    let clipboard;
+    let snackBar;
 
     beforeAll(async () => {
         const outfile = path.resolve('dist/test/tag-history.mjs');
@@ -29,7 +31,14 @@ describe('Edit page history card', () => {
     beforeEach(() => {
         response = new Subject();
         connector = { getBlame: jest.fn(() => response) };
-        component = new Component(connector, { resolve: (value) => `https://github.com/fixture/database/${value}` });
+        clipboard = { copy: jest.fn(() => true) };
+        snackBar = { open: jest.fn() };
+        component = new Component(
+            connector,
+            { resolve: (value) => `https://github.com/fixture/database/${value}` },
+            clipboard,
+            snackBar,
+        );
         component.namespace = 'female';
         component.raw = 'test.tag';
         component.ngOnChanges();
@@ -49,17 +58,73 @@ describe('Edit page history card', () => {
                 sha: 'a'.repeat(40),
                 message: '修改标签\n\n保留备注',
                 author: { name: '名称', email: '123+login@users.noreply.github.com', when: '2026-10-01T00:00:00Z' },
+                committer: {
+                    name: 'bot',
+                    email: '456+translation[bot]@users.noreply.github.com',
+                    when: '2026-10-01T01:00:00Z',
+                },
             },
         ]);
         expect(component.state).toBe('success');
         expect(component.entries[0]).toMatchObject({
             subject: '修改标签',
             body: '保留备注',
-            authorName: 'login',
-            authorUrl: 'https://github.com/login',
+            authorInfo: {
+                name: 'login',
+                url: 'https://github.com/login',
+                avatarUrl: 'https://github.com/login.png?size=48',
+            },
+            committerInfo: {
+                name: 'translation[bot]',
+                url: 'https://github.com/translation%5Bbot%5D',
+            },
+            commitUrl: `https://github.com/fixture/database/commit/${'a'.repeat(40)}`,
+            expanded: false,
         });
         component.load();
         expect(connector.getBlame).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps ordinary Git authors without inventing GitHub profiles or duplicate committers', () => {
+        const author = { name: '普通作者', email: 'author@example.com', when: '2026-10-01T00:00:00Z' };
+        component.load();
+        response.next([{ sha: 'b'.repeat(40), message: '仅标题', author, committer: { ...author } }]);
+        expect(component.entries[0]).toMatchObject({ subject: '仅标题', body: '', authorInfo: { name: '普通作者' } });
+        expect(component.entries[0].authorInfo.url).toBeUndefined();
+        expect(component.entries[0].authorInfo.avatarUrl).toBeUndefined();
+        expect(component.entries[0].committerInfo).toBeUndefined();
+    });
+
+    it('renders commit tables and links as Markdown while escaping raw HTML', () => {
+        const author = { name: '作者', email: 'author@example.com', when: '2026-10-01T00:00:00Z' };
+        component.load();
+        response.next([
+            {
+                sha: 'c'.repeat(40),
+                message:
+                    '修改标签\n\n| 版本 | 外部链接 |\n| --- | --- |\n| 修改后 | [pixiv](https://www.pixiv.net/) \\| 保留 |\n\n<script>alert(1)</script>',
+                author,
+                committer: author,
+            },
+        ]);
+        const html = component.entries[0].bodyHtml;
+        expect(html).toContain('<table>');
+        expect(html).toContain('<th>外部链接</th>');
+        expect(html).toContain(
+            '<a href="https://www.pixiv.net/" target="_blank" rel="noopener noreferrer">pixiv</a> | 保留',
+        );
+        expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+        expect(html).not.toContain('<script>');
+    });
+
+    it('copies the full SHA and reports clipboard success or failure', () => {
+        const sha = 'a'.repeat(40);
+        component.copySha(sha);
+        expect(clipboard.copy).toHaveBeenCalledWith(sha);
+        expect(snackBar.open).toHaveBeenLastCalledWith('已复制完整提交编号', '关闭', { duration: 3000 });
+        clipboard.copy.mockReturnValue(false);
+        component.copySha(sha);
+        expect(snackBar.open).toHaveBeenLastCalledWith('复制失败，请手动复制提交编号', '关闭', { duration: 3000 });
     });
 
     it('allows a retry only after failure, including empty successful history', () => {

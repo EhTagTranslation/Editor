@@ -16,27 +16,106 @@
   @if (state === 'error') {
     <mat-card-content role="alert">编辑日志加载失败，请重试。</mat-card-content>
   } @else if (state === 'success') {
-    <mat-card-content>
-      @for (entry of entries; track entry.sha) {
-        <article class="history-entry">
-          <div class="history-meta">
-            @if (entry.authorUrl) {
-              <a [href]="entry.authorUrl" target="_blank" rel="noopener noreferrer">{{ entry.authorName }}</a>
-            } @else {
-              <span [matTooltip]="entry.author.email">{{ entry.authorName }}</span>
-            }
-            <time [attr.datetime]="entry.author.when">{{ entry.author.when | date: 'yyyy-MM-dd HH:mm' }}</time>
-          </div>
-          <a [href]="entry.commitUrl" target="_blank" rel="noopener noreferrer">{{ entry.subject }}</a>
-          @if (entry.body) {
-            <details>
-              <summary>提交备注</summary>
-              <div class="history-body">{{ entry.body }}</div>
-            </details>
+    <mat-card-content class="history-content">
+      @if (entries.length) {
+        <div class="history-list" aria-label="标签提交历史">
+          @for (entry of entries; track entry.sha) {
+            <article class="history-entry">
+              <div class="history-main">
+                <div class="history-title">
+                  <a class="history-subject" [href]="entry.commitUrl" target="_blank" rel="noopener noreferrer">
+                    {{ entry.subject }}
+                  </a>
+                  @if (entry.body) {
+                    <button
+                      class="history-expand"
+                      type="button"
+                      [attr.aria-expanded]="entry.expanded"
+                      [attr.aria-controls]="'history-body-' + entry.sha"
+                      [attr.aria-label]="entry.expanded ? '收起提交备注' : '展开提交备注'"
+                      [matTooltip]="entry.expanded ? '收起提交备注' : '展开提交备注'"
+                      (click)="entry.expanded = !entry.expanded"
+                    >
+                      <mat-icon>more_horiz</mat-icon>
+                    </button>
+                  }
+                </div>
+                @if (entry.body) {
+                  <div
+                    class="history-body md-container"
+                    [id]="'history-body-' + entry.sha"
+                    [hidden]="!entry.expanded"
+                    [innerHTML]="entry.bodyHtml"
+                  ></div>
+                }
+                <div class="history-meta">
+                  <span class="history-avatar" aria-hidden="true">
+                    @if (entry.authorInfo.avatarUrl) {
+                      <img
+                        [src]="entry.authorInfo.avatarUrl"
+                        alt=""
+                        width="24"
+                        height="24"
+                        loading="lazy"
+                        referrerpolicy="no-referrer"
+                        (error)="entry.authorInfo.avatarUrl = undefined"
+                      />
+                    } @else {
+                      {{ entry.authorInfo.name.slice(0, 1).toUpperCase() }}
+                    }
+                  </span>
+                  <span class="history-attribution">
+                    @if (entry.authorInfo.url) {
+                      <a [href]="entry.authorInfo.url" target="_blank" rel="noopener noreferrer">
+                        {{ entry.authorInfo.name }}
+                      </a>
+                    } @else {
+                      <span [matTooltip]="entry.author.email">{{ entry.authorInfo.name }}</span>
+                    }
+                    @if (entry.committerInfo; as committer) {
+                      创作，由
+                      @if (committer.url) {
+                        <a [href]="committer.url" target="_blank" rel="noopener noreferrer">{{ committer.name }}</a>
+                      } @else {
+                        <span [matTooltip]="entry.committer.email">{{ committer.name }}</span>
+                      }
+                    }
+                    提交于
+                    <time
+                      [attr.datetime]="entry.committer.when"
+                      [matTooltip]="'创作于 ' + (entry.author.when | date: 'yyyy-MM-dd HH:mm:ss')"
+                    >
+                      {{ entry.committer.when | date: 'yyyy-MM-dd HH:mm' }}
+                    </time>
+                  </span>
+                </div>
+              </div>
+              <div class="history-actions">
+                <a
+                  class="history-sha"
+                  [href]="entry.commitUrl"
+                  [matTooltip]="entry.sha"
+                  [attr.aria-label]="'查看提交 ' + entry.sha"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ entry.sha.slice(0, 7) }}
+                </a>
+                <button
+                  mat-icon-button
+                  type="button"
+                  matTooltip="复制完整提交编号"
+                  aria-label="复制完整提交编号"
+                  (click)="copySha(entry.sha)"
+                >
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            </article>
           }
-        </article>
-      } @empty {
-        <span>暂无编辑日志。</span>
+        </div>
+      } @else {
+        <span class="history-empty">暂无编辑日志。</span>
       }
     </mat-card-content>
   }

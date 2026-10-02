@@ -1,5 +1,13 @@
+@use '@angular/material' as mat;
+@use 'theme';
+
+$muted-color: mat.get-color-from-palette(theme.$app-foreground, secondary-text);
+$border-color: mat.get-color-from-palette(theme.$app-foreground, divider);
+
 :host {
   display: block;
+  min-width: 0;
+  container-type: inline-size;
 }
 
 .history-header {
@@ -14,28 +22,214 @@
   }
 }
 
+.history-content {
+  margin-top: 4px;
+}
+
 .history-entry {
-  margin-top: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
   overflow-wrap: anywhere;
 
-  .history-meta {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 4px 12px;
-    margin-bottom: 4px;
+  & + & {
+    border-top: 1px solid $border-color;
   }
 
-  details {
-    margin-top: 8px;
+  a {
+    color: inherit;
+    text-decoration: none;
 
-    summary {
-      cursor: pointer;
+    &:hover {
+      color: mat.get-color-from-palette(theme.$app-primary);
+      text-decoration: underline;
     }
   }
+}
 
-  .history-body {
-    margin-top: 8px;
-    white-space: pre-wrap;
+.history-main {
+  min-width: 0;
+}
+
+.history-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.history-subject {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.history-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  align-self: center;
+  width: 28px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  color: $muted-color;
+  background: mat.get-color-from-palette(theme.$app-background, hover);
+  cursor: pointer;
+
+  &:hover,
+  &[aria-expanded='true'] {
+    color: mat.get-color-from-palette(theme.$app-primary);
+    background: mat.get-color-from-palette(theme.$app-background, focused-button);
+  }
+
+  &:focus-visible {
+    outline: 2px solid mat.get-color-from-palette(theme.$app-primary);
+    outline-offset: 2px;
+  }
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.history-body {
+  margin: 8px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.history-body ::ng-deep {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+    border: 1px solid $border-color;
+    vertical-align: top;
+  }
+
+  th {
+    background: mat.get-color-from-palette(theme.$app-background, hover);
+  }
+
+  a {
+    color: mat.get-color-from-palette(theme.$app-primary);
+    text-decoration: underline;
+  }
+
+  p {
+    line-height: inherit;
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  pre {
+    overflow-x: auto;
+    padding: 8px;
+    background: mat.get-color-from-palette(theme.$app-background, hover);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $muted-color;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.history-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  color: mat.get-color-from-palette(theme.$app-primary);
+  background: mat.get-color-from-palette(theme.$app-primary, 50);
+  font-weight: 600;
+
+  img {
+    display: block;
+  }
+}
+
+.history-attribution {
+  min-width: 0;
+
+  a {
+    font-weight: 500;
+  }
+
+  time {
+    display: inline-block;
+  }
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: $muted-color;
+
+  .history-sha {
+    margin-right: 4px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .mat-icon-button {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+  }
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 18px;
+  }
+}
+
+.history-empty {
+  color: $muted-color;
+}
+
+@container (max-width: 480px) {
+  .history-entry {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .history-actions {
+    justify-self: end;
   }
 }
