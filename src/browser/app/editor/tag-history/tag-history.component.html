@@ -19,6 +19,9 @@
     <mat-card-content class="history-content" role="status">{{ notFoundMessage }}</mat-card-content>
   } @else if (state === 'success') {
     <mat-card-content class="history-content">
+      @if (!complete) {
+        <p role="status">历史不完整，以下仅显示已取得的记录。</p>
+      }
       @if (entries.length) {
         <div class="history-list" aria-label="标签提交历史">
           @for (entry of entries; track entry.sha) {
@@ -117,7 +120,7 @@
           }
         </div>
       } @else {
-        <span class="history-empty">暂无编辑日志。</span>
+        <span class="history-empty">{{ complete ? '暂无编辑日志。' : '暂未取得编辑日志。' }}</span>
       }
     </mat-card-content>
   }

@@ -15,7 +15,9 @@ import {
     BadRequestException,
     Headers,
     HttpException,
+    Res,
 } from '@nestjs/common';
+import type { FastifyReply } from 'fastify';
 import {
     ApiTags,
     ApiOperation,
@@ -35,7 +37,7 @@ import { InjectableBase } from '../injectable-base.js';
 import { ApiIfMatchHeader, ApiIfNoneMatchHeader } from '../decorators/swagger.decoretor.js';
 import { EtagInterceptor } from '../app/etag.interceptor.js';
 import {
-    CommitDto,
+    CommitHistoryDto,
     RepoInfoDto,
     TagDto,
     TagResponseDto,
@@ -126,13 +128,16 @@ export class DatabaseController extends InjectableBase {
     @Get(':namespace/:raw/blame')
     @ApiOperation({
         summary: '查询某一条目的编辑日志',
-        description: '使用 git log -L 追溯条目，按从新到旧的顺序返回提交。',
+        description:
+            '使用 git log -L 追溯条目。查询最多运行 60 秒，超时返回已取得的提交及 complete=false，结果仍会缓存。',
     })
     @ApiIfNoneMatchHeader()
     @ApiNotFoundResponse({ description: '条目不存在' })
-    @ApiOkResponse({ type: CommitDto, isArray: true })
-    async getBlame(@Param() p: TagParams): Promise<CommitDto[]> {
-        return this.service.blame(p.namespace, p.raw);
+    @ApiOkResponse({ type: CommitHistoryDto })
+    async getBlame(@Param() p: TagParams, @Res({ passthrough: true }) res: FastifyReply): Promise<CommitHistoryDto> {
+        const { sha, commits, complete } = await this.service.blame(p.namespace, p.raw);
+        void res.header('ETag', `"${sha}"`);
+        return { commits, complete };
     }
 
     @Post(':namespace/:raw')

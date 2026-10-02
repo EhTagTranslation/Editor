@@ -3,6 +3,7 @@ import { IsString, MinLength } from 'class-validator';
 import {
     type RepoInfo,
     type Commit,
+    type CommitHistory,
     type NamespaceInfo,
     type Signature,
     type Sha1Value,
@@ -36,6 +37,14 @@ export class CommitDto implements Commit {
         description: '提交的消息',
     })
     message!: string;
+}
+
+export class CommitHistoryDto implements CommitHistory {
+    @ApiProperty({ type: CommitDto, isArray: true, description: '已取得的提交记录，按从新到旧排序' })
+    commits!: CommitDto[];
+
+    @ApiProperty({ type: Boolean, description: '是否完成查询；60 秒超时后返回部分记录并设为 false' })
+    complete!: boolean;
 }
 class TagDtoBase {
     @IsString()

@@ -187,8 +187,9 @@ describe('AppController (e2e)', () => {
         }, 600_000);
 
         it('returns complete line history with authors, dates and commit messages', async () => {
-            expect(response.body).toBeInstanceOf(Array);
-            expect(response.body.length).toBeGreaterThan(0);
+            expect(response.body.complete).toBe(true);
+            expect(response.body.commits).toBeInstanceOf(Array);
+            expect(response.body.commits.length).toBeGreaterThan(0);
 
             // 用独立的 Git 正则行选择核对完整提交序列，而非调用服务的 blame 方法。
             const git = simpleGit(database.path);
@@ -199,8 +200,8 @@ describe('AppController (e2e)', () => {
                 '-L/^[|][[:space:]]*female[[:space:]]*[|]/,+1:database/rows.md',
                 databaseInfo.head.sha,
             ]);
-            expect(response.body.map((entry) => entry.sha)).toEqual(history.trim().split('\n'));
-            for (const entry of response.body) {
+            expect(response.body.commits.map((entry) => entry.sha)).toEqual(history.trim().split('\n'));
+            for (const entry of response.body.commits) {
                 expect(entry).toMatchObject({
                     sha: expect.stringMatching(/^[a-f0-9]{40}$/),
                     message: expect.any(String),
@@ -211,7 +212,7 @@ describe('AppController (e2e)', () => {
                 expect(new Date(entry.committer.when).toISOString()).toBe(entry.committer.when);
             }
 
-            const latest = response.body[0];
+            const latest = response.body.commits[0];
             const details = await git.raw([
                 'show',
                 '--no-patch',
@@ -240,7 +241,7 @@ describe('AppController (e2e)', () => {
                 .get('/database/rows/female/blame')
                 .set('If-None-Match', `"${'0'.repeat(40)}"`)
                 .expect(HttpStatus.OK);
-            expect(response.body.length).toBeGreaterThan(0);
+            expect(response.body.commits.length).toBeGreaterThan(0);
         });
 
         it('accepts URL-encoded tags containing spaces', async () => {
@@ -249,7 +250,8 @@ describe('AppController (e2e)', () => {
             const response = await supertest(app.getHttpServer())
                 .get(`/database/character/${encodeURIComponent(raw)}/blame`)
                 .expect(HttpStatus.OK);
-            expect(response.body.length).toBeGreaterThan(0);
+            expect(response.body.commits).toBeInstanceOf(Array);
+            expect(typeof response.body.complete).toBe('boolean');
         }, 180_000);
 
         it.each([

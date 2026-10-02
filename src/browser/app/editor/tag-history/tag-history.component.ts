@@ -62,12 +62,14 @@ export class TagHistoryComponent implements OnChanges, OnDestroy {
 
     state: 'idle' | 'loading' | 'error' | 'not-found' | 'success' = 'idle';
     entries: HistoryEntry[] = [];
+    complete = true;
     notFoundMessage = '';
     private request?: Subscription;
 
     ngOnChanges(): void {
         this.request?.unsubscribe();
         this.entries = [];
+        this.complete = true;
         this.notFoundMessage = '';
         this.state = 'idle';
     }
@@ -85,7 +87,8 @@ export class TagHistoryComponent implements OnChanges, OnDestroy {
         if (!this.namespace || !isRawTag(this.raw) || (this.state !== 'idle' && this.state !== 'error')) return;
         this.state = 'loading';
         this.request = this.connector.getBlame({ namespace: this.namespace, raw: this.raw }).subscribe({
-            next: (commits) => {
+            next: ({ commits, complete }) => {
+                this.complete = complete;
                 this.entries = commits.map((commit) => {
                     const [subject, ...lines] = commit.message.trim().split('\n');
                     const body = lines.join('\n').trim();

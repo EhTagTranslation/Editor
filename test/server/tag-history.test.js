@@ -54,18 +54,21 @@ describe('Edit page history card', () => {
         component.load();
         expect(component.state).toBe('loading');
         expect(connector.getBlame).toHaveBeenCalledTimes(1);
-        response.next([
-            {
-                sha: 'a'.repeat(40),
-                message: '修改标签\n\n保留备注',
-                author: { name: '名称', email: '123+login@users.noreply.github.com', when: '2026-10-01T00:00:00Z' },
-                committer: {
-                    name: 'bot',
-                    email: '456+translation[bot]@users.noreply.github.com',
-                    when: '2026-10-01T01:00:00Z',
+        response.next({
+            complete: true,
+            commits: [
+                {
+                    sha: 'a'.repeat(40),
+                    message: '修改标签\n\n保留备注',
+                    author: { name: '名称', email: '123+login@users.noreply.github.com', when: '2026-10-01T00:00:00Z' },
+                    committer: {
+                        name: 'bot',
+                        email: '456+translation[bot]@users.noreply.github.com',
+                        when: '2026-10-01T01:00:00Z',
+                    },
                 },
-            },
-        ]);
+            ],
+        });
         expect(component.state).toBe('success');
         expect(component.entries[0]).toMatchObject({
             subject: '修改标签',
@@ -89,7 +92,10 @@ describe('Edit page history card', () => {
     it('keeps ordinary Git authors without inventing GitHub profiles or duplicate committers', () => {
         const author = { name: '普通作者', email: 'author@example.com', when: '2026-10-01T00:00:00Z' };
         component.load();
-        response.next([{ sha: 'b'.repeat(40), message: '仅标题', author, committer: { ...author } }]);
+        response.next({
+            complete: true,
+            commits: [{ sha: 'b'.repeat(40), message: '仅标题', author, committer: { ...author } }],
+        });
         expect(component.entries[0]).toMatchObject({ subject: '仅标题', body: '', authorInfo: { name: '普通作者' } });
         expect(component.entries[0].authorInfo.url).toBeUndefined();
         expect(component.entries[0].authorInfo.avatarUrl).toBeUndefined();
@@ -99,15 +105,18 @@ describe('Edit page history card', () => {
     it('renders commit tables and links as Markdown while escaping raw HTML', () => {
         const author = { name: '作者', email: 'author@example.com', when: '2026-10-01T00:00:00Z' };
         component.load();
-        response.next([
-            {
-                sha: 'c'.repeat(40),
-                message:
-                    '修改标签\n\n| 版本 | 外部链接 |\n| --- | --- |\n| 修改后 | [pixiv](https://www.pixiv.net/) \\| 保留 |\n\n<script>alert(1)</script>',
-                author,
-                committer: author,
-            },
-        ]);
+        response.next({
+            complete: true,
+            commits: [
+                {
+                    sha: 'c'.repeat(40),
+                    message:
+                        '修改标签\n\n| 版本 | 外部链接 |\n| --- | --- |\n| 修改后 | [pixiv](https://www.pixiv.net/) \\| 保留 |\n\n<script>alert(1)</script>',
+                    author,
+                    committer: author,
+                },
+            ],
+        });
         const html = component.entries[0].bodyHtml;
         expect(html).toContain('<table>');
         expect(html).toContain('<th>外部链接</th>');
@@ -128,6 +137,22 @@ describe('Edit page history card', () => {
         expect(snackBar.open).toHaveBeenLastCalledWith('复制失败，请手动复制提交编号', '关闭', { duration: 3000 });
     });
 
+    it.each([true, false])('keeps partial history as success without retrying (has records: %s)', (hasRecords) => {
+        const author = { name: '作者', email: 'author@example.com', when: '2026-10-01T00:00:00Z' };
+        const commits = hasRecords ? [{ sha: 'd'.repeat(40), message: '已取得的记录', author, committer: author }] : [];
+        component.load();
+        response.next({ commits, complete: false });
+        expect(component.state).toBe('success');
+        expect(component.complete).toBe(false);
+        expect(component.entries).toHaveLength(commits.length);
+        component.load();
+        expect(connector.getBlame).toHaveBeenCalledTimes(1);
+        component.raw = 'other';
+        component.ngOnChanges();
+        expect(component.complete).toBe(true);
+        expect(component.state).toBe('idle');
+    });
+
     it.each([new Error('请求失败'), new HttpErrorResponse({ status: 503 })])(
         'allows retrying unexpected failures, including empty successful history (%s)',
         (error) => {
@@ -137,7 +162,7 @@ describe('Edit page history card', () => {
             response = new Subject();
             component.load();
             expect(connector.getBlame).toHaveBeenCalledTimes(2);
-            response.next([]);
+            response.next({ complete: true, commits: [] });
             expect(component.state).toBe('success');
             component.load();
             expect(connector.getBlame).toHaveBeenCalledTimes(2);
@@ -164,7 +189,7 @@ describe('Edit page history card', () => {
         response = new Subject();
         component.load();
         expect(connector.getBlame).toHaveBeenLastCalledWith({ namespace: 'female', raw: 'other' });
-        response.next([]);
+        response.next({ complete: true, commits: [] });
         expect(component.state).toBe('success');
     });
 

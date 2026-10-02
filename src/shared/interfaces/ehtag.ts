@@ -38,6 +38,12 @@ export interface Commit {
     message: string;
 }
 
+/** Git 日志查询结果；超时返回已接收的完整记录。 */
+export interface CommitHistory {
+    commits: Commit[];
+    complete: boolean;
+}
+
 /** 表示一个 Git Repo 的信息 */
 export interface RepoInfo {
     repo: string;

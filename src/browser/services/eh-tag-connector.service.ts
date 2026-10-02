@@ -4,7 +4,7 @@ import { Observable, of, throwError, type OperatorFunction } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import type { ETKey } from '../interfaces/ehtranslation';
 import { ApiEndpointService } from './api-endpoint.service';
-import type { TagType, Tag, NamespaceName, Commit } from '#shared/interfaces/ehtag';
+import type { TagType, Tag, NamespaceName, CommitHistory } from '#shared/interfaces/ehtag';
 import type { Jsonify } from 'type-fest';
 import { GithubReleaseService } from './github-release.service';
 import { LocalStorageService } from './local-storage.service';
@@ -61,11 +61,11 @@ export class EhTagConnectorService {
         const endpoint = this.getEndpoint(key, format);
         return this.http.get<Tag<T>>(endpoint).pipe(mapStatusCodeTo(404, null));
     }
-    getBlame(key: ETKey): Observable<Array<Jsonify<Commit>>> {
+    getBlame(key: ETKey): Observable<Jsonify<CommitHistory>> {
         const endpoint = this.endpoints.ehTagConnectorDb(
             `${key.namespace}/${encodeURIComponent(key.raw.trim().toLowerCase())}/blame`,
         );
-        return this.http.get<Array<Jsonify<Commit>>>(endpoint);
+        return this.http.get<Jsonify<CommitHistory>>(endpoint);
     }
     addTag<T extends TagType = 'raw'>(
         key: ETKey,

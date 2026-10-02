@@ -5,7 +5,7 @@ import { ensureDir, pathExists } from 'fs-extra/esm';
 import { simpleGit, type SimpleGit } from 'simple-git';
 import { Database } from '#shared/database';
 import type { NamespaceDatabase } from '#shared/namespace-database';
-import { NamespaceName, type Commit } from '#shared/interfaces/ehtag';
+import { NamespaceName, type Commit, type CommitHistory } from '#shared/interfaces/ehtag';
 import type { TagRecord } from '#shared/tag-record';
 import type { RawTag } from '#shared/raw-tag';
 import { Context } from '#shared/markdown/index';
@@ -33,7 +33,9 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
 
     private git!: SimpleGit;
     private head!: Commit;
-    private readonly blameCache = new Map<string, Commit[]>();
+    private readonly blameCache = new Map<string, CommitHistory>();
+    private readonly blamePending = new Map<string, Promise<CommitHistory>>();
+    private historyActing: Promise<unknown> = Promise.resolve();
 
     async onModuleInit(): Promise<void> {
         await ensureDir(this.path);
@@ -112,24 +114,53 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
         this.logger.log('Complete database history is ready');
     }
 
-    /** 查询当前条目的完整行历史，不包含其他条目的修改。 */
-    async blame(namespace: NamespaceName, raw: RawTag): Promise<Commit[]> {
-        return this.schedule(async () => {
+    /** 查询当前条目的行历史，不包含其他条目的修改；超时结果也会缓存。 */
+    async blame(namespace: NamespaceName, raw: RawTag): Promise<CommitHistory & { sha: Commit['sha'] }> {
+        const { sha, history } = await this.schedule(async () => {
             // 在队列内读取 HEAD，避免与拉取、编辑交错时返回旧版本的缓存。
-            const cacheKey = `${this.head.sha}:${namespace}:${raw}`;
-            const cached = this.blameCache.get(cacheKey);
+            const { sha } = this.head;
+            const cacheKey = `${sha}:${namespace}:${raw}`;
+            const cached = this.cachedHistory(cacheKey);
             if (cached) {
-                this.blameCache.delete(cacheKey);
-                this.blameCache.set(cacheKey, cached);
-                return cached;
+                return { sha, history: Promise.resolve(cached) };
             }
             for (const [key, { line }] of this.data.data[namespace].raw()) {
                 if (key !== raw) continue;
                 if (line == null) throw new Error('条目尚未保存，无法查询编辑日志');
                 // 后台拉取失败后允许重试，不能把浅仓库的截断历史当作完整结果。
                 await this.ensureHistory();
+                // Promise 放在对象内返回，仓库队列只等待快照准备，不等待历史查询。
+                return { sha, history: this.queryHistory(cacheKey, sha, namespace, line) };
+            }
+            throw new NotFoundException('条目不存在');
+        });
+        return { sha, ...(await history) };
+    }
+
+    private cachedHistory(cacheKey: string): CommitHistory | undefined {
+        const cached = this.blameCache.get(cacheKey);
+        if (cached) {
+            this.blameCache.delete(cacheKey);
+            this.blameCache.set(cacheKey, cached);
+        }
+        return cached;
+    }
+
+    private async queryHistory(
+        cacheKey: string,
+        sha: Commit['sha'],
+        namespace: NamespaceName,
+        line: number,
+    ): Promise<CommitHistory> {
+        // 等待历史补全检查期间，之前的同键查询可能已完成。
+        const cached = this.cachedHistory(cacheKey);
+        if (cached) return cached;
+        const pending = this.blamePending.get(cacheKey);
+        if (pending) return pending;
+        const commits = this.historyActing
+            .then(async () => {
                 const history = await new GitRepoInfoProvider(this.path).log({
-                    [this.head.sha]: null,
+                    [sha]: null,
                     [`-L${line},${line}:database/${namespace}.md`]: null,
                     '--no-patch': null,
                 });
@@ -138,9 +169,17 @@ export class DatabaseService extends InjectableBase implements OnModuleInit {
                     this.blameCache.delete(this.blameCache.keys().next().value!);
                 }
                 return history;
-            }
-            throw new NotFoundException('条目不存在');
-        });
+            })
+            .catch((err) => {
+                this.logger.error(err);
+                throw err;
+            })
+            .finally(() => {
+                this.blamePending.delete(cacheKey);
+            });
+        this.blamePending.set(cacheKey, commits);
+        this.historyActing = commits.catch(() => undefined);
+        return commits;
     }
 
     /** 修改、提交并推送数据库 */

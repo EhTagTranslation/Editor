@@ -29,12 +29,15 @@ export class EtagInterceptor extends InjectableBase implements NestInterceptor<u
         const req = httpContext.getRequest<FastifyRequest>();
         const res = httpContext.getResponse<FastifyReply>();
 
-        const setEtag = (): Observable<void> =>
-            from(
+        const setEtag = (): Observable<void> => {
+            // 历史查询可以与编辑并行，保留控制器设置的快照版本。
+            if (res.hasHeader('ETag')) return of(undefined);
+            return from(
                 this.database.data.sha().then((sha) => {
                     void res.header('ETag', `"${sha}"`);
                 }),
             );
+        };
 
         return from(this.database.data.sha()).pipe(
             map((sha) => {
