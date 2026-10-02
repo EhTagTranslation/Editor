@@ -25,12 +25,20 @@ RUN <<EOF
 
   pnpm build:server
 
-  pnpm esbuild --bundle dist/server/main.js --outfile=main.js \
-    --platform=node --target=node24 --charset=utf8 \
+  pnpm esbuild --bundle dist/server/main.js --outfile=main.mjs \
+    --platform=node --format=esm --target=node24 --charset=utf8 \
     --minify --keep-names --sourcemap --legal-comments=external \
     --banner:js="$BANNER" \
-    --external:@fastify/view --external:@nestjs/websockets --external:@nestjs/microservices --external:@nestjs/platform-express \
+    --external:@fastify/view --external:@fastify/multipart --external:@nestjs/websockets --external:@nestjs/microservices --external:@nestjs/platform-express \
     --external:class-transformer/storage --external:libphonenumber-js
+
+  # Swagger resolves its UI assets at runtime via createRequire.
+  node --input-type=module -e '
+    import { cpSync } from "node:fs";
+    import { createRequire } from "node:module";
+    const require = createRequire(import.meta.resolve("@nestjs/swagger"));
+    cpSync(require("swagger-ui-dist/absolute-path.js")(), "/runtime/node_modules/swagger-ui-dist", { recursive: true });
+  '
 
   rm -rf .[!.]* dist node_modules src test tools scripts
 EOF
@@ -40,5 +48,6 @@ FROM base AS production
 RUN apk add --no-cache git
 
 COPY --from=builder /app /app
+COPY --from=builder /runtime/node_modules /app/node_modules
 
-ENTRYPOINT [ "node", "main.js" ]
+ENTRYPOINT [ "node", "main.mjs" ]
